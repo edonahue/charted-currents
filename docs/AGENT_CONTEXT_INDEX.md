@@ -54,14 +54,27 @@ Read:
 
 Then read only the relevant source registries/dossiers.
 
-## Source ingestion or archival research
+## Source ingestion, APIs, archival research, or source accounts
 
 Read:
 
 - `docs/DATA_SOURCES.md`
 - `docs/SOURCE_RIGHTS.md`
 - `docs/PUBLIC_PRIVATE_BOUNDARY.md`
+- **`docs/HUMAN_SOURCE_SETUP.md`** — canonical human accounts, source-access requests, no-key sources, local research tools, and credential rules
+- **`.env.example`** — canonical environment-variable names; never invent alternate credential names
 - relevant entries in `research/sources.yml` and source-specific registries
+
+Credential rules:
+
+- research API credentials are local ETL/research inputs, not browser configuration;
+- never expose them through Astro `PUBLIC_*` variables;
+- never request that the human paste a real key into an agent prompt;
+- never log or commit values;
+- missing optional credentials should not block unrelated source work;
+- possession of a credential does not establish publication/reuse rights.
+
+For **weather, winds, tides, water levels, currents, or other physical-ocean/environmental history**, also read `docs/OCEAN_WEATHER_SOURCE_SETUP.md`. Preserve its distinction between period observations, reconstructed/hydrographic conditions, and modern contextual/reanalysis data; never silently substitute one evidence class for another.
 
 For images/maps/material culture, also use `docs/ART_AND_MAP_SOURCES.md`, `docs/VISUAL_ASSET_STRATEGY.md`, and `research/art_sources.yml`.
 
