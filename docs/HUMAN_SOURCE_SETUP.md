@@ -10,14 +10,15 @@ Most Charted Currents sources do **not** require an account. Do not create accou
 
 When you are back at your desk, the highest-value human actions are:
 
-1. **Create/use an ORCID and sign into World Historical Gazetteer; generate a WHG API token.**
+1. **Create/use an ORCID and sign into World Historical Gazetteer; generate a WHG API token.** WHG's 2026 authentication announcement uses ORCID; if the production login UI differs from the documentation, follow the live login flow.
 2. **Create a free Europeana account and personal API key.**
 3. **Optionally register a Smithsonian Open Access API key.** It is useful but not blocking because weekly bulk data is public on GitHub.
 4. **Request a DPLA API key** by the documented email-based POST.
 5. **Send a British Online Archives inquiry** about Naval Office Shipping Lists / `Power and Profit`.
 6. **Send a Prize Papers structured-data inquiry.**
 7. Do **not** request Protomaps or NYPL API credentials now.
-8. Use PARES/BNE/TNA/JCB reproduction requests only when a specific chosen asset needs higher resolution or explicit permission.
+8. Use PARES/BNE/ANOM/TNA/JCB reproduction requests only when a specific chosen asset needs higher resolution or explicit permission.
+9. **Do not create accounts for BnF/Gallica or ANOM** for ordinary research/API access; both can be used without a key for our initial purposes.
 
 Estimated active setup time, excluding waiting for replies: roughly 20-30 minutes.
 
@@ -27,7 +28,7 @@ Estimated active setup time, excluding waiting for replies: roughly 20-30 minute
 
 | Source | Priority | What you need | Cost | Environment variable | Blocks v0.1? |
 | --- | --- | --- | --- | --- | --- |
-| **World Historical Gazetteer** | **Do first** | ORCID login + WHG API token | Free | `WHG_API_TOKEN` | Not blocking, but very valuable |
+| **World Historical Gazetteer** | **Do first** | ORCID login/current WHG auth + WHG API token | Free | `WHG_API_TOKEN` | Not blocking, but very valuable |
 | **Europeana** | High | Free account + personal API key | Free | `EUROPEANA_API_KEY` | No |
 | **Smithsonian Open Access** | Medium | api.data.gov API key | Free | `SMITHSONIAN_API_KEY` | No - bulk GitHub data exists |
 | **DPLA** | Medium | API key emailed after POST | Free | `DPLA_API_KEY` | No |
@@ -51,8 +52,8 @@ https://whgazetteer.org/accounts/login/
 ### Steps
 
 - [ ] If you already have an ORCID, use it.
-- [ ] If not, choose the ORCID creation option during WHG sign-in. ORCID is free and does not require academic affiliation.
-- [ ] Sign into WHG with ORCID.
+- [ ] If not, WHG's March 2026 authentication announcement says you can create an ORCID during sign-in; ORCID is free and does not require academic affiliation.
+- [ ] Use the **current production WHG login flow**. Some WHG documentation pages have been transitioning and may describe an older account path, so trust the live login screen over stale screenshots/text.
 - [ ] Open your WHG **Profile**.
 - [ ] Generate/copy your API token.
 - [ ] Put it in local `.env` as:
@@ -165,7 +166,7 @@ General inquiries:
 Independent-research trial page:
 https://sales.britishonlinearchives.com/trials
 
-Important: `Power and Profit` currently says single-user licenses are unavailable for that collection, so do not simply buy a generic BOA subscription assuming it includes it.
+Important: the current `Power and Profit` overview presents **institutional trial/sales access** rather than a clearly available individual purchase for this specific collection. Other BOA collections do offer short-term single-user licenses, which makes it especially important not to buy a generic/other collection license assuming it covers `Power and Profit`. Ask first.
 
 ### What we need to learn
 
@@ -291,7 +292,48 @@ Fee/conditions: __________________
 
 ---
 
-# 8. TNA Image Library - only for selected Prize Papers images
+# 8. ANOM — no account; request reproductions only after item selection
+
+Research guide:
+https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/antilles-francaises
+
+Reproduction service:
+https://archives-nationales-outre-mer.culture.gouv.fr/infos-pratiques/obtenir-une-reproduction
+
+ANOM requires no API key/account for the ordinary online research we need. Its French Antilles holdings should be actively researched because they balance the British/Spanish/Dutch source lanes.
+
+When a specific undigitized or higher-resolution item is selected:
+
+- [ ] record the full `FR ANOM` archival reference;
+- [ ] confirm communicability/public-domain or other rights status;
+- [ ] use ANOM's reproduction form/service if a better file is needed;
+- [ ] record any fee and conditions;
+- [ ] retain the required source credit in the public asset record.
+
+Current reproduction pricing is modest for ordinary requests, so **requesting a handful of genuinely important documents/maps is realistic** once we know exactly what we want.
+
+---
+
+# 9. BnF / Gallica — no key; rights-review selected images
+
+API/data portal:
+https://api.bnf.fr/
+
+Gallica provides public SRU/OAI, document/OCR and IIIF services without a project API credential in the current documentation. No account setup is needed for the initial research pipeline.
+
+For each selected visual asset:
+
+- [ ] preserve the Gallica ARK/permalink;
+- [ ] note whether the source is BnF itself or a partner institution;
+- [ ] record the exact reuse terms;
+- [ ] use the required source credit (`Source gallica.bnf.fr / BnF` for applicable BnF material);
+- [ ] flag any intended commercial/promotional reuse for a fresh rights check.
+
+A first human-curated target should be a French Antilles map around 1700–1720 to sit beside the Herman Moll 1715 benchmark.
+
+---
+
+# 10. TNA Image Library - only for selected Prize Papers images
 
 Prize Papers Portal image terms:
 https://portal.prizepapers.de/termsofuse/
@@ -324,6 +366,8 @@ Do not spend time creating credentials for these:
 - **Nationaal Archief open data** - public OAI/METS/file access for open material.
 - **Natural Earth** - public-domain download.
 - **BNE Digital / Biblioteca Digital Hispánica** - no key for normal open access.
+- **BnF / Gallica** - public SRU/OAI/Document/IIIF services; no key indicated for initial use.
+- **Archives nationales d’outre-mer (ANOM)** - no key/account for normal online research; reproduction requests only after selecting items.
 - **John Carter Brown Library / Americana** - no key for initial open-access discovery/use.
 - **Wikidata** - public SPARQL; be polite with query limits.
 
@@ -387,6 +431,8 @@ Checklist:
 | British Online Archives | | | | |
 | Prize Papers | | | | |
 | PARES item request | | | | |
+| ANOM item/reproduction request | | | | |
+| BnF/Gallica rights review | | | | |
 | TNA image request | | | | |
 
 ---
@@ -404,5 +450,9 @@ Checklist:
 **Next 10 minutes**
 5. Send BOA inquiry.
 6. Verify current Prize Papers contact and send structured-data inquiry.
+
+**When you have a longer research block**
+7. Bookmark ANOM French Antilles + cartothèque searches and identify 3–5 core-period candidates.
+8. Use Gallica/BnF to identify at least one 1700–1720 French Antilles map/atlas item for the visual benchmark set.
 
 Then stop. Do not create more accounts until the actual ingestion prototype proves they are useful.
