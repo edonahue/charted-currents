@@ -1,0 +1,35 @@
+# Decision log — 2026-08-31
+
+- Working name: **Charted Currents**; brand lockup makes Greater Caribbean / 1650–1730 explicit.
+- Product identity: exploratory data product with serious historical standards.
+- Emotional priority: clickability, immersion, data richness, discovery.
+- Sid Meier's Pirates!: strong interaction reference; not a visual/trade-dress template.
+- Map: modern interactive map styled from historical cartography.
+- Theme: light/warm-paper first.
+- Pirate Arcade: light family resemblance only; Charted Currents should be much more refined.
+- Historical maps/documents: real reusable primary sources appear from v0.1.
+- Initial experience: open map and immediately explore real vessels/routes.
+- Initial geography: Port Royal-centered, trending broader Greater Caribbean.
+- Pirates: prominent profiles, not structurally privileged.
+- Place naming: modern canonical + historical variants.
+- Forced migration/slavery: integrated into voyage history but visibly distinguished; never generic cargo.
+- Provenance: one click away; trend toward optional Research View.
+- Uncertainty: Documented / Probable Match / Reconstructed / Contextual.
+- AI: development/research + aggressive candidate extraction; published facts require source provenance.
+- AI branding: tooling, not identity.
+- Analytics: a few strong derived measures alongside exploration.
+- Context v0.1: wars, major disasters, documented/reconstructed hurricanes.
+- Playfulness: serious content with delightful exploration; no explicit gamification.
+- Animation: restrained initially, architecture supports richer time animation.
+- Audience priority: history/pirate enthusiasts, maker, data-viz practitioners, portfolio viewers, students/teachers.
+- Public posture: polished public experiment with academic-style rigor and restrained maker branding.
+- Initial site: `erichdonahue.com/labs/charted-currents/`; standalone domain later if earned.
+- Infrastructure: static-first + local ETL, architect toward scale and optional DuckDB-Wasm.
+- Naval Office Lists: v0.1 only reusable/open/manual legitimate examples; later pursue original archives and BOA permission/API.
+- Coverage: explicitly sample reconstruction with visible gaps.
+- Ship resolution: allow carefully labeled probable matches.
+- Map click: inspector-first.
+- Timeline: persistent compact, trending toward simulation-like scrub.
+- Route geometry: schematic first; reconstructed historical routes are a desired later research feature.
+- Typography: editorial historical atlas + restrained engraved influence, weighted editorial.
+- First implementation: beautiful small vertical slice with scale-ready data contracts.

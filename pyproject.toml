@@ -1,0 +1,8 @@
+[project]
+name = "charted-currents-etl"
+version = "0.0.0"
+description = "Pre-build ETL stub for Charted Currents"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100

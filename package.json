@@ -1,0 +1,17 @@
+{
+  "name": "charted-currents",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pre-build stub for Charted Currents — a provenance-aware historical exploration of the Greater Caribbean, 1650–1730.",
+  "scripts": {
+    "docs:check": "node -e \"console.log('Documentation-only stub: no web build yet')\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edonahue/charted-currents.git"
+  },
+  "homepage": "https://github.com/edonahue/charted-currents",
+  "engines": {
+    "node": ">=22"
+  }
+}

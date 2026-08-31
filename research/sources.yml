@@ -1,0 +1,98 @@
+sources:
+  - id: crespo_dyncoopnet
+    name: CrespoDynCoopNet DATA Collections / CrespoDATABASEAtlanticTrade
+    priority: foundation
+    period: 1648-1778
+    url: https://datos.gob.es/en/catalogo/ea0041268-crespodyncoopnet-data-collections
+    access: bulk MDB plus documentation
+    rights_summary: Catalog links Open Data Commons Database Contents License 1.0; re-verify redistribution details.
+    use: Ships, routes, freight, goods, agents, commercial networks, legal/illicit trade; Spanish Atlantic backbone.
+    automated_ingestion: candidate
+    last_verified: 2026-08-31
+
+  - id: pares
+    name: PARES / Spanish State Archives
+    priority: foundation_primary_sources
+    url: https://pares.cultura.gob.es/pares/en/inicio.html
+    access: archival descriptions and digitized items
+    rights_summary: Public-domain State Archive documents/descriptions accessible through PARES may be reused with required attribution; verify item-level status.
+    use: Ship registers, maps/plans, fleet records, archival documents.
+    automated_ingestion: limited_case_by_case
+    last_verified: 2026-08-31
+
+  - id: slavevoyages
+    name: SlaveVoyages
+    priority: foundation
+    url: https://www.slavevoyages.org/
+    access: structured datasets and codebooks
+    rights_summary: Rights vary by content/field; preserve observed versus imputed distinctions and re-verify current guidance.
+    use: Trans-Atlantic and Intra-American forced-migration voyage evidence.
+    automated_ingestion: candidate_after_field_rights_review
+    last_verified: 2026-08-31
+
+  - id: icoads
+    name: NOAA ICOADS
+    priority: context_observations
+    period: 1662-present
+    url: https://www.ncei.noaa.gov/products/international-comprehensive-ocean-atmosphere-data-set
+    access: bulk observational marine data
+    rights_summary: NOAA describes products as freely distributed; preserve dataset/version metadata and attribution.
+    use: Actual surface marine observations where early records exist.
+    automated_ingestion: candidate
+    last_verified: 2026-08-31
+
+  - id: loc_moll_1715
+    name: Herman Moll West Indies map, ca. 1715
+    priority: v0_1_asset
+    url: https://www.loc.gov/item/gm71005442/
+    access: digitized map
+    rights_summary: LOC item page says Geography & Map Division digitized collections are free to use/reuse absent contrary Rights Advisory; credit LOC Geography and Map Division.
+    use: Design reference and candidate v0.1 historical reference layer.
+    last_verified: 2026-08-31
+
+  - id: greater_caribbean_mapping
+    name: Greater Caribbean Mapping, 1450-1850
+    priority: discovery_catalog
+    url: https://greatercaribbeanmaps.org/
+    data_url: https://greatercaribbeanmaps.org/overview/data-download/
+    access: searchable catalog plus weekly refreshed CSV
+    rights_summary: Resolve image rights at each holding institution; review catalog terms before bulk use.
+    use: Discover period maps and cartographic sources.
+    automated_ingestion: candidate_catalog_only_after_terms_review
+    last_verified: 2026-08-31
+
+  - id: rijksmuseum
+    name: Rijksmuseum Data Services
+    priority: visual_enrichment
+    url: https://data.rijksmuseum.nl/
+    access: open data services and high-resolution images
+    rights_summary: Open Data policy and majority-public-domain collection; verify object-level rights.
+    use: Dutch maritime art, vessels, ports, portraits, navigational objects.
+    last_verified: 2026-08-31
+
+  - id: naval_office_shipping_lists
+    name: Naval Office Shipping Lists
+    priority: high_value_research
+    access: archives/microfilm; commercial digitization also exists
+    rights_summary: Do not scrape licensed presentation. Pursue original archive/microfilm transcription and/or reuse/API permission.
+    use: Vessel, master, ownership, tonnage, guns, crew, cargo, prior/next port.
+    automated_ingestion: not_without_rights_clearance
+    last_verified: 2026-08-31
+
+  - id: maritime_britain
+    name: Maritime Britain
+    priority: research_validation
+    url: https://www.maritimebritain.org/english_merchant_shipping/database/
+    access: public research database
+    rights_summary: Treat as research/validation/linking unless specific derivative-use permission is established.
+    automated_ingestion: no_by_default
+    last_verified: 2026-08-31
+
+  - id: prize_papers
+    name: Prize Papers Portal
+    priority: future_high_value
+    url: https://portal.prizepapers.de/
+    access: portal metadata and digitized documents
+    rights_summary: Rights differ among metadata, transcriptions, and images; review component-level terms.
+    automated_ingestion: component_level_review
+    last_verified: 2026-08-31

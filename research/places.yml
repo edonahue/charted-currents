@@ -1,0 +1,45 @@
+places:
+  - id: port_royal_jamaica
+    canonical_name: Port Royal
+    region: Jamaica
+    role: initial_hub
+  - id: curacao
+    canonical_name: Curaçao
+    region: Curaçao
+    role: trade_hub
+  - id: havana
+    canonical_name: Havana
+    region: Cuba
+    role: fleet_hub
+  - id: veracruz
+    canonical_name: Veracruz
+    region: New Spain / Mexico
+    role: fleet_port
+  - id: cartagena_indias
+    canonical_name: Cartagena de Indias
+    region: New Granada / Colombia
+    role: fleet_port
+  - id: portobelo
+    canonical_name: Portobelo
+    region: Panama
+    role: fleet_port
+  - id: campeche
+    canonical_name: Campeche
+    region: Yucatán / Mexico
+    role: trade_port
+  - id: bay_honduras
+    canonical_name: Bay of Honduras
+    region: Western Caribbean
+    role: trade_region
+  - id: nassau
+    canonical_name: Nassau / New Providence
+    region: Bahamas
+    role: piracy_privateering_hub
+  - id: la_tortuga_venezuela
+    canonical_name: La Tortuga
+    region: Venezuela
+    role: salt_trade
+  - id: boston
+    canonical_name: Boston
+    region: Massachusetts / New England
+    role: external_connected_port
