@@ -1,30 +1,34 @@
 # Agent execution playbook
 
-Charted Currents is intentionally set up so a fast coding agent can execute bounded work without being asked to rediscover product strategy, historical policy, or architecture on every turn.
+Charted Currents is intentionally set up so a fast coding agent can execute bounded work without being asked to rediscover product strategy, historical policy, maintainership conventions, or architecture on every turn.
 
 This playbook is optimized for the Antigravity CLI and Gemini Flash-class coding models, but the rules apply to any coding agent.
 
 ## Division of labor
 
-The repository already owns the durable decisions. The coding agent owns implementation within them.
+The repository owns durable decisions. The coding agent owns implementation within them.
 
-**Do not reopen by default:** product identity, historical scope, evidence states, static-first architecture, Astro/TypeScript, MapLibre, Python/DuckDB pipeline, warm editorial-atlas direction, inspector-first interaction, source-rights policy, or the principle that AI output is not historical authority.
+**Do not reopen by default:** product identity, historical scope, evidence states, static-first architecture, Astro/TypeScript, MapLibre, Python/DuckDB pipeline, warm editorial-atlas direction, inspector-first interaction, source-rights policy, public/private boundary, or the principle that AI output is not historical authority.
 
-Escalate only when implementation exposes a real contradiction, irreversible choice, rights question, or material scope change.
+`docs/MAINTAINER_EXPECTATIONS.md` defines the expected implementation/review style. It is project process context, not permission to infer additional personal preferences.
+
+Escalate only when implementation exposes a real contradiction, irreversible choice, rights/privacy question, or material scope change.
 
 ## Context discipline
 
 A large context window is not a reason to load the whole repository.
 
-For ordinary UI implementation, read:
+Use `docs/AGENT_CONTEXT_INDEX.md` to route into the minimum useful context. For an ordinary implementation session, the common core is:
 
 1. `GEMINI.md`;
-2. `docs/INITIAL_BUILD_BRIEF.md`;
+2. `docs/MAINTAINER_EXPECTATIONS.md`;
 3. `docs/IMPLEMENTATION_CONTRACT.md`;
 4. the current session in `docs/FIRST_SESSIONS.md`;
-5. only the product/design/data docs directly relevant to the files being changed.
+5. only the product/design/data/source docs relevant to the files being changed.
 
-For source ingestion or historical-data work, additionally read the relevant source registry and rights/provenance documents. Do not load every 10–20 KB source dossier for a CSS, layout, or component task.
+Read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before work that can place environment, source, benchmark, screenshot, config, log, location, or data artifacts in Git.
+
+Do not load every large source dossier for CSS/layout work.
 
 ## Recommended Antigravity workflow
 
@@ -34,8 +38,9 @@ Use `plan` mode and higher reasoning effort for:
 
 - the first pass over a new multi-file session;
 - data-contract changes;
-- architecture changes;
+- architecture or dependency changes;
 - entity-resolution logic;
+- public/private or source-rights boundary changes;
 - difficult debugging after the straightforward fix has failed;
 - final review of a large diff.
 
@@ -43,30 +48,45 @@ Planning must end in a bounded implementation proposal tied to acceptance criter
 
 ### Routine execution
 
-Use the normal editable mode at medium reasoning effort for a well-specified session. Fast iteration is valuable once the decisions are constrained.
+Use normal editable mode at medium reasoning effort for a well-specified session. Fast iteration is valuable once decisions are constrained.
 
-Prefer reviewable diffs early in the project. Automatic edit acceptance is appropriate only when the task is narrow and the verification commands remain mandatory.
+Prefer reviewable diffs early in the project. Automatic edit acceptance is appropriate only when the task is narrow and verification remains mandatory.
 
 ### Environment safety
 
-On Linux, use the CLI sandbox where practical. Keep non-workspace file access disabled unless the task explicitly needs it. Do not weaken shell permissions just to make a command succeed.
+On Linux, use the CLI sandbox where practical. Keep non-workspace file access disabled unless the task explicitly needs it. Do not weaken shell permissions simply to make a command succeed.
 
-Project source credentials in `.env` are separate from Antigravity/Gemini authentication. Never print, commit, or copy secrets into documentation or generated fixtures.
+Never print, commit, or copy secrets/private environment details into documentation or fixtures. Follow `docs/PUBLIC_PRIVATE_BOUNDARY.md` rather than inferring what is safe from whether a file is locally accessible.
 
 ## Anti-swirl rules
 
-1. **Existing decision beats new preference.** If the repository has already chosen an approach, implement it unless there is concrete evidence it cannot satisfy the task.
+1. **Existing decision beats new preference.** If the repository has already chosen an approach, implement it unless concrete evidence shows it cannot satisfy the task.
 2. **Prefer reversible simplicity.** When two undecided approaches are both adequate, choose the smaller local/reversible one and continue.
-3. **Two failed approaches trigger diagnosis.** Do not keep cycling libraries or rewrites. After two materially different failed attempts at the same blocker, inspect the actual error/state, state the suspected cause, and either make one evidence-based next attempt or report the blocker.
-4. **No opportunistic redesign.** A component task is not permission to change the architecture, palette, data ontology, or build system.
+3. **Two failed approaches trigger diagnosis.** After two materially different failed attempts at the same blocker, inspect actual error/runtime state and either make one evidence-based next attempt or report the blocker.
+4. **No opportunistic redesign.** A component task is not permission to change architecture, palette, ontology, or build system.
 5. **Do not solve missing history with prose generation.** Missing evidence is a data/research task, not a creative-writing task.
-6. **Use `docs/FOLLOWUPS.md` as the pressure valve.** Record a good out-of-scope idea and return to the current objective.
+6. **Use `docs/FOLLOWUPS.md` as the pressure valve.** Record a good out-of-scope idea and return to the objective.
+7. **One source of truth.** Do not create a parallel enum/config/manifest/generator merely to avoid understanding the existing canonical path.
+8. **Do not game verification.** Fix the root cause of valid test/review failures instead of weakening the check.
+
+## Verification tiers
+
+Prefer explicit tiers as the repository matures:
+
+- **targeted:** smallest relevant checks during iteration;
+- **fast:** deterministic repository-wide checks before ordinary handoff/commit;
+- **full:** browser/accessibility/integration or larger data checks warranted by the changed surface;
+- **CI/deployment:** authoritative remote checks when environment-specific.
+
+Until dedicated tiered commands exist, use the baseline in `docs/IMPLEMENTATION_CONTRACT.md`.
+
+Never report a targeted or reduced check as though an unrun full/CI gate passed. Local checks should converge on CI semantics; important suites must not silently skip without being reported.
 
 ## Evidence before “done”
 
-A completion claim must separate three things:
+A completion claim must separate:
 
-- **Observed:** commands run, tests passed, page rendered, source record inspected.
+- **Observed:** commands run, tests passed, page rendered, source record inspected, measurement captured.
 - **Inferred:** conclusions drawn from those observations.
 - **Unverified:** anything the available tools could not actually check.
 
@@ -74,11 +94,26 @@ Never manufacture proof. In particular:
 
 - do not describe a screenshot that was not captured from the running application;
 - do not create an SVG/mock image and call it a screenshot;
-- do not write a test that merely asserts a value copied from the implementation and treat that as independent validation;
+- do not write a test that merely asserts a value copied from implementation and treat that as independent validation;
 - do not claim a source supports a historical fact without opening/recording the supporting source unit;
-- do not declare a visual issue fixed solely because CSS compiled.
+- do not declare a visual issue fixed solely because CSS compiled;
+- do not claim a performance improvement without comparable measurement.
 
-For web-code sessions, run the verification baseline in `docs/IMPLEMENTATION_CONTRACT.md`. For data work, add deterministic schema/fixture/source-ID checks appropriate to the adapter.
+For browser-visible layout changes, inspect at least one normal desktop and one narrow phone layout when tooling permits.
+
+For data work, add deterministic schema/fixture/source-ID/publication checks appropriate to the adapter.
+
+## Review feedback
+
+Treat substantive human or automated review as evidence to investigate, not a checklist to silence.
+
+When feedback is valid, fix the underlying invariant and add regression coverage when useful. Reject feedback only when repository/runtime/source evidence demonstrates it is incorrect or outside the agreed contract. Never weaken a privacy, security, rights, provenance, or historical-evidence boundary merely to get green output.
+
+## Performance work
+
+Optimize measured problems. Favor structural wins such as batching, bounded concurrency, caching, lazy work, early termination, and reduced serialization/DOM work before micro-optimization.
+
+A meaningful benchmark should identify the input/data version, method, elapsed time, and relevant resource usage. Keep environment reporting public-safe per `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
 
 ## Historical-data stop conditions
 
@@ -88,8 +123,10 @@ Stop and leave the record unresolved rather than guessing when:
 - a date/place/person/route is absent from the source unit;
 - a source or image reuse right is unclear;
 - a generated extraction cannot be traced back to source text/metadata;
-- a route is known only by endpoints but the requested geometry implies an actual track;
-- contextual proximity is being mistaken for causation.
+- a route is known only by endpoints but requested geometry implies an actual track;
+- contextual proximity is being mistaken for causation;
+- a wreck/site identity is not sufficiently supported;
+- exact heritage-site location should not be publicly disclosed.
 
 A visible gap is a correct result. An elegant invented connection is a defect.
 
@@ -97,11 +134,12 @@ A visible gap is a correct result. An elegant invented connection is a defect.
 
 Before ending a bounded session:
 
-1. run applicable checks;
-2. inspect `git diff` for accidental scope expansion and generated/secret files;
+1. run applicable checks at the appropriate tier;
+2. inspect `git diff` for scope expansion, duplicate sources of truth, generated drift, and secret/private/restricted files;
 3. verify no new historical assertion lacks provenance;
-4. verify rights-sensitive assets have metadata before publication;
-5. update `docs/FOLLOWUPS.md` only for genuinely deferred work;
-6. report: **changed / verified / unresolved / next**.
+4. verify rights-sensitive assets and published data have the required metadata;
+5. verify documentation still matches commands, schemas, behavior, and current limitations;
+6. update `docs/FOLLOWUPS.md` only for genuinely deferred work;
+7. report: **changed / verified / unresolved / next**.
 
 Do not begin the next session simply because context remains.

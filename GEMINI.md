@@ -1,32 +1,18 @@
 # Gemini project instructions — Charted Currents
 
-Charted Currents is deliberately documentation-heavy because product judgment, historical provenance, uncertainty, and source rights are part of the implementation contract. Treat this file as the always-loaded project constitution, not as an invitation to reread the entire research library on every task.
+Charted Currents is deliberately documentation-heavy because product judgment, historical provenance, uncertainty, source rights, and public/private boundaries are part of the implementation contract. Treat this file as the always-loaded project constitution, not as an invitation to reread the entire research library on every task.
 
 ## Initial-build execution context
 
-Before substantial implementation, read:
+Before substantial implementation:
 
-- `docs/INITIAL_BUILD_BRIEF.md`
-- `docs/IMPLEMENTATION_CONTRACT.md`
-- the current incomplete section of `docs/FIRST_SESSIONS.md`
-- `docs/AGENT_EXECUTION_PLAYBOOK.md`
+1. read `docs/AGENT_CONTEXT_INDEX.md` and load only the context relevant to the task;
+2. read `docs/MAINTAINER_EXPECTATIONS.md`;
+3. read `docs/IMPLEMENTATION_CONTRACT.md`;
+4. read the current incomplete section of `docs/FIRST_SESSIONS.md`;
+5. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
 
-Then read only the additional domain documents relevant to the current task.
-
-Core references:
-
-- `docs/PROJECT_BRIEF.md`
-- `docs/PRODUCT_PRINCIPLES.md`
-- `docs/MVP.md`
-- `docs/ARCHITECTURE.md`
-- `docs/DATA_MODEL.md`
-- `docs/PROVENANCE_AND_UNCERTAINTY.md`
-- `docs/SOURCE_RIGHTS.md`
-- `docs/DESIGN_DIRECTION.md`
-- `docs/AI_AND_EXTRACTION_POLICY.md`
-- `docs/DECISIONS.md`
-
-For source ingestion, also read the relevant entries in `research/sources.yml`, `research/art_sources.yml`, and source-specific registries. Do not load every source dossier for ordinary UI work.
+For any task that may commit data, config, screenshots, logs, benchmarks, environment details, source payloads, or generated research artifacts, also read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before editing.
 
 ## Non-negotiable rules
 
@@ -43,8 +29,11 @@ For source ingestion, also read the relevant entries in `research/sources.yml`, 
 11. **Primary documents are evidence, not decoration.** Keep item-level attribution and rights metadata.
 12. **Do not copy Sid Meier's Pirates! or Pirate Arcade UI.** They are conceptual/family references only.
 13. **Missing evidence is allowed.** An empty state or unresolved record is preferable to a plausible invented fixture.
-14. **Never fabricate verification.** Do not claim a test, browser state, screenshot, source check, or runtime result that was not actually observed.
+14. **Never fabricate verification.** Do not claim a test, browser state, screenshot, source check, benchmark, or runtime result that was not actually observed.
 15. **Preserve user work.** Inspect status/diff first; do not overwrite unrelated edits or clean the workspace destructively.
+16. **Keep public/private boundaries explicit.** Never commit secrets, private environment details, restricted source material, or sensitive heritage locations merely to make development easier.
+17. **Documentation must match reality.** Do not present planned, local-only, synthetic, or unverified capability as implemented/public fact.
+18. **Prefer canonical sources of truth.** Do not create parallel configs/enums/manifests or hand-edit generated outputs when a canonical representation already exists.
 
 ## Locked engineering defaults
 
@@ -86,13 +75,15 @@ Follow `docs/FIRST_SESSIONS.md` for the initial sequence. Do not skip ahead into
 
 For multi-file work:
 
-1. inspect `git status`, relevant docs, and existing code;
-2. identify the current bounded session/outcome;
-3. state assumptions and source/rights implications;
-4. use existing decisions rather than generating a menu of alternatives;
+1. inspect `git status`, relevant code, and the routed context from `docs/AGENT_CONTEXT_INDEX.md`;
+2. identify the current bounded session/outcome and acceptance criteria;
+3. state source/rights/privacy implications where relevant;
+4. use existing decisions and canonical sources of truth rather than generating a menu of alternatives;
 5. choose the simplest reversible option for genuinely undecided local details;
 6. avoid opportunistic scope expansion;
 7. record future work in `docs/FOLLOWUPS.md` rather than silently adding it.
+
+Apply the working conventions in `docs/MAINTAINER_EXPECTATIONS.md`: polished vertical slices, behavior-focused tests, local/CI honesty, measured optimization, documentation/reality parity, and root-cause handling of review feedback.
 
 If two materially different attempts fail at the same blocker, stop cycling. Diagnose from actual errors/runtime evidence and either make one evidence-based next attempt or report the blocker.
 
@@ -107,6 +98,10 @@ A coding session is not complete because the diff looks plausible. Run the appli
 For browser-visible changes, inspect the real running product when tooling permits. Never substitute a generated mock or self-authored artifact for runtime evidence.
 
 For historical/data changes, verify the supporting source unit, evidence state, source ID/link, and publication rights metadata before treating the result as published fact.
+
+For any committed data/config/artifact, verify it satisfies `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
+
+Update documentation in the same change when commands, behavior, schemas, or architectural boundaries change.
 
 ## Quality bar
 

@@ -55,9 +55,24 @@ public/
 
 Keep the map as the dominant product surface. The inspector and timeline are overlays/supporting surfaces, not a dashboard surrounding a small map.
 
+## Canonical sources of truth
+
+Prefer one canonical representation when several consumers need the same concept.
+
+Examples:
+
+- domain/evidence enums shared by data validation and UI;
+- source registries feeding publication/rights checks;
+- one manifest describing published artifacts;
+- one template/configuration generating repeated derivative files.
+
+If output is generated, mark it as generated and provide a deterministic command. Do not hand-edit generated files to fix one consumer. Add drift validation when generated output becomes important enough that divergence would be costly.
+
+Do not create a second config/schema/enum merely because the existing canonical path takes effort to understand.
+
 ## Published-data boundary
 
-The browser consumes only deliberately published artifacts. It must never fetch raw archives, local staging data, credentials, or rights-uncleared assets.
+The browser consumes only deliberately published artifacts. It must never fetch raw archives, local staging data, credentials, rights-uncleared assets, or private/local project state.
 
 The first stable public bundle should converge on:
 
@@ -79,9 +94,12 @@ The exact schemas may evolve before they are declared stable, but preserve these
 - `geometry_kind` on voyage/route geometry;
 - source and rights metadata sufficient to decide whether each public asset may ship;
 - separate source wording from normalized values where normalization changes meaning;
-- no generic cargo representation for enslaved people.
+- no generic cargo representation for enslaved people;
+- explicit public precision/sensitivity state where heritage-site geometry may need generalization or withholding.
 
 Do not create a historical fact merely to make a UI fixture convenient. If a required value is not yet verified, leave the historical record absent and make the empty/loading state work.
+
+All committed data/config/artifacts must satisfy `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
 
 ## Map behavior
 
@@ -89,6 +107,7 @@ Do not create a historical fact merely to make a UI fixture convenient. If a req
 - A modern interactive basemap may establish spatial context; period maps are inspectable/toggleable evidence or reference layers.
 - Do not draw an endpoint-to-endpoint line as though it were an observed ship track.
 - Route styling must be capable of distinguishing `endpoints_only`, `schematic`, `observed_track`, and `reconstructed_route`.
+- Sensitive archaeological/wreck geometry must use the public display geometry/precision policy, not automatically the most exact research geometry available.
 - Preserve MapLibre attribution.
 - Respect reduced-motion preferences for camera and route animation.
 
@@ -113,13 +132,36 @@ Do not implement detailed entity pages until the inspector spine works and there
 
 The product should look like a contemporary editorial historical atlas informed by engraved charts, not a distressed-paper theme or a generic analytics dashboard.
 
+Visual acceptance is part of implementation. For layout-affecting work, inspect an ordinary desktop view and a narrow phone view when browser tooling is available.
+
 ## Dependency rule
 
 Add a dependency only when it removes concrete implementation complexity or materially improves correctness/accessibility. Do not add utility, state, charting, animation, or component libraries speculatively.
 
-## Verification baseline
+Do not introduce a framework/database/service/queue/tool solely because it is familiar from another project.
 
-Every implementation session that changes web code must end with the applicable real commands, not an assertion that the code “should work”:
+## Command surfaces and local/CI parity
+
+Prefer a small documented command surface over requiring contributors/agents to know internal command chains.
+
+For the web application, `package.json` scripts are the canonical web command surface. `npm run check` and `npm run build` must remain truthful about what they exercise.
+
+If a top-level cross-language command surface becomes useful once Python ingestion is real, add it deliberately rather than prematurely; it should invoke the same meaningful checks CI runs rather than a reduced suite that silently skips important work.
+
+When CI/deployment is introduced, keep local and remote semantics close enough that a locally passing command is useful evidence. Any environment-only or skipped gate must be reported explicitly.
+
+## Verification tiers
+
+As coverage grows, organize checks by cost and scope:
+
+- **targeted:** smallest relevant checks during implementation;
+- **fast:** deterministic broad checks before normal handoff/commit;
+- **full:** browser/accessibility/integration or larger data checks warranted by the change;
+- **CI/deployment:** authoritative remote result where environment-specific.
+
+Do not add commands solely to satisfy this naming scheme; introduce a tier when the repository actually has distinct work at that tier.
+
+Every implementation session that changes web code currently ends with the applicable real baseline commands:
 
 ```bash
 npm run check
@@ -128,9 +170,21 @@ git diff --check
 git status --short
 ```
 
-Add focused tests when behavior becomes nontrivial. Add Playwright only when there is browser behavior worth protecting; do not install it merely to satisfy a checklist.
+Add focused tests when behavior becomes nontrivial. Add Playwright when there is browser behavior worth protecting, not merely to satisfy a checklist.
 
 When a browser or screenshot tool is available, inspect the actual running product for visual acceptance. A generated mock image, HTML string, or self-authored fixture is not evidence that the application rendered correctly.
+
+## Performance
+
+Optimize measured problems. Prefer structural changes—batching, bounded concurrency, caching, lazy work, early termination, reduced serialization/DOM work—over speculative micro-optimization.
+
+Performance claims should identify enough context to be comparable: relevant input/data version, method, elapsed time, and resource measure when material. Keep benchmark environment descriptions public-safe.
+
+## Documentation coupling
+
+When code changes a documented command, schema, generated-file rule, public behavior, or architecture boundary, update the canonical documentation in the same change.
+
+Do not document local-only/planned capability in present tense as if it is part of the public repository.
 
 ## Scope rule
 
