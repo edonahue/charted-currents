@@ -1,144 +1,209 @@
-# First implementation sessions
+# First implementation work packets
 
-These sessions deliberately front-load decisions and verification. Complete them in order unless the repository has clearly advanced past a session.
+These work packets replace the earlier five small sessions. The change is deliberate: Antigravity's permission model makes repeated stop/restart cycles expensive, so each packet is large enough to justify one planning pass and one sustained implementation run while still having a coherent review boundary.
 
-Each session should produce one coherent, reviewable commit. Do not continue into the next session just because the current agent still has context.
+Complete packets in order unless the repository has clearly advanced past one.
 
-## Session 1 — Foundation and visual shell
+## Packet behavior
+
+Within a packet, do **not** stop after each subsection merely because one milestone is complete. Continue through the packet while:
+
+- the work remains within the documented architecture and product contract;
+- routine choices are local/reversible;
+- verification is passing or failures are being diagnosed from evidence;
+- no new source-rights, privacy, historical-identity, or irreversible architecture question appears.
+
+Stop early only for a genuine blocker or escalation condition from `docs/AGENT_EXECUTION_PLAYBOOK.md`.
+
+Prefer one final coherent commit/handoff for the packet. Intermediate local commits are optional; they are not required checkpoints. Never push automatically unless the current human instruction explicitly authorizes it.
+
+---
+
+## Packet 0 — One-time local harness preparation
 
 ### Outcome
 
-Turn the documentation stub into a real Astro application without yet inventing historical content.
+Reduce repetitive Antigravity approvals without weakening the public/private or destructive-operation boundaries.
 
-### Build
+### Human setup
 
-- Initialize Astro in the existing repository; preserve all existing docs/research files.
-- Use npm, TypeScript strict mode, and static output.
-- Add MapLibre GL JS and only the dependencies needed for Astro checks/build.
-- Create the `BaseLayout`, global design tokens, global styles, and the first map-dominant page shell.
-- Establish the editorial warm-paper / Atlantic / ink visual language from `docs/DESIGN_DIRECTION.md`.
-- Create a real `MapViewport` surface and initialize MapLibre successfully. It may be intentionally sparse until verified historical fixtures exist.
-- Create empty/skeleton inspector and timeline regions so the composition can be evaluated as a product, not as isolated components.
-- Make asset/data paths safe for eventual hosting below `/labs/charted-currents/`; do not scatter hard-coded root-relative paths.
+Follow `docs/ANTIGRAVITY_SETUP.md` once on the development machine.
 
-### Explicit non-goals
+Recommended posture:
 
-No historical fixture invention, source ingestion, UI framework, Tailwind, chart library, backend, database in the browser, entity pages, or elaborate animation.
+- terminal sandbox enabled;
+- `proceed-in-sandbox` for normal tool execution;
+- artifact review set to `agent-decides`;
+- non-workspace access disabled;
+- routine npm/build/read-only-git commands allowed;
+- `git push`, unsandboxed commands, privilege escalation, destructive Git, and broad filesystem access remain gated or denied.
 
-### Acceptance
+This packet changes no project code.
 
-- `npm run check` passes.
-- `npm run build` passes.
-- Running the site produces a real MapLibre map surface with attribution and no console-breaking error.
-- Map dominates the viewport; inspector/timeline read as supporting surfaces.
-- Narrow/mobile layout remains usable.
-- The page does not resemble a generic starter/dashboard or faux-pirate theme.
+---
+
+## Packet 1 — Bootstrap to a public interactive shell
+
+### Outcome
+
+Go from documentation stub to a real, polished, deployable Astro/MapLibre application that proves the primary interaction model and is ready for its first Cloudflare Pages deployment.
+
+This packet intentionally combines the former foundation and interaction-spine sessions. The first public deployment should happen **after this packet**, before real-corpus work becomes a dependency.
+
+### Build foundation
+
+- Initialize Astro in the existing repository without disturbing docs/research.
+- Use npm, strict TypeScript, static output, and the locked dependency rules.
+- Add MapLibre GL JS and only dependencies that are concretely required.
+- Create `BaseLayout`, global design tokens, global styles, and the map-dominant page composition.
+- Establish the warm editorial-atlas / Atlantic / ink visual direction from `docs/DESIGN_DIRECTION.md`.
+- Create a real `MapViewport` and initialize MapLibre with correct attribution.
+- Build the supporting inspector and compact timeline regions as part of the composition rather than isolated placeholder cards.
+
+### Build the interaction spine
+
+- Define typed selection primitives for `ship`, `port`, `voyage`, `person`, and `event`.
+- Implement one shared selection path/state contract.
+- Wire a clearly synthetic/non-historical development feature or empty-map interaction to `EntityInspector` so map → selection → inspector is exercised without invented history.
+- Implement accessible close/back/focus behavior.
+- Add `EvidenceBadge` semantics for the public uncertainty vocabulary.
+- Implement honest loading, empty, and error states.
+
+### Prepare for root deployment now and subpath flexibility later
+
+The first public deployment will be at the Cloudflare Pages project root. Do **not** prematurely set Astro's `base` to `/labs/charted-currents/`.
+
+Instead:
+
+- avoid scattered hard-coded root-relative asset/data URLs;
+- centralize URL/base-path handling where useful;
+- keep code compatible with a later non-root deployment if the project is eventually mounted below another site;
+- do not add Worker/proxy infrastructure for that future possibility during this packet.
+
+### Public-shell posture
+
+The first deployed shell is a research prototype, not a claim that the historical corpus exists.
+
+Until Packet 2 provides a real evidence-backed corpus:
+
+- show a restrained visible prototype/status treatment rather than fake data;
+- keep historical content empty or explicitly development-only;
+- use `noindex`/equivalent indexing posture for the early Pages shell unless a real canonical/public-launch decision has been made;
+- do not advertise unimplemented data/source features as live.
+
+### Deployment readiness
+
+Before handoff:
+
+- `npm run check` passes;
+- `npm run build` passes and produces `dist/`;
+- the app runs locally without console-breaking errors;
+- desktop and narrow-phone layouts are inspected;
+- the map remains visually primary;
+- the selection/inspector path works by keyboard;
+- no historical fact was invented for the demo;
+- no secret/private/local material is present in the build;
 - `git diff --check` passes.
 
----
+### Human deployment gate
 
-## Session 2 — Interaction spine: map → selection → inspector
+After Packet 1 is locally verified and pushed, follow `docs/CLOUDFLARE_DEPLOYMENT.md` to create the one-time Git-integrated Pages project.
 
-### Outcome
-
-Prove the core interaction model before building a large corpus or detailed panels.
-
-### Build
-
-- Define typed domain/selection primitives for `ship`, `port`, `voyage`, `person`, and `event`.
-- Implement one shared selection state path.
-- Wire MapLibre feature selection to `EntityInspector` while preserving the map.
-- Implement accessible close/back/focus behavior.
-- Add `EvidenceBadge` semantics for the project’s public uncertainty vocabulary even if only a subset is exercised by verified fixtures.
-- Establish empty/error/loading states that make missing data explicit rather than encouraging fabricated fixtures.
-
-### Historical-data rule
-
-If no verified spatial fixture is ready, use only clearly non-historical development geometry or leave the map data layer empty. Do **not** invent coordinates, voyage dates, routes, captains, ownership, or ship identities to demonstrate interaction.
-
-### Acceptance
-
-- Selection behavior is testable independently of display copy.
-- Inspector preserves map context and works by keyboard.
-- Selection styling is visually distinct without implying certainty.
-- Checks/build pass and actual browser behavior is inspected.
+The first successful `*.pages.dev` deployment is part of the Packet 1 milestone, but the Cloudflare account connection itself is a human/dashboard action rather than a coding-agent responsibility.
 
 ---
 
-## Session 3 — Published-data and provenance vertical slice
+## Packet 2 — Real evidence, provenance, time, and one historical visual
 
 ### Outcome
 
-Connect the interface to a tiny real evidence-backed corpus and make provenance a first-class interaction.
+Replace development-only interaction content with a tiny real corpus and prove the complete historical product path:
 
-### Build
+`map → entity → evidence state → source → temporal/context view`
+
+This packet combines the former published-data/provenance and timeline/historical-source sessions.
+
+### Recommended review boundary
+
+This packet crosses into historical ontology, publication contracts, source rights, and real evidence. Review Packet 1 before beginning it. If a stronger model/human review is available, use that review at the **packet boundary**, not by interrupting routine implementation inside the packet.
+
+### Published-data contract
 
 - Formalize the first published-artifact schemas/validators around `manifest`, `ports`, `routes`, `entities`, `events`, and `sources`.
 - Build or manually curate the smallest useful **verified** fixture from already approved/reusable sources.
 - Preserve source IDs/URLs, retrieval/version metadata where relevant, rights state, and evidence state.
-- Implement `loadPublished` and replace development-only interaction fixtures.
-- Implement `SourceDrawer` or equivalent provenance surface one click from a meaningful claim.
-- Render route geometry according to `geometry_kind`; endpoints/schematic geometry must not masquerade as an observed track.
+- Implement `loadPublished` and remove any historical-looking development fixture.
+- Implement `SourceDrawer` or equivalent provenance surface one click from meaningful claims.
+- Render route geometry according to `geometry_kind`.
+
+### Time and context
+
+- Implement the compact persistent timeline contract.
+- Add one independently sourced contextual event; do not imply causality from proximity.
+- Preserve map/selection/provenance state while changing temporal context.
+
+### Historical visual
+
+- Add one rights-cleared period map/document/reference asset from the existing source research.
+- Store item-level attribution, date, holding/source institution, and reuse state.
+- Make it inspectable/toggleable as evidence/reference, not an anonymous distressed-paper texture.
+- Clearly label a later representation if its creation date differs materially from the event/period it is helping interpret.
 
 ### Scope target
 
-Do not chase the 10–20-vessel MVP target in this session. A few complete, correctly sourced records that exercise the data contracts are more valuable than a larger weak fixture.
+Do not turn this packet into broad source ingestion. A few fully supported records that exercise the contracts are better than a large weak corpus.
 
 ### Acceptance
 
 - Every public historical assertion exercised by the fixture traces to a source record.
 - Source/rights metadata is validated deterministically.
-- Browser loads only published/right-safe artifacts.
-- No raw/staging data is committed or served.
-- Map → entity → source is a complete working path.
+- Browser loads only deliberately published/right-safe artifacts.
+- No raw/staging/private/restricted data is served or committed.
+- Map → entity → source is complete.
+- Timeline/context remains semantically distinct from voyage evidence.
+- The historical visual is dated and attributed.
+- Full current verification and real browser inspection pass.
 
 ---
 
-## Session 4 — Timeline, context, and one historical visual source
+## Packet 3 — Public-beta quality and first meaningful corpus
 
 ### Outcome
 
-Demonstrate that time and primary-source material deepen the map instead of decorating it.
+Turn the technically complete small vertical slice into something worth linking publicly and expanding.
 
-### Build
+### Integrate and polish
 
-- Implement the compact persistent timeline contract.
-- Add one independently sourced contextual event; proximity must not imply causality.
-- Add one rights-cleared period map/document/reference asset from the existing research registry.
-- Record item-level attribution, source date, rights/reuse state, and any relationship between source date and the period/event it illustrates.
-- Make the historical visual inspectable/toggleable rather than an anonymous distressed background.
-- Respect reduced motion.
+- Perform responsive integration across map, inspector, timeline, provenance, and historical-source surfaces.
+- Perform keyboard, focus, contrast, reduced-motion, attribution, broken-link, and publication-fixture validation passes.
+- Add focused automated tests for behavior that has become nontrivial.
+- Inspect real browser behavior at desktop and narrow widths.
+- Remove starter artifacts, dead CSS, temporary development fixtures, and generic-dashboard drift.
 
-### Acceptance
+### Grow only enough to make the slice meaningful
 
-- Timeline filters/selection do not erase provenance state.
-- Historical layer/source has visible attribution and date.
-- A later historical map, if used to discuss an earlier event, is explicitly labeled as a later representation.
-- Context event and voyage evidence remain semantically distinct.
+- Expand toward the documented ~10–20-vessel v0.1 target only where sources support it.
+- Prefer repeated-vessel histories and useful connections over raw record count.
+- Keep unresolved identities unresolved.
 
----
+### Public-release posture
 
-## Session 5 — Vertical-slice integration and quality pass
+Once real evidence/provenance paths work:
 
-### Outcome
+- decide whether to remove the early noindex posture;
+- update README/status from pre-build language;
+- verify the production Pages deployment from `main`;
+- use a PR/preview deployment for larger later changes rather than treating every agent commit as an intentional production release;
+- decide whether the durable public URL should remain `*.pages.dev`, move to a project subdomain, or later integrate with the personal site's `/labs/...` path.
 
-Make the small system feel intentionally designed and trustworthy before adding breadth.
-
-### Build
-
-- Integrate responsive behavior across map, inspector, timeline, provenance, and historical-source layer.
-- Perform accessibility, keyboard, focus, contrast, map-attribution, reduced-motion, broken-link, and fixture-validation passes.
-- Add focused automated tests for interaction/data behavior that has become nontrivial.
-- Inspect the running product at desktop and narrow widths using real browser evidence where tooling allows.
-- Remove starter artifacts, dead CSS, temporary development fixtures, and accidental generic-dashboard patterns.
-- Update README/repo status from “pre-build stub” only after the vertical slice genuinely exists.
+The URL decision must not force new runtime infrastructure merely for aesthetics.
 
 ### Acceptance
 
-A user can open the product, immediately understand that the map is primary, select a real entity, follow a meaningful connection, see its uncertainty, inspect the source evidence, change temporal context, and encounter a real historical visual source without being misled about what is known.
+A user can open the public product, immediately understand that the map is primary, select a real entity, follow a meaningful connection, see uncertainty, inspect source evidence, change temporal context, and encounter a real historical visual source without being misled about what is known.
 
 ---
 
-## After Session 5
+## After Packet 3
 
-Use `docs/ROADMAP.md` rather than automatically continuing into broad ingestion. The next most valuable task should be chosen from observed product/data gaps, not from agent momentum.
+Use `docs/ROADMAP.md` and observed product/data gaps rather than continuing from agent momentum.
