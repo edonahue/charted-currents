@@ -41,6 +41,7 @@ The core product principle is:
 - DuckDB for local analytical transforms
 - JSON / GeoJSON first; Parquet and PMTiles when scale justifies them
 - Static-first deployment
+- Cloudflare Pages for the first public web deployment
 - DuckDB-Wasm reserved for later client-side analytical exploration if the corpus earns the complexity
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/MVP.md`](docs/MVP.md).
@@ -51,9 +52,10 @@ The project keeps source selection, reuse rights, and human access/setup explici
 
 - [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) — operational historical-data dossier and ingestion priorities.
 - [`docs/ART_AND_MAP_SOURCES.md`](docs/ART_AND_MAP_SOURCES.md) — maps, archival documents, maritime art, and material-culture resources.
+- [`docs/SHIPWRECKS_AND_MUSEUMS.md`](docs/SHIPWRECKS_AND_MUSEUMS.md) — secondary wreck/archaeology/museum enrichment lane.
 - [`docs/SOURCE_RIGHTS.md`](docs/SOURCE_RIGHTS.md) — source/component-level rights and publication policy.
 - [`docs/HUMAN_SOURCE_SETUP.md`](docs/HUMAN_SOURCE_SETUP.md) — accounts, API keys, and permission/reproduction requests that require human action.
-- [`research/sources.yml`](research/sources.yml) and [`research/art_sources.yml`](research/art_sources.yml) — machine-readable source registries.
+- [`research/sources.yml`](research/sources.yml) and related research registries — machine-readable source inventories.
 
 ## Historical and ethical posture
 
@@ -72,13 +74,23 @@ AI is development and research tooling, not a public thesis of the project. AI m
 
 ### Agentic implementation bootstrap
 
-The pre-build repository deliberately resolves routine coding decisions before agentic implementation begins. The goal is to let fast coding models execute well-bounded work rather than spend sessions reopening product and architecture choices.
+The pre-build repository deliberately resolves routine coding decisions before agentic implementation begins. The goal is to let fast coding models execute **larger bounded work packets** rather than spend sessions reopening product choices or repeatedly waiting on routine permission prompts.
 
-- [`docs/INITIAL_BUILD_BRIEF.md`](docs/INITIAL_BUILD_BRIEF.md) — compact implementation mission and boundaries.
+- [`docs/INITIAL_BUILD_BRIEF.md`](docs/INITIAL_BUILD_BRIEF.md) — compact implementation mission and packet sequence.
+- [`docs/FIRST_SESSIONS.md`](docs/FIRST_SESSIONS.md) — three large implementation packets; Packet 1 runs all the way to a deployable/public interactive shell.
+- [`docs/ANTIGRAVITY_SETUP.md`](docs/ANTIGRAVITY_SETUP.md) — recommended sandboxed/scoped permission posture for sustained AGY work.
+- [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md) — shortest path from Packet 1 to the first public Pages deployment.
 - [`docs/IMPLEMENTATION_CONTRACT.md`](docs/IMPLEMENTATION_CONTRACT.md) — locked v0.1 engineering defaults and published-data boundary.
-- [`docs/FIRST_SESSIONS.md`](docs/FIRST_SESSIONS.md) — the first five bounded implementation sessions and acceptance gates.
-- [`docs/AGENT_EXECUTION_PLAYBOOK.md`](docs/AGENT_EXECUTION_PLAYBOOK.md) — context discipline, anti-swirl rules, verification requirements, and blocker behavior.
-- [`.agents/skills/charted-currents-build/SKILL.md`](.agents/skills/charted-currents-build/SKILL.md) — reusable Antigravity workspace skill for executing those sessions.
+- [`docs/AGENT_CONTEXT_INDEX.md`](docs/AGENT_CONTEXT_INDEX.md) — task-based context routing so agents do not load the entire research corpus for routine code work.
+- [`docs/AGENT_EXECUTION_PLAYBOOK.md`](docs/AGENT_EXECUTION_PLAYBOOK.md) — anti-swirl, packet execution, verification, and blocker behavior.
+- [`docs/MAINTAINER_EXPECTATIONS.md`](docs/MAINTAINER_EXPECTATIONS.md) — public-safe implementation/review conventions.
+- [`.agents/skills/charted-currents-build/SKILL.md`](.agents/skills/charted-currents-build/SKILL.md) — reusable Antigravity workspace skill for executing a complete current packet.
+
+## First public deployment posture
+
+The first deployment should not wait for the final domain architecture. Packet 1 targets a root-hosted Cloudflare Pages project and a real `*.pages.dev` URL, with an honest prototype/noindex posture until the evidence-backed corpus exists.
+
+The earlier idea of ultimately surfacing the project at `erichdonahue.com/labs/charted-currents/` remains possible, but it is deliberately **not** a Packet 1 infrastructure requirement. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
 
 ## Design references
 
@@ -92,7 +104,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Pre-build project stub, now agent-ready.** The documentation intentionally precedes implementation so coding agents do not invent product strategy, historical claims, source policy, or routine architecture as they work. The first implementation sequence is defined in [`docs/FIRST_SESSIONS.md`](docs/FIRST_SESSIONS.md).
+**Pre-build project stub, now prepared for sustained agentic implementation and early public deployment.** The first implementation packet is designed to move directly from this stub to a polished interactive shell that can be deployed to Cloudflare Pages before the real historical corpus becomes a dependency.
 
 ## Licensing
 
