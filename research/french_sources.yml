@@ -1,0 +1,52 @@
+sources:
+  - id: anom
+    name: Archives nationales d’outre-mer (ANOM)
+    priority: p0_foundation_primary
+    period: 1626-1815_core_antilles_series
+    url: https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/antilles-francaises
+    cartotheque_url: https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/la-cartotheque
+    reuse_url: https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/la-reutilisation-des-archives
+    access: public online guides, inventories and digitized records; targeted reproduction service
+    account_required: false
+    rights_summary: freely communicable public information broadly reusable with source/integrity requirements when no third-party rights apply; metadata/public data generally Open Licence/Etalab 2.0
+    use: French Antilles correspondence, administration, commerce/slavery context, maps and fortifications
+    automated_ingestion: targeted_after_interface_review
+    next_action: curate Martinique/Guadeloupe/Petites Antilles and map seed records for 1650-1730
+    last_verified: 2026-08-31
+
+  - id: bnf_gallica
+    name: Bibliothèque nationale de France / Gallica
+    priority: p1_visual_primary
+    period: broad
+    url: https://gallica.bnf.fr/
+    api_docs: https://api.bnf.fr/
+    access: public SRU/OAI metadata/search, document/OCR APIs and IIIF image services
+    account_required: false
+    rights_summary: BnF metadata under French Open Licence; Gallica content has separate item/source conditions; public-domain BnF reproductions generally free for noncommercial/academic reuse with required source credit
+    use: French Antilles maps, atlases, printed voyage/geographic sources, OCR/text discovery
+    automated_ingestion: metadata_yes_images_rights_aware
+    next_action: curate a 1700-1720 French Antilles benchmark map set and test SRU/IIIF
+    last_verified: 2026-08-31
+
+  - id: delisle_antilles_1717
+    name: Guillaume Delisle, Carte des Antilles françoises et des isles voisines
+    priority: p0_visual_benchmark
+    period: 1717-1718
+    discovery_url: https://greatercaribbeanmaps.org/maps/carte-des-antilles-franc%CC%A7oises-et-des-isles-voisines-2/
+    bnf_catalog_url: https://catalogue.bnf.fr/ark:/12148/cb449322487
+    account_required: false
+    use: contemporary French comparison anchor for Moll ca. 1715 and historical-cartography design research
+    next_action: select preferred holding/digital copy and capture item-level rights/provenance
+    last_verified: 2026-08-31
+
+  - id: navigocorpus
+    name: Navigocorpus
+    priority: p2_methodological_reference
+    url: https://navigocorpus.org/
+    access: public research interface/documentation; verify dataset/version license before bulk use
+    account_required: false
+    rights_summary: exact dataset/version license must be recorded before substantial ingestion/redistribution
+    use: methodological comparator for persistent ship/captain IDs, raw-vs-normalized names, voyage points, cargo and capture/loss modeling; mostly later period
+    automated_ingestion: no_until_dataset_license_review
+    next_action: document data-model/entity-resolution lessons; defer bulk use outside core period
+    last_verified: 2026-08-31
