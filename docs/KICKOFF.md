@@ -234,7 +234,7 @@ Gemini does not need to choose these again:
 - TypeScript 6 strict mode (do not upgrade to TypeScript 7 until Astro language tooling supports it);
 - MapLibre GL JS 6;
 - npm;
-- Node 22.16.0 locally/Pages-compatible;
+- Node 22.23.1 locally/Pages-compatible (project engine floor `>=22.19.0 <23`);
 - a central base-path helper;
 - canonical domain enum/type names for entity kind, evidence state, and route geometry kind;
 - four real modern Packet 1 development anchors, explicitly not historical geometry;
