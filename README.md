@@ -27,7 +27,7 @@ The core product principle is:
 
 - **Map-first exploration** using a modern interactive map styled from historical cartography.
 - **Inspector-first interaction** so the map remains visible while users inspect ships, ports, voyages, people, and events.
-- **Entity pages** for deep linking and detailed evidence.
+- **Entity pages** later for deep linking and detailed evidence once the inspector spine earns them.
 - **Compact persistent timeline** with source-coverage gaps and contextual events.
 - **Context Stack** for wars, major disasters, and documented/reconstructed hurricanes in v0.1.
 - **Research View** for provenance, evidence state, source identifiers, and uncertainty.
@@ -35,8 +35,10 @@ The core product principle is:
 
 ## Initial technology direction
 
-- Astro + TypeScript
-- MapLibre GL JS
+- Node 22.16.0
+- Astro 7.2.0 + strict TypeScript
+- MapLibre GL JS 6.6.0
+- OpenFreeMap as the reversible no-key modern basemap bootstrap
 - Python ingestion and validation
 - DuckDB for local analytical transforms
 - JSON / GeoJSON first; Parquet and PMTiles when scale justifies them
@@ -44,7 +46,7 @@ The core product principle is:
 - Cloudflare Pages for the first public web deployment
 - DuckDB-Wasm reserved for later client-side analytical exploration if the corpus earns the complexity
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/MVP.md`](docs/MVP.md).
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/IMPLEMENTATION_CONTRACT.md`](docs/IMPLEMENTATION_CONTRACT.md), and [`docs/BASEMAP_RUNTIME.md`](docs/BASEMAP_RUNTIME.md).
 
 ## Source research
 
@@ -74,17 +76,32 @@ AI is development and research tooling, not a public thesis of the project. AI m
 
 ### Agentic implementation bootstrap
 
-The pre-build repository deliberately resolves routine coding decisions before agentic implementation begins. The goal is to let fast coding models execute **larger bounded work packets** rather than spend sessions reopening product choices or repeatedly waiting on routine permission prompts.
+The repository now contains a **bootable pinned Astro/MapLibre scaffold** so a coding agent can begin product work without running interactive framework scaffolders or rediscovering routine setup.
 
-- [`docs/INITIAL_BUILD_BRIEF.md`](docs/INITIAL_BUILD_BRIEF.md) — compact implementation mission and packet sequence.
+Start here:
+
+- [`docs/KICKOFF.md`](docs/KICKOFF.md) — exact local commands and Packet 1 plan/execution prompts.
 - [`docs/FIRST_SESSIONS.md`](docs/FIRST_SESSIONS.md) — three large implementation packets; Packet 1 runs all the way to a deployable/public interactive shell.
 - [`docs/ANTIGRAVITY_SETUP.md`](docs/ANTIGRAVITY_SETUP.md) — recommended sandboxed/scoped permission posture for sustained AGY work.
+- [`docs/BASEMAP_RUNTIME.md`](docs/BASEMAP_RUNTIME.md) — resolved modern-basemap bootstrap choice and historical/evidence boundary.
 - [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md) — shortest path from Packet 1 to the first public Pages deployment.
-- [`docs/IMPLEMENTATION_CONTRACT.md`](docs/IMPLEMENTATION_CONTRACT.md) — locked v0.1 engineering defaults and published-data boundary.
+- [`docs/IMPLEMENTATION_CONTRACT.md`](docs/IMPLEMENTATION_CONTRACT.md) — locked v0.1 engineering defaults, pinned starter toolchain, and published-data boundary.
 - [`docs/AGENT_CONTEXT_INDEX.md`](docs/AGENT_CONTEXT_INDEX.md) — task-based context routing so agents do not load the entire research corpus for routine code work.
 - [`docs/AGENT_EXECUTION_PLAYBOOK.md`](docs/AGENT_EXECUTION_PLAYBOOK.md) — anti-swirl, packet execution, verification, and blocker behavior.
 - [`docs/MAINTAINER_EXPECTATIONS.md`](docs/MAINTAINER_EXPECTATIONS.md) — public-safe implementation/review conventions.
 - [`.agents/skills/charted-currents-build/SKILL.md`](.agents/skills/charted-currents-build/SKILL.md) — reusable Antigravity workspace skill for executing a complete current packet.
+
+### Local scaffold check
+
+```bash
+nvm install
+nvm use
+npm run preflight
+npm install
+npm run verify
+```
+
+The first `npm install` should generate `package-lock.json`; Packet 1 should keep it.
 
 ## First public deployment posture
 
@@ -104,7 +121,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Pre-build project stub, now prepared for sustained agentic implementation and early public deployment.** The first implementation packet is designed to move directly from this stub to a polished interactive shell that can be deployed to Cloudflare Pages before the real historical corpus becomes a dependency.
+**Bootable implementation scaffold; Packet 1 ready.** The current site intentionally contains only a modern basemap and honest empty historical surfaces. Packet 1 should refine the visual system and implement the interaction spine rather than reinitialize the framework. Packet 2 introduces the first real evidence-backed historical corpus.
 
 ## Licensing
 

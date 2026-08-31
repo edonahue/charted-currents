@@ -6,17 +6,41 @@ Charted Currents is deliberately documentation-heavy because product judgment, h
 
 Before substantial implementation:
 
-1. read `docs/AGENT_CONTEXT_INDEX.md` and load only the context relevant to the task;
-2. read `docs/MAINTAINER_EXPECTATIONS.md`;
-3. read `docs/IMPLEMENTATION_CONTRACT.md`;
-4. read the current unfinished **work packet** in `docs/FIRST_SESSIONS.md`;
-5. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
+1. read `docs/KICKOFF.md` when starting the project for the first time;
+2. read `docs/AGENT_CONTEXT_INDEX.md` and load only the context relevant to the task;
+3. read `docs/MAINTAINER_EXPECTATIONS.md`;
+4. read `docs/IMPLEMENTATION_CONTRACT.md`;
+5. read the current unfinished **work packet** in `docs/FIRST_SESSIONS.md`;
+6. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
 
 For the initial local harness configuration, use `docs/ANTIGRAVITY_SETUP.md`.
+
+For map-provider/runtime work, use `docs/BASEMAP_RUNTIME.md`.
 
 For deployment readiness or hosted verification, use `docs/CLOUDFLARE_DEPLOYMENT.md`.
 
 For any task that may commit data, config, screenshots, logs, benchmarks, environment details, source payloads, or generated research artifacts, also read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before editing.
+
+## Current bootstrap state
+
+The repository is **already a bootable Astro application scaffold**. Do not spend Packet 1 recreating framework setup.
+
+Existing bootstrap decisions include:
+
+- Node `22.16.0` in `.nvmrc`;
+- Astro `7.2.0`, MapLibre GL JS `6.6.0`, strict TypeScript, and npm scripts in `package.json`;
+- static `astro.config.mjs` and strict `tsconfig.json`;
+- a real MapLibre viewport using the documented bootstrap provider;
+- `BaseLayout`, starter semantic design tokens/styles, inspector/timeline/evidence/source component boundaries;
+- canonical domain enums/types in `src/lib/domain/types.ts`;
+- base-aware public paths in `src/lib/paths.ts`;
+- canonical published-data filenames in `src/lib/data/loadPublished.ts`;
+- early noindex metadata and `public/robots.txt`;
+- zero-dependency `npm run preflight`.
+
+Do **not** run `npm create astro`, `npm create cloudflare`, replace `package.json`, or generate a parallel starter tree merely because a fresh template is familiar. Inspect and refine the existing scaffold.
+
+The first `npm install` is expected to create `package-lock.json`; preserve and commit that lockfile with Packet 1.
 
 ## Non-negotiable rules
 
@@ -46,8 +70,8 @@ For any task that may commit data, config, screenshots, logs, benchmarks, enviro
 The routine implementation choices are resolved in `docs/IMPLEMENTATION_CONTRACT.md`. In summary:
 
 - npm;
-- Astro static output + strict TypeScript;
-- MapLibre GL JS;
+- pinned Astro 7 static output + strict TypeScript;
+- pinned MapLibre GL JS 6;
 - project CSS/design tokens, no Tailwind/component library by default;
 - no React/Preact/Svelte layer by default;
 - small typed client state, no state framework by default;

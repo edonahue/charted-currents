@@ -5,10 +5,11 @@
 - Emotional priority: clickability, immersion, data richness, discovery.
 - Sid Meier's Pirates!: strong interaction reference; not a visual/trade-dress template.
 - Map: modern interactive map styled from historical cartography.
+- Initial modern basemap runtime: MapLibre GL JS 6 + OpenFreeMap public service; modern basemap is infrastructure, never historical evidence; provider remains reversible.
 - Theme: light/warm-paper first.
 - Pirate Arcade: light family resemblance only; Charted Currents should be much more refined.
 - Historical maps/documents: real reusable primary sources appear from v0.1.
-- Initial experience: open map and immediately explore real vessels/routes.
+- Initial experience: open map and immediately explore real vessels/routes once the evidence-backed corpus is introduced; Packet 1 may remain explicitly empty/development-only historically.
 - Initial geography: Port Royal-centered, trending broader Greater Caribbean.
 - Pirates: prominent profiles, not structurally privileged.
 - Place naming: modern canonical + historical variants.
@@ -23,8 +24,11 @@
 - Animation: restrained initially, architecture supports richer time animation.
 - Audience priority: history/pirate enthusiasts, maker, data-viz practitioners, portfolio viewers, students/teachers.
 - Public posture: polished public experiment with academic-style rigor and restrained maker branding.
-- Initial site: `erichdonahue.com/labs/charted-currents/`; standalone domain later if earned.
+- First deployment: independent root-hosted Cloudflare Pages project / `*.pages.dev` URL after Packet 1; do not block launch on the final canonical domain/path.
+- Later URL posture: `charted-currents.erichdonahue.com`, a link/redirect from `/labs/charted-currents/`, deliberate main-site integration, or another documented approach may be chosen after the product exists; no Packet 1 Worker/proxy solely for URL aesthetics.
+- Web bootstrap: existing pinned scaffold uses Node 22.16.0, Astro 7.2.0 static output, strict TypeScript, MapLibre GL JS 6.6.0, npm; do not re-scaffold during Packet 1.
 - Infrastructure: static-first + local ETL, architect toward scale and optional DuckDB-Wasm.
+- Cloudflare runtime: static Pages deployment consumes `dist/`; no Astro Cloudflare SSR adapter/Worker/Wrangler config unless a later requirement changes architecture.
 - Naval Office Lists: v0.1 only reusable/open/manual legitimate examples; later pursue original archives and BOA permission/API.
 - Coverage: explicitly sample reconstruction with visible gaps.
 - Ship resolution: allow carefully labeled probable matches.
@@ -32,4 +36,4 @@
 - Timeline: persistent compact, trending toward simulation-like scrub.
 - Route geometry: schematic first; reconstructed historical routes are a desired later research feature.
 - Typography: editorial historical atlas + restrained engraved influence, weighted editorial.
-- First implementation: beautiful small vertical slice with scale-ready data contracts.
+- First implementation: beautiful small vertical slice with scale-ready data contracts, organized into a few sustained work packets rather than many permission-heavy micro-sessions.

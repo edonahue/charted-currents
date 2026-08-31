@@ -27,7 +27,7 @@ Reduce repetitive Antigravity approvals without weakening the public/private or 
 
 ### Human setup
 
-Follow `docs/ANTIGRAVITY_SETUP.md` once on the development machine.
+Follow `docs/KICKOFF.md` and `docs/ANTIGRAVITY_SETUP.md` once on the development machine.
 
 Recommended posture:
 
@@ -38,36 +38,58 @@ Recommended posture:
 - routine npm/build/read-only-git commands allowed;
 - `git push`, unsandboxed commands, privilege escalation, destructive Git, and broad filesystem access remain gated or denied.
 
-This packet changes no project code.
+The repository already contains the project bootstrap code. Packet 0 is workstation setup, dependency installation, and baseline verification rather than framework scaffolding.
 
 ---
 
-## Packet 1 — Bootstrap to a public interactive shell
+## Packet 1 — Bootable scaffold to a public interactive shell
 
 ### Outcome
 
-Go from documentation stub to a real, polished, deployable Astro/MapLibre application that proves the primary interaction model and is ready for its first Cloudflare Pages deployment.
+Turn the existing bootable Astro/MapLibre scaffold into a polished, deployable application that proves the primary interaction model and is ready for its first Cloudflare Pages deployment.
 
 This packet intentionally combines the former foundation and interaction-spine sessions. The first public deployment should happen **after this packet**, before real-corpus work becomes a dependency.
 
-### Build foundation
+### Start from the repository that exists
 
-- Initialize Astro in the existing repository without disturbing docs/research.
-- Use npm, strict TypeScript, static output, and the locked dependency rules.
-- Add MapLibre GL JS and only dependencies that are concretely required.
-- Create `BaseLayout`, global design tokens, global styles, and the map-dominant page composition.
+Do **not** run `npm create astro`, `npm create cloudflare`, or replace the starter architecture merely to get a fresh template.
+
+The scaffold already provides:
+
+- Astro 7 static configuration and strict TypeScript;
+- pinned Node/Astro/MapLibre versions in `.nvmrc` and `package.json`;
+- `BaseLayout`, design-token/global-style entry points, and a runnable page shell;
+- a real MapLibre viewport using the bootstrap provider in `docs/BASEMAP_RUNTIME.md`;
+- canonical entity/evidence/geometry type vocabulary;
+- a base-aware public-path helper and published-data filename contract;
+- inspector, timeline, evidence badge, and source-drawer component boundaries;
+- an early noindex posture;
+- a zero-dependency `npm run preflight` check.
+
+Inspect and improve these files. Do not create parallel versions simply because a template or remembered pattern is more familiar.
+
+The first dependency install is expected to create `package-lock.json`; keep and commit that lockfile with Packet 1.
+
+### Build/refine the foundation
+
+- Run `npm run preflight`, `npm install` when needed, and verify the existing scaffold before broad edits.
+- Preserve npm, strict TypeScript, static output, and the locked dependency rules.
+- Keep MapLibre GL JS 6 unless a demonstrated blocker requires escalation.
+- Refine `BaseLayout`, design tokens, global styles, and the map-dominant composition into an intentional product rather than leaving the bootstrap styling as final design.
 - Establish the warm editorial-atlas / Atlantic / ink visual direction from `docs/DESIGN_DIRECTION.md`.
-- Create a real `MapViewport` and initialize MapLibre with correct attribution.
-- Build the supporting inspector and compact timeline regions as part of the composition rather than isolated placeholder cards.
+- Refine the real `MapViewport`, retaining correct attribution and the modern-basemap-vs-historical-evidence distinction.
+- Use `docs/BASEMAP_RUNTIME.md`; do not reopen tile-provider research unless the documented provider demonstrably blocks the packet.
+- Refine inspector and compact timeline regions as part of the composition rather than isolated dashboard cards.
 
 ### Build the interaction spine
 
-- Define typed selection primitives for `ship`, `port`, `voyage`, `person`, and `event`.
-- Implement one shared selection path/state contract.
-- Wire a clearly synthetic/non-historical development feature or empty-map interaction to `EntityInspector` so map → selection → inspector is exercised without invented history.
+- Extend the canonical primitives in `src/lib/domain/types.ts`; do not define competing entity/evidence/geometry vocabularies in components.
+- Implement one shared typed selection path/state contract for `ship`, `port`, `voyage`, `person`, and `event`.
+- Wire a clearly synthetic/non-historical development feature or other explicitly developmental interaction to `EntityInspector` so map → selection → inspector is exercised without invented history.
 - Implement accessible close/back/focus behavior.
-- Add `EvidenceBadge` semantics for the public uncertainty vocabulary.
-- Implement honest loading, empty, and error states.
+- Refine the existing `EvidenceBadge` component around the public uncertainty vocabulary.
+- Implement honest loading, empty, map-unavailable, and error states.
+- Keep Packet 1 development geometry clearly separate from `public/data/`, which is reserved for deliberately published historical artifacts.
 
 ### Prepare for root deployment now and subpath flexibility later
 
@@ -75,8 +97,8 @@ The first public deployment will be at the Cloudflare Pages project root. Do **n
 
 Instead:
 
+- use the existing `src/lib/paths.ts` helper for public asset/data paths that may later need a base;
 - avoid scattered hard-coded root-relative asset/data URLs;
-- centralize URL/base-path handling where useful;
 - keep code compatible with a later non-root deployment if the project is eventually mounted below another site;
 - do not add Worker/proxy infrastructure for that future possibility during this packet.
 
@@ -86,21 +108,25 @@ The first deployed shell is a research prototype, not a claim that the historica
 
 Until Packet 2 provides a real evidence-backed corpus:
 
-- show a restrained visible prototype/status treatment rather than fake data;
+- keep the restrained visible prototype/status treatment rather than fake data;
 - keep historical content empty or explicitly development-only;
-- use `noindex`/equivalent indexing posture for the early Pages shell unless a real canonical/public-launch decision has been made;
+- retain the page meta noindex and `public/robots.txt` block unless a real canonical/public-launch decision has been made;
 - do not advertise unimplemented data/source features as live.
 
 ### Deployment readiness
 
 Before handoff:
 
-- `npm run check` passes;
-- `npm run build` passes and produces `dist/`;
+- `npm run preflight` passes;
+- `npm run verify` passes (`astro check` + production build);
+- `package-lock.json` exists and reflects the pinned starter toolchain;
+- `dist/` is produced;
 - the app runs locally without console-breaking errors;
 - desktop and narrow-phone layouts are inspected;
 - the map remains visually primary;
+- map attribution is visible;
 - the selection/inspector path works by keyboard;
+- map-provider failure has an honest state;
 - no historical fact was invented for the demo;
 - no secret/private/local material is present in the build;
 - `git diff --check` passes.
@@ -129,12 +155,12 @@ This packet crosses into historical ontology, publication contracts, source righ
 
 ### Published-data contract
 
-- Formalize the first published-artifact schemas/validators around `manifest`, `ports`, `routes`, `entities`, `events`, and `sources`.
+- Formalize schemas/validators around the canonical filenames already exposed by `src/lib/data/loadPublished.ts`: `manifest`, `ports`, `routes`, `entities`, `events`, and `sources`.
 - Build or manually curate the smallest useful **verified** fixture from already approved/reusable sources.
 - Preserve source IDs/URLs, retrieval/version metadata where relevant, rights state, and evidence state.
-- Implement `loadPublished` and remove any historical-looking development fixture.
-- Implement `SourceDrawer` or equivalent provenance surface one click from meaningful claims.
-- Render route geometry according to `geometry_kind`.
+- Extend `loadPublished` with validated real schemas and remove any historical-looking development fixture.
+- Implement/refine `SourceDrawer` or equivalent provenance surface one click from meaningful claims.
+- Render route geometry according to the canonical `geometry_kind` vocabulary.
 
 ### Time and context
 
@@ -178,7 +204,7 @@ Turn the technically complete small vertical slice into something worth linking 
 - Perform keyboard, focus, contrast, reduced-motion, attribution, broken-link, and publication-fixture validation passes.
 - Add focused automated tests for behavior that has become nontrivial.
 - Inspect real browser behavior at desktop and narrow widths.
-- Remove starter artifacts, dead CSS, temporary development fixtures, and generic-dashboard drift.
+- Remove bootstrap-only copy, dead CSS, temporary development fixtures, and generic-dashboard drift.
 
 ### Grow only enough to make the slice meaningful
 
@@ -190,8 +216,8 @@ Turn the technically complete small vertical slice into something worth linking 
 
 Once real evidence/provenance paths work:
 
-- decide whether to remove the early noindex posture;
-- update README/status from pre-build language;
+- decide whether to remove the early noindex posture from both layout metadata and `public/robots.txt`;
+- update README/status from bootstrap language;
 - verify the production Pages deployment from `main`;
 - use a PR/preview deployment for larger later changes rather than treating every agent commit as an intentional production release;
 - decide whether the durable public URL should remain `*.pages.dev`, move to a project subdomain, or later integrate with the personal site's `/labs/...` path.

@@ -2,11 +2,17 @@
 
 Use this file to load **the minimum useful context for the task**. Do not read the entire documentation tree simply because a large context window is available.
 
+## First project run
+
+Start with `docs/KICKOFF.md`. It contains the exact local command sequence and Packet 1 plan/execution prompts for the existing bootable scaffold.
+
+Do not run a fresh framework scaffolder; the repository already owns the initial Astro/MapLibre structure and pinned toolchain.
+
 ## Always for substantial implementation
 
 1. `GEMINI.md` — project constitution for the Antigravity/Gemini workflow.
 2. `docs/MAINTAINER_EXPECTATIONS.md` — bounded work, review, verification, polish, and handoff expectations.
-3. `docs/IMPLEMENTATION_CONTRACT.md` — locked v0.1 engineering defaults.
+3. `docs/IMPLEMENTATION_CONTRACT.md` — locked v0.1 engineering defaults and bootstrap state.
 4. Current unfinished **work packet** in `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
 5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
 
@@ -21,6 +27,8 @@ Read only what is needed from:
 - `docs/DESIGN_DIRECTION.md`
 - `docs/DESIGN_REFERENCES.md`
 - `docs/MVP.md`
+
+For map UI/runtime work, also read `docs/BASEMAP_RUNTIME.md` rather than reopening provider research.
 
 For layout or styling work, do not automatically load large source dossiers.
 
@@ -60,7 +68,7 @@ Read:
 - `docs/IMPLEMENTATION_CONTRACT.md`
 - `docs/MAINTAINER_EXPECTATIONS.md`
 
-A settled direction should change through an ADR, not an incidental implementation choice.
+A settled direction should change through an ADR, not an incidental implementation choice. The pinned Packet 1 versions are not an invitation to perform dependency upgrades during feature work.
 
 ## Deployment / Cloudflare
 

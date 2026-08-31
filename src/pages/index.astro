@@ -1,0 +1,25 @@
+---
+import MapViewport from "../components/map/MapViewport.astro";
+import EntityInspector from "../components/inspector/EntityInspector.astro";
+import TimelineRail from "../components/timeline/TimelineRail.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Charted Currents — implementation shell"
+  description="Early implementation shell for a provenance-aware exploration of the maritime Greater Caribbean, 1650–1730."
+>
+  <main class="app-shell" data-build-stage="bootstrap">
+    <header class="app-masthead">
+      <div>
+        <p class="app-kicker">Greater Caribbean · 1650–1730</p>
+        <h1>Charted Currents</h1>
+      </div>
+      <p class="app-kicker">Early research prototype · historical corpus not loaded</p>
+    </header>
+
+    <MapViewport />
+    <EntityInspector />
+    <TimelineRail />
+  </main>
+</BaseLayout>

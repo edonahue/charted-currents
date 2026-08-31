@@ -1,0 +1,30 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  indexable?: boolean;
+}
+
+const {
+  title = "Charted Currents",
+  description = "A provenance-aware exploration of the maritime Greater Caribbean, 1650–1730.",
+  indexable = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    {!indexable && <meta name="robots" content="noindex,nofollow,noarchive" />}
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

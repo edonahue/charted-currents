@@ -1,0 +1,46 @@
+---
+import type { EvidenceState } from "../../lib/domain/types";
+
+interface Props {
+  state: EvidenceState;
+}
+
+const { state } = Astro.props;
+
+const labels: Record<EvidenceState, string> = {
+  documented: "Documented",
+  probable_match: "Probable match",
+  reconstructed: "Reconstructed",
+  contextual: "Contextual",
+};
+---
+
+<span class="evidence-badge" data-evidence-state={state}>{labels[state]}</span>
+
+<style>
+  .evidence-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--cc-line);
+    border-radius: 999px;
+    font-family: var(--cc-font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .evidence-badge[data-evidence-state="documented"] {
+    border-color: color-mix(in srgb, var(--cc-atlantic) 55%, transparent);
+  }
+
+  .evidence-badge[data-evidence-state="probable_match"],
+  .evidence-badge[data-evidence-state="reconstructed"] {
+    border-style: dashed;
+  }
+
+  .evidence-badge[data-evidence-state="contextual"] {
+    color: var(--cc-ink-muted);
+  }
+</style>

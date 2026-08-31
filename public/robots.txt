@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Packet 1 / early Packet 2 posture: public for human review, not ready for indexing.
+# Revisit deliberately once the evidence-backed public slice is ready.

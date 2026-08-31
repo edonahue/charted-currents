@@ -10,12 +10,28 @@ Use this skill to execute a **whole current work packet**, not to redesign the p
 ## Start
 
 1. Inspect `git status --short` and the current diff before editing. Preserve unrelated user work.
-2. Read `GEMINI.md`, `docs/AGENT_CONTEXT_INDEX.md`, `docs/MAINTAINER_EXPECTATIONS.md`, `docs/IMPLEMENTATION_CONTRACT.md`, and the current unfinished packet in `docs/FIRST_SESSIONS.md`.
-3. Load only the additional context routed by `docs/AGENT_CONTEXT_INDEX.md`.
-4. If the work touches committed data/config/screenshots/logs/benchmarks/environment/source artifacts, read `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
-5. If the current packet includes deployment readiness, read `docs/CLOUDFLARE_DEPLOYMENT.md`.
-6. State one plan for the entire packet: outcome, acceptance criteria, relevant source/rights/privacy implications, and expected files/boundaries.
-7. If the requested work contradicts a locked decision or would create a materially different architecture, stop before implementation and surface the conflict.
+2. On the first project run, read `docs/KICKOFF.md`.
+3. Read `GEMINI.md`, `docs/AGENT_CONTEXT_INDEX.md`, `docs/MAINTAINER_EXPECTATIONS.md`, `docs/IMPLEMENTATION_CONTRACT.md`, and the current unfinished packet in `docs/FIRST_SESSIONS.md`.
+4. Load only the additional context routed by `docs/AGENT_CONTEXT_INDEX.md`.
+5. If map runtime/provider behavior is in scope, read `docs/BASEMAP_RUNTIME.md`.
+6. If the work touches committed data/config/screenshots/logs/benchmarks/environment/source artifacts, read `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
+7. If the current packet includes deployment readiness, read `docs/CLOUDFLARE_DEPLOYMENT.md`.
+8. State one plan for the entire packet: outcome, acceptance criteria, relevant source/rights/privacy implications, and expected files/boundaries.
+9. If the requested work contradicts a locked decision or would create a materially different architecture, stop before implementation and surface the conflict.
+
+## Bootstrap invariant
+
+The repository already contains a bootable pinned Astro 7 / MapLibre 6 scaffold. Do not run `npm create astro`, `npm create cloudflare`, overwrite the starter configuration, or create a parallel component/tree structure simply to start.
+
+Use the existing:
+
+- `package.json` / `.nvmrc` / `astro.config.mjs` / `tsconfig.json`;
+- `src/lib/domain/types.ts`;
+- `src/lib/paths.ts`;
+- `src/lib/data/loadPublished.ts`;
+- layout/component/style boundaries from the implementation contract.
+
+The first `npm install` may generate `package-lock.json`; preserve it for Packet 1.
 
 ## Execute continuously within the packet
 
@@ -25,7 +41,7 @@ Use this skill to execute a **whole current work packet**, not to redesign the p
 - Prefer existing repository decisions and canonical sources of truth over introducing alternatives.
 - Prefer small reversible code over speculative abstractions.
 - Do not refactor unrelated files.
-- Do not add a dependency without a concrete need.
+- Do not add or upgrade a dependency without a concrete need.
 - Do not hand-edit generated output when a canonical generator/config exists.
 - Do not create historical facts, coordinates, routes, people, dates, ship identities, quotations, or rights claims to unblock a demo.
 - For missing historical evidence, support an empty state, use clearly non-historical development data when appropriate, or record the research gap.
@@ -56,8 +72,8 @@ If blocked:
 Use the smallest relevant check while iterating, then the applicable packet completion gate. For current web changes, the baseline is normally:
 
 ```bash
-npm run check
-npm run build
+npm run preflight
+npm run verify
 git diff --check
 git status --short
 ```
@@ -76,6 +92,7 @@ For deployment work, distinguish **deployment readiness** (local `dist/` build) 
 
 Before declaring the packet complete, check for:
 
+- accidental re-scaffolding or duplicate config/component trees;
 - scope expansion;
 - parallel/duplicated sources of truth;
 - unsourced historical assertions;

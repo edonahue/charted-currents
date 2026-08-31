@@ -18,9 +18,27 @@ If a future task genuinely requires a different choice, record the reason in an 
 - **Runtime backend:** none.
 - **Browser-side database:** none for v0.1.
 
+## Bootstrap toolchain
+
+The repository is already a bootable web scaffold. Packet 1 must **extend it rather than re-run a framework scaffolder**.
+
+Pinned starter versions:
+
+- Node `22.16.0` via `.nvmrc`;
+- Astro `7.2.0`;
+- MapLibre GL JS `6.6.0`;
+- `@astrojs/check` `0.9.5`;
+- TypeScript `6.0.3`.
+
+These versions were chosen to eliminate first-run ambiguity and make the first local/Cloudflare build reproducible. A dependency upgrade is a separate maintenance decision, not an automatic Packet 1 task.
+
+Do not run `npm create astro` or `npm create cloudflare` over the existing repository. The first `npm install` should create `package-lock.json`; keep that lockfile and commit it with Packet 1.
+
+The initial modern basemap decision lives in `docs/BASEMAP_RUNTIME.md` and should not be reopened unless it demonstrably blocks the packet.
+
 ## Front-end shape
 
-Use this as the default structure; change it only when implementation demonstrates a clearer boundary.
+Use this as the default structure; the scaffold already creates most of these boundaries:
 
 ```text
 src/
@@ -43,6 +61,7 @@ src/
       types.ts
     data/
       loadPublished.ts
+    paths.ts
     map/
     state/
       selection.ts
@@ -59,9 +78,16 @@ Keep the map as the dominant product surface. The inspector and timeline are ove
 
 Prefer one canonical representation when several consumers need the same concept.
 
-Examples:
+The scaffold already establishes:
 
-- domain/evidence enums shared by data validation and UI;
+- `src/lib/domain/types.ts` for entity kinds, evidence states, and route geometry kinds;
+- `src/lib/paths.ts` for Astro-base-aware public paths;
+- `src/lib/data/loadPublished.ts` for canonical published-artifact filenames.
+
+Extend these rather than creating component-local competing vocabularies or path maps.
+
+Other examples:
+
 - source registries feeding publication/rights checks;
 - one manifest describing published artifacts;
 - one template/configuration generating repeated derivative files.
@@ -99,16 +125,19 @@ The exact schemas may evolve before they are declared stable, but preserve these
 
 Do not create a historical fact merely to make a UI fixture convenient. If a required value is not yet verified, leave the historical record absent and make the empty/loading state work.
 
+`public/data/README.md` may exist before the first real corpus; Packet 1 development-only interaction data must not masquerade as a published historical artifact.
+
 All committed data/config/artifacts must satisfy `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
 
 ## Map behavior
 
 - Initial geographic focus: Greater Caribbean, with Port Royal as the first exploration hub.
-- A modern interactive basemap may establish spatial context; period maps are inspectable/toggleable evidence or reference layers.
+- A modern interactive basemap may establish spatial context; it is infrastructure rather than historical evidence. Follow `docs/BASEMAP_RUNTIME.md` for Packet 1.
+- Period maps are inspectable/toggleable evidence or reference layers.
 - Do not draw an endpoint-to-endpoint line as though it were an observed ship track.
 - Route styling must be capable of distinguishing `endpoints_only`, `schematic`, `observed_track`, and `reconstructed_route`.
 - Sensitive archaeological/wreck geometry must use the public display geometry/precision policy, not automatically the most exact research geometry available.
-- Preserve MapLibre attribution.
+- Preserve all required basemap/MapLibre attribution.
 - Respect reduced-motion preferences for camera and route animation.
 
 ## Selection and navigation
@@ -121,7 +150,9 @@ Do not implement detailed entity pages until the inspector spine works and there
 
 ## Design-system rules
 
-`tokens.css` should define the small reusable vocabulary before components proliferate:
+`tokens.css` contains a starter semantic vocabulary, not a finished visual design. Packet 1 should refine values and component composition without abandoning the semantic roles unless there is a demonstrated reason.
+
+The reusable vocabulary includes:
 
 - paper/surface colors;
 - Atlantic/ink/verdigris/brass/oxblood semantic colors;
@@ -140,11 +171,24 @@ Add a dependency only when it removes concrete implementation complexity or mate
 
 Do not introduce a framework/database/service/queue/tool solely because it is familiar from another project.
 
+The pinned starter dependencies are already sufficient to begin Packet 1. Needing another package should be demonstrated by the implementation, not assumed during bootstrap.
+
 ## Command surfaces and local/CI parity
 
 Prefer a small documented command surface over requiring contributors/agents to know internal command chains.
 
-For the web application, `package.json` scripts are the canonical web command surface. `npm run check` and `npm run build` must remain truthful about what they exercise.
+For the web application, `package.json` scripts are the canonical web command surface:
+
+```bash
+npm run preflight   # zero-dependency environment/repo-shape check
+npm run dev
+npm run check       # astro check
+npm run build       # production dist/
+npm run preview
+npm run verify      # check + build
+```
+
+`npm run check`, `npm run build`, and `npm run verify` must remain truthful about what they exercise.
 
 If a top-level cross-language command surface becomes useful once Python ingestion is real, add it deliberately rather than prematurely; it should invoke the same meaningful checks CI runs rather than a reduced suite that silently skips important work.
 
@@ -161,11 +205,11 @@ As coverage grows, organize checks by cost and scope:
 
 Do not add commands solely to satisfy this naming scheme; introduce a tier when the repository actually has distinct work at that tier.
 
-Every implementation session that changes web code currently ends with the applicable real baseline commands:
+Every implementation packet that changes web code currently ends with the applicable real baseline commands:
 
 ```bash
-npm run check
-npm run build
+npm run preflight
+npm run verify
 git diff --check
 git status --short
 ```

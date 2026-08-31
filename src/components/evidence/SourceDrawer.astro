@@ -1,0 +1,19 @@
+---
+interface Props {
+  open?: boolean;
+}
+
+const { open = false } = Astro.props;
+---
+
+<aside
+  aria-label="Source evidence"
+  aria-hidden={!open ? "true" : undefined}
+  data-component="source-drawer"
+  data-open={open ? "true" : "false"}
+  hidden={!open}
+>
+  <slot>
+    <p>No source record is loaded in the bootstrap shell.</p>
+  </slot>
+</aside>

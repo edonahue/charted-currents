@@ -10,6 +10,8 @@ Antigravity CLI defaults are intentionally cautious. For a repository like Chart
 
 The preferred solution is not `--dangerously-skip-permissions`. Use the Linux terminal sandbox plus scoped permissions for routine commands.
 
+The repository now has a bootable scaffold and a small canonical command surface, which means the allowlist can stay narrow rather than granting arbitrary shell access.
+
 ## Recommended global posture
 
 In `~/.gemini/antigravity-cli/settings.json`, prefer:
@@ -42,7 +44,7 @@ Merge a policy like this into the existing `permissions` object rather than blin
     "allow": [
       "command(git (status|diff|log|show|rev-parse))",
       "command(npm (install|ci))",
-      "command(npm run (check|build|test|lint|typecheck|format:check|dev|preview))",
+      "command(npm run (preflight|verify|check|build|test|lint|typecheck|format:check|dev|preview))",
       "read_url(registry.npmjs.org)"
     ],
     "deny": [
@@ -96,7 +98,17 @@ Do not grant `unsandboxed(*)` globally. Approve a one-off escape only when the s
 
 ## Network/package installation
 
-The first packet needs npm package installation. If sandboxed npm access still prompts or fails because outbound network access is not yet permitted, grant the narrow npm registry domain rather than general web/network access.
+The scaffold pins the web toolchain in `package.json`; Gemini should not need `npm create astro`, `npm create cloudflare`, or an interactive package-selection flow.
+
+The first local install is simply:
+
+```bash
+npm install
+```
+
+This should generate `package-lock.json`, which Packet 1 should keep and commit for reproducible local/Cloudflare installs.
+
+If sandboxed npm access still prompts or fails because outbound network access is not yet permitted, grant the narrow npm registry domain rather than general web/network access.
 
 Do not add broad `read_url(*)` or `execute_url(*)` merely to make installation convenient.
 
@@ -104,9 +116,13 @@ Do not add broad `read_url(*)` or `execute_url(*)` merely to make installation c
 
 Historical source research and live web verification should remain more deliberate than local coding. Add source domains to the allowlist only when repeated access during a bounded research task justifies it.
 
+The initial modern basemap decision is already documented in `docs/BASEMAP_RUNTIME.md`; Packet 1 should not conduct a new provider survey unless that provider demonstrably blocks the packet.
+
 Never allow a model's ability to reach a URL to substitute for the source-rights/publication checks in this repository.
 
 ## Recommended launch pattern
+
+Follow `docs/KICKOFF.md` for the exact first-run sequence and prompts.
 
 For the first implementation packet:
 

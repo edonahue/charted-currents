@@ -13,10 +13,26 @@ For the first public deployment:
 - build command: `npm run build`;
 - output directory: `dist`;
 - repository root as build root;
-- Node: pinned by the repository `.nvmrc` (`22`);
+- Node: pinned by the repository `.nvmrc` (`22.16.0`);
+- dependency versions: pinned in `package.json`, with `package-lock.json` expected from the first `npm install`;
 - no build secrets/environment variables required for the initial shell.
 
 The first durable target is the Pages-provided `*.pages.dev` hostname. Do not delay first deployment to solve the final canonical URL.
+
+## Static Pages means no Cloudflare adapter yet
+
+Packet 1 is a prerendered static Astro application. It does **not** need:
+
+- `@astrojs/cloudflare`;
+- a Worker entrypoint;
+- `wrangler.toml` / `wrangler.jsonc`;
+- `npm create cloudflare`;
+- server/on-demand rendering;
+- a Pages Function.
+
+Cloudflare Pages only needs the generated `dist/` directory for this architecture. Do not accidentally follow Cloudflare **Workers/SSR Astro** instructions for this static Pages project.
+
+If a later requirement genuinely needs server rendering or Workers primitives, treat that as an architecture change rather than bootstrap cleanup.
 
 ## One-time human setup
 
@@ -41,14 +57,22 @@ Git integration is intentional: after setup, pushes to `main` become production 
 
 The first public shell proves several risks cheaply:
 
-- Astro/Cloudflare build compatibility;
-- MapLibre assets/runtime behavior on the real origin;
+- pinned Astro/Cloudflare build compatibility;
+- lockfile-based dependency reproducibility;
+- MapLibre/OpenFreeMap assets/runtime behavior on the real origin;
 - static URL/path assumptions;
 - responsive behavior outside localhost;
 - deployment permissions/integration;
 - whether the product already reads as intentional rather than generic.
 
 It does **not** prove the historical corpus. The Packet 1 UI should say so honestly and remain in an early/noindex posture until Packet 2 provides real evidence-backed content.
+
+Both defenses are intentional during this phase:
+
+- `BaseLayout.astro` emits noindex metadata by default;
+- `public/robots.txt` disallows crawling.
+
+Packet 3 owns the deliberate decision to remove those protections.
 
 ## Do not block on `/labs/charted-currents/`
 
@@ -70,7 +94,7 @@ Do not add a Worker/proxy during Packet 1 merely to preserve the original path i
 
 Packet 1 deploys at the Pages project root. Keep the app capable of later base-path adaptation, but do not configure Astro with `/labs/charted-currents/` as its base before that deployment model actually exists.
 
-Avoid scattering hard-coded `/data/...` or `/assets/...` assumptions where a centralized/base-aware URL helper is appropriate.
+Use `src/lib/paths.ts` for public data/asset paths that may later need the Astro base. Avoid parallel path helpers or scattered hard-coded `/data/...` assumptions.
 
 ## Production vs previews
 
@@ -86,7 +110,7 @@ This gives the agent one large local work interval and the maintainer one hosted
 
 ## Build-trigger posture
 
-Do not optimize build-watch paths initially. The free Pages allowance is ample for the early project, and source/research files may later become build inputs. Bigger work packets and branch previews are the primary way to reduce noisy deployments.
+Do not optimize build-watch paths initially. Source/research files may later become build inputs. Bigger work packets and branch previews are the primary way to reduce noisy deployments.
 
 Only add path-based build exclusions after the repository's real build dependency graph makes them safe.
 
@@ -97,13 +121,14 @@ The first public deployment is successful when:
 - Cloudflare reports a successful build from `main`;
 - the deployment corresponds to the intended Git commit;
 - the assigned public URL loads without a fatal console/runtime error;
-- the real MapLibre surface renders with attribution;
+- the real MapLibre/OpenFreeMap surface renders with required attribution;
 - map → selection → inspector behavior works;
 - desktop and narrow-phone layouts are usable;
+- the early noindex posture is intact;
 - no secret/private/restricted artifact is present;
 - the shell does not imply that unimplemented historical data exists.
 
-A local `npm run build` is necessary but is not evidence that the Cloudflare deployment itself succeeded.
+A local `npm run build` or `npm run verify` is necessary but is not evidence that the Cloudflare deployment itself succeeded.
 
 ## Later hardening
 

@@ -2,9 +2,24 @@
   "name": "charted-currents",
   "version": "0.0.0",
   "private": true,
-  "description": "Pre-build stub for Charted Currents — a provenance-aware historical exploration of the Greater Caribbean, 1650–1730.",
+  "type": "module",
+  "description": "Provenance-aware historical exploration of the Greater Caribbean, 1650–1730.",
   "scripts": {
-    "docs:check": "node -e \"console.log('Documentation-only stub: no web build yet')\""
+    "preflight": "node scripts/preflight.mjs",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "typecheck": "astro check",
+    "verify": "npm run check && npm run build"
+  },
+  "dependencies": {
+    "astro": "7.2.0",
+    "maplibre-gl": "6.6.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.5",
+    "typescript": "6.0.3"
   },
   "repository": {
     "type": "git",
@@ -12,6 +27,6 @@
   },
   "homepage": "https://github.com/edonahue/charted-currents",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12.0 <23"
   }
 }
