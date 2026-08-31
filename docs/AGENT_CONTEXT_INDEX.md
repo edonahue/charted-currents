@@ -16,7 +16,7 @@ Do not run a fresh framework scaffolder; the repository already owns the initial
 4. Current unfinished **work packet** in `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
 5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
 
-For Packet 1, also read `docs/PACKET1_DIRECTION.md` and `docs/VISUAL_QUALITY_CONTRACT.md`; the first-build product and visual-quality choices are settled there and should not be reopened.
+For Packet 1, also read `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, and `docs/VISUAL_ASSET_STRATEGY.md`; the first-build product direction, visual-quality bar, and visual-asset/technique posture are settled there and should not be reopened.
 
 For the initial implementation run, also use `docs/ANTIGRAVITY_SETUP.md` so routine sandboxed commands do not generate unnecessary approval churn.
 

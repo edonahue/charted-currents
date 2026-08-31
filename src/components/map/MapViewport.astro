@@ -29,11 +29,28 @@ import "maplibre-gl/dist/maplibre-gl.css";
       dragRotate: false,
       pitchWithRotate: false,
       touchPitch: false,
-      attributionControl: true,
     });
 
     map.addControl(new NavigationControl({ showCompass: false }), "top-right");
     map.touchZoomRotate.disableRotation();
+
+    // MapLibre's keyboard handler otherwise allows Shift+Arrow rotation/pitch.
+    // Intercept only those modified arrow gestures so ordinary keyboard pan/zoom
+    // remains available while the Packet 1 map stays north-up and 2D.
+    container.addEventListener(
+      "keydown",
+      (event) => {
+        if (
+          event instanceof KeyboardEvent &&
+          event.shiftKey &&
+          ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)
+        ) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      { capture: true },
+    );
 
     map.once("load", () => {
       applyBasemapVisualPolicy(map);
