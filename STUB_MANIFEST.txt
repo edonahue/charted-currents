@@ -37,6 +37,7 @@ docs/PRODUCT_PRINCIPLES.md
 docs/PROJECT_BRIEF.md
 docs/PROVENANCE_AND_UNCERTAINTY.md
 docs/ROADMAP.md
+docs/SHIPWRECKS_AND_MUSEUMS.md
 docs/SOURCE_RIGHTS.md
 docs/VISUAL_BENCHMARK_ASSETS.md
 docs/adr/0001-static-first-maplibre.md
@@ -50,6 +51,7 @@ research/README.md
 research/art_sources.yml
 research/french_sources.yml
 research/places.yml
+research/shipwreck_museum_sources.yml
 research/sources.yml
 scripts/README.md
 src/README.md

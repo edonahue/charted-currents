@@ -1,0 +1,101 @@
+sources:
+  - id: qar_project
+    name: Queen Anne's Revenge Project / North Carolina Office of State Archaeology
+    priority: secondary_tier_a_archaeology
+    period: 1718 wreck; archaeological work 1996-present
+    url: https://www.qaronline.org/
+    artifact_url: https://www.qaronline.org/conservation/artifacts
+    site_map_url: https://www.qaronline.org/conservation/mapping-site
+    access: public project pages, artifact selections, technical/conservation reports and research publications
+    account_required: false
+    rights_summary: factual/project metadata usable as sourced research; images/documents retain page/item-specific rights and credits
+    use: ship-to-wreck identification evidence, archaeology, artifact provenience, conservation, repository links
+    automated_ingestion: targeted_only_after_terms_review
+    location_policy: publish only location/detail already made public by responsible project
+    next_action: Use as exemplar when La Concorde / Queen Anne's Revenge enters the canonical corpus
+    last_verified: 2026-08-31
+
+  - id: mel_fisher_henrietta_marie
+    name: Mel Fisher Maritime Museum / Henrietta Marie research and collection
+    priority: secondary_tier_a_archaeology
+    period: 1700 wreck; archaeological research 1972-present
+    url: https://www.melfisher.org/henrietta-marie-1700
+    research_url: https://www.melfisher.org/research
+    access: public research, exhibition and museum pages; targeted institutional inquiry if accession-level data is needed
+    account_required: false
+    rights_summary: factual research and collection information may be cited; images/text and object photography require item/site-specific rights review
+    use: Henrietta Marie wreck identification, artifact assemblage, museum custody, Jamaica/forced-migration material evidence
+    automated_ingestion: manual_or_targeted
+    location_policy: use only museum/authority-public location precision
+    next_action: Preferred first material-afterlife proof if Henrietta Marie appears naturally in source corpus
+    last_verified: 2026-08-31
+
+  - id: mass_maritime_stepping_stones
+    name: MaSS - Maritime Stepping Stones
+    priority: secondary_tier_b_wreck_discovery
+    url: https://mass.cultureelerfgoed.nl/en/about
+    authority_url: https://english.cultureelerfgoed.nl/topics/m/maritime-heritage/mass
+    access: public searchable heritage database; registered users may contribute; no bulk/API path assumed
+    account_required: false_for_reading
+    rights_summary: preserve MaSS/source references and linked-source rights; verify terms before automated reuse
+    use: wreck/site candidate discovery, Dutch and Dutch-Caribbean maritime heritage, references and authority links
+    automated_ingestion: no_until_access_terms_review
+    location_policy: MaSS intentionally does not provide exact positions
+    next_action: Search 1650-1730 Caribbean/Dutch-Caribbean candidates after canonical vessel list exists
+    last_verified: 2026-08-31
+
+  - id: noaa_wrecks_obstructions
+    name: NOAA Wrecks and Obstructions / ENC Direct to GIS
+    priority: secondary_tier_b_positional_discovery
+    url: https://www.fisheries.noaa.gov/inport/item/70439
+    current_access_url: https://www.nauticalcharts.noaa.gov/data/wrecks-and-obstructions.html
+    access: public NOAA charting/GIS data; current charted features via ENC Direct
+    account_required: false
+    rights_summary: public U.S. government data; preserve dataset/version and positional-quality metadata
+    use: candidate wreck discovery and positional corroboration in U.S. waters/territories
+    automated_ingestion: candidate_targeted
+    location_policy: source may expose positions but project still applies archaeological sensitivity/publication policy
+    caveat: navigation dataset, not an archaeological identity authority; positions may be uncertain
+    next_action: Query only after named ship/site candidates exist
+    last_verified: 2026-08-31
+
+  - id: florida_underwater_archaeology
+    name: Florida Division of Historical Resources - Underwater Archaeology / Master Site File
+    priority: secondary_tier_a_b_state_heritage
+    url: https://dos.fl.gov/historical/archaeology/underwater/
+    preserves_url: https://dos.fl.gov/historical/archaeology/underwater/underwater-preserves/
+    master_site_file_url: https://dos.fl.gov/historical/preservation/master-site-file
+    access: public preserve interpretation; targeted staff-assisted Master Site File research
+    account_required: false
+    rights_summary: state public information varies; archaeological site-location information may be restricted as sensitive
+    use: Florida wreck-site authority, public preserves, survey/manuscript discovery
+    automated_ingestion: public_preserves_only_initially
+    location_policy: never republish restricted Master Site File location data; public preserve locations may use authority-published precision
+    next_action: Use Urca de Lima as a known 1715 proof case; request site-file information only for specific research questions
+    last_verified: 2026-08-31
+
+  - id: royal_museums_greenwich
+    name: Royal Museums Greenwich / National Maritime Museum Collections
+    priority: secondary_tier_c_museum_discovery
+    url: https://collections.rmg.co.uk/
+    terms_url: https://www.rmg.co.uk/policies/terms-conditions
+    access: collections website and NMM collections API described in current terms
+    account_required: false_currently
+    rights_summary: metadata/image reuse is governed by NMM terms; API images generally non-commercial, require National Maritime Museum credit/link, and may have stricter item-specific licenses
+    use: maritime objects, ship-related equipment, models, art and archival material; candidate museum-object links
+    automated_ingestion: candidate_polite_rights_aware
+    rate_guidance: no more than 3000 API calls/day and one request/second under current terms
+    next_action: Test searches against validated canonical ship aliases and wreck/project names; preserve accession IDs and object-level rights
+    last_verified: 2026-08-31
+
+  - id: unesco_underwater_heritage_principles
+    name: UNESCO 2001 Convention - Underwater Cultural Heritage principles
+    priority: policy_reference
+    url: https://www.unesco.org/en/underwater-heritage/principles-2001
+    access: public policy/guidance
+    account_required: false
+    rights_summary: policy reference, not an ingestion corpus
+    use: location sensitivity, in-situ preservation, anti-looting and anti-commercial-exploitation project policy
+    automated_ingestion: no
+    next_action: Re-check jurisdiction-specific law for each wreck before publication of sensitive data
+    last_verified: 2026-08-31
