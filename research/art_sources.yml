@@ -1,0 +1,130 @@
+art_sources:
+  - id: loc
+    name: Library of Congress
+    priority: p0_visual
+    url: https://www.loc.gov/
+    machine_access: JSON/YAML API; image services; no key
+    account_required: false
+    rights: item_level
+    preferred_use: Period maps, charts, prints, manuscripts
+    action: Build targeted Caribbean map discovery adapter
+    last_verified: 2026-08-31
+
+  - id: greater_caribbean_mapping
+    name: Greater Caribbean Mapping, 1450-1850
+    priority: p0_discovery
+    url: https://greatercaribbeanmaps.org/
+    data_url: https://greatercaribbeanmaps.org/overview/data-download/
+    machine_access: weekly refreshed full CSV
+    account_required: false
+    rights: catalog_for_discovery_resolve_media_at_holder
+    preferred_use: Cross-institution historical map discovery
+    action: Ingest catalog metadata after terms review
+    last_verified: 2026-08-31
+
+  - id: nationaal_archief
+    name: Nationaal Archief
+    priority: p0_visual_and_primary
+    url: https://www.nationaalarchief.nl/
+    machine_access: OAI-PMH EAD/XML plus METS/file endpoints
+    account_required: false
+    rights: Public Domain or CC0 only where explicitly open/downloadable
+    preferred_use: Dutch maps, charts, archival scans, Sailing Letters
+    action: Build rights-aware EAD/METS prototype
+    last_verified: 2026-08-31
+
+  - id: pares
+    name: PARES / Spanish State Archives
+    priority: p0_primary
+    url: https://pares.cultura.gob.es/pares/en/inicio.html
+    account_required: false
+    rights: public-domain items reusable with required source citation; other items case-by-case
+    preferred_use: Spanish maps/plans, registers, manuscripts
+    action: Curate first AGI item set manually
+    last_verified: 2026-08-31
+
+  - id: rijksmuseum
+    name: Rijksmuseum Data Services
+    priority: p1_visual
+    url: https://data.rijksmuseum.nl/
+    machine_access: Search API; OAI-PMH; Linked Data; no key
+    account_required: false
+    rights: item_level_public_domain_cc0_ccby_or_restricted
+    preferred_use: Maritime art, model ships, ports, navigational objects
+    action: Create maritime discovery queries
+    last_verified: 2026-08-31
+
+  - id: jcb
+    name: John Carter Brown Library / Americana
+    priority: p1_visual_primary
+    url: https://jcblibrary.org/
+    account_required: false
+    rights: current open-access messaging with credit; verify item, especially legacy Brown CDS/LUNA records
+    preferred_use: Early Americas maps, books, prints, voyage material
+    action: Curate current-Americana benchmark assets
+    last_verified: 2026-08-31
+
+  - id: bne
+    name: Biblioteca Nacional de España / BNE Digital
+    priority: p1_visual_primary
+    url: https://www.bne.es/
+    account_required: false
+    rights: public-domain digital images reusable, generally CC BY 4.0/equivalent with BNE credit
+    preferred_use: Spanish maps, atlases, engravings, nautical books
+    action: Curate Caribbean/West Indies benchmark set
+    last_verified: 2026-08-31
+
+  - id: smithsonian
+    name: Smithsonian Open Access
+    priority: p2_visual_material_culture
+    url: https://www.si.edu/openaccess/devtools
+    machine_access: weekly GitHub bulk data; api.data.gov API
+    account_required: optional
+    credential_env: SMITHSONIAN_API_KEY
+    rights: Open Access assets CC0 where supplied
+    preferred_use: Navigation instruments, ship models, material culture
+    action: API key optional; bulk data is nonblocking
+    last_verified: 2026-08-31
+
+  - id: europeana
+    name: Europeana
+    priority: p2_discovery
+    url: https://api.europeana.eu/en
+    account_required: true
+    credential_env: EUROPEANA_API_KEY
+    rights: provider_and_item_level
+    preferred_use: European institutional discovery
+    action: Create free account and personal API key
+    last_verified: 2026-08-31
+
+  - id: dpla
+    name: Digital Public Library of America
+    priority: p2_discovery
+    url: https://pro.dp.la/developers/
+    account_required: true
+    credential_env: DPLA_API_KEY
+    rights: metadata_discovery; provider/item media rights
+    preferred_use: US archive/library discovery
+    action: Request free API key by documented POST
+    last_verified: 2026-08-31
+
+  - id: nypl
+    name: New York Public Library Digital Collections
+    priority: p2_manual
+    url: https://digitalcollections.nypl.org/
+    account_required: false
+    machine_access: Repo API retired 2026-08-01; no replacement planned
+    rights: explicit public-domain/no-known-US-copyright items reusable without permission
+    preferred_use: Manual discovery of maps, books, prints
+    action: Do not create API credentials
+    last_verified: 2026-08-31
+
+  - id: dloc
+    name: Digital Library of the Caribbean
+    priority: p2_caribbean_discovery
+    url: https://dloc.com/
+    account_required: false
+    rights: partner_and_item_specific
+    preferred_use: Caribbean partner collections, maps, newspapers, books
+    action: Use item-level rights review; do not assume collection-wide media rights
+    last_verified: 2026-08-31
