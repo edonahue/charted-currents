@@ -30,6 +30,9 @@ data/cache/
 *.sqlite
 *.sqlite3
 
+# Large/publication artifacts such as Parquet or PMTiles are NOT globally ignored.
+# Commit them only deliberately after rights/provenance review.
+
 # Test / browser artifacts
 coverage/
 playwright-report/
