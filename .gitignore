@@ -27,8 +27,6 @@ data/working/
 data/cache/
 *.duckdb
 *.duckdb.wal
-*.parquet
-*.pmtiles
 *.sqlite
 *.sqlite3
 
