@@ -70,6 +70,16 @@ Forced migration and slavery are part of the maritime history represented here, 
 
 AI is development and research tooling, not a public thesis of the project. AI may propose entity extraction and candidate matches, but it may not create unsourced historical facts or silently promote an inference into a documented claim. See [`docs/AI_AND_EXTRACTION_POLICY.md`](docs/AI_AND_EXTRACTION_POLICY.md) and [`GEMINI.md`](GEMINI.md).
 
+### Agentic implementation bootstrap
+
+The pre-build repository deliberately resolves routine coding decisions before agentic implementation begins. The goal is to let fast coding models execute well-bounded work rather than spend sessions reopening product and architecture choices.
+
+- [`docs/INITIAL_BUILD_BRIEF.md`](docs/INITIAL_BUILD_BRIEF.md) — compact implementation mission and boundaries.
+- [`docs/IMPLEMENTATION_CONTRACT.md`](docs/IMPLEMENTATION_CONTRACT.md) — locked v0.1 engineering defaults and published-data boundary.
+- [`docs/FIRST_SESSIONS.md`](docs/FIRST_SESSIONS.md) — the first five bounded implementation sessions and acceptance gates.
+- [`docs/AGENT_EXECUTION_PLAYBOOK.md`](docs/AGENT_EXECUTION_PLAYBOOK.md) — context discipline, anti-swirl rules, verification requirements, and blocker behavior.
+- [`.agents/skills/charted-currents-build/SKILL.md`](.agents/skills/charted-currents-build/SKILL.md) — reusable Antigravity workspace skill for executing those sessions.
+
 ## Design references
 
 Interaction is informed in part by the world-map experience of **Sid Meier's Pirates! (2004/2005 era)**: ports, ships, wind, time, and events coexist on one navigable Caribbean surface. Charted Currents should borrow that *mental model*, not Firaxis assets or recognizable visual composition.
@@ -82,7 +92,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Pre-build project stub.** The documentation intentionally precedes implementation so coding agents do not invent product strategy, historical claims, or source policy as they work.
+**Pre-build project stub, now agent-ready.** The documentation intentionally precedes implementation so coding agents do not invent product strategy, historical claims, source policy, or routine architecture as they work. The first implementation sequence is defined in [`docs/FIRST_SESSIONS.md`](docs/FIRST_SESSIONS.md).
 
 ## Licensing
 
