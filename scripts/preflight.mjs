@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 
-const MIN_NODE = [22, 12, 0];
+const MIN_NODE = [22, 19, 0];
 const currentNode = process.versions.node.split(".").map(Number);
 
 function atLeast([major, minor, patch], [minMajor, minMinor, minPatch]) {
@@ -46,7 +46,7 @@ const requiredFiles = [
 const failures = [];
 
 if (!atLeast(currentNode, MIN_NODE)) {
-  failures.push(`Node ${process.versions.node} is too old; use Node >=22.12.0 (see .nvmrc).`);
+  failures.push(`Node ${process.versions.node} is too old; use Node >=22.19.0 (see .nvmrc).`);
 }
 
 for (const file of requiredFiles) {
