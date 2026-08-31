@@ -28,7 +28,7 @@ The repository is **already a bootable Astro application scaffold**. Do not spen
 
 Existing bootstrap decisions include:
 
-- Node `22.16.0` in `.nvmrc`;
+- Node `22.23.1` in `.nvmrc` (project engine floor `>=22.19.0 <23`);
 - Astro `7.2.9`, MapLibre GL JS `6.6.0`, TypeScript `6.0.3`, and npm scripts in `package.json`;
 - `@astrojs/check` `0.9.10` for TypeScript 6-compatible Astro diagnostics;
 - static `astro.config.mjs` and strict `tsconfig.json`;
