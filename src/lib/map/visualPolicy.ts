@@ -63,7 +63,7 @@ export const PROJECT_MARKER_VISUAL_POLICY = {
 export const MAP_STYLE_DESIGN_RULES = {
   defaultMarkerPinsAllowed: false,
   decorativeNauticalIconsAllowed: false,
-  3dBuildingsAllowed: false,
+  buildings3dAllowed: false,
   terrainPitchAllowed: false,
   mapRotationAllowed: false,
   historicalSourceImageryAsAnonymousTextureAllowed: false,
