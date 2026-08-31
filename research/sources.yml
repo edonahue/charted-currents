@@ -1,98 +1,318 @@
 sources:
   - id: crespo_dyncoopnet
     name: CrespoDynCoopNet DATA Collections / CrespoDATABASEAtlanticTrade
-    priority: foundation
+    priority: p0_foundation
     period: 1648-1778
     url: https://datos.gob.es/en/catalogo/ea0041268-crespodyncoopnet-data-collections
-    access: bulk MDB plus documentation
-    rights_summary: Catalog links Open Data Commons Database Contents License 1.0; re-verify redistribution details.
-    use: Ships, routes, freight, goods, agents, commercial networks, legal/illicit trade; Spanish Atlantic backbone.
-    automated_ingestion: candidate
+    data_url: https://digital.csic.es/bitstream/10261/28394/1/CrespoDynCoopNetDATASETS.mdb
+    access: direct MDB plus documentation and glossary
+    account_required: false
+    rights_summary: Open Data Commons Database Contents License 1.0 linked by official catalog
+    use: Spanish Atlantic ships, routes, freight, goods, agents, networks, legal/illicit trade
+    automated_ingestion: yes_after_schema_review
+    next_action: Download and profile full schema on x600
+    last_verified: 2026-08-31
+
+  - id: maritime_labour_market
+    name: International Maritime Labour Market in Europe, relational database 1650-1815
+    priority: p0_feasibility
+    period: 1650-1815
+    url: https://reshare.ukdataservice.ac.uk/852135/
+    access: Ship.csv, Crew.csv, metadata/documentation
+    account_required: false
+    rights_summary: UK Data Service marks files open access and available without registration
+    use: Prize Papers-derived ship/crew sample; 1702-1712 overlap for initial real-data spike
+    automated_ingestion: yes
+    next_action: Download 1702-1712-relevant records and validate source assertion/entity-resolution schema
     last_verified: 2026-08-31
 
   - id: pares
     name: PARES / Spanish State Archives
-    priority: foundation_primary_sources
+    priority: p0_foundation_primary
     url: https://pares.cultura.gob.es/pares/en/inicio.html
-    access: archival descriptions and digitized items
-    rights_summary: Public-domain State Archive documents/descriptions accessible through PARES may be reused with required attribution; verify item-level status.
-    use: Ship registers, maps/plans, fleet records, archival documents.
-    automated_ingestion: limited_case_by_case
+    access: free archival descriptions and digitized items; targeted reproduction requests
+    account_required: false
+    rights_summary: Public-domain State Archive descriptions/images accessible through PARES may be reused with required archive/reference attribution; other rights are item-specific
+    use: AGI fleet/ship registers, maps/plans, correspondence, primary verification
+    automated_ingestion: limited_targeted
+    next_action: Curate first set of ship/fleet records and maps with permanent references
+    last_verified: 2026-08-31
+
+  - id: nationaal_archief
+    name: Nationaal Archief open archival data
+    priority: p0_foundation_primary
+    url: https://www.nationaalarchief.nl/onderzoeken/open-data/archiefinventarissen-digitale-objecten-en-scans-van-archieven
+    access: CC0 EAD/OAI-PMH inventories plus METS/file endpoints for open scans
+    account_required: false
+    rights_summary: Inventories largely CC0; scans/digital objects reusable when explicitly Public Domain/CC0 and downloadable
+    use: Sailing Letters/Prize Papers inventory, Dutch maritime records, maps, scans
+    automated_ingestion: yes_rights_aware
+    next_action: Build EAD/METS proof of concept for archive 2.22.24
+    last_verified: 2026-08-31
+
+  - id: sailing_letters_na
+    name: High Court of Admiralty Prize Papers (Sailing Letters) inventory at Nationaal Archief
+    priority: p0_target_collection
+    period: 1564-1830
+    url: https://www.nationaalarchief.nl/onderzoeken/archief/2.22.24
+    access: downloadable XML/PDF inventory plus digitized records
+    account_required: false
+    rights_summary: Inventory/open data status must be preserved; scan rights explicit item-by-item
+    use: Ship/master names, intercepted documents, corroboration and primary-source discovery
+    automated_ingestion: yes_inventory
+    next_action: Filter ship records to 1650-1730 and Caribbean/Atlantic relevance
     last_verified: 2026-08-31
 
   - id: slavevoyages
     name: SlaveVoyages
-    priority: foundation
+    priority: p0_foundation
     url: https://www.slavevoyages.org/
+    legal_url: https://legacy.slavevoyages.org/blog/legal
     access: structured datasets and codebooks
-    rights_summary: Rights vary by content/field; preserve observed versus imputed distinctions and re-verify current guidance.
-    use: Trans-Atlantic and Intra-American forced-migration voyage evidence.
-    automated_ingestion: candidate_after_field_rights_review
+    account_required: false
+    rights_summary: Historical facts from documents public domain; imputed values CC BY-NC 3.0 US; images provider-specific
+    use: Trans-Atlantic and Intra-American forced-migration voyage evidence and vessel context
+    automated_ingestion: yes_with_field_provenance
+    next_action: Build documented-vs-imputed variable map before ingestion
+    last_verified: 2026-08-31
+
+  - id: natural_earth
+    name: Natural Earth
+    priority: p0_map_base
+    url: https://www.naturalearthdata.com/
+    access: downloadable vector/raster
+    account_required: false
+    rights_summary: Public domain
+    use: Base geography, coastline, graticules, physical reference
+    automated_ingestion: yes
+    next_action: Define Greater Caribbean base layers
+    last_verified: 2026-08-31
+
+  - id: whg
+    name: World Historical Gazetteer
+    priority: p1_entity_resolution
+    url: https://whgazetteer.org/
+    api_docs: https://docs.whgazetteer.org/content/technical/apis.html
+    access: Entity and Reconciliation APIs
+    account_required: true
+    credential_env: WHG_API_TOKEN
+    signup: ORCID authentication; API token generated on Profile page
+    rights_summary: Preserve returned source namespaces/attribution/terms; WHG result is authority enrichment, not primary evidence
+    use: Historical place aliases, candidate geometries, temporal bounds, reconciliation
+    automated_ingestion: yes_with_token
+    next_action: Human creates ORCID/WHG token, then benchmark on port alias list
     last_verified: 2026-08-31
 
   - id: icoads
     name: NOAA ICOADS
-    priority: context_observations
+    priority: p1_context_observed_weather
     period: 1662-present
     url: https://www.ncei.noaa.gov/products/international-comprehensive-ocean-atmosphere-data-set
-    access: bulk observational marine data
-    rights_summary: NOAA describes products as freely distributed; preserve dataset/version metadata and attribution.
-    use: Actual surface marine observations where early records exist.
+    access: public marine observations/bulk products
+    account_required: false
+    rights_summary: Public NOAA data; preserve version/source and observation provenance
+    use: Actual surface marine observations where early records exist
     automated_ingestion: candidate
-    last_verified: 2026-08-31
-
-  - id: loc_moll_1715
-    name: Herman Moll West Indies map, ca. 1715
-    priority: v0_1_asset
-    url: https://www.loc.gov/item/gm71005442/
-    access: digitized map
-    rights_summary: LOC item page says Geography & Map Division digitized collections are free to use/reuse absent contrary Rights Advisory; credit LOC Geography and Map Division.
-    use: Design reference and candidate v0.1 historical reference layer.
-    last_verified: 2026-08-31
-
-  - id: greater_caribbean_mapping
-    name: Greater Caribbean Mapping, 1450-1850
-    priority: discovery_catalog
-    url: https://greatercaribbeanmaps.org/
-    data_url: https://greatercaribbeanmaps.org/overview/data-download/
-    access: searchable catalog plus weekly refreshed CSV
-    rights_summary: Resolve image rights at each holding institution; review catalog terms before bulk use.
-    use: Discover period maps and cartographic sources.
-    automated_ingestion: candidate_catalog_only_after_terms_review
-    last_verified: 2026-08-31
-
-  - id: rijksmuseum
-    name: Rijksmuseum Data Services
-    priority: visual_enrichment
-    url: https://data.rijksmuseum.nl/
-    access: open data services and high-resolution images
-    rights_summary: Open Data policy and majority-public-domain collection; verify object-level rights.
-    use: Dutch maritime art, vessels, ports, portraits, navigational objects.
-    last_verified: 2026-08-31
-
-  - id: naval_office_shipping_lists
-    name: Naval Office Shipping Lists
-    priority: high_value_research
-    access: archives/microfilm; commercial digitization also exists
-    rights_summary: Do not scrape licensed presentation. Pursue original archive/microfilm transcription and/or reuse/API permission.
-    use: Vessel, master, ownership, tonnage, guns, crew, cargo, prior/next port.
-    automated_ingestion: not_without_rights_clearance
-    last_verified: 2026-08-31
-
-  - id: maritime_britain
-    name: Maritime Britain
-    priority: research_validation
-    url: https://www.maritimebritain.org/english_merchant_shipping/database/
-    access: public research database
-    rights_summary: Treat as research/validation/linking unless specific derivative-use permission is established.
-    automated_ingestion: no_by_default
+    next_action: Measure observation density for 1685-1720 Greater Caribbean
     last_verified: 2026-08-31
 
   - id: prize_papers
     name: Prize Papers Portal
-    priority: future_high_value
+    priority: p1_permission_target
+    period: 1652-1815
     url: https://portal.prizepapers.de/
-    access: portal metadata and digitized documents
-    rights_summary: Rights differ among metadata, transcriptions, and images; review component-level terms.
-    automated_ingestion: component_level_review
+    beta_model_url: https://portal.prizepapers.de/beta
+    access: portal metadata/documents; future structured-data access announced
+    account_required: false
+    rights_summary: Image use restricted by Portal/TNA terms; structured-data reuse terms need clarification
+    use: Ships, aliases, journey legs, captures, lading, flags/authorities, court processes
+    automated_ingestion: no_bulk_until_structured_access_terms
+    next_action: Send structured-data access/reuse inquiry
+    last_verified: 2026-08-31
+
+  - id: naval_office_shipping_lists_boa
+    name: Naval Office Shipping Lists / BOA Power and Profit
+    priority: p1_permission_target
+    period: 1678-1825
+    url: https://britishonlinearchives.com/collections/68/power-and-profit-british-colonial-trade-in-america-and-the-caribbean-1678-1825
+    access: licensed publication; independent access requires inquiry for this collection
+    account_required: permission_or_license
+    contact: info@britishonlinearchives.com
+    rights_summary: BOA terms permit reasonable research use, not bulk extraction/republication
+    use: Vessel, home port, construction, owner, tonnage, guns, crew, cargo, chronology
+    automated_ingestion: prohibited_without_permission
+    next_action: Send research/data-use inquiry; pursue original TNA/microfilm path in parallel
+    last_verified: 2026-08-31
+
+  - id: greater_caribbean_mapping
+    name: Greater Caribbean Mapping, 1450-1850
+    priority: p1_map_discovery
+    url: https://greatercaribbeanmaps.org/
+    data_url: https://greatercaribbeanmaps.org/overview/data-download/
+    access: entire catalog CSV refreshed weekly
+    account_required: false
+    rights_summary: Treat as discovery catalog; linked image rights resolved at holding institution
+    use: Discover period maps by date, region, type, function, holding institution
+    automated_ingestion: catalog_after_terms_review
+    next_action: Inspect CSV schema and build rights-neutral map catalog table
+    last_verified: 2026-08-31
+
+  - id: loc
+    name: Library of Congress
+    priority: p1_visual_primary
+    url: https://www.loc.gov/
+    api_docs: https://www.loc.gov/apis/json-and-yaml/
+    access: JSON/YAML API and image services
+    account_required: false
+    rights_summary: Item-level rights/advisory; many historical Geography & Map items reusable
+    use: Maps, charts, port plans, prints, manuscripts
+    automated_ingestion: yes_metadata
+    next_action: Build targeted 1650-1730 Caribbean map search
+    last_verified: 2026-08-31
+
+  - id: rijksmuseum
+    name: Rijksmuseum Data Services
+    priority: p1_visual_enrichment
+    url: https://data.rijksmuseum.nl/
+    access: no-key Search API, OAI-PMH, Linked Data, downloads
+    account_required: false
+    rights_summary: Item-level Public Domain/CC0/CC BY/restricted status; credit requested
+    use: Dutch maritime art, model ships, ports, navigational objects
+    automated_ingestion: yes_metadata_rights_aware
+    next_action: Create maritime query set
+    last_verified: 2026-08-31
+
+  - id: jcb
+    name: John Carter Brown Library / Americana
+    priority: p1_visual_primary
+    url: https://jcblibrary.org/
+    access: open digital collection; item-level review
+    account_required: false
+    rights_summary: Current JCB open-access messaging supports reuse with credit; legacy Brown CDS/LUNA records can show older restrictions
+    use: Early Americas maps, books, prints, voyage narratives
+    automated_ingestion: discovery_only_initially
+    next_action: Curate benchmark items from current Americana interface
+    last_verified: 2026-08-31
+
+  - id: bne
+    name: Biblioteca Nacional de España / BNE Digital
+    priority: p1_visual_primary
+    url: https://www.bne.es/
+    access: public digital collections/data
+    account_required: false
+    rights_summary: Public-domain digital images reusable without prior permission, generally CC BY 4.0/equivalent with source credit; check item conditions
+    use: Spanish maps, atlases, engravings, nautical books
+    automated_ingestion: candidate_metadata
+    next_action: Curate Caribbean map/book benchmark set
+    last_verified: 2026-08-31
+
+  - id: smithsonian_open_access
+    name: Smithsonian Open Access
+    priority: p2_visual_material_culture
+    url: https://www.si.edu/openaccess/devtools
+    access: weekly GitHub JSON plus api.data.gov API
+    account_required: optional
+    credential_env: SMITHSONIAN_API_KEY
+    rights_summary: Open Access assets CC0 where supplied; non-open items may expose metadata only
+    use: Navigation instruments, ship models, maritime/material culture
+    automated_ingestion: yes_bulk_no_key_or_api_with_key
+    next_action: API key optional; inspect GitHub bulk data first
+    last_verified: 2026-08-31
+
+  - id: europeana
+    name: Europeana
+    priority: p2_discovery
+    url: https://api.europeana.eu/en
+    access: cultural heritage APIs
+    account_required: true
+    credential_env: EUROPEANA_API_KEY
+    rights_summary: Media rights are provider/item-specific; preserve rights URI and provider
+    use: Cross-European discovery of maps, art, books, objects
+    automated_ingestion: yes_with_key
+    next_action: Create personal API key
+    last_verified: 2026-08-31
+
+  - id: dpla
+    name: Digital Public Library of America
+    priority: p2_discovery
+    url: https://pro.dp.la/developers/
+    access: API plus bulk metadata
+    account_required: true
+    credential_env: DPLA_API_KEY
+    rights_summary: Metadata/discovery reuse is encouraged; media rights belong to provider/item
+    use: Discover US library/archive materials
+    automated_ingestion: yes_with_key
+    next_action: Request API key by email POST
+    last_verified: 2026-08-31
+
+  - id: nypl_digital
+    name: NYPL Digital Collections
+    priority: p2_manual_visual
+    url: https://digitalcollections.nypl.org/
+    access: web/manual public-domain downloads
+    account_required: false
+    rights_summary: Explicit public-domain/no-known-US-copyright items reusable without NYPL permission; metadata CC0
+    use: Maps, atlases, prints, books
+    automated_ingestion: no_new_dependency
+    next_action: Manual discovery only; Repo API retired 2026-08-01
+    last_verified: 2026-08-31
+
+  - id: dloc
+    name: Digital Library of the Caribbean
+    priority: p2_caribbean_discovery
+    url: https://dloc.com/
+    access: public digital collections; structured metadata on some records
+    account_required: false
+    rights_summary: Partner/item-specific; no collection-wide assumption
+    use: Caribbean maps, books, newspapers, partner collections
+    automated_ingestion: targeted_only
+    next_action: Build shortlist of highly relevant partner collections
+    last_verified: 2026-08-31
+
+  - id: wikidata
+    name: Wikidata / Wikidata Query Service
+    priority: p2_authority_enrichment
+    url: https://query.wikidata.org/
+    access: public SPARQL
+    account_required: false
+    rights_summary: Wikidata structured data CC0
+    use: Supplemental people/place/political authority links
+    automated_ingestion: yes_polite_cached
+    next_action: Define narrow enrichment queries, never primary historical fact source
+    last_verified: 2026-08-31
+
+  - id: stro20
+    name: STRO 2.0 - Re-engineered Sound Toll Registers Online
+    priority: p3_comparative
+    url: https://figshare.com/articles/dataset/STRO_2_0_-_Re-engineered_data_from_Sound_Toll_Registers_Online/27176202
+    access: bulk download
+    account_required: false
+    rights_summary: CC BY 4.0
+    use: Comparative early-modern shipping-network methodology and external traffic context
+    automated_ingestion: later
+    next_action: Defer unless a denominator/comparative question needs it
+    last_verified: 2026-08-31
+
+  - id: cliwoc
+    name: CLIWOC
+    priority: p3_later_weather
+    period: 1750-1854
+    access: public dataset
+    account_required: false
+    rights_summary: CC BY 3.0
+    use: Later ship-log/weather methodology; mostly outside MVP period
+    automated_ingestion: later
+    next_action: Defer
+    last_verified: 2026-08-31
+
+  - id: ekf400v2
+    name: EKF400v2
+    priority: p3_reconstructed_context
+    period: 1603-2003
+    access: research dataset / NetCDF
+    account_required: false
+    rights_summary: CC BY 4.0 in published dataset documentation
+    use: Monthly reconstructed climate context
+    automated_ingestion: later
+    next_action: Use only after observed/context layers are established
     last_verified: 2026-08-31
