@@ -1,3 +1,19 @@
+setup_doc: docs/SHIPWRECK_MUSEUM_SOURCE_SETUP.md
+
+setup_summary:
+  additional_required_credentials: none
+  reuse_existing_credentials:
+    - SMITHSONIAN_API_KEY
+    - EUROPEANA_API_KEY
+    - DPLA_API_KEY
+  do_not_invent_credentials:
+    - MASS_API_KEY
+    - NOAA_API_KEY
+    - RMG_API_KEY
+    - QAR_API_KEY
+    - MEL_FISHER_API_KEY
+  human_requests: targeted_only_after_specific_wreck_or_object_case
+
 sources:
   - id: qar_project
     name: Queen Anne's Revenge Project / North Carolina Office of State Archaeology
@@ -6,13 +22,29 @@ sources:
     url: https://www.qaronline.org/
     artifact_url: https://www.qaronline.org/conservation/artifacts
     site_map_url: https://www.qaronline.org/conservation/mapping-site
-    access: public project pages, artifact selections, technical/conservation reports and research publications
+    repository_url: https://ncmaritimemuseumbeaufort.com/
+    access: public project pages, artifact selections, technical/conservation reports, research publications, and public museum repository information
     account_required: false
+    api_key_required: false
+    api_status: no_structured_public_api_assumed; use official pages/reports and bounded institutional inquiry if accession-level export becomes necessary
     rights_summary: factual/project metadata usable as sourced research; images/documents retain page/item-specific rights and credits
     use: ship-to-wreck identification evidence, archaeology, artifact provenience, conservation, repository links
     automated_ingestion: targeted_only_after_terms_review
     location_policy: publish only location/detail already made public by responsible project
     next_action: Use as exemplar when La Concorde / Queen Anne's Revenge enters the canonical corpus
+    last_verified: 2026-08-31
+
+  - id: nc_maritime_museum_qar_repository
+    name: North Carolina Maritime Museum at Beaufort - Queen Anne's Revenge repository
+    priority: secondary_tier_c_museum_repository
+    url: https://ncmaritimemuseumbeaufort.com/
+    access: public museum/repository information; bounded institutional inquiry for accession-level data if needed
+    account_required: false
+    api_key_required: false
+    rights_summary: preserve museum/project identifiers and item-specific image/reproduction terms
+    use: present-day repository/custody endpoint for QAR artifacts; do not infer museum ownership from repository status alone
+    automated_ingestion: manual_or_targeted
+    next_action: Query/contact only after validated QAR archaeological object relations are needed
     last_verified: 2026-08-31
 
   - id: mel_fisher_henrietta_marie
@@ -21,27 +53,36 @@ sources:
     period: 1700 wreck; archaeological research 1972-present
     url: https://www.melfisher.org/henrietta-marie-1700
     research_url: https://www.melfisher.org/research
-    access: public research, exhibition and museum pages; targeted institutional inquiry if accession-level data is needed
+    collections_url: https://www.melfisher.org/collections-research
+    spanish_collections_url: https://melfisher.info/
+    slave_trade_collection_url: https://www.floridaslavetradecenter.org/
+    access: public research/exhibition pages, public searchable collection surfaces, and targeted institutional inquiry if accession-level/structured data is needed
     account_required: false
+    api_key_required: false
+    api_status: no_public_structured_api_assumed; do not scrape CAPTCHA/anti-bot collection surfaces
     rights_summary: factual research and collection information may be cited; images/text and object photography require item/site-specific rights review
     use: Henrietta Marie wreck identification, artifact assemblage, museum custody, Jamaica/forced-migration material evidence
     automated_ingestion: manual_or_targeted
     location_policy: use only museum/authority-public location precision
-    next_action: Preferred first material-afterlife proof if Henrietta Marie appears naturally in source corpus
+    next_action: Preferred first material-afterlife proof if Henrietta Marie appears naturally in source corpus; request structured/accession guidance only if public collection records are insufficient
     last_verified: 2026-08-31
 
   - id: mass_maritime_stepping_stones
     name: MaSS - Maritime Stepping Stones
     priority: secondary_tier_b_wreck_discovery
     url: https://mass.cultureelerfgoed.nl/en/about
+    api_url: https://mass.cultureelerfgoed.nl/api/
     authority_url: https://english.cultureelerfgoed.nl/topics/m/maritime-heritage/mass
-    access: public searchable heritage database; registered users may contribute; no bulk/API path assumed
-    account_required: false_for_reading
-    rights_summary: preserve MaSS/source references and linked-source rights; verify terms before automated reuse
-    use: wreck/site candidate discovery, Dutch and Dutch-Caribbean maritime heritage, references and authority links
-    automated_ingestion: no_until_access_terms_review
-    location_policy: MaSS intentionally does not provide exact positions
-    next_action: Search 1650-1730 Caribbean/Dutch-Caribbean candidates after canonical vessel list exists
+    access: public reviewed heritage database plus documented JSON API v1 with Search/List/Get/References methods
+    account_required: false_for_reading_and_api; registration_only_for_contributions
+    api_key_required: false
+    rate_guidance: stay below 720 queries/hour per IP under current API guidance
+    rights_summary: MaSS states its data is open data under CC BY-SA; preserve per-record license/source references and attribution
+    use: wreck/site candidate discovery, Dutch and Dutch-Caribbean maritime heritage, aliases, references and authority links
+    automated_ingestion: polite_candidate_discovery_allowed_after_adapter_review
+    location_policy: MaSS explicitly says it does not intend to provide exact positions; treat API lat/lon as source-published/generalized locator and never upgrade it to exact archaeological precision
+    caveat: reviewed discovery/index source, not automatic canonical ship identity
+    next_action: Test 1650-1730 Caribbean/Dutch-Caribbean candidate queries after canonical vessel list exists
     last_verified: 2026-08-31
 
   - id: noaa_wrecks_obstructions
@@ -49,13 +90,16 @@ sources:
     priority: secondary_tier_b_positional_discovery
     url: https://www.fisheries.noaa.gov/inport/item/70439
     current_access_url: https://www.nauticalcharts.noaa.gov/data/wrecks-and-obstructions.html
-    access: public NOAA charting/GIS data; current charted features via ENC Direct
+    arcgis_rest_url: https://encdirect.noaa.gov/arcgis/rest/services/encdirect
+    access: public NOAA charting/GIS services; current ENC Direct MapServer layers support public REST queries and relevant layers may return JSON/GeoJSON
     account_required: false
-    rights_summary: public U.S. government data; preserve dataset/version and positional-quality metadata
+    api_key_required: false
+    arcgis_account_required: false_for_current_public_services
+    rights_summary: public U.S. government data; preserve dataset/service/version and positional-quality metadata
     use: candidate wreck discovery and positional corroboration in U.S. waters/territories
     automated_ingestion: candidate_targeted
     location_policy: source may expose positions but project still applies archaeological sensitivity/publication policy
-    caveat: navigation dataset, not an archaeological identity authority; positions may be uncertain
+    caveat: navigation/charting dataset, not an archaeological identity authority; positions may be uncertain
     next_action: Query only after named ship/site candidates exist
     last_verified: 2026-08-31
 
@@ -65,13 +109,15 @@ sources:
     url: https://dos.fl.gov/historical/archaeology/underwater/
     preserves_url: https://dos.fl.gov/historical/archaeology/underwater/underwater-preserves/
     master_site_file_url: https://dos.fl.gov/historical/preservation/master-site-file
-    access: public preserve interpretation; targeted staff-assisted Master Site File research
+    access: public preserve interpretation plus free staff-assisted Master Site File research requests; no public general self-service site search because archaeological location information is sensitive/restricted
     account_required: false
-    rights_summary: state public information varies; archaeological site-location information may be restricted as sensitive
-    use: Florida wreck-site authority, public preserves, survey/manuscript discovery
+    api_key_required: false
+    request_cost: free_for_information_requests_under_current_public_guidance
+    rights_summary: state public information varies; archaeological site-location information is sensitive and exempt from general public disclosure
+    use: Florida wreck-site authority, public preserves, survey/manuscript discovery, state archaeological collection context
     automated_ingestion: public_preserves_only_initially
     location_policy: never republish restricted Master Site File location data; public preserve locations may use authority-published precision
-    next_action: Use Urca de Lima as a known 1715 proof case; request site-file information only for specific research questions
+    next_action: Use Urca de Lima as a known 1715 proof case; request site-file/BAR assistance only for a specific unresolved research question
     last_verified: 2026-08-31
 
   - id: royal_museums_greenwich
@@ -79,23 +125,82 @@ sources:
     priority: secondary_tier_c_museum_discovery
     url: https://collections.rmg.co.uk/
     terms_url: https://www.rmg.co.uk/policies/terms-conditions
-    access: collections website and NMM collections API described in current terms
+    access: collections website and NMM collections API
     account_required: false_currently
-    rights_summary: metadata/image reuse is governed by NMM terms; API images generally non-commercial, require National Maritime Museum credit/link, and may have stricter item-specific licenses
+    api_key_required: false_currently
+    rate_guidance: no more than 3000 API calls/day and one request/second under current terms
+    rights_summary: where indicated, collection records/images are available for non-commercial reuse under current NMM terms; images require National Maritime Museum credit/link and may have stricter item-specific licenses; maximum API image enlargement currently 1200px longest edge
     use: maritime objects, ship-related equipment, models, art and archival material; candidate museum-object links
     automated_ingestion: candidate_polite_rights_aware
-    rate_guidance: no more than 3000 API calls/day and one request/second under current terms
+    caveat: NMM states it may require API keys/authentication in the future; re-check terms before building a durable adapter
     next_action: Test searches against validated canonical ship aliases and wreck/project names; preserve accession IDs and object-level rights
     last_verified: 2026-08-31
 
+  - id: rijksmuseum_data_services
+    name: Rijksmuseum Data Services
+    priority: secondary_tier_c_museum_discovery
+    url: https://data.rijksmuseum.nl/docs/search
+    access: public Collection Search API; OAI-PMH available/preferred for larger metadata synchronization
+    account_required: false
+    api_key_required: false
+    rights_summary: preserve Linked Open Data identifiers, object-level rights, source links and image rights separately
+    use: Dutch maritime/material-culture object discovery and accession-level candidate relations
+    automated_ingestion: polite_rights_aware
+    next_action: Use for validated Dutch ship/site/person aliases; do not harvest broadly without a concrete research need
+    last_verified: 2026-08-31
+
+  - id: smithsonian_open_access_museum
+    name: Smithsonian Open Access
+    priority: secondary_tier_c_museum_discovery
+    url: https://www.si.edu/openaccess/devtools
+    access: keyed focused API plus weekly open bulk data
+    account_required: true_for_api_key_not_bulk
+    api_key_required: true_for_api
+    credential_env: SMITHSONIAN_API_KEY
+    rights_summary: item/asset rights must be preserved; use Open Access/CC0 status only where the item explicitly supports it
+    use: museum/material-culture discovery and object metadata enrichment
+    automated_ingestion: keyed_or_bulk_rights_aware
+    next_action: reuse the general source credential; no shipwreck-specific account required
+    last_verified: 2026-08-31
+
+  - id: europeana_museum_discovery
+    name: Europeana
+    priority: secondary_tier_c_museum_discovery
+    url: https://www.europeana.eu/en/apis
+    access: personal API key for programmatic discovery; provider/item rights must be preserved
+    account_required: true_for_programmatic_api
+    api_key_required: true
+    credential_env: EUROPEANA_API_KEY
+    rights_summary: Europeana is an aggregator; preserve provider/source object links and rights statements rather than treating Europeana as the rights holder
+    use: cross-institution maritime objects, archaeology images, maps, prints and museum discovery
+    automated_ingestion: keyed_discovery_rights_aware
+    next_action: reuse the general source credential; no shipwreck-specific account required
+    last_verified: 2026-08-31
+
+  - id: dpla_museum_discovery
+    name: Digital Public Library of America
+    priority: secondary_tier_c_museum_discovery
+    url: https://pro.dp.la/developers/policies
+    access: API key for programmatic metadata discovery
+    account_required: key_request_by_email
+    api_key_required: true
+    credential_env: DPLA_API_KEY
+    rights_summary: preserve contributing-institution/item rights; DPLA discovery does not grant image/object reuse rights
+    use: U.S. museum/archive discovery around named vessels, wreck projects and recovered objects
+    automated_ingestion: keyed_discovery_rights_aware
+    next_action: reuse the general source credential; no shipwreck-specific account required
+    last_verified: 2026-08-31
+
   - id: unesco_underwater_heritage_principles
-    name: UNESCO 2001 Convention - Underwater Cultural Heritage principles
+    name: UNESCO 2001 Convention - Underwater Cultural Heritage principles and competent-authority directory
     priority: policy_reference
     url: https://www.unesco.org/en/underwater-heritage/principles-2001
-    access: public policy/guidance
+    authority_directory_url: https://www.unesco.org/en/underwater-heritage/national-competent
+    access: public policy/guidance and national competent-authority directory
     account_required: false
-    rights_summary: policy reference, not an ingestion corpus
-    use: location sensitivity, in-situ preservation, anti-looting and anti-commercial-exploitation project policy
+    api_key_required: false
+    rights_summary: policy/contact reference, not a canonical wreck-location ingestion corpus
+    use: location sensitivity, in-situ preservation, anti-looting/anti-commercial-exploitation policy, and jurisdiction-specific authority discovery
     automated_ingestion: no
-    next_action: Re-check jurisdiction-specific law for each wreck before publication of sensitive data
+    next_action: Re-check jurisdiction-specific law/authority for each wreck before publication of sensitive data
     last_verified: 2026-08-31
