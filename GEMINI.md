@@ -9,8 +9,12 @@ Before substantial implementation:
 1. read `docs/AGENT_CONTEXT_INDEX.md` and load only the context relevant to the task;
 2. read `docs/MAINTAINER_EXPECTATIONS.md`;
 3. read `docs/IMPLEMENTATION_CONTRACT.md`;
-4. read the current incomplete section of `docs/FIRST_SESSIONS.md`;
+4. read the current unfinished **work packet** in `docs/FIRST_SESSIONS.md`;
 5. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
+
+For the initial local harness configuration, use `docs/ANTIGRAVITY_SETUP.md`.
+
+For deployment readiness or hosted verification, use `docs/CLOUDFLARE_DEPLOYMENT.md`.
 
 For any task that may commit data, config, screenshots, logs, benchmarks, environment details, source payloads, or generated research artifacts, also read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before editing.
 
@@ -29,11 +33,13 @@ For any task that may commit data, config, screenshots, logs, benchmarks, enviro
 11. **Primary documents are evidence, not decoration.** Keep item-level attribution and rights metadata.
 12. **Do not copy Sid Meier's Pirates! or Pirate Arcade UI.** They are conceptual/family references only.
 13. **Missing evidence is allowed.** An empty state or unresolved record is preferable to a plausible invented fixture.
-14. **Never fabricate verification.** Do not claim a test, browser state, screenshot, source check, benchmark, or runtime result that was not actually observed.
+14. **Never fabricate verification.** Do not claim a test, browser state, screenshot, source check, benchmark, deployment, or runtime result that was not actually observed.
 15. **Preserve user work.** Inspect status/diff first; do not overwrite unrelated edits or clean the workspace destructively.
 16. **Keep public/private boundaries explicit.** Never commit secrets, private environment details, restricted source material, or sensitive heritage locations merely to make development easier.
 17. **Documentation must match reality.** Do not present planned, local-only, synthetic, or unverified capability as implemented/public fact.
 18. **Prefer canonical sources of truth.** Do not create parallel configs/enums/manifests or hand-edit generated outputs when a canonical representation already exists.
+19. **Do not manufacture checkpoints.** Once a work packet is approved, continue through its routine documented subsections without repeatedly asking whether to proceed.
+20. **Publication is a separate gate.** Local file edits/builds do not authorize `git push` or prove a Cloudflare deployment succeeded.
 
 ## Locked engineering defaults
 
@@ -56,12 +62,16 @@ Do not reopen these choices because another library is familiar. Change a locked
 
 ## Initial implementation goal
 
-Build a beautiful, credible vertical slice, not a giant incomplete platform:
+Build a beautiful, credible vertical slice, not a giant incomplete platform. The initial work is organized into a few larger packets because Antigravity should spend its time implementing rather than repeatedly re-requesting approval for small milestones.
+
+Packet 1 ends with a polished interactive shell ready for its **first public Cloudflare Pages deployment**. Real historical corpus/provenance work follows in Packet 2. Public-beta polish and meaningful corpus expansion follow in Packet 3.
+
+The completed v0.1 direction remains:
 
 - Greater Caribbean map, centered initially around Port Royal connections;
-- ~10–20 real, properly sourced vessels by the completed v0.1 slice, not necessarily the first coding session;
+- ~10–20 real, properly sourced vessels;
 - several meaningful ports;
-- several repeated-vessel histories where identity is documented or carefully labeled probable;
+- repeated-vessel histories where identity is documented or carefully labeled probable;
 - ship/port/voyage/person/context inspector states;
 - at least one period map/reference layer;
 - at least one contextual event;
@@ -69,27 +79,28 @@ Build a beautiful, credible vertical slice, not a giant incomplete platform:
 - a compact timeline;
 - enough architecture that expansion to hundreds/thousands of records does not require a rewrite.
 
-Follow `docs/FIRST_SESSIONS.md` for the initial sequence. Do not skip ahead into broad corpus growth before the interaction and provenance spine works.
+Follow `docs/FIRST_SESSIONS.md` for the packet sequence. Do not skip ahead into broad corpus growth before the interaction and provenance spine works.
 
 ## Planning behavior
 
-For multi-file work:
+For a work packet:
 
-1. inspect `git status`, relevant code, and the routed context from `docs/AGENT_CONTEXT_INDEX.md`;
-2. identify the current bounded session/outcome and acceptance criteria;
-3. state source/rights/privacy implications where relevant;
-4. use existing decisions and canonical sources of truth rather than generating a menu of alternatives;
-5. choose the simplest reversible option for genuinely undecided local details;
-6. avoid opportunistic scope expansion;
-7. record future work in `docs/FOLLOWUPS.md` rather than silently adding it.
+1. inspect `git status`, relevant code, and routed context from `docs/AGENT_CONTEXT_INDEX.md`;
+2. identify the **entire current packet** and its acceptance criteria;
+3. make one bounded plan for the packet rather than separate plans for each component;
+4. state source/rights/privacy/deployment implications where relevant;
+5. use existing decisions and canonical sources of truth rather than generating option menus;
+6. choose the simplest reversible option for genuinely undecided local details;
+7. continue through routine packet subsections without stopping for a new approval;
+8. record out-of-scope work in `docs/FOLLOWUPS.md`.
 
-Apply the working conventions in `docs/MAINTAINER_EXPECTATIONS.md`: polished vertical slices, behavior-focused tests, local/CI honesty, measured optimization, documentation/reality parity, and root-cause handling of review feedback.
+Apply `docs/MAINTAINER_EXPECTATIONS.md`: polished vertical slices, behavior-focused tests, local/CI honesty, measured optimization, documentation/reality parity, and root-cause handling of review feedback.
 
 If two materially different attempts fail at the same blocker, stop cycling. Diagnose from actual errors/runtime evidence and either make one evidence-based next attempt or report the blocker.
 
 ## Completion behavior
 
-A coding session is not complete because the diff looks plausible. Run the applicable checks from `docs/IMPLEMENTATION_CONTRACT.md`, inspect the actual diff, and distinguish:
+A packet is not complete because the diff looks plausible. Run applicable checks from `docs/IMPLEMENTATION_CONTRACT.md`, inspect the actual diff, and distinguish:
 
 - **observed** results;
 - **inferred** conclusions;
@@ -97,11 +108,13 @@ A coding session is not complete because the diff looks plausible. Run the appli
 
 For browser-visible changes, inspect the real running product when tooling permits. Never substitute a generated mock or self-authored artifact for runtime evidence.
 
-For historical/data changes, verify the supporting source unit, evidence state, source ID/link, and publication rights metadata before treating the result as published fact.
+For historical/data changes, verify supporting source unit, evidence state, source ID/link, and publication rights metadata before treating a result as published fact.
+
+For deployment work, distinguish a local successful `dist/` build from an actually observed Cloudflare Pages deployment and matching commit.
 
 For any committed data/config/artifact, verify it satisfies `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
 
-Update documentation in the same change when commands, behavior, schemas, or architectural boundaries change.
+Update documentation in the same change when commands, behavior, schemas, deployment assumptions, or architectural boundaries change.
 
 ## Quality bar
 

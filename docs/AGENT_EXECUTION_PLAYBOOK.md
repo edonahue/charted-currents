@@ -1,6 +1,6 @@
 # Agent execution playbook
 
-Charted Currents is intentionally set up so a fast coding agent can execute bounded work without being asked to rediscover product strategy, historical policy, maintainership conventions, or architecture on every turn.
+Charted Currents is intentionally set up so a fast coding agent can execute **large bounded work packets** without being asked to rediscover product strategy, historical policy, maintainership conventions, or architecture on every turn.
 
 This playbook is optimized for the Antigravity CLI and Gemini Flash-class coding models, but the rules apply to any coding agent.
 
@@ -14,17 +14,37 @@ The repository owns durable decisions. The coding agent owns implementation with
 
 Escalate only when implementation exposes a real contradiction, irreversible choice, rights/privacy question, or material scope change.
 
+## Work-packet model
+
+`docs/FIRST_SESSIONS.md` defines the initial work as a few larger packets rather than many small sessions.
+
+For each packet:
+
+1. plan the **whole packet** once;
+2. execute through its documented subsections without asking for a fresh approval at ordinary milestones;
+3. use targeted checks during iteration;
+4. run the packet acceptance/verification gates at the end;
+5. hand off once with `changed / verified / unresolved / next`.
+
+A packet is a review boundary, not every component inside it.
+
+Do not stop merely because one subsection is complete. Stop only for a documented escalation condition, a permission gate that is intentionally human-controlled, or a genuine blocker after evidence-based diagnosis.
+
 ## Context discipline
 
 A large context window is not a reason to load the whole repository.
 
-Use `docs/AGENT_CONTEXT_INDEX.md` to route into the minimum useful context. For an ordinary implementation session, the common core is:
+Use `docs/AGENT_CONTEXT_INDEX.md` to route into the minimum useful context. For an ordinary implementation packet, the common core is:
 
 1. `GEMINI.md`;
 2. `docs/MAINTAINER_EXPECTATIONS.md`;
 3. `docs/IMPLEMENTATION_CONTRACT.md`;
-4. the current session in `docs/FIRST_SESSIONS.md`;
+4. the current packet in `docs/FIRST_SESSIONS.md`;
 5. only the product/design/data/source docs relevant to the files being changed.
+
+For the initial local harness setup, use `docs/ANTIGRAVITY_SETUP.md`.
+
+For deployment readiness or hosted verification, use `docs/CLOUDFLARE_DEPLOYMENT.md`.
 
 Read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before work that can place environment, source, benchmark, screenshot, config, log, location, or data artifacts in Git.
 
@@ -36,7 +56,7 @@ Do not load every large source dossier for CSS/layout work.
 
 Use `plan` mode and higher reasoning effort for:
 
-- the first pass over a new multi-file session;
+- the first pass over a new work packet;
 - data-contract changes;
 - architecture or dependency changes;
 - entity-resolution logic;
@@ -44,13 +64,21 @@ Use `plan` mode and higher reasoning effort for:
 - difficult debugging after the straightforward fix has failed;
 - final review of a large diff.
 
-Planning must end in a bounded implementation proposal tied to acceptance criteria, not a list of every possible enhancement.
+Planning must end in one bounded implementation proposal tied to the packet acceptance criteria, not a list of every possible enhancement.
 
 ### Routine execution
 
-Use normal editable mode at medium reasoning effort for a well-specified session. Fast iteration is valuable once decisions are constrained.
+Use normal editable mode at medium reasoning effort for a well-specified packet. Fast iteration is valuable once decisions are constrained.
 
-Prefer reviewable diffs early in the project. Automatic edit acceptance is appropriate only when the task is narrow and verification remains mandatory.
+Prefer reviewable diffs. Automatic edit acceptance is appropriate only when the permission posture remains sandboxed/scoped and verification remains mandatory.
+
+### Permission posture
+
+Use the recommended scoped setup in `docs/ANTIGRAVITY_SETUP.md` rather than weakening all permissions.
+
+Routine sandboxed npm/build/read-only-git commands should not require repeated human confirmation. Keep `git push`, unsandboxed execution, destructive Git, privilege escalation, and broad non-workspace access gated or denied by default.
+
+A permission prompt is not itself a reason to restructure the product task. If the operation is a known routine safe command, improve the scoped permission configuration rather than turning one work packet into many tiny prompts.
 
 ### Environment safety
 
@@ -68,6 +96,7 @@ Never print, commit, or copy secrets/private environment details into documentat
 6. **Use `docs/FOLLOWUPS.md` as the pressure valve.** Record a good out-of-scope idea and return to the objective.
 7. **One source of truth.** Do not create a parallel enum/config/manifest/generator merely to avoid understanding the existing canonical path.
 8. **Do not game verification.** Fix the root cause of valid test/review failures instead of weakening the check.
+9. **Do not manufacture checkpoints.** Continue through the current packet unless a real stop condition exists.
 
 ## Verification tiers
 
@@ -86,7 +115,7 @@ Never report a targeted or reduced check as though an unrun full/CI gate passed.
 
 A completion claim must separate:
 
-- **Observed:** commands run, tests passed, page rendered, source record inspected, measurement captured.
+- **Observed:** commands run, tests passed, page rendered, source record inspected, measurement captured, or hosted deployment opened.
 - **Inferred:** conclusions drawn from those observations.
 - **Unverified:** anything the available tools could not actually check.
 
@@ -97,11 +126,14 @@ Never manufacture proof. In particular:
 - do not write a test that merely asserts a value copied from implementation and treat that as independent validation;
 - do not claim a source supports a historical fact without opening/recording the supporting source unit;
 - do not declare a visual issue fixed solely because CSS compiled;
-- do not claim a performance improvement without comparable measurement.
+- do not claim a performance improvement without comparable measurement;
+- do not claim Cloudflare deployment success because `npm run build` succeeded locally.
 
 For browser-visible layout changes, inspect at least one normal desktop and one narrow phone layout when tooling permits.
 
 For data work, add deterministic schema/fixture/source-ID/publication checks appropriate to the adapter.
+
+For deployment work, distinguish local deployment readiness from an observed hosted Pages deployment and matching commit.
 
 ## Review feedback
 
@@ -130,16 +162,16 @@ Stop and leave the record unresolved rather than guessing when:
 
 A visible gap is a correct result. An elegant invented connection is a defect.
 
-## Session closeout
+## Packet closeout
 
-Before ending a bounded session:
+Before ending a work packet:
 
 1. run applicable checks at the appropriate tier;
 2. inspect `git diff` for scope expansion, duplicate sources of truth, generated drift, and secret/private/restricted files;
 3. verify no new historical assertion lacks provenance;
 4. verify rights-sensitive assets and published data have the required metadata;
-5. verify documentation still matches commands, schemas, behavior, and current limitations;
+5. verify documentation still matches commands, schemas, behavior, deployment assumptions, and current limitations;
 6. update `docs/FOLLOWUPS.md` only for genuinely deferred work;
 7. report: **changed / verified / unresolved / next**.
 
-Do not begin the next session simply because context remains.
+Do not begin the next packet simply because context remains. Do not push unless explicitly authorized.

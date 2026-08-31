@@ -5,10 +5,12 @@ Use this file to load **the minimum useful context for the task**. Do not read t
 ## Always for substantial implementation
 
 1. `GEMINI.md` — project constitution for the Antigravity/Gemini workflow.
-2. `docs/MAINTAINER_EXPECTATIONS.md` — how bounded work, review, verification, polish, and handoff are expected to operate.
+2. `docs/MAINTAINER_EXPECTATIONS.md` — bounded work, review, verification, polish, and handoff expectations.
 3. `docs/IMPLEMENTATION_CONTRACT.md` — locked v0.1 engineering defaults.
-4. Current unfinished section of `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
-5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — agent execution and anti-swirl behavior.
+4. Current unfinished **work packet** in `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
+5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
+
+For the initial implementation run, also use `docs/ANTIGRAVITY_SETUP.md` so routine sandboxed commands do not generate unnecessary approval churn.
 
 ## UI / product work
 
@@ -60,7 +62,17 @@ Read:
 
 A settled direction should change through an ADR, not an incidental implementation choice.
 
-## Deployment, benchmark, environment, data-export, screenshot, or config work
+## Deployment / Cloudflare
+
+Read:
+
+- `docs/CLOUDFLARE_DEPLOYMENT.md`
+- `docs/PUBLIC_PRIVATE_BOUNDARY.md`
+- `docs/IMPLEMENTATION_CONTRACT.md`
+
+The first deployment target is the independent Pages project root. Do not solve the eventual `/labs/...` URL shape during Packet 1.
+
+## Benchmark, environment, data-export, screenshot, or config work
 
 Always read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before producing a committed artifact.
 
