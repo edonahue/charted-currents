@@ -38,7 +38,7 @@ Recommended posture:
 - routine npm/build/read-only-git commands allowed;
 - `git push`, unsandboxed commands, privilege escalation, destructive Git, and broad filesystem access remain gated or denied.
 
-The repository already contains the project bootstrap code. Packet 0 is workstation setup, dependency installation, and baseline verification rather than framework scaffolding.
+The repository already contains the project bootstrap code. Packet 0 is workstation setup, dependency installation, visual-reference sync, and baseline verification rather than framework scaffolding.
 
 ---
 
@@ -50,6 +50,8 @@ Turn the existing bootable Astro/MapLibre scaffold into a polished, deployable a
 
 This packet intentionally combines the former foundation and interaction-spine sessions. The first public deployment should happen **after this packet**, before real-corpus work becomes a dependency.
 
+**Visual quality is part of this outcome.** Read and obey `docs/PACKET1_DIRECTION.md` and `docs/VISUAL_QUALITY_CONTRACT.md`. A functional generic historical-dashboard treatment does not complete the packet.
+
 ### Start from the repository that exists
 
 Do **not** run `npm create astro`, `npm create cloudflare`, or replace the starter architecture merely to get a fresh template.
@@ -59,37 +61,56 @@ The scaffold already provides:
 - Astro 7 static configuration and strict TypeScript;
 - pinned Node/Astro/MapLibre versions in `.nvmrc` and `package.json`;
 - `BaseLayout`, design-token/global-style entry points, and a runnable page shell;
-- a real MapLibre viewport using the bootstrap provider in `docs/BASEMAP_RUNTIME.md`;
+- a real MapLibre viewport using the bootstrap provider/Positron seed in `docs/BASEMAP_RUNTIME.md`;
+- a machine-readable cartography posture plus basemap policy adapter under `src/lib/map/`;
 - canonical entity/evidence/geometry type vocabulary;
 - a base-aware public-path helper and published-data filename contract;
 - inspector, timeline, evidence badge, and source-drawer component boundaries;
+- a local historical reference-board manifest/sync path plus modern interaction references under `design/`;
 - an early noindex posture;
 - a zero-dependency `npm run preflight` check.
 
 Inspect and improve these files. Do not create parallel versions simply because a template or remembered pattern is more familiar.
 
-The first dependency install is expected to create `package-lock.json`; keep and commit that lockfile with Packet 1.
+The first dependency install is expected to create `package-lock.json`; keep and commit that lockfile with Packet 1. Run/review `npm run refs:sync` before visual implementation so the historical reference board is locally available.
 
 ### Build/refine the foundation
 
-- Run `npm run preflight`, `npm install` when needed, and verify the existing scaffold before broad edits.
+- Run `npm run preflight`, `npm install` when needed, `npm run refs:sync`, and verify the existing scaffold before broad edits.
 - Preserve npm, strict TypeScript, static output, and the locked dependency rules.
 - Keep MapLibre GL JS 6 unless a demonstrated blocker requires escalation.
 - Refine `BaseLayout`, design tokens, global styles, and the map-dominant composition into an intentional product rather than leaving the bootstrap styling as final design.
-- Establish the warm editorial-atlas / Atlantic / ink visual direction from `docs/DESIGN_DIRECTION.md`.
+- Establish the warm editorial-atlas / Atlantic / ink visual direction from `docs/DESIGN_DIRECTION.md` and the anti-cheapness constraints in `docs/VISUAL_QUALITY_CONTRACT.md`.
 - Refine the real `MapViewport`, retaining correct attribution and the modern-basemap-vs-historical-evidence distinction.
-- Use `docs/BASEMAP_RUNTIME.md`; do not reopen tile-provider research unless the documented provider demonstrably blocks the packet.
+- Use `docs/BASEMAP_RUNTIME.md` and `src/lib/map/visualPolicy.ts`; do not reopen tile-provider research unless the documented provider demonstrably blocks the packet.
 - Refine inspector and compact timeline regions as part of the composition rather than isolated dashboard cards.
+- Use `design/reference-board/` for historical visual grounding and `design/MODERN_INTERACTION_REFERENCES.md` for interaction principles; do not copy any precedent wholesale.
 
 ### Build the interaction spine
 
 - Extend the canonical primitives in `src/lib/domain/types.ts`; do not define competing entity/evidence/geometry vocabularies in components.
 - Implement one shared typed selection path/state contract for `ship`, `port`, `voyage`, `person`, and `event`.
-- Wire a clearly synthetic/non-historical development feature or other explicitly developmental interaction to `EntityInspector` so map → selection → inspector is exercised without invented history.
+- Use the explicitly approved real modern locator anchors in `src/lib/map/developmentAnchors.ts` to exercise map → `port` selection → inspector. They are modern interface locators only, not historical port geometry/history, and remain outside `public/data/`.
+- Render anchors with restrained project-owned MapLibre GeoJSON/circle/symbol layers; do not use default web-map pins.
 - Implement accessible close/back/focus behavior.
-- Refine the existing `EvidenceBadge` component around the public uncertainty vocabulary.
+- Refine the existing `EvidenceBadge` component around the public uncertainty vocabulary without turning states into gamified pills/chips.
 - Implement honest loading, empty, map-unavailable, and error states.
 - Keep Packet 1 development geometry clearly separate from `public/data/`, which is reserved for deliberately published historical artifacts.
+
+### Deliberate visual-refinement pass
+
+Once the main interaction is working, perform a separate visual pass before calling Packet 1 complete.
+
+During that pass:
+
+- inspect the actual application against `docs/VISUAL_QUALITY_CONTRACT.md`;
+- remove generic card/pill/gradient/shadow treatments that survived implementation but do not serve hierarchy;
+- verify the modern basemap recedes behind Charted Currents rather than reading as a stock map style;
+- tune typography, line weight, spacing, inspector proportions, map controls, project markers, timeline, empty states, and focus/hover states as one system;
+- inspect the historical reference board again and ask whether the UI has absorbed its hierarchy/linework/restraint without imitating scans or decorative cartouches;
+- make at least one refinement based on actual desktop/phone browser inspection rather than code inspection alone.
+
+The first functional composition is **not** the final visual composition.
 
 ### Prepare for root deployment now and subpath flexibility later
 
@@ -120,15 +141,22 @@ Before handoff:
 - `npm run preflight` passes;
 - `npm run verify` passes (`astro check` + production build);
 - `package-lock.json` exists and reflects the pinned starter toolchain;
+- reviewed reference-board derivatives/checksums are present if sync succeeded;
 - `dist/` is produced;
 - the app runs locally without console-breaking errors;
-- desktop and narrow-phone layouts are inspected;
-- the map remains visually primary;
-- map attribution is visible;
+- browser inspection covers at minimum 1440×900, 3440×1440, 390×844, and 430×932 when tooling permits;
+- the deliberate post-functionality visual-refinement pass is complete;
+- safe final visual review artifacts are retained under `design/reviews/` when browser tooling can capture them;
+- the map remains unquestionably visually primary;
+- the mobile inspector is an elegant bottom sheet/drawer, not the bootstrap stacked fallback;
+- map attribution and GeoNames anchor attribution are visible where required;
 - the selection/inspector path works by keyboard;
+- rotation/pitch/default-pin behavior has not crept back into the map;
+- the timeline looks intentional but does not advertise filtering/scrubbing that does not exist;
 - map-provider failure has an honest state;
+- the result does not look like a generic dashboard/SaaS shell, faux-parchment theme, or decorative pirate site;
 - no historical fact was invented for the demo;
-- no secret/private/local material is present in the build;
+- no secret/private/local material is present in the build or review artifacts;
 - `git diff --check` passes.
 
 ### Human deployment gate

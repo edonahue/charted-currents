@@ -4,7 +4,7 @@ This is the shortest path from a fresh checkout to sustained Antigravity work.
 
 The repository contains a **bootable Astro/MapLibre scaffold**. Do not run `npm create astro`, `npm create cloudflare`, or replace the existing `package.json`, `astro.config.mjs`, `tsconfig.json`, layout, path helper, or component boundaries merely to start the project. Packet 1 should extend and refine the scaffold.
 
-The remaining first-build product choices are already locked in `docs/PACKET1_DIRECTION.md`.
+The remaining first-build product choices are already locked in `docs/PACKET1_DIRECTION.md`. The visual quality bar and anti-cheapness constraints are locked in `docs/VISUAL_QUALITY_CONTRACT.md`.
 
 ## 1. Get the local checkout ready
 
@@ -44,7 +44,7 @@ agy --mode=plan --model=gemini-3.7-flash-high
 
 Paste:
 
-> Work on the entire current Packet 1 in `docs/FIRST_SESSIONS.md`. The repository already contains a bootable Astro 7 / MapLibre 6 scaffold; do not reinitialize Astro or replace the established bootstrap files just to start. Read and obey `GEMINI.md`, `docs/AGENT_CONTEXT_INDEX.md`, `docs/MAINTAINER_EXPECTATIONS.md`, `docs/IMPLEMENTATION_CONTRACT.md`, `docs/AGENT_EXECUTION_PLAYBOOK.md`, `docs/BASEMAP_RUNTIME.md`, `docs/PACKET1_DIRECTION.md`, and the Packet 1 section. Inspect the actual repository, the locally synced `design/reference-board/`, and current diff first. Do not implement yet. Produce one bounded plan for the entire Packet 1, map the work to its acceptance criteria, identify only genuine blockers or contradictions, and avoid reopening settled choices.
+> Work on the entire current Packet 1 in `docs/FIRST_SESSIONS.md`. The repository already contains a bootable Astro 7 / MapLibre 6 scaffold; do not reinitialize Astro or replace the established bootstrap files just to start. Read and obey `GEMINI.md`, `docs/AGENT_CONTEXT_INDEX.md`, `docs/MAINTAINER_EXPECTATIONS.md`, `docs/IMPLEMENTATION_CONTRACT.md`, `docs/AGENT_EXECUTION_PLAYBOOK.md`, `docs/BASEMAP_RUNTIME.md`, `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, `design/MODERN_INTERACTION_REFERENCES.md`, and the Packet 1 section. Inspect the actual repository, `src/lib/map/visualPolicy.ts`, the locally synced `design/reference-board/`, and current diff first. Do not implement yet. Produce one bounded plan for the entire Packet 1, map the work to its acceptance criteria, identify only genuine blockers or contradictions, explain how the plan will avoid the visual anti-patterns in the quality contract, and avoid reopening settled choices.
 
 The plan should be for **all of Packet 1**, not separate approval checkpoints for map, inspector, timeline shell, mobile layout, or deployment readiness.
 
@@ -60,14 +60,15 @@ The sandbox/scoped command permissions remain in force; `accept-edits` only remo
 
 Paste:
 
-> Execute the approved Packet 1 plan using the `charted-currents-build` skill. Continue through all documented Packet 1 subsections without stopping for routine local/reversible choices. Extend the existing scaffold rather than recreating it. Treat `docs/PACKET1_DIRECTION.md` as settled product direction: use the real development anchors without inventing history, quiet the modern basemap, implement the elegant desktop dock/mobile bottom-sheet inspector, preserve restrained 2D camera continuity, keep the Packet 1 timeline visually polished but non-filtering, use the selected locally bundled typography, and work from the local historical reference board. Run targeted checks while iterating and the full Packet 1 completion checks before handoff. Inspect the real running product at desktop and narrow-phone widths when tooling permits. Do not push. Stop only for a documented escalation condition, a real evidence-backed blocker, or an operation intentionally gated by permissions. Do not begin Packet 2.
+> Execute the approved Packet 1 plan using the `charted-currents-build` skill. Continue through all documented Packet 1 subsections without stopping for routine local/reversible choices. Extend the existing scaffold rather than recreating it. Treat `docs/PACKET1_DIRECTION.md` and `docs/VISUAL_QUALITY_CONTRACT.md` as settled product/visual direction: use the real development anchors without inventing history, implement the quiet Positron-based modern cartography using `src/lib/map/visualPolicy.ts`, implement the elegant desktop dock/mobile bottom-sheet inspector, preserve restrained 2D camera continuity, keep the Packet 1 timeline visually polished but non-filtering, use the selected locally bundled typography, and work from the local historical reference board. Avoid generic dashboard cards, glassmorphism, pill-heavy controls, fake parchment, decorative pirate clip art, default map pins, strong decorative gradients, and unnecessary rounded/shadowed surfaces. Once the interaction is functional, perform a separate deliberate visual-refinement pass. Inspect the real running product at 1440×900, 3440×1440, 390×844, and 430×932 when browser tooling permits. Run targeted checks while iterating and the full Packet 1 completion checks before handoff. Do not push. Stop only for a documented escalation condition, a real evidence-backed blocker, or an operation intentionally gated by permissions. Do not begin Packet 2.
 
 ## 5. Packet 1 human gate
 
 At the end, review the agent's:
 
 - changed files/diff;
-- real browser evidence;
+- real browser evidence at desktop, ultrawide, and phone widths;
+- explanation of the deliberate post-functionality visual refinement pass;
 - `npm run verify` result;
 - locally committed reference-board derivatives/checksums;
 - unresolved items;
@@ -89,14 +90,16 @@ Gemini does not need to choose these again:
 - four real modern Packet 1 development anchors, explicitly not historical geometry;
 - the component/file boundaries from `docs/IMPLEMENTATION_CONTRACT.md`;
 - initial noindex posture;
-- OpenFreeMap as the reversible no-key bootstrap basemap provider, with a quiet/customized Packet 1 style posture;
+- OpenFreeMap as the reversible no-key bootstrap basemap provider, using Positron as the cleaner styling seed;
+- a machine-readable modern-map visual policy in `src/lib/map/visualPolicy.ts`;
 - Libre Caslon Text + Inter + IBM Plex Mono, bundled through Fontsource;
 - desktop right inspector dock + mobile bottom-sheet interaction direction;
-- restrained context-preserving selection camera behavior;
+- restrained context-preserving selection camera behavior with rotation/pitch disabled;
 - polished but non-filtering 1650–1730 Packet 1 timeline rail;
 - local public-domain historical visual-reference board;
 - restrained secondary `Erich Donahue · Lab` maker identity;
+- the anti-cheapness constraints and visual-review matrix in `docs/VISUAL_QUALITY_CONTRACT.md`;
 - no framework/state/CSS library;
 - no runtime backend.
 
-Packet 1 is responsible for turning this intentionally plain scaffold into the polished exploratory product shell described by the design/product documents.
+Packet 1 is responsible for turning this scaffold into the polished exploratory product shell described by the design/product documents. A functional first pass is not visually complete until the separate refinement pass has been performed and reviewed.

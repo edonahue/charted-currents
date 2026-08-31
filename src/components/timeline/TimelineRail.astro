@@ -1,5 +1,7 @@
 ---
 import { TIMELINE_PACKET1_INTERACTIVE, TIMELINE_RANGE } from "../../lib/time/config";
+
+const tickYears = [1650, 1670, 1690, 1710, 1730] as const;
 ---
 
 <section
@@ -8,9 +10,22 @@ import { TIMELINE_PACKET1_INTERACTIVE, TIMELINE_RANGE } from "../../lib/time/con
   data-component="timeline-rail"
   data-interactive={TIMELINE_PACKET1_INTERACTIVE ? "true" : "false"}
 >
-  <div>
-    <p class="panel-kicker">{TIMELINE_RANGE.startYear}–{TIMELINE_RANGE.endYear}</p>
-    <span>Period rail · historical filtering begins with Packet 2 evidence</span>
+  <div class="timeline-shell__heading">
+    <p class="panel-kicker">Period</p>
+    <span>{TIMELINE_RANGE.startYear}–{TIMELINE_RANGE.endYear}</span>
   </div>
-  <div class="timeline-shell__track" aria-hidden="true"></div>
+
+  <div class="timeline-shell__rail" aria-label="1650 to 1730 period rail">
+    <div class="timeline-shell__rule" aria-hidden="true"></div>
+    <div class="timeline-shell__ticks" aria-hidden="true">
+      {tickYears.map((year, index) => (
+        <span class="timeline-shell__tick" style={`--tick-position: ${(index / (tickYears.length - 1)) * 100}%`}>
+          <span class="timeline-shell__tick-mark"></span>
+          <span class="timeline-shell__tick-label">{year}</span>
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <span class="timeline-shell__note">Historical filtering begins with evidence-backed temporal data.</span>
 </section>

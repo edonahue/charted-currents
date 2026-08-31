@@ -16,7 +16,7 @@ Do not run a fresh framework scaffolder; the repository already owns the initial
 4. Current unfinished **work packet** in `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
 5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
 
-For Packet 1, also read `docs/PACKET1_DIRECTION.md`; the remaining first-build product choices are settled there and should not be reopened.
+For Packet 1, also read `docs/PACKET1_DIRECTION.md` and `docs/VISUAL_QUALITY_CONTRACT.md`; the first-build product and visual-quality choices are settled there and should not be reopened.
 
 For the initial implementation run, also use `docs/ANTIGRAVITY_SETUP.md` so routine sandboxed commands do not generate unnecessary approval churn.
 
@@ -25,13 +25,17 @@ For the initial implementation run, also use `docs/ANTIGRAVITY_SETUP.md` so rout
 Read only what is needed from:
 
 - `docs/PACKET1_DIRECTION.md` during Packet 1;
+- `docs/VISUAL_QUALITY_CONTRACT.md`;
+- `docs/VISUAL_ASSET_STRATEGY.md` when deciding whether to add/use visual assets or richer visual techniques;
 - `docs/PROJECT_BRIEF.md`;
 - `docs/PRODUCT_PRINCIPLES.md`;
 - `docs/DESIGN_DIRECTION.md`;
 - `docs/DESIGN_REFERENCES.md`;
 - `docs/MVP.md`.
 
-For map UI/runtime work, also read `docs/BASEMAP_RUNTIME.md` rather than reopening provider research.
+For interaction precedents, use `design/MODERN_INTERACTION_REFERENCES.md`. These are principles to study, not visual templates to clone.
+
+For map UI/runtime work, also read `docs/BASEMAP_RUNTIME.md` and `src/lib/map/visualPolicy.ts` rather than reopening provider/style research.
 
 For Packet 1 visual styling, inspect the locally synced images plus `manifest.json` under `design/reference-board/`. Do not browse for arbitrary replacement aesthetics merely because external search is available.
 
@@ -59,7 +63,7 @@ Read:
 - `docs/PUBLIC_PRIVATE_BOUNDARY.md`
 - relevant entries in `research/sources.yml` and source-specific registries
 
-For images/maps/material culture, also use `docs/ART_AND_MAP_SOURCES.md` and `research/art_sources.yml`.
+For images/maps/material culture, also use `docs/ART_AND_MAP_SOURCES.md`, `docs/VISUAL_ASSET_STRATEGY.md`, and `research/art_sources.yml`.
 
 For shipwreck/museum enrichment, use `docs/SHIPWRECKS_AND_MUSEUMS.md` and `research/shipwreck_museum_sources.yml`.
 
@@ -88,6 +92,8 @@ The first deployment target is the independent Pages project root. Do not solve 
 ## Benchmark, environment, data-export, screenshot, or config work
 
 Always read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before producing a committed artifact.
+
+Visual review screenshots belong under `design/reviews/` only when they come from the real running application and are safe to publish.
 
 ## Current/future work
 

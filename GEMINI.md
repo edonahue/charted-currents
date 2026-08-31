@@ -1,6 +1,6 @@
 # Gemini project instructions — Charted Currents
 
-Charted Currents is deliberately documentation-heavy because product judgment, historical provenance, uncertainty, source rights, and public/private boundaries are part of the implementation contract. Treat this file as the always-loaded project constitution, not as an invitation to reread the entire research library on every task.
+Charted Currents is deliberately documentation-heavy because product judgment, historical provenance, uncertainty, source rights, visual quality, and public/private boundaries are part of the implementation contract. Treat this file as the always-loaded project constitution, not as an invitation to reread the entire research library on every task.
 
 ## Initial-build execution context
 
@@ -10,7 +10,7 @@ Before substantial implementation:
 2. read `docs/AGENT_CONTEXT_INDEX.md` and load only the context relevant to the task;
 3. read `docs/MAINTAINER_EXPECTATIONS.md`;
 4. read `docs/IMPLEMENTATION_CONTRACT.md`;
-5. read `docs/PACKET1_DIRECTION.md` during Packet 1;
+5. read `docs/PACKET1_DIRECTION.md` and `docs/VISUAL_QUALITY_CONTRACT.md` during Packet 1;
 6. read the current unfinished **work packet** in `docs/FIRST_SESSIONS.md`;
 7. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
 
@@ -32,9 +32,10 @@ Existing bootstrap decisions include:
 - Astro `7.2.9`, MapLibre GL JS `6.6.0`, TypeScript `6.0.3`, and npm scripts in `package.json`;
 - `@astrojs/check` `0.9.10` for TypeScript 6-compatible Astro diagnostics;
 - static `astro.config.mjs` and strict `tsconfig.json`;
-- a real MapLibre viewport using the documented bootstrap provider;
+- a real MapLibre viewport using the documented OpenFreeMap provider and clean Positron seed;
+- a machine-readable basemap/project-marker posture in `src/lib/map/visualPolicy.ts` plus runtime policy adapter in `src/lib/map/applyVisualPolicy.ts`;
 - four real modern development anchors in `src/lib/map/developmentAnchors.ts`, explicitly not historical geometry;
-- context-preserving camera defaults in `src/lib/map/config.ts`;
+- context-preserving north-up/2D camera defaults in `src/lib/map/config.ts`, with rotation/pitch interactions disabled in the bootstrap viewport;
 - `BaseLayout`, starter semantic design tokens/styles, inspector/timeline/evidence/source component boundaries;
 - locally bundled Libre Caslon Text, Inter, and IBM Plex Mono through pinned Fontsource packages;
 - canonical domain enums/types in `src/lib/domain/types.ts`;
@@ -42,6 +43,8 @@ Existing bootstrap decisions include:
 - canonical published-data filenames in `src/lib/data/loadPublished.ts`;
 - explicit Packet 1 timeline bounds/non-filtering posture under `src/lib/time/`;
 - local historical visual-reference manifest/sync tooling under `design/reference-board/`;
+- modern interaction precedents in `design/MODERN_INTERACTION_REFERENCES.md`;
+- explicit visual anti-patterns, composition rules, review viewports, and mandatory refinement pass in `docs/VISUAL_QUALITY_CONTRACT.md`;
 - early noindex metadata and `public/robots.txt`;
 - zero-dependency `npm run preflight`.
 
@@ -71,6 +74,8 @@ The first `npm install` is expected to create `package-lock.json`; preserve and 
 18. **Prefer canonical sources of truth.** Do not create parallel configs/enums/manifests or hand-edit generated outputs when a canonical representation already exists.
 19. **Do not manufacture checkpoints.** Once a work packet is approved, continue through its routine documented subsections without repeatedly asking whether to proceed.
 20. **Publication is a separate gate.** Local file edits/builds do not authorize `git push` or prove a Cloudflare deployment succeeded.
+21. **Visual quality is a functional acceptance criterion.** Packet 1 may not ship as a generic dashboard, SaaS card layout, stock MapLibre demo, faux-parchment theme, or decorative pirate skin. Follow `docs/VISUAL_QUALITY_CONTRACT.md`.
+22. **The first functional visual pass is not the final pass.** Once interaction works, perform a distinct visual-refinement review against the real application and the required viewports before declaring Packet 1 complete.
 
 ## Locked engineering defaults
 
@@ -91,7 +96,7 @@ The routine implementation choices are resolved in `docs/IMPLEMENTATION_CONTRACT
 
 Do not reopen these choices because another library is familiar. Change a locked default only when the current requirement demonstrates a material benefit and record the architectural reason.
 
-During Packet 1, `docs/PACKET1_DIRECTION.md` additionally locks the real development anchors, quiet basemap posture, desktop dock/mobile bottom-sheet composition, restrained camera behavior, non-filtering timeline shell, typography, local historical reference board, and secondary maker identity. Do not conduct new preference surveys for those choices.
+During Packet 1, `docs/PACKET1_DIRECTION.md` additionally locks the real development anchors, quiet basemap posture, desktop dock/mobile bottom-sheet composition, restrained camera behavior, non-filtering timeline shell, typography, local historical reference board, and secondary maker identity. `docs/VISUAL_QUALITY_CONTRACT.md` locks the visual grammar and review bar. Do not conduct new preference surveys for those choices.
 
 ## Initial implementation goal
 
@@ -122,10 +127,11 @@ For a work packet:
 2. identify the **entire current packet** and its acceptance criteria;
 3. make one bounded plan for the packet rather than separate plans for each component;
 4. state source/rights/privacy/deployment implications where relevant;
-5. use existing decisions and canonical sources of truth rather than generating option menus;
-6. choose the simplest reversible option for genuinely undecided local details;
-7. continue through routine packet subsections without stopping for a new approval;
-8. record out-of-scope work in `docs/FOLLOWUPS.md`.
+5. for Packet 1, state the visual strategy and how it avoids the explicit anti-patterns in `docs/VISUAL_QUALITY_CONTRACT.md`;
+6. use existing decisions and canonical sources of truth rather than generating option menus;
+7. choose the simplest reversible option for genuinely undecided local details;
+8. continue through routine packet subsections without stopping for a new approval;
+9. record out-of-scope work in `docs/FOLLOWUPS.md`.
 
 Apply `docs/MAINTAINER_EXPECTATIONS.md`: polished vertical slices, behavior-focused tests, local/CI honesty, measured optimization, documentation/reality parity, and root-cause handling of review feedback.
 
@@ -139,7 +145,7 @@ A packet is not complete because the diff looks plausible. Run applicable checks
 - **inferred** conclusions;
 - **unverified** items the available tools could not check.
 
-For browser-visible changes, inspect the real running product when tooling permits. Never substitute a generated mock or self-authored artifact for runtime evidence.
+For browser-visible changes, inspect the real running product when tooling permits. During Packet 1, inspect the required desktop/ultrawide/phone viewports, perform the dedicated visual-refinement pass, and retain safe visual-review artifacts under `design/reviews/` when the tooling can capture them. Never substitute a generated mock or self-authored artifact for runtime evidence.
 
 For historical/data changes, verify supporting source unit, evidence state, source ID/link, and publication rights metadata before treating a result as published fact.
 
@@ -155,4 +161,4 @@ The initial build should make a user think:
 
 > “The data here is surprisingly detailed, and connecting these sources gives me a new way to understand this history.”
 
-Aesthetics are part of acceptance, not post-MVP polish. Correct code that looks like a generic MapLibre demo or analytics dashboard is not finished.
+Aesthetics are part of acceptance, not post-MVP polish. Correct code that looks like a generic MapLibre demo, generic product dashboard, or costume-historical website is not finished.

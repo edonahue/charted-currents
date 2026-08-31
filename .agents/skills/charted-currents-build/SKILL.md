@@ -1,6 +1,6 @@
 ---
 name: charted-currents-build
-description: Executes sustained Charted Currents implementation packets with the repository's architecture, provenance, public/private, deployment, polish, and verification gates. Use for Astro, MapLibre, UI, published-data contracts, inspectors, timelines, evidence/provenance, or vertical-slice work.
+description: Executes sustained Charted Currents implementation packets with the repository's architecture, provenance, public/private, deployment, visual-quality, polish, and verification gates. Use for Astro, MapLibre, UI, published-data contracts, inspectors, timelines, evidence/provenance, or vertical-slice work.
 ---
 
 # Charted Currents bounded build
@@ -12,12 +12,12 @@ Use this skill to execute a **whole current work packet**, not to redesign the p
 1. Inspect `git status --short` and the current diff before editing. Preserve unrelated user work.
 2. On the first project run, read `docs/KICKOFF.md`.
 3. Read `GEMINI.md`, `docs/AGENT_CONTEXT_INDEX.md`, `docs/MAINTAINER_EXPECTATIONS.md`, `docs/IMPLEMENTATION_CONTRACT.md`, and the current unfinished packet in `docs/FIRST_SESSIONS.md`.
-4. During Packet 1, read `docs/PACKET1_DIRECTION.md` and inspect the locally synced `design/reference-board/` before planning visual implementation.
+4. During Packet 1, read `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, `docs/VISUAL_ASSET_STRATEGY.md`, and `design/MODERN_INTERACTION_REFERENCES.md`; inspect the locally synced `design/reference-board/` before planning visual implementation.
 5. Load only the additional context routed by `docs/AGENT_CONTEXT_INDEX.md`.
-6. If map runtime/provider behavior is in scope, read `docs/BASEMAP_RUNTIME.md`.
+6. If map runtime/provider behavior is in scope, read `docs/BASEMAP_RUNTIME.md` and `src/lib/map/visualPolicy.ts`.
 7. If the work touches committed data/config/screenshots/logs/benchmarks/environment/source artifacts, read `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
 8. If the current packet includes deployment readiness, read `docs/CLOUDFLARE_DEPLOYMENT.md`.
-9. State one plan for the entire packet: outcome, acceptance criteria, relevant source/rights/privacy implications, and expected files/boundaries.
+9. State one plan for the entire packet: outcome, acceptance criteria, relevant source/rights/privacy implications, visual strategy, and expected files/boundaries.
 10. If the requested work contradicts a locked decision or would create a materially different architecture, stop before implementation and surface the conflict.
 
 ## Bootstrap invariant
@@ -30,9 +30,10 @@ Use the existing:
 - `src/lib/domain/types.ts`;
 - `src/lib/paths.ts`;
 - `src/lib/data/loadPublished.ts`;
-- `src/lib/map/config.ts` and `src/lib/map/developmentAnchors.ts`;
+- `src/lib/map/config.ts`, `src/lib/map/visualPolicy.ts`, `src/lib/map/applyVisualPolicy.ts`, and `src/lib/map/developmentAnchors.ts`;
 - `src/lib/time/config.ts`;
 - `design/reference-board/manifest.json` and reviewed local derivatives;
+- `design/reviews/` for safe final visual-review evidence when browser capture is available;
 - layout/component/style boundaries from the implementation contract.
 
 The first `npm install` may generate `package-lock.json`; preserve it for Packet 1. The local visual-reference sync may generate `design/reference-board/assets/` and `checksums.json`; review and retain those Packet 1 design references rather than repeatedly fetching replacements.
@@ -43,13 +44,16 @@ Do not reopen these decisions unless implementation exposes a genuine contradict
 
 - real modern port locator anchors exercise selection; they are not historical geometry/history;
 - if those anchors appear publicly, expose the canonical GeoNames CC BY 4.0 attribution;
-- quiet the modern basemap's roads/POIs/admin clutter and lean editorial-atlas without pretending it is historical;
+- use the clean OpenFreeMap Positron seed and deliberately subordinate modern roads/land-use/admin detail according to `src/lib/map/visualPolicy.ts`;
+- no default web-map pins, decorative nautical clip art, 3D buildings, map pitch, or rotation;
 - desktop right-side inspector dock, elegant mobile bottom sheet/drawer with map continuity;
 - restrained north-up/2D selection camera with minimal zoom and reduced-motion handling;
 - polished 1650–1730 timeline rail that remains non-filtering in Packet 1;
 - Libre Caslon Text + Inter + IBM Plex Mono via the existing Fontsource setup;
 - use the local historical reference board for visual grounding without treating scans as anonymous textures;
-- maker identity remains low-priority `Erich Donahue · Lab` / project utility, not primary navigation.
+- maker identity remains low-priority `Erich Donahue · Lab` / project utility, not primary navigation;
+- anti-cheapness and composition rules in `docs/VISUAL_QUALITY_CONTRACT.md` are acceptance criteria, not optional taste notes;
+- richer asset techniques in `docs/VISUAL_ASSET_STRATEGY.md` are a roadmap, not permission to prematurely add IIIF viewers, custom tile infrastructure, texture assets, animation libraries, or generic icon systems.
 
 ## Execute continuously within the packet
 
@@ -67,6 +71,7 @@ Do not reopen these decisions unless implementation exposes a genuine contradict
 - Keep private/restricted/local material out of the public repository.
 - Update docs when implementation changes a documented command, schema, behavior, deployment assumption, or boundary.
 - Add worthwhile out-of-scope ideas to `docs/FOLLOWUPS.md` rather than implementing them.
+- Once the interaction works, perform a separate deliberate **visual refinement pass** rather than treating the first functional composition as finished.
 
 ## Stop conditions
 
@@ -98,7 +103,14 @@ git status --short
 
 As targeted/fast/full/CI tiers are added, follow their documented semantics and never report an unrun higher tier as passed.
 
-Run focused tests when they exist. Inspect real browser behavior when available; for layout changes inspect both an ordinary desktop view and a narrow phone view.
+Run focused tests when they exist. Inspect real browser behavior when available.
+
+During Packet 1 visually inspect at minimum:
+
+- 1440 × 900;
+- 3440 × 1440;
+- 390 × 844;
+- 430 × 932.
 
 During Packet 1 also verify:
 
@@ -107,7 +119,10 @@ During Packet 1 also verify:
 - public use of those anchors includes the GeoNames attribution;
 - the mobile inspector is actually a bottom sheet/drawer rather than the bootstrap stacked fallback;
 - the timeline does not claim filtering/scrubbing behavior that does not exist;
-- the modern basemap remains properly attributed and visually subordinate to the product's historical/editorial identity.
+- the modern basemap remains properly attributed and visually subordinate to the product's historical/editorial identity;
+- default MapLibre pins, card soup, pill-heavy evidence UI, fake parchment, decorative pirate iconography, and gratuitous gradients/shadows have not crept into the product;
+- a second visual-refinement pass happened after the main interaction became functional;
+- safe final screenshots/notes are retained under `design/reviews/` when browser capture is available.
 
 Never fabricate verification. A mock/generated image is not a screenshot of the running app; a self-referential test is not independent evidence; compiling CSS does not prove a visual defect is fixed; a local build does not prove Cloudflare deployed successfully.
 
@@ -127,7 +142,7 @@ Before declaring the packet complete, check for:
 - accidental secrets/local paths/private infrastructure/generated files;
 - route/site geometry that visually overstates evidence or public precision;
 - inaccessible interaction/focus behavior;
-- generic dashboard or faux-pirate styling drift;
+- generic dashboard, generic SaaS, faux-historical, or faux-pirate styling drift;
 - documentation that overstates or misdescribes reality;
 - premature custom-domain/proxy infrastructure;
 - review feedback addressed superficially rather than at root cause.

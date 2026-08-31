@@ -16,7 +16,9 @@ body {
   color: var(--cc-ink);
   background: var(--cc-paper);
   font-family: var(--cc-font-sans);
-  line-height: 1.5;
+  font-size: var(--cc-text-body);
+  line-height: var(--cc-leading-body);
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -32,9 +34,10 @@ a {
 
 .app-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 23rem);
+  grid-template-columns: minmax(0, 1fr) var(--cc-inspector-width);
   grid-template-rows: auto minmax(0, 1fr) auto;
   min-height: 100svh;
+  background: var(--cc-paper);
 }
 
 .app-masthead {
@@ -43,16 +46,19 @@ a {
   align-items: baseline;
   justify-content: space-between;
   gap: var(--cc-space-4);
-  padding: var(--cc-space-3) var(--cc-space-6);
-  border-bottom: 1px solid var(--cc-line);
+  min-height: 3.4rem;
+  padding: 0.65rem var(--cc-space-6) 0.6rem;
+  border-bottom: var(--cc-rule-thin) solid var(--cc-line-strong);
   background: var(--cc-paper-raised);
 }
 
 .app-masthead h1 {
   margin: 0;
   font-family: var(--cc-font-serif);
-  font-size: clamp(1.3rem, 2vw, 1.8rem);
-  font-weight: 600;
+  font-size: var(--cc-text-title);
+  font-weight: 400;
+  line-height: var(--cc-leading-tight);
+  letter-spacing: -0.018em;
 }
 
 .app-kicker,
@@ -60,9 +66,8 @@ a {
   margin: 0;
   color: var(--cc-ink-muted);
   font-family: var(--cc-font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--cc-text-xs);
+  letter-spacing: 0.055em;
 }
 
 .app-utility {
@@ -76,12 +81,13 @@ a {
   display: flex;
   gap: var(--cc-space-3);
   color: var(--cc-ink-muted);
-  font-size: 0.72rem;
+  font-size: var(--cc-text-xs);
 }
 
 .app-utility a {
   text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
   text-underline-offset: 0.18em;
+  transition: color var(--cc-duration-fast) var(--cc-ease-standard);
 }
 
 .app-utility a:hover {
@@ -92,7 +98,7 @@ a {
   position: relative;
   min-height: 34rem;
   overflow: hidden;
-  background: #d9dfd9;
+  background: var(--cc-paper-deep);
 }
 
 .map-viewport__canvas {
@@ -105,28 +111,57 @@ a {
   z-index: 2;
   left: var(--cc-space-4);
   bottom: var(--cc-space-4);
-  max-width: min(28rem, calc(100% - 2rem));
+  max-width: min(30rem, calc(100% - 2rem));
   margin: 0;
-  padding: var(--cc-space-2) var(--cc-space-3);
-  border: 1px solid rgb(255 255 255 / 45%);
-  border-radius: var(--cc-radius-sm);
-  color: white;
-  background: rgb(23 33 38 / 82%);
-  font-size: 0.82rem;
-  backdrop-filter: blur(0.3rem);
+  padding: 0.45rem 0.65rem 0.5rem;
+  border: var(--cc-rule-thin) solid var(--cc-line-strong);
+  border-radius: var(--cc-radius-xs);
+  color: var(--cc-ink-soft);
+  background: var(--cc-paper-translucent);
+  box-shadow: 0 0.25rem 0.9rem rgb(20 29 33 / 7%);
+  font-size: var(--cc-text-sm);
+}
+
+/* MapLibre chrome should belong to the atlas rather than look stock. */
+.maplibregl-ctrl-group {
+  overflow: hidden;
+  border: var(--cc-rule-thin) solid var(--cc-line-strong) !important;
+  border-radius: var(--cc-radius-xs) !important;
+  background: var(--cc-paper-translucent) !important;
+  box-shadow: none !important;
+}
+
+.maplibregl-ctrl-group button + button {
+  border-top-color: var(--cc-line) !important;
+}
+
+.maplibregl-ctrl button {
+  transition: background-color var(--cc-duration-fast) var(--cc-ease-standard);
+}
+
+.maplibregl-ctrl button:hover {
+  background-color: var(--cc-paper-deep) !important;
+}
+
+.maplibregl-ctrl-attrib {
+  color: var(--cc-ink-muted) !important;
+  background: rgb(248 243 233 / 86%) !important;
+  font-size: 0.625rem !important;
 }
 
 .inspector-shell {
   padding: var(--cc-space-6);
-  border-left: 1px solid var(--cc-line);
+  border-left: var(--cc-rule-thin) solid var(--cc-line-strong);
   background: var(--cc-paper-raised);
-  box-shadow: var(--cc-shadow-soft);
+  box-shadow: var(--cc-shadow-dock);
 }
 
 .inspector-shell h2 {
   margin: var(--cc-space-2) 0 var(--cc-space-3);
   font-family: var(--cc-font-serif);
-  font-size: 1.45rem;
+  font-size: 1.55rem;
+  font-weight: 400;
+  line-height: 1.12;
 }
 
 .inspector-shell p:last-child {
@@ -136,20 +171,87 @@ a {
 .timeline-shell {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(14rem, 1fr) minmax(14rem, auto);
   align-items: center;
-  gap: var(--cc-space-4);
-  min-height: 4.5rem;
-  padding: var(--cc-space-3) var(--cc-space-6);
-  border-top: 1px solid var(--cc-line);
+  gap: var(--cc-space-5);
+  min-height: var(--cc-timeline-height);
+  padding: 0.65rem var(--cc-space-6) 0.75rem;
+  border-top: var(--cc-rule-thin) solid var(--cc-line-strong);
   background: var(--cc-paper-raised);
 }
 
-.timeline-shell__track {
-  height: 0.25rem;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--cc-atlantic), var(--cc-verdigris));
-  opacity: 0.4;
+.timeline-shell__heading {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 6rem;
+}
+
+.timeline-shell__heading > span {
+  font-family: var(--cc-font-serif);
+  font-size: 1rem;
+}
+
+.timeline-shell__rail {
+  position: relative;
+  height: 2.1rem;
+  margin-inline: var(--cc-space-2);
+}
+
+.timeline-shell__rule {
+  position: absolute;
+  top: 0.63rem;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--cc-line-strong);
+}
+
+.timeline-shell__ticks {
+  position: absolute;
+  inset: 0;
+}
+
+.timeline-shell__tick {
+  position: absolute;
+  top: 0;
+  left: var(--tick-position);
+  display: grid;
+  justify-items: center;
+  transform: translateX(-50%);
+}
+
+.timeline-shell__tick-mark {
+  display: block;
+  width: 1px;
+  height: 0.72rem;
+  background: var(--cc-ink-muted);
+}
+
+.timeline-shell__tick-label {
+  margin-top: 0.12rem;
+  color: var(--cc-ink-muted);
+  font-family: var(--cc-font-serif);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-shell__note {
+  max-width: 24rem;
+  color: var(--cc-ink-muted);
+  font-size: var(--cc-text-xs);
+  line-height: 1.35;
+  text-align: right;
+}
+
+@media (min-width: 120rem) {
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 25rem);
+  }
+
+  .app-masthead,
+  .timeline-shell {
+    padding-inline: var(--cc-space-8);
+  }
 }
 
 @media (max-width: 48rem) {
@@ -160,6 +262,7 @@ a {
   .app-masthead {
     align-items: flex-start;
     flex-direction: column;
+    gap: var(--cc-space-2);
     padding: var(--cc-space-3) var(--cc-space-4);
   }
 
@@ -169,7 +272,14 @@ a {
   }
 
   .map-viewport {
-    min-height: 58svh;
+    min-height: 66svh;
+  }
+
+  .map-viewport__status {
+    right: var(--cc-space-3);
+    bottom: var(--cc-space-3);
+    left: var(--cc-space-3);
+    max-width: none;
   }
 
   /*
@@ -177,14 +287,20 @@ a {
    * locked mobile bottom-sheet/drawer behavior in docs/PACKET1_DIRECTION.md.
    */
   .inspector-shell {
-    border-top: 1px solid var(--cc-line);
+    border-top: var(--cc-rule-thin) solid var(--cc-line-strong);
     border-left: 0;
     box-shadow: none;
   }
 
   .timeline-shell {
     grid-template-columns: 1fr;
+    gap: var(--cc-space-2);
     padding: var(--cc-space-3) var(--cc-space-4);
+  }
+
+  .timeline-shell__note {
+    max-width: none;
+    text-align: left;
   }
 }
 

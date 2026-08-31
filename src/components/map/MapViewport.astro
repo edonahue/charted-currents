@@ -11,6 +11,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 <script>
   import { Map, NavigationControl } from "maplibre-gl";
+  import { applyBasemapVisualPolicy } from "../../lib/map/applyVisualPolicy";
   import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW } from "../../lib/map/config";
 
   const container = document.getElementById("charted-currents-map");
@@ -22,12 +23,20 @@ import "maplibre-gl/dist/maplibre-gl.css";
       style: INITIAL_MAP_STYLE_URL,
       center: INITIAL_MAP_VIEW.center,
       zoom: INITIAL_MAP_VIEW.zoom,
+      bearing: 0,
+      pitch: 0,
+      maxPitch: 0,
+      dragRotate: false,
+      pitchWithRotate: false,
+      touchPitch: false,
       attributionControl: true,
     });
 
     map.addControl(new NavigationControl({ showCompass: false }), "top-right");
+    map.touchZoomRotate.disableRotation();
 
     map.once("load", () => {
+      applyBasemapVisualPolicy(map);
       container.dataset.mapReady = "true";
       if (status) {
         status.textContent =

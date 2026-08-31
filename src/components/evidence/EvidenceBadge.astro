@@ -21,26 +21,34 @@ const labels: Record<EvidenceState, string> = {
   .evidence-badge {
     display: inline-flex;
     align-items: center;
-    min-height: 1.5rem;
-    padding: 0.1rem 0.45rem;
+    min-height: 1.45rem;
+    padding: 0.12rem 0.4rem;
     border: 1px solid var(--cc-line);
-    border-radius: 999px;
+    border-radius: var(--cc-radius-xs);
+    color: var(--cc-ink-soft);
+    background: color-mix(in srgb, var(--cc-paper-raised) 82%, transparent);
     font-family: var(--cc-font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+    font-size: var(--cc-text-xs);
+    font-weight: 400;
+    letter-spacing: 0.025em;
   }
 
   .evidence-badge[data-evidence-state="documented"] {
-    border-color: color-mix(in srgb, var(--cc-atlantic) 55%, transparent);
+    border-color: color-mix(in srgb, var(--cc-atlantic) 48%, transparent);
   }
 
-  .evidence-badge[data-evidence-state="probable_match"],
+  .evidence-badge[data-evidence-state="probable_match"] {
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--cc-brass) 58%, transparent);
+  }
+
   .evidence-badge[data-evidence-state="reconstructed"] {
     border-style: dashed;
+    border-color: color-mix(in srgb, var(--cc-verdigris) 62%, transparent);
   }
 
   .evidence-badge[data-evidence-state="contextual"] {
     color: var(--cc-ink-muted);
+    border-color: var(--cc-line);
   }
 </style>

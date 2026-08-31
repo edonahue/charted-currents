@@ -15,8 +15,10 @@ README.md
 astro.config.mjs
 data/README.md
 data/samples/README.md
+design/MODERN_INTERACTION_REFERENCES.md
 design/reference-board/README.md
 design/reference-board/manifest.json
+design/reviews/README.md
 docs/AGENT_CONTEXT_INDEX.md
 docs/AGENT_EXECUTION_PLAYBOOK.md
 docs/AI_AND_EXTRACTION_POLICY.md
@@ -51,7 +53,9 @@ docs/PUBLIC_PRIVATE_BOUNDARY.md
 docs/ROADMAP.md
 docs/SHIPWRECKS_AND_MUSEUMS.md
 docs/SOURCE_RIGHTS.md
+docs/VISUAL_ASSET_STRATEGY.md
 docs/VISUAL_BENCHMARK_ASSETS.md
+docs/VISUAL_QUALITY_CONTRACT.md
 docs/adr/0001-static-first-maplibre.md
 docs/adr/0002-provenance-before-entities.md
 docs/adr/0003-light-editorial-atlas.md
@@ -80,8 +84,10 @@ src/env.d.ts
 src/layouts/BaseLayout.astro
 src/lib/data/loadPublished.ts
 src/lib/domain/types.ts
+src/lib/map/applyVisualPolicy.ts
 src/lib/map/config.ts
 src/lib/map/developmentAnchors.ts
+src/lib/map/visualPolicy.ts
 src/lib/paths.ts
 src/lib/state/selection.ts
 src/lib/time/config.ts

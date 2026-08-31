@@ -1,4 +1,6 @@
-export const INITIAL_MAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
+import { BASEMAP_SEED_STYLE_URL } from "./visualPolicy";
+
+export const INITIAL_MAP_STYLE_URL = BASEMAP_SEED_STYLE_URL;
 
 export const INITIAL_MAP_VIEW = {
   center: [-76.5, 18.0] as [number, number],
@@ -19,6 +21,7 @@ export const SELECTION_CAMERA = {
 
 /**
  * This is modern map-interface configuration, not historical evidence.
- * See docs/BASEMAP_RUNTIME.md and docs/PACKET1_DIRECTION.md before changing
- * provider, style, camera, or historical-meaning assumptions.
+ * See docs/BASEMAP_RUNTIME.md, docs/PACKET1_DIRECTION.md, and
+ * docs/VISUAL_QUALITY_CONTRACT.md before changing provider, style, camera,
+ * or historical-meaning assumptions.
  */
