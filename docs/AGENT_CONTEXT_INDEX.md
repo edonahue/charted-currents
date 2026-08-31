@@ -16,19 +16,24 @@ Do not run a fresh framework scaffolder; the repository already owns the initial
 4. Current unfinished **work packet** in `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
 5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
 
+For Packet 1, also read `docs/PACKET1_DIRECTION.md`; the remaining first-build product choices are settled there and should not be reopened.
+
 For the initial implementation run, also use `docs/ANTIGRAVITY_SETUP.md` so routine sandboxed commands do not generate unnecessary approval churn.
 
 ## UI / product work
 
 Read only what is needed from:
 
-- `docs/PROJECT_BRIEF.md`
-- `docs/PRODUCT_PRINCIPLES.md`
-- `docs/DESIGN_DIRECTION.md`
-- `docs/DESIGN_REFERENCES.md`
-- `docs/MVP.md`
+- `docs/PACKET1_DIRECTION.md` during Packet 1;
+- `docs/PROJECT_BRIEF.md`;
+- `docs/PRODUCT_PRINCIPLES.md`;
+- `docs/DESIGN_DIRECTION.md`;
+- `docs/DESIGN_REFERENCES.md`;
+- `docs/MVP.md`.
 
 For map UI/runtime work, also read `docs/BASEMAP_RUNTIME.md` rather than reopening provider research.
+
+For Packet 1 visual styling, inspect the locally synced images plus `manifest.json` under `design/reference-board/`. Do not browse for arbitrary replacement aesthetics merely because external search is available.
 
 For layout or styling work, do not automatically load large source dossiers.
 

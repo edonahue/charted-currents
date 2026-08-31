@@ -6,10 +6,12 @@
 - Sid Meier's Pirates!: strong interaction reference; not a visual/trade-dress template.
 - Map: modern interactive map styled from historical cartography.
 - Initial modern basemap runtime: MapLibre GL JS 6 + OpenFreeMap public service; modern basemap is infrastructure, never historical evidence; provider remains reversible.
+- Packet 1 basemap styling: mute/remove contemporary roads, POIs, and administrative clutter where practical; emphasize coastline, islands, land/water structure, restrained labels; lean toward period-inflected editorial atlas without disguising the basemap as historical cartography.
 - Theme: light/warm-paper first.
 - Pirate Arcade: light family resemblance only; Charted Currents should be much more refined.
 - Historical maps/documents: real reusable primary sources appear from v0.1.
-- Initial experience: open map and immediately explore real vessels/routes once the evidence-backed corpus is introduced; Packet 1 may remain explicitly empty/development-only historically.
+- Packet 1 map content: four real modern locator anchors (Port Royal, Havana, Curaçao/Willemstad, Cartagena) may exercise the `port` selection path; these are explicitly not historical geometry or voyage assertions and remain outside `public/data/`.
+- Initial experience: open map and immediately explore geography; real vessel/route history arrives with the evidence-backed corpus rather than being invented for the shell.
 - Initial geography: Port Royal-centered, trending broader Greater Caribbean.
 - Pirates: prominent profiles, not structurally privileged.
 - Place naming: modern canonical + historical variants.
@@ -22,18 +24,22 @@
 - Context v0.1: wars, major disasters, documented/reconstructed hurricanes.
 - Playfulness: serious content with delightful exploration; no explicit gamification.
 - Animation: restrained initially, architecture supports richer time animation.
+- Packet 1 camera: gentle context-preserving repositioning only when needed; minimal zoom delta; north-up/2D; no cinematic fly-throughs; reduced-motion path minimizes animation.
 - Audience priority: history/pirate enthusiasts, maker, data-viz practitioners, portfolio viewers, students/teachers.
 - Public posture: polished public experiment with academic-style rigor and restrained maker branding.
+- Maker identity: secondary only; restrained `Erich Donahue · Lab` / project link treatment is appropriate away from the primary experience.
 - First deployment: independent root-hosted Cloudflare Pages project / `*.pages.dev` URL after Packet 1; do not block launch on the final canonical domain/path.
 - Later URL posture: `charted-currents.erichdonahue.com`, a link/redirect from `/labs/charted-currents/`, deliberate main-site integration, or another documented approach may be chosen after the product exists; no Packet 1 Worker/proxy solely for URL aesthetics.
-- Web bootstrap: existing pinned scaffold uses Node 22.16.0, Astro 7.2.0 static output, strict TypeScript, MapLibre GL JS 6.6.0, npm; do not re-scaffold during Packet 1.
+- Web bootstrap: existing pinned scaffold uses Node 22.16.0, Astro 7.2.9 static output, TypeScript 6.0.3, MapLibre GL JS 6.6.0, npm; do not re-scaffold during Packet 1.
+- Typography: Libre Caslon Text + Inter + IBM Plex Mono, self-hosted through pinned Fontsource packages.
+- Responsive inspector: elegant right-side dock on desktop; bottom sheet/drawer on mobile with the map remaining visible.
+- Timeline: persistent compact 1650–1730 rail; Packet 1 establishes polished visual hierarchy but does not implement fake filtering/scrubbing before real temporal evidence exists.
+- Visual design research: local reference board of specifically reviewed public-domain historical maps/plans under `design/reference-board/`; reference assets are not automatically public-product assets.
 - Infrastructure: static-first + local ETL, architect toward scale and optional DuckDB-Wasm.
 - Cloudflare runtime: static Pages deployment consumes `dist/`; no Astro Cloudflare SSR adapter/Worker/Wrangler config unless a later requirement changes architecture.
 - Naval Office Lists: v0.1 only reusable/open/manual legitimate examples; later pursue original archives and BOA permission/API.
 - Coverage: explicitly sample reconstruction with visible gaps.
 - Ship resolution: allow carefully labeled probable matches.
 - Map click: inspector-first.
-- Timeline: persistent compact, trending toward simulation-like scrub.
 - Route geometry: schematic first; reconstructed historical routes are a desired later research feature.
-- Typography: editorial historical atlas + restrained engraved influence, weighted editorial.
 - First implementation: beautiful small vertical slice with scale-ready data contracts, organized into a few sustained work packets rather than many permission-heavy micro-sessions.

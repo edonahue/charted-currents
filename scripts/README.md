@@ -1,10 +1,13 @@
 # Scripts
 
-## Current bootstrap utility
+## Current bootstrap utilities
 
 - `preflight.mjs` — zero-dependency check for the pinned Node version, required starter paths, and canonical npm scripts. Run with `npm run preflight` before dependency installation/Packet 1.
+- `sync-visual-references.mjs` — deterministic, networked setup helper that reads the fixed reviewed list in `design/reference-board/manifest.json`, fetches ~1280px Wikimedia Commons derivatives, writes them under `design/reference-board/assets/`, and records SHA-256/check metadata in `checksums.json`. Run with `npm run refs:sync` after dependencies/setup networking are available.
 
-It deliberately does not install packages, mutate files, contact services, or claim browser/deployment verification.
+`preflight.mjs` deliberately does not install packages, mutate files, contact services, or claim browser/deployment verification.
+
+`sync-visual-references.mjs` deliberately has a narrow role: populate the already reviewed historical design-reference board. It is **not** a generic image scraper and does not make those derivatives automatically approved public-product assets. Review the generated files against the committed manifest before retaining them in Packet 1.
 
 ## Expected data-pipeline areas
 

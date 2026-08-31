@@ -1,7 +1,16 @@
-<section class="timeline-shell" aria-label="Historical timeline" data-component="timeline-rail">
+---
+import { TIMELINE_PACKET1_INTERACTIVE, TIMELINE_RANGE } from "../../lib/time/config";
+---
+
+<section
+  class="timeline-shell"
+  aria-label="Historical timeline"
+  data-component="timeline-rail"
+  data-interactive={TIMELINE_PACKET1_INTERACTIVE ? "true" : "false"}
+>
   <div>
-    <p class="panel-kicker">1650–1730</p>
-    <span>Timeline contract pending Packet 2 evidence</span>
+    <p class="panel-kicker">{TIMELINE_RANGE.startYear}–{TIMELINE_RANGE.endYear}</p>
+    <span>Period rail · historical filtering begins with Packet 2 evidence</span>
   </div>
   <div class="timeline-shell__track" aria-hidden="true"></div>
 </section>

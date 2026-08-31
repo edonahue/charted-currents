@@ -31,7 +31,7 @@ static hosting
 ## Front end
 
 ### Astro
-Static output by default. Interactive islands for map, timeline, inspector, filters, and small charts. Do not turn the project into a SPA without a clear benefit.
+Static output by default. Use Astro components plus small browser-native TypeScript modules/scripts for map, timeline, inspector, filters, and small charts. Do not add a UI-framework island layer or turn the project into a SPA without a demonstrated benefit.
 
 ### MapLibre GL JS
 Chosen for TypeScript/WebGL mapping, vector/raster layers, data-driven styling, camera animation, GeoJSON now, and PMTiles later.

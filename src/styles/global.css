@@ -26,6 +26,10 @@ a,
   outline-offset: 0.2rem;
 }
 
+a {
+  color: inherit;
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 23rem);
@@ -59,6 +63,29 @@ a,
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.app-utility {
+  display: grid;
+  justify-items: end;
+  gap: var(--cc-space-1);
+  text-align: right;
+}
+
+.app-utility nav {
+  display: flex;
+  gap: var(--cc-space-3);
+  color: var(--cc-ink-muted);
+  font-size: 0.72rem;
+}
+
+.app-utility a {
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.app-utility a:hover {
+  color: var(--cc-ink);
 }
 
 .map-viewport {
@@ -136,10 +163,19 @@ a,
     padding: var(--cc-space-3) var(--cc-space-4);
   }
 
+  .app-utility {
+    justify-items: start;
+    text-align: left;
+  }
+
   .map-viewport {
     min-height: 58svh;
   }
 
+  /*
+   * Bootstrap fallback only. Packet 1 replaces this stacked inspector with the
+   * locked mobile bottom-sheet/drawer behavior in docs/PACKET1_DIRECTION.md.
+   */
   .inspector-shell {
     border-top: 1px solid var(--cc-line);
     border-left: 0;

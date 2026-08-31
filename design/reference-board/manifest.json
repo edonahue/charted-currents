@@ -1,0 +1,59 @@
+{
+  "purpose": "Local Packet 1 design research. These derivatives are not automatically public-product assets.",
+  "thumbnail_width": 1280,
+  "references": [
+    {
+      "id": "moll_west_indies_1715",
+      "local_file": "assets/moll-west-indies-1715.jpg",
+      "title": "A map of the West-Indies or the islands of America in the North Sea",
+      "creator": "Herman Moll; Thomas Bowles",
+      "source_date": "1715?",
+      "institution": "Library of Congress, Geography and Map Division",
+      "canonical_source_url": "https://www.loc.gov/item/gm71005442/",
+      "commons_file": "A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning (sic) what belongs to Spain, England, France, Holland, etc. also ye trade winds, and ye LOC gm71005442.jpg",
+      "rights_basis": "Library of Congress Geography and Map Division digitized collection: free to use/reuse absent a contrary Rights Advisory; Commons marks the underlying work/reproduction public domain.",
+      "role": "Core-period regional hierarchy, trade winds, fleet tracks, maritime notation, harbor insets.",
+      "public_product_use": "not implied"
+    },
+    {
+      "id": "delisle_antilles_1718",
+      "local_file": "assets/delisle-antilles-1718.jpg",
+      "title": "Carte des Antilles françoises et des isles voisines",
+      "creator": "Guillaume Delisle; based in part on Pierre Hercule Petit de La Grandecourt",
+      "source_date": "1718 LOC copy / map first issued 1717",
+      "institution": "Library of Congress, Geography and Map Division",
+      "canonical_source_url": "https://www.loc.gov/item/gm71005440/",
+      "commons_file": "Carte des Antilles françoises et des isles voisines. Dressée sur les memoires manuscrits de Mr. Petit ingenieur du Roy, et sur quelques observations. LOC gm71005440.tif",
+      "rights_basis": "Public-domain historical work; Commons identifies the file as public domain. Re-check the LOC item record before any public-product asset use.",
+      "role": "Contemporary French cartographic viewpoint, lettering, hierarchy, island emphasis, chart composition.",
+      "public_product_use": "not implied"
+    },
+    {
+      "id": "le_rouge_port_royal_1755",
+      "local_file": "assets/le-rouge-port-royal-1755.jpg",
+      "title": "Port-Royal de Jamaique",
+      "creator": "Georges-Louis Le Rouge",
+      "source_date": "1755",
+      "institution": "Library of Congress, Geography and Map Division",
+      "canonical_source_url": "https://www.loc.gov/item/73691840/",
+      "commons_file": "Port-Royal de Jamaique. LOC 73691840.jpg",
+      "rights_basis": "Library of Congress Geography and Map Division digitized collection: free to use/reuse absent a contrary Rights Advisory; historical work is public domain.",
+      "historical_relation": "Later representation explicitly noting what remained after the 1692 earthquake.",
+      "role": "Harbor/fort plan language, hatching, orientation, later-source labeling discipline.",
+      "public_product_use": "not implied"
+    },
+    {
+      "id": "browne_jamaica_port_royal_1755",
+      "local_file": "assets/browne-jamaica-port-royal-1755.jpg",
+      "title": "A new map of Jamaica; in which the several towns, forts, and settlements are accurately laid down...",
+      "creator": "Patrick Browne; Sheffield; J. Bayly",
+      "source_date": "1755",
+      "institution": "Library of Congress, Geography and Map Division",
+      "canonical_source_url": "https://www.loc.gov/item/73691842/",
+      "commons_file": "A new map of Jamaica; in which the several towns, forts, and settlements, are accurately laid down as well as ye situations & depts. of ye most noted harbours & anchoring places ... LOC 73691842.jpg",
+      "rights_basis": "Library of Congress Geography and Map Division digitized collection: free to use/reuse absent a contrary Rights Advisory; historical work is public domain.",
+      "role": "Soundings, harbor detail, settlement hierarchy, coastline treatment, Port Royal inset vocabulary.",
+      "public_product_use": "not implied"
+    }
+  ]
+}

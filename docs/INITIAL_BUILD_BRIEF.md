@@ -2,31 +2,35 @@
 
 ## Mission
 
-Turn the **existing bootable scaffold** into the first polished visual/technical vertical slice quickly without expanding the historical corpus beyond verified sample data. The major product, architecture, historical-policy, design-direction, public/private, bootstrap-toolchain, and initial basemap choices are already documented; implementation should execute them rather than repeatedly reconsider them.
+Turn the **existing bootable scaffold** into the first polished visual/technical vertical slice quickly without expanding the historical corpus beyond verified sample data. The major product, architecture, historical-policy, design-direction, public/private, bootstrap-toolchain, initial basemap, and Packet 1 interaction choices are already documented; implementation should execute them rather than repeatedly reconsider them.
 
-Start with `docs/KICKOFF.md`. Use `docs/FIRST_SESSIONS.md` as the initial **work-packet queue**, `docs/IMPLEMENTATION_CONTRACT.md` for routine technical choices, `docs/AGENT_EXECUTION_PLAYBOOK.md` for planning/verification/blockers, `docs/BASEMAP_RUNTIME.md` for the initial map provider, and `docs/ANTIGRAVITY_SETUP.md` to reduce routine permission interruptions safely.
+Start with `docs/KICKOFF.md`. Use `docs/FIRST_SESSIONS.md` as the initial **work-packet queue**, `docs/PACKET1_DIRECTION.md` for the locked first-build product choices, `docs/IMPLEMENTATION_CONTRACT.md` for routine technical choices, `docs/AGENT_EXECUTION_PLAYBOOK.md` for planning/verification/blockers, `docs/BASEMAP_RUNTIME.md` for the initial map provider, and `docs/ANTIGRAVITY_SETUP.md` to reduce routine permission interruptions safely.
 
 ## Existing bootstrap
 
 Do not recreate the framework setup. The repository already contains:
 
-- pinned Node 22.16.0 / Astro 7.2.0 / MapLibre 6.6.0;
+- pinned Node 22.16.0 / Astro 7.2.9 / TypeScript 6.0.3 / MapLibre 6.6.0;
+- TypeScript-6-compatible `@astrojs/check` 0.9.10;
 - static Astro config and strict TypeScript;
+- locally bundled Libre Caslon Text / Inter / IBM Plex Mono;
 - a runnable page/layout/style shell;
-- a real modern MapLibre Caribbean basemap;
-- canonical entity/evidence/geometry types;
+- a real modern MapLibre Caribbean basemap plus quiet/customized Packet 1 styling direction;
+- four real modern development anchors, explicitly not historical geometry;
+- canonical entity/evidence/geometry types, camera config, timeline config, and shared selection store;
 - base-aware public pathing and published-data filename mapping;
 - inspector/timeline/evidence/source component boundaries;
+- a deterministic local historical visual-reference board sync/manifest;
 - noindex/robots posture for the early public shell;
-- `npm run preflight` and `npm run verify` command surfaces.
+- `npm run preflight`, `npm run refs:sync`, and `npm run verify` command surfaces.
 
-Do not run `npm create astro`, `npm create cloudflare`, or replace the starter tree just to begin. The first `npm install` should generate the lockfile; retain it.
+Do not run `npm create astro`, `npm create cloudflare`, or replace the starter tree just to begin. The first `npm install` should generate the lockfile; retain it. Sync/review the reference board before the AGY implementation run.
 
 ## Build sequence
 
-1. **Packet 1 — scaffold to public interactive shell**: refine the design system and real MapLibre surface, implement the map-first composition and typed selection/inspector spine, honest empty/failure states, responsive/a11y baseline, and a Cloudflare-ready `dist/` build.
+1. **Packet 1 — scaffold to public interactive shell**: refine the design system and quiet modern MapLibre surface; use the real development anchors to implement map → selection → inspector without inventing history; implement the elegant desktop right dock/mobile bottom sheet, restrained context-preserving camera, polished but non-filtering 1650–1730 timeline, honest empty/failure states, responsive/a11y baseline, and a Cloudflare-ready `dist/` build.
 2. **First public deployment**: connect the repository to Cloudflare Pages and verify the real `*.pages.dev` production shell. Do not block on a custom domain or `/labs/...` integration.
-3. **Packet 2 — evidence-backed vertical slice**: tiny verified real corpus, deterministic publication validation, source drawer, evidence states, route semantics, compact timeline, one contextual event, one rights-cleared historical visual source.
+3. **Packet 2 — evidence-backed vertical slice**: tiny verified real corpus, deterministic publication validation, source drawer, evidence states, route semantics, functional temporal/context path, one contextual event, one rights-cleared historical visual source.
 4. **Packet 3 — public-beta quality**: deeper responsive/accessibility/validation pass, focused regression tests, meaningful corpus growth toward the v0.1 target, production/indexing/domain decision.
 
 The larger packets are intentional. Once an approved packet begins, continue through its documented subsections without asking for a new go-ahead after each routine milestone.
@@ -37,14 +41,20 @@ Reject a technically correct build if it:
 
 - leaves the starter styling/composition untouched and calls the scaffold finished;
 - looks like a generic MapLibre demo or analytics dashboard;
+- leaves contemporary roads/POIs/admin clutter visually dominant;
 - makes the map secondary to cards;
+- stacks a full mobile inspector below the map instead of preserving map continuity through the bottom-sheet direction;
+- uses cinematic fly-to/pitch/bearing effects instead of restrained camera continuity;
+- makes the Packet 1 timeline imply historical filtering that does not exist;
 - buries provenance;
 - creates parallel domain/path/config conventions instead of extending the canonical starter files;
 - makes all routes or relationships look equally certain;
+- turns the real modern development anchors into unsourced historical port/voyage claims;
 - invents plausible historical fixture data to make the UI feel complete;
 - treats the modern basemap as historical evidence;
-- treats historical imagery as anonymous texture;
+- treats historical reference-board imagery as anonymous texture or automatically approved product assets;
 - slips into parody pirate theming;
+- makes maker/portfolio branding more prominent than Charted Currents;
 - adds infrastructure/frameworks without a demonstrated v0.1 need;
 - claims visual/runtime/source/deployment verification that was not actually performed;
 - exposes private/restricted data or local environment details.
@@ -53,6 +63,7 @@ Reject a technically correct build if it:
 
 - Inspect status/diff before editing and preserve unrelated work.
 - Verify the starter with `npm run preflight` / `npm run verify` before assuming framework setup is broken.
+- Inspect the locally synced `design/reference-board/` before styling; do not begin with an arbitrary web image hunt.
 - Read context for the current packet rather than the entire research library.
 - Prefer locked repository decisions over option menus.
 - Make local/reversible routine decisions independently.

@@ -10,8 +10,9 @@ Before substantial implementation:
 2. read `docs/AGENT_CONTEXT_INDEX.md` and load only the context relevant to the task;
 3. read `docs/MAINTAINER_EXPECTATIONS.md`;
 4. read `docs/IMPLEMENTATION_CONTRACT.md`;
-5. read the current unfinished **work packet** in `docs/FIRST_SESSIONS.md`;
-6. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
+5. read `docs/PACKET1_DIRECTION.md` during Packet 1;
+6. read the current unfinished **work packet** in `docs/FIRST_SESSIONS.md`;
+7. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
 
 For the initial local harness configuration, use `docs/ANTIGRAVITY_SETUP.md`.
 
@@ -28,19 +29,25 @@ The repository is **already a bootable Astro application scaffold**. Do not spen
 Existing bootstrap decisions include:
 
 - Node `22.16.0` in `.nvmrc`;
-- Astro `7.2.0`, MapLibre GL JS `6.6.0`, strict TypeScript, and npm scripts in `package.json`;
+- Astro `7.2.9`, MapLibre GL JS `6.6.0`, TypeScript `6.0.3`, and npm scripts in `package.json`;
+- `@astrojs/check` `0.9.10` for TypeScript 6-compatible Astro diagnostics;
 - static `astro.config.mjs` and strict `tsconfig.json`;
 - a real MapLibre viewport using the documented bootstrap provider;
+- four real modern development anchors in `src/lib/map/developmentAnchors.ts`, explicitly not historical geometry;
+- context-preserving camera defaults in `src/lib/map/config.ts`;
 - `BaseLayout`, starter semantic design tokens/styles, inspector/timeline/evidence/source component boundaries;
+- locally bundled Libre Caslon Text, Inter, and IBM Plex Mono through pinned Fontsource packages;
 - canonical domain enums/types in `src/lib/domain/types.ts`;
 - base-aware public paths in `src/lib/paths.ts`;
 - canonical published-data filenames in `src/lib/data/loadPublished.ts`;
+- explicit Packet 1 timeline bounds/non-filtering posture under `src/lib/time/`;
+- local historical visual-reference manifest/sync tooling under `design/reference-board/`;
 - early noindex metadata and `public/robots.txt`;
 - zero-dependency `npm run preflight`.
 
 Do **not** run `npm create astro`, `npm create cloudflare`, replace `package.json`, or generate a parallel starter tree merely because a fresh template is familiar. Inspect and refine the existing scaffold.
 
-The first `npm install` is expected to create `package-lock.json`; preserve and commit that lockfile with Packet 1.
+The first `npm install` is expected to create `package-lock.json`; preserve and commit that lockfile with Packet 1. The kickoff also syncs the reviewed local reference-board derivatives; preserve those generated assets/checksums with Packet 1 after review.
 
 ## Non-negotiable rules
 
@@ -70,7 +77,7 @@ The first `npm install` is expected to create `package-lock.json`; preserve and 
 The routine implementation choices are resolved in `docs/IMPLEMENTATION_CONTRACT.md`. In summary:
 
 - npm;
-- pinned Astro 7 static output + strict TypeScript;
+- pinned Astro 7 static output + strict TypeScript 6;
 - pinned MapLibre GL JS 6;
 - project CSS/design tokens, no Tailwind/component library by default;
 - no React/Preact/Svelte layer by default;
@@ -84,6 +91,8 @@ The routine implementation choices are resolved in `docs/IMPLEMENTATION_CONTRACT
 
 Do not reopen these choices because another library is familiar. Change a locked default only when the current requirement demonstrates a material benefit and record the architectural reason.
 
+During Packet 1, `docs/PACKET1_DIRECTION.md` additionally locks the real development anchors, quiet basemap posture, desktop dock/mobile bottom-sheet composition, restrained camera behavior, non-filtering timeline shell, typography, local historical reference board, and secondary maker identity. Do not conduct new preference surveys for those choices.
+
 ## Initial implementation goal
 
 Build a beautiful, credible vertical slice, not a giant incomplete platform. The initial work is organized into a few larger packets because Antigravity should spend its time implementing rather than repeatedly re-requesting approval for small milestones.
@@ -96,7 +105,7 @@ The completed v0.1 direction remains:
 - ~10–20 real, properly sourced vessels;
 - several meaningful ports;
 - repeated-vessel histories where identity is documented or carefully labeled probable;
-- ship/port/voyage/person/context inspector states;
+- ship/port/voyage/person/event inspector states, with contextual history represented through the canonical `event` kind;
 - at least one period map/reference layer;
 - at least one contextual event;
 - explicit provenance and uncertainty;

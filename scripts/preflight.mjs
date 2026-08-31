@@ -14,7 +14,10 @@ const requiredFiles = [
   "GEMINI.md",
   "docs/FIRST_SESSIONS.md",
   "docs/KICKOFF.md",
+  "docs/PACKET1_DIRECTION.md",
   "docs/BASEMAP_RUNTIME.md",
+  "design/reference-board/manifest.json",
+  "scripts/sync-visual-references.mjs",
   "astro.config.mjs",
   "tsconfig.json",
   "src/pages/index.astro",
@@ -23,6 +26,8 @@ const requiredFiles = [
   "src/components/inspector/EntityInspector.astro",
   "src/lib/domain/types.ts",
   "src/lib/map/config.ts",
+  "src/lib/map/developmentAnchors.ts",
+  "src/lib/time/config.ts",
   "src/lib/paths.ts",
   "src/lib/state/selection.ts",
   "src/lib/data/loadPublished.ts",
@@ -42,7 +47,7 @@ for (const file of requiredFiles) {
 
 if (existsSync("package.json")) {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
-  for (const script of ["preflight", "dev", "check", "build", "verify"]) {
+  for (const script of ["preflight", "dev", "check", "build", "verify", "refs:sync"]) {
     if (!packageJson.scripts?.[script]) failures.push(`package.json is missing script: ${script}`);
   }
 }
@@ -61,6 +66,6 @@ console.log(
 );
 console.log(
   existsSync("node_modules")
-    ? "Dependencies appear installed; run npm run verify."
-    : "Dependencies are not installed yet; run npm install, then npm run verify.",
+    ? "Dependencies appear installed; run npm run refs:sync, then npm run verify."
+    : "Dependencies are not installed yet; run npm install, npm run refs:sync, then npm run verify.",
 );

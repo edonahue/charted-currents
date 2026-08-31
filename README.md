@@ -36,9 +36,10 @@ The core product principle is:
 ## Initial technology direction
 
 - Node 22.16.0
-- Astro 7.2.0 + strict TypeScript
+- Astro 7.2.9 + strict TypeScript 6.0.3
 - MapLibre GL JS 6.6.0
 - OpenFreeMap as the reversible no-key modern basemap bootstrap
+- Libre Caslon Text + Inter + IBM Plex Mono, locally bundled through Fontsource
 - Python ingestion and validation
 - DuckDB for local analytical transforms
 - JSON / GeoJSON first; Parquet and PMTiles when scale justifies them
@@ -46,7 +47,7 @@ The core product principle is:
 - Cloudflare Pages for the first public web deployment
 - DuckDB-Wasm reserved for later client-side analytical exploration if the corpus earns the complexity
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/IMPLEMENTATION_CONTRACT.md`](docs/IMPLEMENTATION_CONTRACT.md), and [`docs/BASEMAP_RUNTIME.md`](docs/BASEMAP_RUNTIME.md).
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/IMPLEMENTATION_CONTRACT.md`](docs/IMPLEMENTATION_CONTRACT.md), [`docs/PACKET1_DIRECTION.md`](docs/PACKET1_DIRECTION.md), and [`docs/BASEMAP_RUNTIME.md`](docs/BASEMAP_RUNTIME.md).
 
 ## Source research
 
@@ -76,11 +77,12 @@ AI is development and research tooling, not a public thesis of the project. AI m
 
 ### Agentic implementation bootstrap
 
-The repository now contains a **bootable pinned Astro/MapLibre scaffold** so a coding agent can begin product work without running interactive framework scaffolders or rediscovering routine setup.
+The repository contains a **bootable pinned Astro/MapLibre scaffold** so a coding agent can begin product work without running interactive framework scaffolders or rediscovering routine setup.
 
 Start here:
 
 - [`docs/KICKOFF.md`](docs/KICKOFF.md) — exact local commands and Packet 1 plan/execution prompts.
+- [`docs/PACKET1_DIRECTION.md`](docs/PACKET1_DIRECTION.md) — locked first-build product choices: real modern locator anchors, quiet basemap, responsive inspector, camera, timeline, typography, visual references, and restrained maker identity.
 - [`docs/FIRST_SESSIONS.md`](docs/FIRST_SESSIONS.md) — three large implementation packets; Packet 1 runs all the way to a deployable/public interactive shell.
 - [`docs/ANTIGRAVITY_SETUP.md`](docs/ANTIGRAVITY_SETUP.md) — recommended sandboxed/scoped permission posture for sustained AGY work.
 - [`docs/BASEMAP_RUNTIME.md`](docs/BASEMAP_RUNTIME.md) — resolved modern-basemap bootstrap choice and historical/evidence boundary.
@@ -98,10 +100,13 @@ nvm install
 nvm use
 npm run preflight
 npm install
+npm run refs:sync
 npm run verify
 ```
 
-The first `npm install` should generate `package-lock.json`; Packet 1 should keep it.
+The first `npm install` should generate `package-lock.json`; Packet 1 should keep it. `refs:sync` populates the reviewed local historical visual-reference board described by `design/reference-board/manifest.json`; review and retain those derivatives/checksums for Packet 1 design work.
+
+Packet 1 may display four real **modern locator** anchors to make the shell explorable without inventing historical activity. They remain outside the published historical-data bundle and, if visible publicly, require the GeoNames CC BY 4.0 attribution defined in `src/lib/map/developmentAnchors.ts`.
 
 ## First public deployment posture
 
@@ -113,7 +118,7 @@ The earlier idea of ultimately surfacing the project at `erichdonahue.com/labs/c
 
 Interaction is informed in part by the world-map experience of **Sid Meier's Pirates! (2004/2005 era)**: ports, ships, wind, time, and events coexist on one navigable Caribbean surface. Charted Currents should borrow that *mental model*, not Firaxis assets or recognizable visual composition.
 
-Aesthetic grounding should come primarily from period maps, charts, archival documents, maritime art, and modern editorial/data visualization. See [`docs/DESIGN_DIRECTION.md`](docs/DESIGN_DIRECTION.md) and [`docs/DESIGN_REFERENCES.md`](docs/DESIGN_REFERENCES.md).
+Aesthetic grounding should come primarily from period maps, charts, archival documents, maritime art, and modern editorial/data visualization. Packet 1 has a specifically reviewed local board under [`design/reference-board/`](design/reference-board/); those files are design/evidence references, not anonymous product textures or automatically approved product assets. See [`docs/DESIGN_DIRECTION.md`](docs/DESIGN_DIRECTION.md) and [`docs/DESIGN_REFERENCES.md`](docs/DESIGN_REFERENCES.md).
 
 ## Relationship to Pirate Arcade
 
@@ -121,7 +126,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Bootable implementation scaffold; Packet 1 ready.** The current site intentionally contains only a modern basemap and honest empty historical surfaces. Packet 1 should refine the visual system and implement the interaction spine rather than reinitialize the framework. Packet 2 introduces the first real evidence-backed historical corpus.
+**Bootable implementation scaffold; Packet 1 direction locked and ready.** The current site intentionally contains only a modern basemap and honest empty historical surfaces. Packet 1 should implement the already-decided exploratory composition and interaction spine rather than reinitialize the framework or reopen product preferences. Packet 2 introduces the first real evidence-backed historical corpus.
 
 ## Licensing
 

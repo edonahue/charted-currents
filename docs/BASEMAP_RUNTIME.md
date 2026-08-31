@@ -42,13 +42,35 @@ Never treat modern OpenStreetMap/OpenFreeMap labels, coastlines, boundaries, roa
 
 Historical places, names, routes, boundaries, coast interpretations, period maps, and event relationships must continue through the project's provenance-aware historical data/source system.
 
-## Styling posture
+## Packet 1 styling posture
 
-The provider style is a bootstrap base, not the final visual identity.
+The provider's Liberty style is only the starting configuration. Packet 1 should deliberately make the modern context quieter:
 
-Packet 1 may adapt presentation around it or later host a customized style, but should not spend the packet building tile infrastructure. The Charted Currents overlays, typography, surfaces, route semantics, and historical reference layers should carry the product's editorial-atlas identity.
+- mute/remove most road layers and contemporary POI clutter;
+- reduce contemporary administrative-boundary prominence;
+- emphasize coastline, islands, land/water shape, and restrained orientation labels;
+- preserve required attribution;
+- allow Charted Currents overlays, typography, paper/ink surfaces, and historical reference material to carry the visual identity.
 
-Do not copy OpenFreeMap's default visual appearance into unrelated UI tokens.
+The target leans toward a period-inflected editorial atlas, but the modern basemap must never masquerade as a period map.
+
+Prefer adjusting/customizing the style configuration over changing providers or building tile infrastructure. Do not turn Packet 1 into a basemap-engineering project.
+
+## Development anchors
+
+Packet 1 may overlay the real modern locator points in `src/lib/map/developmentAnchors.ts` to exercise map → `port` selection → inspector interaction.
+
+Those points are developmental interface anchors, not historical port geometries. They remain outside `public/data/` and must not acquire vessel/voyage/history claims merely to make the shell feel populated.
+
+## Camera posture
+
+Use `src/lib/map/config.ts` and `docs/PACKET1_DIRECTION.md`:
+
+- gentle context-preserving `easeTo`-style repositioning only when needed;
+- minimal zoom change;
+- north-up, essentially 2D;
+- no cinematic fly-throughs or gratuitous pitch/bearing;
+- reduced-motion path minimizes animation.
 
 ## Attribution
 
