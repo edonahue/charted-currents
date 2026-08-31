@@ -20,9 +20,11 @@ The visual-source strategy is:
 | **Greater Caribbean Mapping** | discovery index for circum-Caribbean maps | weekly full CSV | catalog for discovery; resolve image rights at holder | None |
 | **Nationaal Archief** | Dutch charts, maps, documents, open scans | EAD/OAI-PMH + METS/files | PD/CC0 when explicitly marked/downloadable | None |
 | **PARES** | Spanish archival maps/plans/documents | portal + targeted downloads | public-domain material reusable with citation | None |
+| **ANOM** | French Antilles maps/plans, administrative manuscripts, port/fortification context | online inventories/databases + reproduction service | public-information reuse generally open with source/integrity requirements; item rights still matter | None |
 | **Rijksmuseum** | maritime art, ships, model ships, ports, navigational objects | Search API, OAI-PMH, Linked Data, downloads | PD/CC0 or indicated item license | None |
 | **John Carter Brown Library** | early-Americas books/maps/prints | Americana/manual digital access | current open-access material generally reusable with credit; check item | None |
 | **BNE Digital / BDH** | Spanish maps, books, engravings | digital collections/data exports | public-domain images reusable, generally CC BY 4.0/equivalent | None |
+| **BnF / Gallica** | French Antilles maps, atlases, printed works, manuscripts | SRU/OAI + Document/OCR + IIIF APIs | metadata Open Licence; image/content reuse depends on Gallica/item terms | None |
 | **Smithsonian Open Access** | material culture, navigation, maritime objects | API + weekly GitHub data | Open Access CC0 assets where supplied | Optional API key |
 | **Europeana** | cross-institution European discovery | API | media rights per provider/item | Free API key |
 | **DPLA** | US archive/library discovery | API + bulk metadata | metadata permissive; media rights per provider | Free API key |
@@ -47,9 +49,8 @@ This is conceptually almost a visual manifesto for Charted Currents because it c
 **Programmatic access**
 
 - API docs: https://www.loc.gov/apis/json-and-yaml/
-- No API key/authentication required.
-- Current JSON/YAML rate limit: 20 requests/minute; image/media services have separate higher limits.
-- Use facets instead of deep paging.
+- No API key/authentication is required; LOC enforces rate limiting dynamically rather than publishing a fixed quota in the current documentation.
+- Use facets instead of deep paging and cache aggressively.
 - Item endpoints expose resources and image links.
 - LOC image services support IIIF Image API patterns for eligible resources.
 
@@ -178,7 +179,34 @@ For high-quality publication copies or undigitized items, use the holding archiv
 
 ---
 
-## 5. Rijksmuseum Data Services - Dutch maritime visual culture
+## 5. Archives nationales d’outre-mer — French Antilles as evidence and visual language
+
+ANOM should be a first-tier source, not a later completeness exercise. Its early-modern French Antilles holdings provide the missing visual/documentary perspective on Martinique, Guadeloupe, the Windward Islands and other territories that appear throughout the maritime system.
+
+High-value holdings include:
+
+- Martinique and Windward Islands correspondence beginning 1635;
+- Guadeloupe correspondence beginning 1649;
+- Lesser Antilles material beginning 1626;
+- South America / French and foreign Antilles map-and-fortification series from 1666;
+- Martinique maps from 1660 and Guadeloupe maps from 1665;
+- the Moreau de Saint-Méry seventeenth/eighteenth-century atlas and compilations.
+
+**Why it matters aesthetically**
+
+These are not simply alternate decorative basemaps. French plans can show different strategic emphases, names, fortifications, administrative boundaries and visual conventions from English, Spanish or Dutch sources. Charted Currents should make those competing ways of seeing the Caribbean legible.
+
+**Rights**
+
+ANOM allows broad reuse of freely communicable public information where no third-party rights apply, including commercial/noncommercial reuse, with integrity and precise-source requirements. Record the exact archival reference and public-rights state. Use `Archives nationales d’outre-mer (France)` / `FR ANOM` credits as instructed.
+
+Links:
+- https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/antilles-francaises
+- https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/la-cartotheque
+
+---
+
+## 6. Rijksmuseum Data Services - Dutch maritime visual culture
 
 Rijksmuseum's current data platform is unusually friendly:
 
@@ -214,7 +242,7 @@ These images are especially useful for editorial/entity pages where a literal ma
 
 ---
 
-## 6. John Carter Brown Library / Americana
+## 7. John Carter Brown Library / Americana
 
 The JCB's collecting focus on the early Americas makes it one of the most thematically relevant visual archives available.
 
@@ -241,7 +269,7 @@ No API key should be required for initial use.
 
 ---
 
-## 7. Biblioteca Nacional de España - BNE Digital / Biblioteca Digital Hispánica
+## 8. Biblioteca Nacional de España - BNE Digital / Biblioteca Digital Hispánica
 
 A very strong Spanish visual counterpart to LOC/JCB.
 
@@ -269,7 +297,33 @@ For items not already digitized, BNE has a reproduction request process.
 
 ---
 
-## 8. Smithsonian Open Access
+## 9. BnF / Gallica — French cartography and print culture at machine scale
+
+Gallica provides a particularly strong combination for Charted Currents: historical French maps and books **plus modern machine access**. BnF documents public SRU/OAI search, document metadata/OCR services, and IIIF image retrieval across millions of digitized documents.
+
+Useful lanes:
+
+- French Antilles / West Indies maps and atlases;
+- Guillaume Delisle and other early-eighteenth-century cartographers;
+- port and fortification views;
+- printed voyage/geographic works;
+- searchable OCR in later editions/compilations that can lead us back to named ships, places or events.
+
+**Rights**
+
+BnF descriptive metadata is under the French Open Licence. Gallica content is governed separately: noncommercial and academic/scientific reuse of public-domain BnF reproductions is generally free with the required `Source gallica.bnf.fr / BnF` credit; commercial uses and partner collections may require different treatment. Preserve the item's provenance/source and reuse statement before creating a public asset.
+
+APIs:
+- https://api.bnf.fr/fr/api-iiif-de-recuperation-des-images-de-gallica
+- https://api.bnf.fr/fr/api-document-de-gallica
+
+**v0.1 benchmark**
+
+Pair an English map such as Herman Moll's ca. 1715 West Indies chart with a roughly contemporary French Antilles map (for example Guillaume Delisle, ca. 1717–1718). The difference in labels, imperial framing, route emphasis, and cartographic language should inform the design rather than being flattened away.
+
+---
+
+## 10. Smithsonian Open Access
 
 The Smithsonian can add **material culture** to a project otherwise dominated by paper:
 
@@ -294,7 +348,7 @@ An API key is helpful but **not a blocker**, because the bulk GitHub data exists
 
 ---
 
-## 9. Europeana - discovery multiplier
+## 11. Europeana - discovery multiplier
 
 Europeana aggregates cultural heritage from thousands of European institutions.
 
@@ -311,7 +365,7 @@ Do not treat Europeana's aggregation as a universal media license.
 
 ---
 
-## 10. DPLA - US discovery multiplier
+## 12. DPLA - US discovery multiplier
 
 DPLA can surface maps/books/manuscripts in US libraries that would otherwise take many institution-specific searches.
 
@@ -324,7 +378,7 @@ Use DPLA metadata to locate records. Media/image rights remain those of the cont
 
 ---
 
-## 11. NYPL Digital Collections - valuable, but manual now
+## 13. NYPL Digital Collections - valuable, but manual now
 
 NYPL has hundreds of thousands of public-domain/no-known-US-copyright items and high-resolution downloads that can be reused without permission.
 
@@ -342,7 +396,7 @@ This source is still useful; only the machine-ingestion path has closed.
 
 ---
 
-## 12. Digital Library of the Caribbean (dLOC)
+## 14. Digital Library of the Caribbean (dLOC)
 
 dLOC is geographically exceptional for this project: Caribbean maps, newspapers, books, photographs, and partner-institution collections.
 
@@ -359,6 +413,39 @@ Use for:
 - manually cleared assets.
 
 Do not assume collection-level reuse rights.
+
+---
+
+## Specific benchmark candidates already located
+
+These are not all inside the strict 1650–1730 corpus. A few later maps are valuable because they explicitly preserve evidence/memory of earlier transformations and can be shown as **later representations**, never silently treated as contemporary.
+
+### Herman Moll — West Indies, ca. 1715 — **core-period visual manifesto**
+
+Library of Congress item: https://www.loc.gov/item/gm71005442/
+
+Why it matters: it combines the Greater Caribbean geography with political coloring, trade winds, Spanish galleon/flota tracks, and inset plans of major ports. It demonstrates the visual thesis of Charted Currents before we draw a single custom layer: geography, environment, commerce, empire, and movement on the same surface.
+
+### Guillaume Delisle — *Carte des Antilles françoises et des isles voisines*, 1717/ca.1718 — **French comparison anchor**
+
+Greater Caribbean Mapping / LOC record: https://greatercaribbeanmaps.org/maps/carte-des-antilles-franc%CC%A7oises-et-des-isles-voisines-2/
+BnF catalog example: https://catalogue.bnf.fr/ark:/12148/cb449322487
+
+Why it matters: roughly contemporary with Moll but organized around the French Lesser Antilles. Put the two side by side during design research. Do not harmonize away their different names, political assumptions, and geographic emphases. Those differences are part of the history.
+
+### Georges-Louis Le Rouge — *Port-Royal de Jamaique*, 1755 — **post-1692 memory/evidence layer**
+
+Library of Congress: https://www.loc.gov/item/73691840/
+
+Why it matters: although later than the MVP core period, the map explicitly marks what remained after the **1692 earthquake**. It is an excellent example of how Charted Currents can connect a later cartographic source back to an earlier event while clearly labeling the source date.
+
+### Patrick Browne / Sheffield / Bayly — Jamaica with Port Royal inset, 1755 — **harbor/cartographic detail benchmark**
+
+Library of Congress: https://www.loc.gov/item/73691842/
+
+Why it matters: soundings, harbor detail, settlements, forts, and a Port Royal inset show the visual vocabulary available in serious maritime cartography. Again, use as a later comparative source rather than pretending it describes 1700 exactly.
+
+**Design-research rule:** every benchmark image gets an `as_of_source_date` and, when it is being used to illuminate an earlier event, an explicit `historical_relation` such as `later_map_depicting_1692_earthquake_impact`.
 
 ---
 
