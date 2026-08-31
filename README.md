@@ -45,6 +45,16 @@ The core product principle is:
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/MVP.md`](docs/MVP.md).
 
+## Source research
+
+The project keeps source selection, reuse rights, and human access/setup explicit rather than burying them inside ingestion code.
+
+- [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) — operational historical-data dossier and ingestion priorities.
+- [`docs/ART_AND_MAP_SOURCES.md`](docs/ART_AND_MAP_SOURCES.md) — maps, archival documents, maritime art, and material-culture resources.
+- [`docs/SOURCE_RIGHTS.md`](docs/SOURCE_RIGHTS.md) — source/component-level rights and publication policy.
+- [`docs/HUMAN_SOURCE_SETUP.md`](docs/HUMAN_SOURCE_SETUP.md) — accounts, API keys, and permission/reproduction requests that require human action.
+- [`research/sources.yml`](research/sources.yml) and [`research/art_sources.yml`](research/art_sources.yml) — machine-readable source registries.
+
 ## Historical and ethical posture
 
 Charted Currents is not a comprehensive reconstruction of the Caribbean and must never imply that surviving records are complete. The interface should distinguish:
