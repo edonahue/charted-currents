@@ -1,32 +1,34 @@
 ---
 import MapViewport from "../components/map/MapViewport.astro";
 import EntityInspector from "../components/inspector/EntityInspector.astro";
+import SourceDrawer from "../components/evidence/SourceDrawer.astro";
 import TimelineRail from "../components/timeline/TimelineRail.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
   title="Charted Currents — Greater Caribbean 1650–1730"
-  description="Research prototype for a provenance-aware exploration of the maritime Greater Caribbean, 1650–1730."
+  description="Provenance-aware historical exploration of the maritime Greater Caribbean, 1650–1730."
 >
-  <main class="app-shell" data-build-stage="prototype">
+  <main class="app-shell" data-build-stage="packet2-corpus">
     <header class="app-masthead">
       <div class="app-masthead__brand">
         <p class="app-kicker">Greater Caribbean · 1650–1730</p>
         <h1>Charted Currents</h1>
       </div>
       <div class="app-utility">
-        <p class="app-kicker">Research prototype · Historical records not yet loaded</p>
+        <p class="app-kicker">Historical Corpus · Jamaica & Transatlantic Commerce (1684–1705)</p>
         <nav aria-label="Project links">
           <a href="https://erichdonahue.com/" target="_blank" rel="noopener noreferrer">Erich Donahue · Lab</a>
           <a href="https://github.com/edonahue/charted-currents" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="https://www.geonames.org/" target="_blank" rel="noopener noreferrer" title="Development locator data licensed under CC BY 4.0">GeoNames (CC BY 4.0)</a>
+          <a href="https://whgazetteer.org/" target="_blank" rel="noopener noreferrer" title="Historical place reconciliation via World Historical Gazetteer">WHG Authority</a>
         </nav>
       </div>
     </header>
 
     <MapViewport />
     <EntityInspector />
+    <SourceDrawer />
     <TimelineRail />
   </main>
 </BaseLayout>

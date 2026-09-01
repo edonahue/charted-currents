@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "route_richard_and_sarah_1705",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -77.2975,
+            18.1096
+          ],
+          [
+            -0.1278,
+            51.5074
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_richard_and_sarah_1705",
+        "vessel_id": "ship_richard_and_sarah_1705",
+        "origin_place_id": "place_jamaica",
+        "destination_place_id": "place_london",
+        "date_display": "May 1705",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "notes": "Documented transatlantic voyage relationship; rendered geometry is an endpoints-only schematic connector."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_william_1702",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -77.2975,
+            18.1096
+          ],
+          [
+            -0.1278,
+            51.5074
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_william_1702",
+        "vessel_id": "ship_william_1702",
+        "origin_place_id": "place_jamaica",
+        "destination_place_id": "place_london",
+        "date_display": "September 1702",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "notes": "Documented transatlantic voyage relationship; rendered geometry is an endpoints-only schematic connector."
+      }
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 ---
-import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors";
+/**
+ * src/components/inspector/EntityInspector.astro
+ *
+ * Sourced Entity Inspector for Charted Currents.
+ * Renders verified historical metadata, crew demographics, evidence badges,
+ * and period cartographic references for selected places, vessels, and events.
+ */
 ---
 
 <aside
@@ -16,7 +22,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     <button
       type="button"
       class="inspector-sheet__handle"
-      aria-label="Expand place details"
+      aria-label="Expand entity details"
       aria-expanded="false"
       aria-controls="inspector-content"
       data-sheet-handle
@@ -27,7 +33,10 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
 
   <header class="inspector-header">
     <div class="inspector-header__kicker-wrap">
-      <p class="panel-kicker" data-inspector-kicker>Modern Reference</p>
+      <p class="panel-kicker" data-inspector-kicker>Historical Entity</p>
+      <div data-inspector-badge-wrap hidden>
+        <span class="evidence-badge" data-inspector-badge>Documented</span>
+      </div>
     </div>
     <button
       type="button"
@@ -49,64 +58,217 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     </div>
 
     <div class="inspector-body">
-      <section class="inspector-section" aria-label="Location metadata">
-        <p class="panel-kicker">Geographic Reference</p>
-        <dl class="inspector-meta">
-          <div class="inspector-meta__row">
-            <dt>Coordinates</dt>
-            <dd data-inspector-coords class="inspector-mono"></dd>
-          </div>
-          <div class="inspector-meta__row">
-            <dt>Locator Type</dt>
-            <dd>Modern populated place</dd>
-          </div>
-          <div class="inspector-meta__row">
-            <dt>Locator Source</dt>
-            <dd>
-              <a
-                href={DEVELOPMENT_ANCHOR_ATTRIBUTION.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-inspector-source-link
-                class="inspector-link"
+      <!-- PLACE VIEW -->
+      <div data-view-place hidden>
+        <section class="inspector-section" aria-label="Geographic reference">
+          <p class="panel-kicker">Geographic Reference</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Raw Recorded Name</dt>
+              <dd data-place-raw-name class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Geographic Precision</dt>
+              <dd data-place-precision></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Navigation Coordinates</dt>
+              <dd data-place-coords class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Geometry Provenance</dt>
+              <dd data-place-geom-provenance class="inspector-mono"></dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="inspector-section" aria-label="Reference note">
+          <p class="panel-kicker">Historical Context</p>
+          <p class="inspector-note" data-place-note></p>
+        </section>
+
+        <!-- Sourced Historical Visual Section for Port Royal & Jamaica -->
+        <section class="inspector-section" data-place-visual-wrap hidden aria-label="Historical map reference">
+          <p class="panel-kicker">Contemporary Cartographic Reference</p>
+          <div class="inspector-visual-card">
+            <img
+              src="/assets/visuals/bochart-knollis-jamaica-1684.jpg"
+              alt="A new & exact mapp of the island of Jamaica, [1684?]"
+              class="inspector-visual-img"
+              loading="lazy"
+            />
+            <div class="inspector-visual-caption">
+              <p class="inspector-visual-title">A new & exact mapp of the island of Jamaica [1684?]</p>
+              <p class="inspector-visual-meta">Charles Bochart & Humphrey Knollis · Library of Congress (G4960 1684 .B6)</p>
+              <button
+                type="button"
+                class="inspector-action-btn"
+                data-open-visual-source
               >
-                GeoNames ({DEVELOPMENT_ANCHOR_ATTRIBUTION.license})
-              </a>
-            </dd>
+                Inspect Map Source (LOC) ↗
+              </button>
+            </div>
           </div>
-        </dl>
-      </section>
+        </section>
+      </div>
 
-      <section class="inspector-section" aria-label="Reference note">
-        <p class="panel-kicker">Reference Note</p>
-        <p class="inspector-note" data-inspector-note></p>
-      </section>
+      <!-- SHIP VIEW -->
+      <div data-view-ship hidden>
+        <section class="inspector-section" aria-label="Vessel documentation">
+          <p class="panel-kicker">Vessel Metrics & Provenance</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Raw Recorded Name</dt>
+              <dd data-ship-raw-name class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Reported Burden</dt>
+              <dd data-ship-tonnage class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Construction Origin</dt>
+              <dd data-ship-construction></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Owner Residence</dt>
+              <dd data-ship-owner></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Recorded Voyage</dt>
+              <dd data-ship-voyage></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Wartime Capture</dt>
+              <dd data-ship-capture></dd>
+            </div>
+          </dl>
+        </section>
 
-      <section class="inspector-section inspector-disclaimer" aria-label="Historical prototype scope">
-        <p class="panel-kicker">Prototype Scope</p>
-        <p>
-          Modern location reference only. Historical geography, vessels, and routes appear only where supported by archival evidence.
-        </p>
-      </section>
+        <section class="inspector-section" data-ship-crew-section hidden aria-label="Documented crew members">
+          <p class="panel-kicker">Documented Crew Roster</p>
+          <div class="inspector-table-wrap">
+            <table class="inspector-crew-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Rank</th>
+                  <th>Birthplace / Origin</th>
+                  <th>Sovereign</th>
+                </tr>
+              </thead>
+              <tbody data-ship-crew-tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="inspector-section" aria-label="Archival source actions">
+          <p class="panel-kicker">Archival Source</p>
+          <button
+            type="button"
+            class="inspector-action-btn"
+            data-open-ship-source
+          >
+            Inspect Archival Provenance (TNA HCA 32) ↗
+          </button>
+        </section>
+      </div>
+
+      <!-- EVENT VIEW -->
+      <div data-view-event hidden>
+        <section class="inspector-section" aria-label="Event details">
+          <p class="panel-kicker">Event Summary</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Recorded Date</dt>
+              <dd data-event-date class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Event Kind</dt>
+              <dd data-event-kind></dd>
+            </div>
+          </dl>
+          <p class="inspector-note" data-event-summary></p>
+        </section>
+
+        <section class="inspector-section" aria-label="Event source actions">
+          <p class="panel-kicker">Primary Evidence</p>
+          <button
+            type="button"
+            class="inspector-action-btn"
+            data-open-event-source
+          >
+            Inspect Archival Record (Royal Society) ↗
+          </button>
+        </section>
+      </div>
     </div>
   </div>
 </aside>
 
 <script>
-  import type { Selection } from "../../lib/domain/types";
-  import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
-  import { consumeSelectionTrigger, getSelectionTrigger } from "../../lib/map/interactionState";
+  import type { PublishedEntities, PublishedEvents, Selection } from "../../lib/domain/types";
+  import { publishedDataUrl } from "../../lib/data/loadPublished";
+  import { consumeSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
 
   const inspector = document.getElementById("entity-inspector");
   const appShell = document.querySelector<HTMLElement>(".app-shell");
   const closeButton = document.querySelector<HTMLButtonElement>("[data-inspector-close]");
   const sheetHandle = document.querySelector<HTMLButtonElement>("[data-sheet-handle]");
+  const kickerEl = document.querySelector<HTMLElement>("[data-inspector-kicker]");
+  const badgeWrap = document.querySelector<HTMLElement>("[data-inspector-badge-wrap]");
+  const badgeEl = document.querySelector<HTMLElement>("[data-inspector-badge]");
   const titleEl = document.querySelector<HTMLElement>("[data-inspector-title]");
   const subtitleEl = document.querySelector<HTMLElement>("[data-inspector-subtitle]");
-  const coordsEl = document.querySelector<HTMLElement>("[data-inspector-coords]");
-  const noteEl = document.querySelector<HTMLElement>("[data-inspector-note]");
-  const sourceLink = document.querySelector<HTMLAnchorElement>("[data-inspector-source-link]");
+
+  // Views
+  const viewPlace = document.querySelector<HTMLElement>("[data-view-place]");
+  const viewShip = document.querySelector<HTMLElement>("[data-view-ship]");
+  const viewEvent = document.querySelector<HTMLElement>("[data-view-event]");
+
+  // Place Elements
+  const placeRawName = document.querySelector<HTMLElement>("[data-place-raw-name]");
+  const placePrecision = document.querySelector<HTMLElement>("[data-place-precision]");
+  const placeCoords = document.querySelector<HTMLElement>("[data-place-coords]");
+  const placeGeomProv = document.querySelector<HTMLElement>("[data-place-geom-provenance]");
+  const placeNote = document.querySelector<HTMLElement>("[data-place-note]");
+  const placeVisualWrap = document.querySelector<HTMLElement>("[data-place-visual-wrap]");
+  const openVisualBtn = document.querySelector<HTMLButtonElement>("[data-open-visual-source]");
+
+  // Ship Elements
+  const shipRawName = document.querySelector<HTMLElement>("[data-ship-raw-name]");
+  const shipTonnage = document.querySelector<HTMLElement>("[data-ship-tonnage]");
+  const shipConstruction = document.querySelector<HTMLElement>("[data-ship-construction]");
+  const shipOwner = document.querySelector<HTMLElement>("[data-ship-owner]");
+  const shipVoyage = document.querySelector<HTMLElement>("[data-ship-voyage]");
+  const shipCapture = document.querySelector<HTMLElement>("[data-ship-capture]");
+  const shipCrewSection = document.querySelector<HTMLElement>("[data-ship-crew-section]");
+  const shipCrewTbody = document.querySelector<HTMLElement>("[data-ship-crew-tbody]");
+  const openShipSourceBtn = document.querySelector<HTMLButtonElement>("[data-open-ship-source]");
+
+  // Event Elements
+  const eventDate = document.querySelector<HTMLElement>("[data-event-date]");
+  const eventKind = document.querySelector<HTMLElement>("[data-event-kind]");
+  const eventSummary = document.querySelector<HTMLElement>("[data-event-summary]");
+  const openEventSourceBtn = document.querySelector<HTMLButtonElement>("[data-open-event-source]");
+
+  let entitiesCache: PublishedEntities | null = null;
+  let eventsCache: PublishedEvents | null = null;
+  let activeSourceId: string | null = null;
+
+  async function loadData() {
+    if (!entitiesCache) {
+      const res = await fetch(publishedDataUrl("entities"));
+      if (res.ok) entitiesCache = await res.json();
+    }
+    if (!eventsCache) {
+      const res = await fetch(publishedDataUrl("events"));
+      if (res.ok) eventsCache = await res.json();
+    }
+  }
+
+  // Preload data immediately on script load
+  loadData();
 
   function formatCoordinates(lng: number, lat: number): string {
     const latDir = lat >= 0 ? "N" : "S";
@@ -130,79 +292,245 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     }
   }
 
-  function updateInspector(selection: Selection): void {
+  async function updateInspector(selection: Selection): Promise<void> {
     if (!inspector) return;
 
-    if (!selection || selection.kind !== "port") {
+    if (!selection) {
       inspector.hidden = true;
       inspector.setAttribute("data-state", "closed");
       inspector.setAttribute("data-sheet-state", "closed");
       sheetHandle?.setAttribute("aria-expanded", "false");
-      sheetHandle?.setAttribute("aria-label", "Expand place details");
       appShell?.setAttribute("data-inspector-open", "false");
       return;
     }
 
-    const anchor = DEVELOPMENT_ANCHORS.find((a) => a.selection.id === selection.id);
-    if (!anchor) {
-      inspector.hidden = true;
-      inspector.setAttribute("data-state", "closed");
-      inspector.setAttribute("data-sheet-state", "closed");
-      sheetHandle?.setAttribute("aria-expanded", "false");
-      sheetHandle?.setAttribute("aria-label", "Expand place details");
-      appShell?.setAttribute("data-inspector-open", "false");
-      return;
+    await loadData();
+    if (!entitiesCache || !eventsCache) return;
+
+    // Reset views
+    if (viewPlace) viewPlace.hidden = true;
+    if (viewShip) viewShip.hidden = true;
+    if (viewEvent) viewEvent.hidden = true;
+
+    if (selection.kind === "port") {
+      const place = entitiesCache.places.find((p) => p.id === selection.id);
+      if (!place) return;
+
+      if (kickerEl) kickerEl.textContent = "Historical Place";
+      if (badgeWrap) badgeWrap.hidden = true;
+      if (titleEl) titleEl.textContent = place.canonical_name;
+      if (subtitleEl) subtitleEl.textContent = `${place.region} · Sourced Geographic Reference`;
+
+      if (placeRawName) placeRawName.textContent = place.raw_source_name;
+      if (placePrecision) placePrecision.textContent = place.geographic_precision.replace(/_/g, " ");
+      if (placeCoords) placeCoords.textContent = formatCoordinates(place.coordinates[0], place.coordinates[1]);
+      if (placeGeomProv) placeGeomProv.textContent = place.geometry_provenance.replace(/_/g, " ");
+      if (placeNote) placeNote.textContent = place.notes || "Historical place reference verified by Charted Currents.";
+
+      // Show visual card for Port Royal / Jamaica
+      if (placeVisualWrap) {
+        const hasVisual = place.id === "place_port_royal" || place.id === "place_jamaica";
+        placeVisualWrap.hidden = !hasVisual;
+      }
+
+      activeSourceId = "src_loc_g4960_1684";
+      if (viewPlace) viewPlace.hidden = false;
+    } else if (selection.kind === "ship") {
+      const ship = entitiesCache.ships.find((s) => s.id === selection.id);
+      if (!ship) return;
+
+      if (kickerEl) kickerEl.textContent = "Documented Vessel";
+      if (badgeWrap) badgeWrap.hidden = false;
+      if (badgeEl) {
+        badgeEl.textContent = "Documented";
+        badgeEl.setAttribute("data-evidence-state", "documented");
+      }
+      if (titleEl) titleEl.textContent = ship.canonical_name;
+      if (subtitleEl) subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.raw_construction_place}`;
+
+      if (shipRawName) shipRawName.textContent = ship.raw_name;
+      if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
+      if (shipConstruction) shipConstruction.textContent = `${ship.raw_construction_place} ${ship.reported_age_years ? `(~${ship.reported_age_years} yrs old in ${ship.capture_date.slice(0,4)})` : ""}`;
+      if (shipOwner) shipOwner.textContent = ship.reported_owner_residence;
+      if (shipVoyage) shipVoyage.textContent = `${ship.recorded_voyage_origin} → ${ship.recorded_voyage_destination}`;
+      if (shipCapture) shipCapture.textContent = `${ship.capture_location_place_id.replace("place_", "").replace(/_/g, ", ")} (${ship.capture_date})`;
+
+      if (shipCrewSection && shipCrewTbody) {
+        const crew = ship.crew_occurrences || [];
+        if (crew.length > 0) {
+          shipCrewSection.hidden = false;
+          shipCrewTbody.innerHTML = crew
+            .map(
+              (c) => `
+              <tr>
+                <td><strong>${c.first_name} ${c.last_name}</strong>${c.literacy === "Signed" ? " ✍" : ""}</td>
+                <td>${c.rank}</td>
+                <td>${c.place_birth || c.place_residence || "Unrecorded"}</td>
+                <td>${c.subject_of || "Unrecorded"}</td>
+              </tr>
+            `,
+            )
+            .join("");
+        } else {
+          shipCrewSection.hidden = true;
+        }
+      }
+
+      activeSourceId = ship.primary_source_id;
+      if (viewShip) viewShip.hidden = false;
+    } else if (selection.kind === "event") {
+      const event = eventsCache.events.find((e) => e.id === selection.id);
+      if (!event) return;
+
+      if (kickerEl) kickerEl.textContent = "Historical Event";
+      if (badgeWrap) badgeWrap.hidden = false;
+      if (badgeEl) {
+        badgeEl.textContent = event.evidence_state === "contextual" ? "Contextual" : "Documented";
+        badgeEl.setAttribute("data-evidence-state", event.evidence_state);
+      }
+      if (titleEl) titleEl.textContent = event.title;
+      if (subtitleEl) subtitleEl.textContent = `${event.date} ${event.calendar_system ? `(${event.calendar_system})` : ""}`;
+
+      if (eventDate) eventDate.textContent = `${event.date} ${event.calendar_system ? `(${event.calendar_system})` : ""}`;
+      if (eventKind) eventKind.textContent = event.kind;
+      if (eventSummary) eventSummary.textContent = event.summary;
+
+      activeSourceId = event.sources[0] || null;
+      if (viewEvent) viewEvent.hidden = false;
     }
 
-    // Populate locator content
-    if (titleEl) titleEl.textContent = anchor.label;
-    if (subtitleEl) subtitleEl.textContent = `${anchor.region} · Modern Geographic Reference`;
-    if (coordsEl) coordsEl.textContent = formatCoordinates(anchor.coordinates[0], anchor.coordinates[1]);
-    if (noteEl) noteEl.textContent = anchor.note;
-    if (sourceLink) sourceLink.href = anchor.locatorSource.url;
-
-    // Show inspector and set active state
     inspector.hidden = false;
     inspector.setAttribute("data-state", "open");
-    inspector.setAttribute("data-sheet-state", "partial");
-    sheetHandle?.setAttribute("aria-expanded", "false");
-    sheetHandle?.setAttribute("aria-label", "Expand place details");
+    inspector.setAttribute("data-sheet-state", "open");
+    sheetHandle?.setAttribute("aria-expanded", "true");
     appShell?.setAttribute("data-inspector-open", "true");
-
-    // Input-aware focus transfer
-    if (getSelectionTrigger().modality === "keyboard" && titleEl) {
-      requestAnimationFrame(() => {
-        titleEl.focus();
-      });
-    }
+    titleEl?.focus();
   }
 
-  closeButton?.addEventListener("click", () => {
-    closeInspector();
+  // Open Source Drawer triggers
+  function triggerOpenSource(sourceId: string | null, targetBtn: HTMLElement | null) {
+    if (!sourceId) return;
+    window.dispatchEvent(
+      new CustomEvent("cc:open-source", {
+        detail: { sourceId, triggerEl: targetBtn },
+      }),
+    );
+  }
+
+  openVisualBtn?.addEventListener("click", () => triggerOpenSource("src_loc_g4960_1684", openVisualBtn));
+  openShipSourceBtn?.addEventListener("click", () => triggerOpenSource(activeSourceId, openShipSourceBtn));
+  openEventSourceBtn?.addEventListener("click", () => triggerOpenSource(activeSourceId, openEventSourceBtn));
+
+  closeButton?.addEventListener("click", closeInspector);
+
+  sheetHandle?.addEventListener("click", () => {
+    const isExpanded = sheetHandle.getAttribute("aria-expanded") === "true";
+    inspector?.setAttribute("data-sheet-state", isExpanded ? "peek" : "open");
+    sheetHandle.setAttribute("aria-expanded", isExpanded ? "false" : "true");
+    sheetHandle.setAttribute("aria-label", isExpanded ? "Expand entity details" : "Collapse entity details");
   });
 
-  // Handle escape key defensively
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !e.defaultPrevented && selectionStore.get() !== null) {
-      e.preventDefault();
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && inspector && !inspector.hidden) {
+      event.preventDefault();
       closeInspector();
     }
-  });
-
-  // Mobile bottom sheet state toggle
-  sheetHandle?.addEventListener("click", () => {
-    if (!inspector) return;
-    const currentState = inspector.getAttribute("data-sheet-state");
-    const nextState = currentState === "expanded" ? "partial" : "expanded";
-    inspector.setAttribute("data-sheet-state", nextState);
-    sheetHandle.setAttribute("aria-expanded", nextState === "expanded" ? "true" : "false");
-    sheetHandle.setAttribute(
-      "aria-label",
-      nextState === "expanded" ? "Collapse place details" : "Expand place details",
-    );
   });
 
   selectionStore.subscribe((selection) => {
     updateInspector(selection);
   });
 </script>
+
+<style>
+  .inspector-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    background: var(--cc-paper);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-atlantic);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .inspector-action-btn:hover {
+    background: var(--cc-paper-raised);
+    border-color: var(--cc-atlantic);
+  }
+
+  .inspector-visual-card {
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-sm);
+    overflow: hidden;
+    background: var(--cc-paper);
+    margin-top: 0.5rem;
+  }
+
+  .inspector-visual-img {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--cc-line);
+  }
+
+  .inspector-visual-caption {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .inspector-visual-title {
+    font-family: var(--cc-font-serif);
+    font-size: var(--cc-text-sm);
+    color: var(--cc-ink);
+    margin: 0;
+  }
+
+  .inspector-visual-meta {
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink-muted);
+    margin: 0 0 0.4rem;
+  }
+
+  .inspector-table-wrap {
+    overflow-x: auto;
+    margin-top: 0.5rem;
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    background: var(--cc-paper);
+  }
+
+  .inspector-crew-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--cc-text-xs);
+    text-align: left;
+  }
+
+  .inspector-crew-table th,
+  .inspector-crew-table td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--cc-line);
+  }
+
+  .inspector-crew-table th {
+    font-family: var(--cc-font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    color: var(--cc-ink-muted);
+    background: color-mix(in srgb, var(--cc-paper-raised) 75%, transparent);
+  }
+
+  .inspector-crew-table tr:last-child td {
+    border-bottom: none;
+  }
+</style>

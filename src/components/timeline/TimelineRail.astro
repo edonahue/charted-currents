@@ -1,17 +1,52 @@
 ---
-import { TIMELINE_PACKET1_INTERACTIVE, TIMELINE_RANGE } from "../../lib/time/config";
+/**
+ * src/components/timeline/TimelineRail.astro
+ *
+ * Sourced Timeline Rail for Charted Currents Packet 2.
+ * Renders verified temporal markers for contextual disaster events and prize captures.
+ */
+import { TIMELINE_RANGE } from "../../lib/time/config";
 
-// Major labelled ticks every 20 years; minor ticks every 10 years
 const majorYears = [1650, 1670, 1690, 1710, 1730] as const;
 const allDecades = [1650, 1660, 1670, 1680, 1690, 1700, 1710, 1720, 1730] as const;
 const totalSpan = TIMELINE_RANGE.endYear - TIMELINE_RANGE.startYear;
+
+const TIMELINE_EVENTS = [
+  {
+    id: "event_port_royal_earthquake_1692",
+    year: 1692,
+    dateLabel: "7 June 1692",
+    title: "Port Royal Earthquake",
+    kind: "event",
+    selectionId: "event_port_royal_earthquake_1692",
+    state: "contextual",
+  },
+  {
+    id: "ship_william_1702",
+    year: 1702,
+    dateLabel: "Sept 1702",
+    title: "William (Capture)",
+    kind: "ship",
+    selectionId: "ship_william_1702",
+    state: "documented",
+  },
+  {
+    id: "ship_richard_and_sarah_1705",
+    year: 1705,
+    dateLabel: "May 1705",
+    title: "Richard & Sarah (Capture)",
+    kind: "ship",
+    selectionId: "ship_richard_and_sarah_1705",
+    state: "documented",
+  },
+] as const;
 ---
 
 <section
   class="timeline-shell"
   aria-label="Historical timeline"
   data-component="timeline-rail"
-  data-interactive={TIMELINE_PACKET1_INTERACTIVE ? "true" : "false"}
+  data-interactive="true"
 >
   <div class="timeline-shell__heading">
     <p class="panel-kicker">Period</p>
@@ -35,7 +70,138 @@ const totalSpan = TIMELINE_RANGE.endYear - TIMELINE_RANGE.startYear;
         );
       })}
     </div>
+
+    <!-- Interactive Historical Event Markers -->
+    <div class="timeline-shell__events" role="region" aria-label="Dated timeline occurrences">
+      {TIMELINE_EVENTS.map((evt) => {
+        const position = ((evt.year - TIMELINE_RANGE.startYear) / totalSpan) * 100;
+        return (
+          <button
+            type="button"
+            class="timeline-event-marker"
+            data-timeline-event
+            data-event-kind={evt.kind}
+            data-selection-id={evt.selectionId}
+            data-evidence-state={evt.state}
+            style={`left: ${position}%`}
+            title={`${evt.dateLabel}: ${evt.title}`}
+            aria-label={`${evt.dateLabel}: ${evt.title} (${evt.state})`}
+          >
+            <span class="timeline-event-dot" aria-hidden="true"></span>
+            <span class="timeline-event-label" aria-hidden="true">{evt.title}</span>
+          </button>
+        );
+      })}
+    </div>
   </div>
 
-  <span class="timeline-shell__note">1650–1730 period rail · Historical filtering begins with evidence-backed temporal records.</span>
+  <span class="timeline-shell__note">1650–1730 timeline · Select any dated marker to inspect primary evidence.</span>
 </section>
+
+<script>
+  import type { EntityKind, Selection } from "../../lib/domain/types";
+  import { recordSelectionTrigger } from "../../lib/map/interactionState";
+  import { selectionStore } from "../../lib/state/selection";
+
+  const eventButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-timeline-event]"));
+
+  eventButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const selectionId = btn.dataset.selectionId;
+      const kind = btn.dataset.eventKind as EntityKind;
+      if (selectionId && kind) {
+        recordSelectionTrigger({
+          modality: "pointer",
+          origin: "timeline",
+          returnTarget: btn,
+        });
+        selectionStore.set({ kind, id: selectionId });
+      }
+    });
+  });
+
+  function syncTimelineToSelection(selection: Selection) {
+    eventButtons.forEach((btn) => {
+      const isSelected = btn.dataset.selectionId === selection?.id;
+      btn.setAttribute("aria-current", isSelected ? "true" : "false");
+      btn.classList.toggle("timeline-event-marker--selected", isSelected);
+    });
+  }
+
+  selectionStore.subscribe(syncTimelineToSelection);
+</script>
+
+<style>
+  .timeline-shell__events {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .timeline-event-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    padding: 6px;
+    margin: 0;
+    cursor: pointer;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: transform 120ms ease;
+  }
+
+  .timeline-event-marker:hover,
+  .timeline-event-marker:focus-visible {
+    transform: translate(-50%, -60%);
+    outline: none;
+  }
+
+  .timeline-event-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cc-atlantic);
+    border: 1.5px solid var(--cc-paper-raised);
+    box-shadow: 0 0 0 1px var(--cc-line);
+    transition: background 150ms ease, transform 150ms ease;
+  }
+
+  .timeline-event-marker[data-evidence-state="contextual"] .timeline-event-dot {
+    background: var(--cc-brass);
+  }
+
+  .timeline-event-marker--selected .timeline-event-dot {
+    background: var(--cc-terracotta);
+    transform: scale(1.35);
+    box-shadow: 0 0 0 2px var(--cc-terracotta);
+  }
+
+  .timeline-event-label {
+    font-family: var(--cc-font-mono);
+    font-size: 0.65rem;
+    color: var(--cc-ink-soft);
+    white-space: nowrap;
+    opacity: 0.85;
+    background: color-mix(in srgb, var(--cc-paper-raised) 85%, transparent);
+    padding: 0 2px;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .timeline-event-marker--selected .timeline-event-label {
+    font-weight: 600;
+    color: var(--cc-ink);
+    opacity: 1;
+  }
+
+  @media (max-width: 600px) {
+    .timeline-event-label {
+      display: none;
+    }
+  }
+</style>

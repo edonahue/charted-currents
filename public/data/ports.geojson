@@ -1,0 +1,105 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "place_jamaica",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.2975,
+          18.1096
+        ]
+      },
+      "properties": {
+        "id": "place_jamaica",
+        "canonical_name": "Jamaica",
+        "raw_source_name": "Jamaica",
+        "region": "Greater Antilles",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "notes": "Island centroid / navigation anchorage reference. Represents the colony/island as recorded in transatlantic voyage origins."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_port_royal",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.84062,
+          17.93738
+        ]
+      },
+      "properties": {
+        "id": "place_port_royal",
+        "canonical_name": "Port Royal",
+        "raw_source_name": "Port Royal",
+        "region": "Jamaica",
+        "geographic_precision": "populated_place",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "notes": "Harbor spit settlement. Sourced directly from 1684 Bochart & Knollis chart and 1692 earthquake records."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_london",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ]
+      },
+      "properties": {
+        "id": "place_london",
+        "canonical_name": "London",
+        "raw_source_name": "London",
+        "region": "England",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "notes": "Port of London / Thames destination for transatlantic colonial merchantmen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_dartmouth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.5786,
+          50.3517
+        ]
+      },
+      "properties": {
+        "id": "place_dartmouth",
+        "canonical_name": "Dartmouth, Devon",
+        "raw_source_name": "Dartmouth, Devon",
+        "region": "England",
+        "geographic_precision": "port_town",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "notes": "Devon port roadstead; recorded capture location of Richard & Sarah (May 1705)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_plymouth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.1427,
+          50.3755
+        ]
+      },
+      "properties": {
+        "id": "place_plymouth",
+        "canonical_name": "Plymouth, Devon",
+        "raw_source_name": "Plymouth, Devon",
+        "region": "England",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "notes": "Devon port and naval station; recorded capture location of William (September 1702)."
+      }
+    }
+  ]
+}

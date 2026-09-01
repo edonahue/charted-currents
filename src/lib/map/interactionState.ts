@@ -5,7 +5,7 @@
  * without leaking untyped mutable state onto window globals.
  */
 
-export type SelectionTriggerOrigin = "map" | "locator_menu";
+export type SelectionTriggerOrigin = "map" | "locator_menu" | "timeline";
 export type SelectionTriggerModality = "pointer" | "keyboard";
 
 export interface SelectionTrigger {

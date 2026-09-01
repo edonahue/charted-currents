@@ -1,0 +1,69 @@
+{
+  "sources": [
+    {
+      "id": "src_imlm_ukda_852135",
+      "title": "The international maritime labour market in Europe, relational database 1650-1815",
+      "creator": "Van Lottum, Jelle (University of Birmingham)",
+      "holding_institution": "UK Data Archive / ReShare",
+      "stable_identifier": "SN 852135",
+      "item_url": "https://reshare.ukdataservice.ac.uk/852135/",
+      "rights_posture": "open_access_no_registration_required",
+      "public_use_basis": "maintainer_approved_small_derived_factual_publication",
+      "attribution_required": true,
+      "credit_line": "Van Lottum, Jelle. The international maritime labour market in Europe, relational database 1650-1815. UK Data Service SN 852135",
+      "notes": "Attributed factual extractions from Prize Papers abstraction; bulk CSV mirroring prohibited."
+    },
+    {
+      "id": "src_tna_hca_32_80",
+      "title": "High Court of Admiralty: Prize Court Papers, Box 80 (Richard & Sarah of London)",
+      "creator": "High Court of Admiralty",
+      "holding_institution": "The National Archives, Kew",
+      "stable_identifier": "TNA HCA 32/80",
+      "item_url": "https://discovery.nationalarchives.gov.uk/details/r/C4258380",
+      "rights_posture": "public_domain",
+      "public_use_basis": "open_public_domain",
+      "attribution_required": true,
+      "credit_line": "The National Archives, Kew (HCA 32/80) via UK Data Service SN 852135 (IMLM)",
+      "notes": "Seventeenth/eighteenth-century prize court examinations; crown copyright expired."
+    },
+    {
+      "id": "src_tna_hca_32_86",
+      "title": "High Court of Admiralty: Prize Court Papers, Box 86 (William)",
+      "creator": "High Court of Admiralty",
+      "holding_institution": "The National Archives, Kew",
+      "stable_identifier": "TNA HCA 32/86",
+      "item_url": "https://discovery.nationalarchives.gov.uk/details/r/C4258380",
+      "rights_posture": "public_domain",
+      "public_use_basis": "open_public_domain",
+      "attribution_required": true,
+      "credit_line": "The National Archives, Kew (HCA 32/86) via UK Data Service SN 852135 (IMLM)",
+      "notes": "Seventeenth/eighteenth-century prize court examinations; crown copyright expired."
+    },
+    {
+      "id": "src_royal_society_1692",
+      "title": "Philosophical Transactions of the Royal Society, Vol. 18, No. 209 (Observations on the Port Royal Earthquake)",
+      "creator": "Royal Society of London / Rev. Edmund Heath / T L",
+      "holding_institution": "The Royal Society, London",
+      "stable_identifier": "Royal Society Archives EL/L5/117 & Phil. Trans. Vol. 18 (1694) pp. 83-100",
+      "item_url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1694.0017",
+      "rights_posture": "public_domain",
+      "public_use_basis": "open_public_domain",
+      "attribution_required": true,
+      "credit_line": "Royal Society Archives (EL/L5/117) & Philosophical Transactions Vol. 18 (1694)",
+      "notes": "Contemporary primary eyewitness observations and letters on the 7 June 1692 Port Royal disaster."
+    },
+    {
+      "id": "src_loc_g4960_1684",
+      "title": "A new & exact mapp of the island of Jamaica : with ye true and iust scituation of ye severall townes & churches",
+      "creator": "Charles Bochart & Humphrey Knollis; published by Philip Lea, London",
+      "holding_institution": "Library of Congress, Geography and Map Division",
+      "stable_identifier": "G4960 1684 .B6 / g4960.ct008911",
+      "item_url": "http://www.loc.gov/item/99463761/",
+      "rights_posture": "public_domain",
+      "public_use_basis": "open_public_domain",
+      "attribution_required": true,
+      "credit_line": "Library of Congress, Geography and Map Division",
+      "notes": "Engraved map created [1684?]; no known copyright restrictions."
+    }
+  ]
+}

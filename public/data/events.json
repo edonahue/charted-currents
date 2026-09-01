@@ -1,0 +1,43 @@
+{
+  "events": [
+    {
+      "id": "event_port_royal_earthquake_1692",
+      "title": "The Port Royal Earthquake of 1692",
+      "date": "1692-06-07",
+      "calendar_system": "Julian (Old Style)",
+      "place_id": "place_port_royal",
+      "kind": "environmental",
+      "evidence_state": "contextual",
+      "summary": "On 7 June 1692 (Julian / Old Style), a catastrophic earthquake and submarine landslide struck Port Royal, Jamaica, destroying and submerging approximately two-thirds of the town and reshaping the harbor.",
+      "sources": [
+        "src_royal_society_1692"
+      ]
+    },
+    {
+      "id": "event_capture_richard_and_sarah_1705",
+      "title": "Wartime Interception of the Richard & Sarah",
+      "date": "1705-05",
+      "place_id": "place_dartmouth",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The English-built merchantman Richard & Sarah of London, homeward bound from Jamaica with colonial goods, was intercepted off Dartmouth, Devon in May 1705 during the War of the Spanish Succession and brought before the High Court of Admiralty.",
+      "sources": [
+        "src_tna_hca_32_80",
+        "src_imlm_ukda_852135"
+      ]
+    },
+    {
+      "id": "event_capture_william_1702",
+      "title": "Wartime Interception of the William",
+      "date": "1702-09",
+      "place_id": "place_plymouth",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 60-ton merchantman William, mustered in Jamaica for London, was intercepted off Plymouth, Devon in September 1702 following England's entry into the War of the Spanish Succession.",
+      "sources": [
+        "src_tna_hca_32_86",
+        "src_imlm_ukda_852135"
+      ]
+    }
+  ]
+}

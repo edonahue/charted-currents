@@ -1,6 +1,14 @@
 ---
 import "maplibre-gl/dist/maplibre-gl.css";
-import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
+
+// Server-side historical places for locator dropdown
+const PLACES = [
+  { id: "place_jamaica", label: "Jamaica", region: "Greater Antilles", precision: "Colony / Island reference" },
+  { id: "place_port_royal", label: "Port Royal", region: "Jamaica", precision: "Harbor spit / Sourced 1684" },
+  { id: "place_london", label: "London", region: "England", precision: "Port city" },
+  { id: "place_dartmouth", label: "Dartmouth, Devon", region: "England", precision: "Capture roadstead" },
+  { id: "place_plymouth", label: "Plymouth, Devon", region: "England", precision: "Capture roadstead" },
+] as const;
 ---
 
 <section class="map-viewport" aria-label="Greater Caribbean map" data-component="map-viewport">
@@ -22,30 +30,30 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
         </svg>
       </span>
       <span>Browse places</span>
-      <span class="map-locator-browser__count" aria-hidden="true">({DEVELOPMENT_ANCHORS.length})</span>
+      <span class="map-locator-browser__count" aria-hidden="true">({PLACES.length})</span>
     </button>
     <nav
       id="map-locator-menu"
       class="map-locator-browser__menu"
-      aria-label="Reference place locators"
+      aria-label="Historical places and locators"
       data-locator-menu
       hidden
     >
       <div class="map-locator-browser__header">
-        <p class="panel-kicker">Reference Places</p>
-        <span class="map-locator-browser__caption">GeoNames CC BY 4.0</span>
+        <p class="panel-kicker">Historical Places</p>
+        <span class="map-locator-browser__caption">Sourced Corpus (1684–1705)</span>
       </div>
       <ul class="map-locator-browser__list">
-        {DEVELOPMENT_ANCHORS.map((anchor) => (
+        {PLACES.map((place) => (
           <li>
             <button
               type="button"
               class="map-locator-browser__item"
-              data-anchor-id={anchor.id}
-              data-selection-id={anchor.selection.id}
+              data-place-id={place.id}
+              data-selection-id={place.id}
             >
-              <span class="map-locator-browser__item-label">{anchor.label}</span>
-              <span class="map-locator-browser__item-region">{anchor.region}</span>
+              <span class="map-locator-browser__item-label">{place.label}</span>
+              <span class="map-locator-browser__item-region">{place.region}</span>
             </button>
           </li>
         ))}
@@ -59,13 +67,10 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
 <script>
   import { Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
   import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
-  import type { Selection } from "../../lib/domain/types";
+  import type { PublishedPortFeatureCollection, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
+  import { publishedDataUrl } from "../../lib/data/loadPublished";
   import { applyBasemapVisualPolicy } from "../../lib/map/applyVisualPolicy";
   import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW, SELECTION_CAMERA } from "../../lib/map/config";
-  import {
-    DEVELOPMENT_ANCHORS,
-    getDevelopmentAnchorsGeoJson,
-  } from "../../lib/map/developmentAnchors";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
   import { selectionStore } from "../../lib/state/selection";
@@ -82,159 +87,250 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
   let map: Map | null = null;
   let previousSelectedFeatureId: string | null = null;
   let hoveredFeatureId: string | null = null;
+  let portsData: PublishedPortFeatureCollection | null = null;
+  let routesData: PublishedRouteFeatureCollection | null = null;
 
-  function ensureProjectLayers(m: Map): void {
-    if (m.getSource("dev-anchors")) return;
+  async function ensureProjectLayers(m: Map): Promise<void> {
+    if (m.getSource("historical-ports")) return;
 
-    m.addSource("dev-anchors", {
-      type: "geojson",
-      data: getDevelopmentAnchorsGeoJson(),
-    });
+    try {
+      const [portsRes, routesRes] = await Promise.all([
+        fetch(publishedDataUrl("ports")),
+        fetch(publishedDataUrl("routes")),
+      ]);
 
-    // Concentric outer ring layer with selected and hover states
-    m.addLayer({
-      id: "dev-anchors-outer-ring",
-      type: "circle",
-      source: "dev-anchors",
-      paint: {
-        "circle-radius": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          PROJECT_MARKER_VISUAL_POLICY.selectedOuterRingRadiusPx,
-          ["boolean", ["feature-state", "hover"], false],
-          PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx + 1,
-          PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx,
-        ],
-        "circle-color": "transparent",
-        "circle-stroke-color": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          PROJECT_MARKER_VISUAL_POLICY.colors.ringSelected,
-          PROJECT_MARKER_VISUAL_POLICY.colors.ring,
-        ],
-        "circle-stroke-width": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          PROJECT_MARKER_VISUAL_POLICY.selectedStrokeWidthPx,
-          ["boolean", ["feature-state", "hover"], false],
-          PROJECT_MARKER_VISUAL_POLICY.strokeWidthPx + 0.5,
-          PROJECT_MARKER_VISUAL_POLICY.strokeWidthPx,
-        ],
-        "circle-stroke-opacity": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          1,
-          ["boolean", ["feature-state", "hover"], false],
-          0.95,
-          0.75,
-        ],
-      },
-    });
+      if (!portsRes.ok || !routesRes.ok) return;
 
-    // Solid core dot layer
-    m.addLayer({
-      id: "dev-anchors-core",
-      type: "circle",
-      source: "dev-anchors",
-      paint: {
-        "circle-radius": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          PROJECT_MARKER_VISUAL_POLICY.selectedRadiusPx,
-          PROJECT_MARKER_VISUAL_POLICY.radiusPx,
-        ],
-        "circle-color": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          PROJECT_MARKER_VISUAL_POLICY.colors.coreSelected,
-          PROJECT_MARKER_VISUAL_POLICY.colors.core,
-        ],
-        "circle-stroke-color": PROJECT_MARKER_VISUAL_POLICY.colors.halo,
-        "circle-stroke-width": 1.5,
-      },
-    });
+      portsData = await portsRes.json();
+      routesData = await routesRes.json();
 
-    // Clean label layer
-    m.addLayer({
-      id: "dev-anchors-label",
-      type: "symbol",
-      source: "dev-anchors",
-      layout: {
-        "text-field": ["get", "label"],
-        "text-variable-anchor": ["top", "bottom", "right", "left"],
-        "text-radial-offset": 0.9,
-        "text-justify": "auto",
-        "text-size": 12,
-        "text-optional": true,
-      },
-      paint: {
-        "text-color": PROJECT_MARKER_VISUAL_POLICY.colors.labelText,
-        "text-halo-color": PROJECT_MARKER_VISUAL_POLICY.colors.labelHalo,
-        "text-halo-width": 1.5,
-        "text-opacity": 0.92,
-      },
-    });
+      // 1. Add Routes Source
+      m.addSource("historical-routes", {
+        type: "geojson",
+        data: routesData!,
+      });
 
-    // Generous transparent hit-target layer to avoid fragmented/overlapping events
-    m.addLayer({
-      id: "dev-anchors-hit-target",
-      type: "circle",
-      source: "dev-anchors",
-      paint: {
-        "circle-radius": 22,
-        "circle-color": "transparent",
-        "circle-opacity": 0,
-      },
-    });
+      // Route Casing
+      m.addLayer({
+        id: "historical-routes-casing",
+        type: "line",
+        source: "historical-routes",
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+        paint: {
+          "line-color": "#f8f3e9",
+          "line-width": 4,
+          "line-opacity": 0.85,
+        },
+      });
 
-    // Unified pointer hover & click listeners on the single hit-target layer
-    m.on("mouseenter", "dev-anchors-hit-target", (e) => {
-      m.getCanvas().style.cursor = "pointer";
-      const feature = e.features?.[0];
-      if (feature?.id) {
-        hoveredFeatureId = String(feature.id);
-        m.setFeatureState({ source: "dev-anchors", id: hoveredFeatureId }, { hover: true });
-      }
-    });
+      // Route Dashed Line
+      m.addLayer({
+        id: "historical-routes-line",
+        type: "line",
+        source: "historical-routes",
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+        paint: {
+          "line-color": "#243f48",
+          "line-width": 2,
+          "line-dasharray": [3, 2],
+          "line-opacity": 0.85,
+        },
+      });
 
-    m.on("mouseleave", "dev-anchors-hit-target", () => {
-      m.getCanvas().style.cursor = "";
-      if (hoveredFeatureId) {
-        m.setFeatureState({ source: "dev-anchors", id: hoveredFeatureId }, { hover: false });
-        hoveredFeatureId = null;
-      }
-    });
+      // Route Hit Target
+      m.addLayer({
+        id: "historical-routes-hit-target",
+        type: "line",
+        source: "historical-routes",
+        paint: {
+          "line-width": 18,
+          "line-color": "transparent",
+          "line-opacity": 0,
+        },
+      });
 
-    m.on("click", "dev-anchors-hit-target", (e) => {
-      const feature = e.features?.[0];
-      if (feature && feature.properties?.selectionId) {
-        recordSelectionTrigger({
-          modality: "pointer",
-          origin: "map",
-          returnTarget: container,
-        });
-        selectionStore.set({ kind: "port", id: String(feature.properties.selectionId) });
-      }
-    });
+      // 2. Add Ports Source
+      m.addSource("historical-ports", {
+        type: "geojson",
+        data: portsData!,
+      });
+
+      // Concentric outer ring layer with selected and hover states
+      m.addLayer({
+        id: "historical-ports-outer-ring",
+        type: "circle",
+        source: "historical-ports",
+        paint: {
+          "circle-radius": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            PROJECT_MARKER_VISUAL_POLICY.selectedOuterRingRadiusPx,
+            ["boolean", ["feature-state", "hover"], false],
+            PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx + 1,
+            PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx,
+          ],
+          "circle-color": "transparent",
+          "circle-stroke-color": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            PROJECT_MARKER_VISUAL_POLICY.colors.ringSelected,
+            PROJECT_MARKER_VISUAL_POLICY.colors.ring,
+          ],
+          "circle-stroke-width": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            PROJECT_MARKER_VISUAL_POLICY.selectedStrokeWidthPx,
+            ["boolean", ["feature-state", "hover"], false],
+            PROJECT_MARKER_VISUAL_POLICY.strokeWidthPx + 0.5,
+            PROJECT_MARKER_VISUAL_POLICY.strokeWidthPx,
+          ],
+          "circle-stroke-opacity": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            1,
+            ["boolean", ["feature-state", "hover"], false],
+            0.95,
+            0.75,
+          ],
+        },
+      });
+
+      // Solid core dot layer
+      m.addLayer({
+        id: "historical-ports-core",
+        type: "circle",
+        source: "historical-ports",
+        paint: {
+          "circle-radius": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            PROJECT_MARKER_VISUAL_POLICY.selectedRadiusPx,
+            PROJECT_MARKER_VISUAL_POLICY.radiusPx,
+          ],
+          "circle-color": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            PROJECT_MARKER_VISUAL_POLICY.colors.coreSelected,
+            PROJECT_MARKER_VISUAL_POLICY.colors.core,
+          ],
+          "circle-stroke-color": PROJECT_MARKER_VISUAL_POLICY.colors.halo,
+          "circle-stroke-width": 1.5,
+        },
+      });
+
+      // Clean label layer
+      m.addLayer({
+        id: "historical-ports-label",
+        type: "symbol",
+        source: "historical-ports",
+        layout: {
+          "text-field": ["get", "canonical_name"],
+          "text-variable-anchor": ["top", "bottom", "right", "left"],
+          "text-radial-offset": 0.9,
+          "text-justify": "auto",
+          "text-size": 12,
+          "text-optional": true,
+        },
+        paint: {
+          "text-color": PROJECT_MARKER_VISUAL_POLICY.colors.labelText,
+          "text-halo-color": PROJECT_MARKER_VISUAL_POLICY.colors.labelHalo,
+          "text-halo-width": 1.5,
+          "text-opacity": 0.92,
+        },
+      });
+
+      // Generous transparent hit-target layer
+      m.addLayer({
+        id: "historical-ports-hit-target",
+        type: "circle",
+        source: "historical-ports",
+        paint: {
+          "circle-radius": 24,
+          "circle-color": "transparent",
+          "circle-opacity": 0,
+        },
+      });
+
+      // Pointer listeners for ports
+      m.on("mouseenter", "historical-ports-hit-target", (e) => {
+        m.getCanvas().style.cursor = "pointer";
+        const feature = e.features?.[0];
+        if (feature?.id) {
+          hoveredFeatureId = String(feature.id);
+          m.setFeatureState({ source: "historical-ports", id: hoveredFeatureId }, { hover: true });
+        }
+      });
+
+      m.on("mouseleave", "historical-ports-hit-target", () => {
+        m.getCanvas().style.cursor = "";
+        if (hoveredFeatureId) {
+          m.setFeatureState({ source: "historical-ports", id: hoveredFeatureId }, { hover: false });
+          hoveredFeatureId = null;
+        }
+      });
+
+      m.on("click", "historical-ports-hit-target", (e) => {
+        const feature = e.features?.[0];
+        if (feature && feature.properties?.id) {
+          recordSelectionTrigger({
+            modality: "pointer",
+            origin: "map",
+            returnTarget: container,
+          });
+          selectionStore.set({ kind: "port", id: String(feature.properties.id) });
+        }
+      });
+
+      // Pointer listeners for routes
+      m.on("mouseenter", "historical-routes-hit-target", () => {
+        m.getCanvas().style.cursor = "pointer";
+      });
+
+      m.on("mouseleave", "historical-routes-hit-target", () => {
+        m.getCanvas().style.cursor = "";
+      });
+
+      m.on("click", "historical-routes-hit-target", (e) => {
+        const feature = e.features?.[0];
+        if (feature && feature.properties?.vessel_id) {
+          recordSelectionTrigger({
+            modality: "pointer",
+            origin: "map",
+            returnTarget: container,
+          });
+          selectionStore.set({ kind: "ship", id: String(feature.properties.vessel_id) });
+        }
+      });
+
+      syncMapToSelection(selectionStore.get());
+    } catch (err) {
+      console.error("Failed to load historical map data:", err);
+    }
   }
 
   function syncMapToSelection(selection: Selection): void {
-    if (!map || !map.getSource("dev-anchors")) return;
+    if (!map || !map.getSource("historical-ports")) return;
 
     if (previousSelectedFeatureId) {
       map.setFeatureState(
-        { source: "dev-anchors", id: previousSelectedFeatureId },
+        { source: "historical-ports", id: previousSelectedFeatureId },
         { selected: false },
       );
       previousSelectedFeatureId = null;
     }
 
     if (selection && selection.kind === "port") {
-      const anchor = DEVELOPMENT_ANCHORS.find((a) => a.selection.id === selection.id);
-      if (anchor) {
-        previousSelectedFeatureId = anchor.id;
+      const portFeature = portsData?.features.find((f) => f.properties.id === selection.id);
+      if (portFeature) {
+        previousSelectedFeatureId = portFeature.id;
         map.setFeatureState(
-          { source: "dev-anchors", id: anchor.id },
+          { source: "historical-ports", id: portFeature.id },
           { selected: true },
         );
 
@@ -245,13 +341,35 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
           : { bottom: 260, top: 40, left: 20, right: 20 };
 
         if (isReducedMotion) {
-          map.jumpTo({ center: anchor.coordinates, padding });
+          map.jumpTo({ center: portFeature.geometry.coordinates, padding });
         } else {
           map.easeTo({
-            center: anchor.coordinates,
+            center: portFeature.geometry.coordinates,
             padding,
             duration: SELECTION_CAMERA.durationMs,
           });
+        }
+      }
+    } else if (selection && selection.kind === "ship") {
+      const routeFeature = routesData?.features.find((f) => f.properties.vessel_id === selection.id);
+      if (routeFeature) {
+        const originCoord = routeFeature.geometry.coordinates[0];
+        if (originCoord) {
+          const isDesktop = window.innerWidth >= 768;
+          const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const padding = isDesktop
+            ? { right: 380, top: 40, bottom: 40, left: 40 }
+            : { bottom: 260, top: 40, left: 20, right: 20 };
+
+          if (isReducedMotion) {
+            map.jumpTo({ center: originCoord, padding });
+          } else {
+            map.easeTo({
+              center: originCoord,
+              padding,
+              duration: SELECTION_CAMERA.durationMs,
+            });
+          }
         }
       }
     }
@@ -263,17 +381,16 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
     });
   }
 
-  function onMapReady(): void {
+  async function onMapReady(): Promise<void> {
     if (!map || !container || container.dataset.mapReady === "true") return;
     applyBasemapVisualPolicy(map);
-    ensureProjectLayers(map);
+    await ensureProjectLayers(map);
     container.dataset.mapReady = "true";
     if (status) {
-      status.textContent = "Modern basemap ready.";
+      status.textContent = "Historical map ready.";
       status.classList.add("sr-only");
       status.classList.remove("map-viewport__status--error");
     }
-    syncMapToSelection(selectionStore.get());
 
     map.once("idle", () => {
       container.dataset.mapIdle = "true";
@@ -298,8 +415,6 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
       map.addControl(new NavigationControl({ showCompass: false }), "top-right");
       map.touchZoomRotate.disableRotation();
 
-      // Intercept Shift+Arrow gestures so ordinary keyboard pan/zoom
-      // remains available while the map stays north-up and 2D.
       container.addEventListener(
         "keydown",
         (event) => {
@@ -315,7 +430,6 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
         { capture: true },
       );
 
-      // Listen for style readiness and load events
       if (map.isStyleLoaded()) {
         onMapReady();
       } else {
@@ -326,7 +440,7 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
       map.on("error", () => {
         if (container.dataset.mapReady !== "true" && status) {
           status.textContent =
-            "The modern basemap is temporarily unavailable. Place locators remain browsable via Browse Places.";
+            "The basemap is temporarily unavailable. Historical places remain browsable via Browse Places.";
           status.classList.remove("sr-only");
           status.classList.add("map-viewport__status--error");
         }
@@ -338,7 +452,7 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
     } catch {
       if (status) {
         status.textContent =
-          "The modern basemap is temporarily unavailable. Place locators remain browsable via Browse Places.";
+          "The basemap is temporarily unavailable. Historical places remain browsable via Browse Places.";
         status.classList.remove("sr-only");
         status.classList.add("map-viewport__status--error");
       }
@@ -357,7 +471,6 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
     };
 
     locatorToggle.addEventListener("click", (e) => {
-      // If activated via keyboard on the toggle, focus first item; if via pointer, keep focus on toggle
       toggleMenu(undefined, e.detail === 0);
     });
 
@@ -413,7 +526,6 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
       }
     });
 
-    // Close menu when clicking outside
     document.addEventListener("click", (e) => {
       if (!locatorBrowser?.contains(e.target as Node)) {
         if (!locatorMenu.hidden) {
@@ -434,7 +546,6 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
           });
           selectionStore.set({ kind: "port", id: selectionId });
           toggleMenu(false);
-          // For pointer selection, return focus to toggle so active focus is not orphaned on document.body
           if (!isKeyboard) {
             locatorToggle.focus();
           }

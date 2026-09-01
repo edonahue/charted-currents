@@ -1,19 +1,259 @@
 ---
-interface Props {
-  open?: boolean;
-}
-
-const { open = false } = Astro.props;
+/**
+ * src/components/evidence/SourceDrawer.astro
+ *
+ * Sourced archival provenance drawer. Displays primary archival call numbers,
+ * repository details, dataset citations, and rights metadata.
+ */
 ---
 
 <aside
-  aria-label="Source evidence"
-  aria-hidden={!open ? "true" : undefined}
+  id="source-drawer"
+  class="source-drawer-shell"
+  aria-label="Archival source provenance"
   data-component="source-drawer"
-  data-open={open ? "true" : "false"}
-  hidden={!open}
+  data-state="closed"
+  hidden
 >
-  <slot>
-    <p>No source record is loaded in the bootstrap shell.</p>
-  </slot>
+  <div class="source-drawer-backdrop" data-source-drawer-backdrop></div>
+  <div class="source-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="source-drawer-title">
+    <header class="source-drawer-header">
+      <div class="source-drawer-header__kicker-wrap">
+        <p class="panel-kicker">Archival Provenance</p>
+      </div>
+      <button
+        type="button"
+        class="inspector-close"
+        aria-label="Close source drawer"
+        title="Close source drawer (Esc)"
+        data-source-drawer-close
+      >
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1 1l12 12M13 1L1 13" />
+        </svg>
+      </button>
+    </header>
+
+    <div class="source-drawer-content">
+      <div class="source-drawer-title-group">
+        <h2 id="source-drawer-title" class="source-drawer-title" data-source-title tabindex="-1"></h2>
+        <p class="source-drawer-subtitle" data-source-subtitle></p>
+      </div>
+
+      <div class="source-drawer-body">
+        <section class="inspector-section" aria-label="Archive details">
+          <p class="panel-kicker">Holding Repository & Reference</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Repository</dt>
+              <dd data-source-institution></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Archival Reference</dt>
+              <dd data-source-ref class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Creator / Authority</dt>
+              <dd data-source-creator></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Rights Posture</dt>
+              <dd data-source-rights class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row" data-source-link-row>
+              <dt>Repository Link</dt>
+              <dd>
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-source-permalink
+                  class="inspector-link"
+                >
+                  View Archive Record ↗
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="inspector-section" aria-label="Scholarly attribution">
+          <p class="panel-kicker">Scholarly Extraction & Dataset Citation</p>
+          <p class="inspector-note" data-source-citation></p>
+        </section>
+
+        <section class="inspector-section" aria-label="Audit and derivation notes">
+          <p class="panel-kicker">Provenance & Derivation Audit</p>
+          <p class="inspector-note" data-source-notes></p>
+        </section>
+      </div>
+    </div>
+  </div>
 </aside>
+
+<script>
+  import type { PublishedSources } from "../../lib/domain/types";
+  import { publishedDataUrl } from "../../lib/data/loadPublished";
+
+  const drawer = document.getElementById("source-drawer");
+  const closeBtn = document.querySelector<HTMLButtonElement>("[data-source-drawer-close]");
+  const backdrop = document.querySelector<HTMLElement>("[data-source-drawer-backdrop]");
+  const titleEl = document.querySelector<HTMLElement>("[data-source-title]");
+  const subtitleEl = document.querySelector<HTMLElement>("[data-source-subtitle]");
+  const instEl = document.querySelector<HTMLElement>("[data-source-institution]");
+  const refEl = document.querySelector<HTMLElement>("[data-source-ref]");
+  const creatorEl = document.querySelector<HTMLElement>("[data-source-creator]");
+  const rightsEl = document.querySelector<HTMLElement>("[data-source-rights]");
+  const citationEl = document.querySelector<HTMLElement>("[data-source-citation]");
+  const notesEl = document.querySelector<HTMLElement>("[data-source-notes]");
+  const linkRow = document.querySelector<HTMLElement>("[data-source-link-row]");
+  const permalink = document.querySelector<HTMLAnchorElement>("[data-source-permalink]");
+
+  let sourcesCache: PublishedSources | null = null;
+  let returnElement: HTMLElement | null = null;
+
+  async function loadSources(): Promise<PublishedSources | null> {
+    if (sourcesCache) return sourcesCache;
+    try {
+      const res = await fetch(publishedDataUrl("sources"));
+      if (!res.ok) return null;
+      sourcesCache = await res.json();
+      return sourcesCache;
+    } catch {
+      return null;
+    }
+  }
+
+  // Preload sources on script load
+  loadSources();
+
+  export async function openSourceDrawer(sourceId: string, triggerEl?: HTMLElement | null): Promise<void> {
+    if (!drawer) return;
+    returnElement = triggerEl || (document.activeElement as HTMLElement);
+
+    const sources = await loadSources();
+    if (!sources) return;
+
+    const source = sources.sources.find((s) => s.id === sourceId);
+    if (!source) return;
+
+    if (titleEl) titleEl.textContent = source.title;
+    if (subtitleEl) subtitleEl.textContent = `${source.holding_institution} · ${source.stable_identifier}`;
+    if (instEl) instEl.textContent = source.holding_institution;
+    if (refEl) refEl.textContent = source.stable_identifier;
+    if (creatorEl) creatorEl.textContent = source.creator;
+    if (rightsEl) rightsEl.textContent = source.rights_posture;
+    if (citationEl) citationEl.textContent = source.credit_line;
+    if (notesEl) notesEl.textContent = source.notes || "Sourced historical record verified by Charted Currents.";
+
+    if (permalink && linkRow) {
+      if (source.item_url) {
+        permalink.href = source.item_url;
+        linkRow.hidden = false;
+      } else {
+        linkRow.hidden = true;
+      }
+    }
+
+    drawer.hidden = false;
+    drawer.setAttribute("data-state", "open");
+    titleEl?.focus();
+  }
+
+  function closeSourceDrawer(): void {
+    if (!drawer) return;
+    drawer.setAttribute("data-state", "closed");
+    drawer.hidden = true;
+    returnElement?.focus();
+  }
+
+  closeBtn?.addEventListener("click", closeSourceDrawer);
+  backdrop?.addEventListener("click", closeSourceDrawer);
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && drawer && !drawer.hidden) {
+      e.preventDefault();
+      closeSourceDrawer();
+    }
+  });
+
+  // Global custom event listener
+  window.addEventListener("cc:open-source", ((e: CustomEvent<{ sourceId: string; triggerEl?: HTMLElement }>) => {
+    if (e.detail?.sourceId) {
+      openSourceDrawer(e.detail.sourceId, e.detail.triggerEl);
+    }
+  }) as EventListener);
+</script>
+
+<style>
+  .source-drawer-shell {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .source-drawer-shell[hidden] {
+    display: none;
+  }
+
+  .source-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(18, 26, 30, 0.45);
+    backdrop-filter: blur(2px);
+    transition: opacity 180ms ease;
+  }
+
+  .source-drawer-panel {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    height: 100%;
+    background: var(--cc-paper-raised);
+    border-left: 1px solid var(--cc-line);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    overflow-y: auto;
+  }
+
+  .source-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--cc-line);
+    background: var(--cc-paper);
+  }
+
+  .source-drawer-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .source-drawer-title {
+    font-family: var(--cc-font-serif);
+    font-size: var(--cc-text-lg);
+    font-weight: 400;
+    color: var(--cc-ink);
+    margin: 0 0 0.35rem;
+  }
+
+  .source-drawer-subtitle {
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink-muted);
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    .source-drawer-panel {
+      max-width: 100%;
+    }
+  }
+</style>

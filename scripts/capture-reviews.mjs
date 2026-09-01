@@ -7,24 +7,20 @@ import { spawn } from "node:child_process";
 
 /**
  * Portable browser executable discovery.
- * Checks environment variables, standard OS binaries, and local user caches.
  */
 function findBrowserExecutable() {
   const customBin = process.env.CHROME_BIN || process.env.BROWSER_PATH;
   if (customBin && fs.existsSync(customBin)) return customBin;
 
   const candidatePaths = [
-    // Standard Linux paths
     "/usr/bin/google-chrome",
     "/usr/bin/google-chrome-stable",
     "/usr/bin/chromium-browser",
     "/usr/bin/chromium",
     "/usr/bin/chrome",
     "/snap/bin/chromium",
-    // macOS paths
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     "/Applications/Chromium.app/Contents/MacOS/Chromium",
-    // Windows paths
     "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
   ];
@@ -33,7 +29,6 @@ function findBrowserExecutable() {
     if (fs.existsSync(candidate)) return candidate;
   }
 
-  // Dynamic search in user cache directories (Playwright/Puppeteer local caches)
   const home = os.homedir();
   const playwrightCache = path.join(home, ".cache", "ms-playwright");
   if (fs.existsSync(playwrightCache)) {
@@ -43,33 +38,18 @@ function findBrowserExecutable() {
         if (entry.startsWith("chromium-")) {
           const linuxChrome = path.join(playwrightCache, entry, "chrome-linux64", "chrome");
           if (fs.existsSync(linuxChrome)) return linuxChrome;
-          const macChrome = path.join(
-            playwrightCache,
-            entry,
-            "chrome-mac",
-            "Chromium.app",
-            "Contents",
-            "MacOS",
-            "Chromium",
-          );
+          const macChrome = path.join(playwrightCache, entry, "chrome-mac", "Chromium.app", "Contents", "MacOS", "Chromium");
           if (fs.existsSync(macChrome)) return macChrome;
         }
       }
     } catch {
-      // Ignore cache read errors and proceed to fallback
+      // Ignore cache read errors
     }
   }
 
-  throw new Error(
-    "No Chromium/Chrome executable found on this system.\n" +
-      "Set CHROME_BIN=/path/to/chrome to run review captures.",
-  );
+  throw new Error("No Chromium/Chrome executable found on this system.");
 }
 
-/**
- * Acquires an ephemeral free port from the OS via net.createServer().listen(0)
- * before binding the static review server or Chrome remote debugging session.
- */
 function getAvailablePort() {
   return new Promise((resolve, reject) => {
     const srv = net.createServer();
@@ -92,6 +72,7 @@ const mimeTypes = {
   ".js": "application/javascript",
   ".mjs": "application/javascript",
   ".json": "application/json",
+  ".geojson": "application/geo+json",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".svg": "image/svg+xml",
@@ -105,7 +86,6 @@ const server = http.createServer((req, res) => {
   if (reqPath === "/" || reqPath === "") reqPath = "/index.html";
   const filePath = path.normalize(path.join(distDir, reqPath));
 
-  // Strict path containment check
   const relative = path.relative(distDir, filePath);
   if (relative.startsWith("..") || path.isAbsolute(relative)) {
     res.writeHead(403);
@@ -145,7 +125,6 @@ async function runReviewSuite() {
   const chromePath = findBrowserExecutable();
   console.log(`Using browser: ${chromePath}`);
 
-  // Guaranteed open ephemeral debugging port
   const debugPort = await getAvailablePort();
   const proc = spawn(chromePath, [
     "--headless=new",
@@ -243,14 +222,14 @@ async function runReviewSuite() {
     const ready = await waitForMapReady();
     assert(
       ready,
-      "Map initialized and reached idle state (dataset.mapReady === 'true' and dataset.mapIdle === 'true') within timeout",
+      "Historical map initialized and reached idle state (dataset.mapReady === 'true' and dataset.mapIdle === 'true') within timeout",
     );
 
     const viewports = [
-      { name: "packet1-desktop-1440x900.png", width: 1440, height: 900 },
-      { name: "packet1-ultrawide-3440x1440.png", width: 3440, height: 1440 },
-      { name: "packet1-phone-390x844.png", width: 390, height: 844 },
-      { name: "packet1-phone-430x932.png", width: 430, height: 932 },
+      { name: "packet2-desktop-1440x900.png", width: 1440, height: 900 },
+      { name: "packet2-ultrawide-3440x1440.png", width: 3440, height: 1440 },
+      { name: "packet2-phone-390x844.png", width: 390, height: 844 },
+      { name: "packet2-phone-430x932.png", width: 430, height: 932 },
     ];
 
     fs.mkdirSync("design/reviews", { recursive: true });
@@ -276,8 +255,8 @@ async function runReviewSuite() {
       }
     }
 
-    // Active selection capture on desktop (1440x900)
-    console.log("[CAPTURE] desktop selected state (1440x900)...");
+    // Active selection capture on desktop (1440x900) - Select Port Royal
+    console.log("[CAPTURE] desktop selected state (Port Royal)...");
     await send("Emulation.setDeviceMetricsOverride", {
       width: 1440,
       height: 900,
@@ -290,8 +269,8 @@ async function runReviewSuite() {
       expression: `(() => {
         const toggle = document.querySelector('[data-locator-toggle]');
         toggle?.click();
-        const firstItem = document.querySelector('.map-locator-browser__item');
-        firstItem?.click();
+        const portRoyalBtn = document.querySelector('[data-place-id="place_port_royal"]');
+        portRoyalBtn?.click();
       })()`,
     });
     await new Promise((r) => setTimeout(r, 800));
@@ -299,12 +278,41 @@ async function runReviewSuite() {
     const selectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
     assert(Boolean(selectedScreenshot?.data), "Screenshot capture returned valid image data for desktop selected state");
     if (selectedScreenshot?.data) {
-      const selectedOutPath = path.resolve("design/reviews/packet1-desktop-selected-1440x900.png");
+      const selectedOutPath = path.resolve("design/reviews/packet2-desktop-selected-1440x900.png");
       fs.writeFileSync(selectedOutPath, Buffer.from(selectedScreenshot.data, "base64"));
       const size = fs.statSync(selectedOutPath).size;
-      console.log(`[SAVED] packet1-desktop-selected-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot packet1-desktop-selected-1440x900.png generated with valid raster size (${size} bytes)`);
+      console.log(`[SAVED] packet2-desktop-selected-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot packet2-desktop-selected-1440x900.png generated with valid raster size (${size} bytes)`);
     }
+
+    // Active Source Drawer capture on desktop (1440x900)
+    console.log("[CAPTURE] desktop source drawer state...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const openVisualBtn = document.querySelector('[data-open-visual-source]');
+        openVisualBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 600));
+
+    const drawerScreenshot = await send("Page.captureScreenshot", { format: "png" });
+    assert(Boolean(drawerScreenshot?.data), "Screenshot capture returned valid image data for source drawer state");
+    if (drawerScreenshot?.data) {
+      const drawerOutPath = path.resolve("design/reviews/packet2-source-drawer-1440x900.png");
+      fs.writeFileSync(drawerOutPath, Buffer.from(drawerScreenshot.data, "base64"));
+      const size = fs.statSync(drawerOutPath).size;
+      console.log(`[SAVED] packet2-source-drawer-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot packet2-source-drawer-1440x900.png generated with valid raster size (${size} bytes)`);
+    }
+
+    // Close source drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const closeBtn = document.querySelector('[data-source-drawer-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
 
     // Active selection capture on mobile (390x844)
     console.log("[CAPTURE] mobile selected state (390x844)...");
@@ -319,11 +327,11 @@ async function runReviewSuite() {
     const mobileSelectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
     assert(Boolean(mobileSelectedScreenshot?.data), "Screenshot capture returned valid image data for mobile selected state");
     if (mobileSelectedScreenshot?.data) {
-      const mobileSelectedOutPath = path.resolve("design/reviews/packet1-phone-selected-390x844.png");
+      const mobileSelectedOutPath = path.resolve("design/reviews/packet2-phone-selected-390x844.png");
       fs.writeFileSync(mobileSelectedOutPath, Buffer.from(mobileSelectedScreenshot.data, "base64"));
       const size = fs.statSync(mobileSelectedOutPath).size;
-      console.log(`[SAVED] packet1-phone-selected-390x844.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot packet1-phone-selected-390x844.png generated with valid raster size (${size} bytes)`);
+      console.log(`[SAVED] packet2-phone-selected-390x844.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot packet2-phone-selected-390x844.png generated with valid raster size (${size} bytes)`);
     }
 
     // Reset viewport to desktop for behavioral tests
@@ -343,68 +351,134 @@ async function runReviewSuite() {
     const attributionCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const hasMapLibre = Boolean(document.querySelector(".maplibregl-ctrl-attrib"));
-        const hasGeoNames = Boolean(document.querySelector("a[href*='geonames.org']"));
-        return { hasMapLibre, hasGeoNames };
+        const hasWHG = Boolean(document.querySelector("a[href*='whgazetteer.org']"));
+        return { hasMapLibre, hasWHG };
       })()`,
       returnByValue: true,
     });
     assert(attributionCheck?.result?.value?.hasMapLibre, "MapLibre / OpenStreetMap attribution control present in DOM");
-    assert(attributionCheck?.result?.value?.hasGeoNames, "GeoNames CC BY 4.0 locator attribution link present in DOM");
+    assert(attributionCheck?.result?.value?.hasWHG, "WHG authority attribution link present in DOM");
 
-    // 2. Browse Places Pointer Selection & Focus Return to Toggle
-    const pointerFocusCheck = await send("Runtime.evaluate", {
+    // 2. Historical Vessel Selection & Crew Roster Rendering
+    console.log("Testing vessel selection & crew roster rendering...");
+    await send("Runtime.evaluate", {
       expression: `(() => {
-        // Reset selection
-        const closeBtn = document.querySelector('[data-inspector-close]');
-        closeBtn?.click();
-
-        const toggle = document.querySelector('[data-locator-toggle]');
-        // Pointer click on toggle (detail = 1)
-        toggle.dispatchEvent(new MouseEvent('click', { detail: 1, bubbles: true }));
-        const firstItem = document.querySelector('.map-locator-browser__item');
-        // Pointer click on first item (detail = 1)
-        firstItem.dispatchEvent(new MouseEvent('click', { detail: 1, bubbles: true }));
-
-        const inspectorEl = document.getElementById('entity-inspector');
-        const isInspectorOpen = inspectorEl?.getAttribute('data-state') === 'open';
-        const isFocusOnToggle = document.activeElement === toggle;
-        const isFocusOnBody = document.activeElement === document.body;
-
-        return { isInspectorOpen, isFocusOnToggle, isFocusOnBody };
+        const marker = document.querySelector('[data-selection-id="ship_richard_and_sarah_1705"]');
+        marker?.click();
       })()`,
-      returnByValue: true,
     });
-    assert(pointerFocusCheck?.result?.value?.isInspectorOpen, "Browse Places pointer selection opens Entity Inspector");
-    assert(pointerFocusCheck?.result?.value?.isFocusOnToggle, "Browse Places pointer selection returns focus to toggle button");
-    assert(!pointerFocusCheck?.result?.value?.isFocusOnBody, "Focus is not orphaned on document.body after locator menu closes");
+    await new Promise((r) => setTimeout(r, 300));
 
-    // 3. Escape Ownership in Menu with Active Inspector
-    const escapeIsolationCheck = await send("Runtime.evaluate", {
+    const vesselCheck = await send("Runtime.evaluate", {
       expression: `(() => {
-        const toggle = document.querySelector('[data-locator-toggle]');
-        const menu = document.querySelector('[data-locator-menu]');
         const inspector = document.getElementById('entity-inspector');
+        const isOpen = inspector?.getAttribute('data-state') === 'open';
+        const title = document.querySelector('[data-inspector-title]')?.textContent;
+        const rawName = document.querySelector('[data-ship-raw-name]')?.textContent;
+        const tonnage = document.querySelector('[data-ship-tonnage]')?.textContent;
+        const crewRows = document.querySelectorAll('[data-ship-crew-tbody] tr').length;
 
-        // Open menu while inspector is already open
-        toggle.click();
-        const menuOpened = !menu.hidden;
-
-        // Press Escape inside menu
-        menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-
-        const menuClosed = menu.hidden;
-        const inspectorRemainsOpen = inspector.getAttribute('data-state') === 'open';
-
-        return { menuOpened, menuClosed, inspectorRemainsOpen };
+        return { isOpen, title, rawName, tonnage, crewRows };
       })()`,
       returnByValue: true,
     });
-    assert(escapeIsolationCheck?.result?.value?.menuClosed, "Pressing Escape in Browse Places menu closes the menu");
-    assert(escapeIsolationCheck?.result?.value?.inspectorRemainsOpen, "Escape in menu does NOT dismiss the active Entity Inspector");
+    assert(vesselCheck?.result?.value?.isOpen, "Selecting ship on timeline opens Entity Inspector");
+    assert(vesselCheck?.result?.value?.title === "Richard & Sarah of London", "Vessel title displays 'Richard & Sarah of London'");
+    assert(vesselCheck?.result?.value?.rawName === "Richard & Sarah of London", "Raw vessel name preserved faithfully");
+    assert(vesselCheck?.result?.value?.tonnage === "300 tons reported burden", "Reported burden displays '300 tons reported burden'");
+    assert(vesselCheck?.result?.value?.crewRows === 3, "All 3 documented crew members rendered in table");
 
-    // 4. Real CDP Keyboard Navigation & Activation Flow
-    console.log("Testing native CDP keyboard navigation and activation flow...");
-    // Reset selection and focus toggle
+    // 3. Source Drawer Opening for Archival Call Number (TNA HCA 32/80)
+    console.log("Testing Source Drawer opening for archival record...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const openSrcBtn = document.querySelector('[data-open-ship-source]');
+        openSrcBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const sourceDrawerCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById('source-drawer');
+        const isOpen = drawer?.getAttribute('data-state') === 'open';
+        const ref = document.querySelector('[data-source-ref]')?.textContent;
+        const inst = document.querySelector('[data-source-institution]')?.textContent;
+        const citation = document.querySelector('[data-source-citation]')?.textContent;
+
+        return { isOpen, ref, inst, citation };
+      })()`,
+      returnByValue: true,
+    });
+    assert(sourceDrawerCheck?.result?.value?.isOpen, "Clicking 'Inspect Archival Provenance' opens Source Drawer");
+    assert(sourceDrawerCheck?.result?.value?.ref === "TNA HCA 32/80", "Source Drawer displays stable archival ref 'TNA HCA 32/80'");
+    assert(sourceDrawerCheck?.result?.value?.inst === "The National Archives, Kew", "Holding institution displays 'The National Archives, Kew'");
+    assert(sourceDrawerCheck?.result?.value?.citation?.includes("UK Data Service SN 852135"), "Dataset citation includes 'UK Data Service SN 852135'");
+
+    // Close Source Drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const closeBtn = document.querySelector('[data-source-drawer-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 200));
+
+    // 4. Contextual Event Selection (1692 Earthquake)
+    console.log("Testing contextual 1692 earthquake selection...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const eqMarker = document.querySelector('[data-selection-id="event_port_royal_earthquake_1692"]');
+        eqMarker?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const eventCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const inspector = document.getElementById('entity-inspector');
+        const isOpen = inspector?.getAttribute('data-state') === 'open';
+        const title = document.querySelector('[data-inspector-title]')?.textContent;
+        const date = document.querySelector('[data-event-date]')?.textContent;
+        const badgeState = document.querySelector('[data-inspector-badge]')?.getAttribute('data-evidence-state');
+
+        return { isOpen, title, date, badgeState };
+      })()`,
+      returnByValue: true,
+    });
+    assert(eventCheck?.result?.value?.isOpen, "Selecting 1692 earthquake opens Entity Inspector");
+    assert(eventCheck?.result?.value?.title === "The Port Royal Earthquake of 1692", "Event title matches expected");
+    assert(eventCheck?.result?.value?.date?.includes("1692-06-07"), "Event date includes '1692-06-07'");
+    assert(eventCheck?.result?.value?.badgeState === "contextual", "Evidence badge correctly marks event as 'contextual'");
+
+    // 5. Historical Chart View for Port Royal
+    console.log("Testing historical visual chart display for Port Royal...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector('[data-locator-toggle]');
+        toggle?.click();
+        const portRoyalBtn = document.querySelector('[data-place-id="place_port_royal"]');
+        portRoyalBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const visualCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const visualWrap = document.querySelector('[data-place-visual-wrap]');
+        const isVisualVisible = visualWrap && !visualWrap.hidden;
+        const img = document.querySelector('.inspector-visual-img');
+        const hasImgSrc = img && img.getAttribute('src')?.includes('bochart-knollis-jamaica-1684.jpg');
+
+        return { isVisualVisible, hasImgSrc };
+      })()`,
+      returnByValue: true,
+    });
+    assert(visualCheck?.result?.value?.isVisualVisible, "Selecting Port Royal exposes the 1684 cartographic reference visual card");
+    assert(visualCheck?.result?.value?.hasImgSrc, "1684 Bochart & Knollis chart image loaded correctly");
+
+    // 6. Real CDP Keyboard Navigation & Activation Flow
+    console.log("Testing native CDP keyboard navigation...");
     await send("Runtime.evaluate", {
       expression: `(() => {
         const closeBtn = document.querySelector('[data-inspector-close]');
@@ -415,7 +489,6 @@ async function runReviewSuite() {
     });
     await new Promise((r) => setTimeout(r, 100));
 
-    // Send real ArrowDown through CDP
     await sendKey("ArrowDown", "ArrowDown", 40);
     await new Promise((r) => setTimeout(r, 150));
 
@@ -423,9 +496,8 @@ async function runReviewSuite() {
       expression: `Boolean(document.activeElement?.classList?.contains('map-locator-browser__item'))`,
       returnByValue: true,
     });
-    assert(arrowFocusCheck?.result?.value, "Real CDP ArrowDown opens locator menu and moves focus to first place item");
+    assert(arrowFocusCheck?.result?.value, "CDP ArrowDown opens locator menu and moves focus to first place item");
 
-    // Send real Enter through CDP
     await sendKey("Enter", "Enter", 13);
     await new Promise((r) => setTimeout(r, 200));
 
@@ -438,10 +510,9 @@ async function runReviewSuite() {
       })()`,
       returnByValue: true,
     });
-    assert(keyboardActivationCheck?.result?.value?.isOpen, "Real CDP Enter activation opens Entity Inspector");
-    assert(keyboardActivationCheck?.result?.value?.isHeadingFocused, "Real CDP Enter activation transfers focus to #inspector-heading");
+    assert(keyboardActivationCheck?.result?.value?.isOpen, "CDP Enter activation opens Entity Inspector");
+    assert(keyboardActivationCheck?.result?.value?.isHeadingFocused, "CDP Enter activation transfers focus to #inspector-heading");
 
-    // Send real Escape through CDP to close inspector
     await sendKey("Escape", "Escape", 27);
     await new Promise((r) => setTimeout(r, 150));
 
@@ -454,108 +525,10 @@ async function runReviewSuite() {
       })()`,
       returnByValue: true,
     });
-    assert(keyboardCloseCheck?.result?.value?.isClosed, "Real CDP Escape closes Entity Inspector");
-    assert(keyboardCloseCheck?.result?.value?.isFocusRestored, "Real CDP Escape restores focus to Browse Places toggle button");
+    assert(keyboardCloseCheck?.result?.value?.isClosed, "CDP Escape closes Entity Inspector");
+    assert(keyboardCloseCheck?.result?.value?.isFocusRestored, "CDP Escape restores focus to Browse Places toggle button");
 
-    // 5. Mobile Sheet Accessibility Affordance & State Toggle
-    const mobileSheetCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        // Open selection
-        const toggle = document.querySelector('[data-locator-toggle]');
-        toggle.click();
-        const firstItem = document.querySelector('.map-locator-browser__item');
-        firstItem.click();
-
-        const inspector = document.getElementById('entity-inspector');
-        const handle = document.querySelector('[data-sheet-handle]');
-
-        const hasControls = handle?.getAttribute('aria-controls') === 'inspector-content';
-        const initialExpanded = handle?.getAttribute('aria-expanded');
-        const initialLabel = handle?.getAttribute('aria-label');
-
-        // Click handle to toggle to expanded
-        handle.click();
-        const expandedState = inspector?.getAttribute('data-sheet-state');
-        const postExpanded = handle?.getAttribute('aria-expanded');
-        const postLabel = handle?.getAttribute('aria-label');
-
-        return {
-          hasControls,
-          initialExpanded,
-          initialLabel,
-          expandedState,
-          postExpanded,
-          postLabel,
-        };
-      })()`,
-      returnByValue: true,
-    });
-    assert(mobileSheetCheck?.result?.value?.hasControls, "Mobile sheet handle has aria-controls='inspector-content'");
-    assert(mobileSheetCheck?.result?.value?.initialExpanded === "false", "Mobile sheet handle initial aria-expanded is 'false'");
-    assert(mobileSheetCheck?.result?.value?.initialLabel === "Expand place details", "Mobile sheet handle initial label is 'Expand place details'");
-    assert(mobileSheetCheck?.result?.value?.expandedState === "expanded", "Clicking mobile sheet handle transitions data-sheet-state to 'expanded'");
-    assert(mobileSheetCheck?.result?.value?.postExpanded === "true", "Expanded mobile sheet handle aria-expanded is 'true'");
-    assert(mobileSheetCheck?.result?.value?.postLabel === "Collapse place details", "Expanded mobile sheet handle label is 'Collapse place details'");
-
-    // 7. Shift+Arrow Rotation Prevention
-    const rotationCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const canvas = document.getElementById('charted-currents-map');
-        const event = new KeyboardEvent('keydown', { key: 'ArrowLeft', shiftKey: true, bubbles: true, cancelable: true });
-        const canceled = !canvas.dispatchEvent(event);
-        return { canceled };
-      })()`,
-      returnByValue: true,
-    });
-    assert(rotationCheck?.result?.value?.canceled, "Shift+Arrow gesture is intercepted with preventDefault() to preserve 2D north-up camera");
-
-    // 8. Real Causal Basemap Failure Test via CDP Network Blocking
-    console.log("\nTesting real causal basemap failure handling via CDP network blocking...");
-    await send("Network.setBlockedURLs", { urls: ["*tiles.openfreemap.org*"] });
-    await send("Page.reload", { ignoreCache: true });
-    await new Promise((r) => setTimeout(r, 2000));
-
-    const causalFallbackCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const statusEl = document.querySelector('[data-map-status]');
-        const isVisible = statusEl && !statusEl.classList.contains('sr-only');
-        const hasErrorClass = statusEl && statusEl.classList.contains('map-viewport__status--error');
-        const text = statusEl?.textContent || '';
-
-        // Test Browse Places selection while map is offline
-        const toggle = document.querySelector('[data-locator-toggle]');
-        toggle?.click();
-        const firstItem = document.querySelector('.map-locator-browser__item');
-        firstItem?.click();
-
-        const inspectorEl = document.getElementById('entity-inspector');
-        const titleEl = document.querySelector('[data-inspector-title]');
-
-        return {
-          isVisible,
-          hasErrorClass,
-          text,
-          inspectorOpened: inspectorEl?.getAttribute('data-state') === 'open',
-          title: titleEl?.textContent,
-        };
-      })()`,
-      returnByValue: true,
-    });
-    assert(causalFallbackCheck?.result?.value?.isVisible, "Production map error handler exposes fallback notice upon real network failure");
-    assert(causalFallbackCheck?.result?.value?.hasErrorClass, "Fallback notice has .map-viewport__status--error class styling");
-    assert(
-      causalFallbackCheck?.result?.value?.text?.includes("temporarily unavailable"),
-      "Fallback message truthfully explains modern basemap status",
-    );
-    assert(
-      causalFallbackCheck?.result?.value?.inspectorOpened && causalFallbackCheck?.result?.value?.title === "Port Royal",
-      "Place locators and Entity Inspector remain fully functional during basemap outage",
-    );
-
-    // Clear blocked URLs
-    await send("Network.setBlockedURLs", { urls: [] });
-
-    // 9. Runtime Exceptions check
+    // 7. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

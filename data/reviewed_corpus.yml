@@ -1,0 +1,261 @@
+# data/reviewed_corpus.yml
+#
+# Committed human-reviewed publication manifest for Charted Currents Packet 2.
+# Every record here has been audited for provenance, rights clearance, and geographic precision.
+#
+# Compilation: python3 data/pipeline/build_corpus.py -> public/data/
+
+metadata:
+  corpus_id: "greater_caribbean_port_royal_sample"
+  corpus_title: "Jamaica & Transatlantic Maritime Commerce (1684–1705)"
+  version: "0.2.0"
+  reviewed_at: "2026-09-01"
+  review_status: "human_approved"
+
+sources:
+  - id: "src_imlm_ukda_852135"
+    title: "The international maritime labour market in Europe, relational database 1650-1815"
+    creator: "Van Lottum, Jelle (University of Birmingham)"
+    holding_institution: "UK Data Archive / ReShare"
+    stable_identifier: "SN 852135"
+    item_url: "https://reshare.ukdataservice.ac.uk/852135/"
+    rights_posture: "open_access_no_registration_required"
+    public_use_basis: "maintainer_approved_small_derived_factual_publication"
+    attribution_required: true
+    credit_line: "Van Lottum, Jelle. The international maritime labour market in Europe, relational database 1650-1815. UK Data Service SN 852135"
+    notes: "Attributed factual extractions from Prize Papers abstraction; bulk CSV mirroring prohibited."
+
+  - id: "src_tna_hca_32_80"
+    title: "High Court of Admiralty: Prize Court Papers, Box 80 (Richard & Sarah of London)"
+    creator: "High Court of Admiralty"
+    holding_institution: "The National Archives, Kew"
+    stable_identifier: "TNA HCA 32/80"
+    item_url: "https://discovery.nationalarchives.gov.uk/details/r/C4258380"
+    rights_posture: "public_domain"
+    public_use_basis: "open_public_domain"
+    attribution_required: true
+    credit_line: "The National Archives, Kew (HCA 32/80) via UK Data Service SN 852135 (IMLM)"
+    notes: "Seventeenth/eighteenth-century prize court examinations; crown copyright expired."
+
+  - id: "src_tna_hca_32_86"
+    title: "High Court of Admiralty: Prize Court Papers, Box 86 (William)"
+    creator: "High Court of Admiralty"
+    holding_institution: "The National Archives, Kew"
+    stable_identifier: "TNA HCA 32/86"
+    item_url: "https://discovery.nationalarchives.gov.uk/details/r/C4258380"
+    rights_posture: "public_domain"
+    public_use_basis: "open_public_domain"
+    attribution_required: true
+    credit_line: "The National Archives, Kew (HCA 32/86) via UK Data Service SN 852135 (IMLM)"
+    notes: "Seventeenth/eighteenth-century prize court examinations; crown copyright expired."
+
+  - id: "src_royal_society_1692"
+    title: "Philosophical Transactions of the Royal Society, Vol. 18, No. 209 (Observations on the Port Royal Earthquake)"
+    creator: "Royal Society of London / Rev. Edmund Heath / T L"
+    holding_institution: "The Royal Society, London"
+    stable_identifier: "Royal Society Archives EL/L5/117 & Phil. Trans. Vol. 18 (1694) pp. 83-100"
+    item_url: "https://royalsocietypublishing.org/doi/10.1098/rstl.1694.0017"
+    rights_posture: "public_domain"
+    public_use_basis: "open_public_domain"
+    attribution_required: true
+    credit_line: "Royal Society Archives (EL/L5/117) & Philosophical Transactions Vol. 18 (1694)"
+    notes: "Contemporary primary eyewitness observations and letters on the 7 June 1692 Port Royal disaster."
+
+  - id: "src_loc_g4960_1684"
+    title: "A new & exact mapp of the island of Jamaica : with ye true and iust scituation of ye severall townes & churches"
+    creator: "Charles Bochart & Humphrey Knollis; published by Philip Lea, London"
+    holding_institution: "Library of Congress, Geography and Map Division"
+    stable_identifier: "G4960 1684 .B6 / g4960.ct008911"
+    item_url: "http://www.loc.gov/item/99463761/"
+    rights_posture: "public_domain"
+    public_use_basis: "open_public_domain"
+    attribution_required: true
+    credit_line: "Library of Congress, Geography and Map Division"
+    notes: "Engraved map created [1684?]; no known copyright restrictions."
+
+places:
+  - id: "place_jamaica"
+    canonical_name: "Jamaica"
+    raw_source_name: "Jamaica"
+    region: "Greater Antilles"
+    geographic_precision: "colony_or_island"
+    coordinates: [-77.2975, 18.1096]
+    geometry_provenance: "modern_generalized_navigation_reference"
+    notes: "Island centroid / navigation anchorage reference. Represents the colony/island as recorded in transatlantic voyage origins."
+
+  - id: "place_port_royal"
+    canonical_name: "Port Royal"
+    raw_source_name: "Port Royal"
+    region: "Jamaica"
+    geographic_precision: "populated_place"
+    coordinates: [-76.84062, 17.93738]
+    geometry_provenance: "modern_navigation_reference_coordinate"
+    notes: "Harbor spit settlement. Sourced directly from 1684 Bochart & Knollis chart and 1692 earthquake records."
+
+  - id: "place_london"
+    canonical_name: "London"
+    raw_source_name: "London"
+    region: "England"
+    geographic_precision: "port_city"
+    coordinates: [-0.1278, 51.5074]
+    geometry_provenance: "modern_navigation_reference_coordinate"
+    notes: "Port of London / Thames destination for transatlantic colonial merchantmen."
+
+  - id: "place_dartmouth"
+    canonical_name: "Dartmouth, Devon"
+    raw_source_name: "Dartmouth, Devon"
+    region: "England"
+    geographic_precision: "port_town"
+    coordinates: [-3.5786, 50.3517]
+    geometry_provenance: "modern_navigation_reference_coordinate"
+    notes: "Devon port roadstead; recorded capture location of Richard & Sarah (May 1705)."
+
+  - id: "place_plymouth"
+    canonical_name: "Plymouth, Devon"
+    raw_source_name: "Plymouth, Devon"
+    region: "England"
+    geographic_precision: "port_city"
+    coordinates: [-4.1427, 50.3755]
+    geometry_provenance: "modern_navigation_reference_coordinate"
+    notes: "Devon port and naval station; recorded capture location of William (September 1702)."
+
+ships:
+  - id: "ship_richard_and_sarah_1705"
+    canonical_name: "Richard & Sarah of London"
+    raw_name: "Richard & Sarah of London"
+    source_record_id: "imlm_ship_2052"
+    primary_source_id: "src_tna_hca_32_80"
+    dataset_source_id: "src_imlm_ukda_852135"
+    raw_tonnage: "300"
+    reported_burden_display: "300 tons reported burden"
+    raw_construction_place: "English built"
+    reported_age_years: 20
+    reported_owner_residence: "London"
+    recorded_voyage_origin: "Jamaica"
+    recorded_voyage_destination: "London"
+    capture_location_place_id: "place_dartmouth"
+    capture_date: "1705-05"
+    evidence_state: "documented"
+    crew_occurrences:
+      - id: "crew_5035"
+        first_name: "John"
+        last_name: "Bull"
+        rank: "mate navis"
+        place_birth: "North Bergen in Norway"
+        place_residence: "Bergen"
+        subject_of: "king of Denmark"
+        literacy: "Signed"
+      - id: "crew_5036"
+        first_name: "Robert"
+        last_name: "Ashworth"
+        rank: "carpenter navis"
+        place_birth: "Dexlford"
+        place_residence: "Dexlford"
+        subject_of: "Queen of Great Britain"
+        literacy: "Signed"
+      - id: "crew_5037"
+        first_name: "John"
+        last_name: "Dunbar"
+        rank: "gunner"
+        place_birth: "London"
+        place_residence: "London"
+        subject_of: "Queen of Great Britain"
+        literacy: "Signed"
+
+  - id: "ship_william_1702"
+    canonical_name: "William"
+    raw_name: "William"
+    source_record_id: "imlm_ship_2228"
+    primary_source_id: "src_tna_hca_32_86"
+    dataset_source_id: "src_imlm_ukda_852135"
+    raw_tonnage: "60"
+    reported_burden_display: "60 tons reported burden"
+    raw_construction_place: "english built"
+    reported_owner_residence: "London"
+    recorded_voyage_origin: "Jamaica"
+    recorded_muster_place: "Jamaica"
+    recorded_voyage_destination: "London"
+    capture_location_place_id: "place_plymouth"
+    capture_date: "1702-09"
+    evidence_state: "documented"
+    crew_occurrences:
+      - id: "crew_5508"
+        first_name: "Edward"
+        last_name: "de Essex"
+        age: 29
+        rank: "naut"
+        place_birth: "London"
+        place_residence: "London"
+        place_muster: "Jamaica"
+        subject_of: "Queen of England"
+        literacy: "Signed"
+
+routes:
+  - id: "route_richard_and_sarah_1705"
+    vessel_id: "ship_richard_and_sarah_1705"
+    origin_place_id: "place_jamaica"
+    destination_place_id: "place_london"
+    date_display: "May 1705"
+    geometry_kind: "endpoints_only"
+    evidence_state: "documented"
+    geometry_provenance: "project visualization between resolved endpoint references"
+    notes: "Documented transatlantic voyage relationship; rendered geometry is an endpoints-only schematic connector."
+
+  - id: "route_william_1702"
+    vessel_id: "ship_william_1702"
+    origin_place_id: "place_jamaica"
+    destination_place_id: "place_london"
+    date_display: "September 1702"
+    geometry_kind: "endpoints_only"
+    evidence_state: "documented"
+    geometry_provenance: "project visualization between resolved endpoint references"
+    notes: "Documented transatlantic voyage relationship; rendered geometry is an endpoints-only schematic connector."
+
+events:
+  - id: "event_port_royal_earthquake_1692"
+    title: "The Port Royal Earthquake of 1692"
+    date: "1692-06-07"
+    calendar_system: "Julian (Old Style)"
+    place_id: "place_port_royal"
+    kind: "environmental"
+    evidence_state: "contextual"
+    summary: "On 7 June 1692 (Julian / Old Style), a catastrophic earthquake and submarine landslide struck Port Royal, Jamaica, destroying and submerging approximately two-thirds of the town and reshaping the harbor."
+    sources: ["src_royal_society_1692"]
+
+  - id: "event_capture_richard_and_sarah_1705"
+    title: "Wartime Interception of the Richard & Sarah"
+    date: "1705-05"
+    place_id: "place_dartmouth"
+    kind: "capture"
+    evidence_state: "documented"
+    summary: "The English-built merchantman Richard & Sarah of London, homeward bound from Jamaica with colonial goods, was intercepted off Dartmouth, Devon in May 1705 during the War of the Spanish Succession and brought before the High Court of Admiralty."
+    sources: ["src_tna_hca_32_80", "src_imlm_ukda_852135"]
+
+  - id: "event_capture_william_1702"
+    title: "Wartime Interception of the William"
+    date: "1702-09"
+    place_id: "place_plymouth"
+    kind: "capture"
+    evidence_state: "documented"
+    summary: "The 60-ton merchantman William, mustered in Jamaica for London, was intercepted off Plymouth, Devon in September 1702 following England's entry into the War of the Spanish Succession."
+    sources: ["src_tna_hca_32_86", "src_imlm_ukda_852135"]
+
+visuals:
+  - id: "visual_bochart_knollis_jamaica_1684"
+    title: "A new & exact mapp of the island of Jamaica : with ye true and iust scituation of ye severall townes & churches"
+    creators:
+      - "Charles Bochart"
+      - "Humphrey Knollis"
+      - "Philip Lea (Publisher)"
+    date_display: "[1684?]"
+    date_start: 1684
+    date_end: 1690
+    is_uncertain: true
+    source_id: "src_loc_g4960_1684"
+    holding_institution: "Library of Congress Geography and Map Division"
+    call_number: "G4960 1684 .B6"
+    digital_id: "g4960.ct008911"
+    item_url: "http://www.loc.gov/item/99463761/"
+    rights_state: "open_public_domain"
+    credit_line: "Library of Congress, Geography and Map Division"
+    asset_path: "assets/visuals/bochart-knollis-jamaica-1684.jpg"

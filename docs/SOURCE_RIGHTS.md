@@ -39,9 +39,9 @@ The Spanish government catalog links the **Open Data Commons Database Contents L
 
 ### International Maritime Labour Market, 1650-1815
 
-UK Data Service page marks its CSV files open access and available to anyone without registration.
+UK Data Service / ReShare record (SN 852135, Van Lottum, Jelle) marks `Ship.csv` and `Crew.csv` open access and available to anyone without registration.
 
-**Allowed project posture:** ingest locally and use for analysis/prototyping; preserve the dataset citation and creator/contact metadata.
+**Allowed project posture:** Approved by maintainer governance decision for small, attributed, derived factual publication in Charted Currents. Raw bulk CSV redistribution is prohibited; attribution to Jelle Van Lottum / University of Birmingham and UK Data Service SN 852135 is mandatory. Historical facts from underlying TNA HCA 32 Prize Papers are classified as documented public domain.
 
 ### PARES / Spanish State Archives
 
