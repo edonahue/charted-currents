@@ -1,0 +1,78 @@
+setup_doc: docs/OCEAN_WEATHER_SOURCE_SETUP.md
+
+evidence_classes:
+  period_observation: direct or near-period reported environmental observation; preserve source/time/location/quality and do not over-interpolate
+  reconstructed_hydrographic: calculated/modelled condition based on harmonics, astronomy, bathymetry, later observations, or other explicit reconstruction method
+  modern_contextual_reanalysis: modern observation, climatology, or reanalysis useful for context/hypothesis only; never present as a specific 1650-1730 condition
+
+sources:
+  - id: noaa_icoads
+    name: NOAA/NCEI International Comprehensive Ocean-Atmosphere Data Set (ICOADS)
+    priority: environmental_tier_a_period_observation
+    temporal_coverage: 1662-present
+    url: https://www.ncei.noaa.gov/products/international-comprehensive-ocean-atmosphere-data-set
+    metadata_url: https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncdc:C00606
+    evidence_class: period_observation
+    access: public direct distribution/download
+    account_required: false
+    api_key_required: false
+    credential_env: none
+    use: sparse shipboard/marine observations of wind and other available surface-weather/ocean variables during the Charted Currents period
+    caveats:
+      - early coverage is sparse and uneven
+      - an observation is not a regional weather field
+      - preserve source/deck/platform, position/time precision, QC flags, units, release/version, and missingness
+      - interpolation/reconstruction must be a separate explicitly labelled method
+    next_action: profile Caribbean records for 1662-1730 before designing any historical wind/weather layer
+    last_verified: 2026-08-31
+
+  - id: noaa_coops_tides_currents
+    name: NOAA CO-OPS Tides & Currents APIs
+    priority: environmental_tier_b_hydrographic_context
+    url: https://api.tidesandcurrents.noaa.gov/
+    metadata_api_url: https://api.tidesandcurrents.noaa.gov/mdapi/prod/
+    evidence_class: reconstructed_hydrographic_and_modern_observation
+    access: public Data/Metadata/Derived Product APIs, station data, harmonics, predictions, water levels and currents
+    account_required: false
+    api_key_required: false
+    credential_env: none
+    use: modern station context, harmonic constituents, tidal/current reconstruction inputs, validation of hydrographic concepts
+    caveats:
+      - modern predictions/harmonic constants are not direct observations of a tide in 1650-1730
+      - historical harbor morphology may differ materially from modern station conditions
+      - reconstruction must preserve method, source constituents, datum assumptions and uncertainty
+    next_action: use only after a named port/site requires a defensible tide/current reconstruction
+    last_verified: 2026-08-31
+
+  - id: copernicus_marine
+    name: Copernicus Marine Data Store / Toolbox
+    priority: environmental_tier_c_modern_reanalysis_context
+    url: https://marine.copernicus.eu/
+    evidence_class: modern_contextual_reanalysis
+    access: free account plus Copernicus Marine Toolbox/data-store authentication
+    account_required: true
+    api_key_required: false
+    credential_handling: prefer `copernicusmarine login`; credentials live outside repository in user home directory
+    official_automation_envs:
+      - COPERNICUSMARINE_SERVICE_USERNAME
+      - COPERNICUSMARINE_SERVICE_PASSWORD
+    project_env_status: do_not_store_password_in_project_env
+    use: modern/reanalysis current, SST, salinity, waves and other oceanographic context/hypothesis work
+    caveat: never present modern/reanalysis fields as specific 1650-1730 observed conditions
+    next_action: create account now; select a specific product only when a research question earns it
+    last_verified: 2026-08-31
+
+  - id: noaa_cdo
+    name: NOAA Climate Data Online API
+    priority: environmental_optional_modern_station_context
+    url: https://www.ncei.noaa.gov/cdo-web/webservices/v2
+    evidence_class: modern_contextual_reanalysis
+    access: free API token
+    account_required: token_request
+    api_key_required: true
+    credential_env: NOAA_CDO_TOKEN
+    rate_guidance: 5 requests/second and 10000 requests/day under current documentation
+    use: optional modern/long-running terrestrial weather-station context
+    caveat: not a primary source for the 1650-1730 maritime core
+    next_action: request token only if a concrete station/climate research use emerges
+    last_verified: 2026-08-31

@@ -50,22 +50,51 @@ Read:
 - `docs/AI_AND_EXTRACTION_POLICY.md`
 - `docs/CONTENT_AND_HISTORICAL_ETHICS.md`
 - `docs/HISTORICAL_SCOPE.md`
+- `docs/PRE_INGESTION_NORMALIZATION_POLICY.md` — source roles, calendars/dates, historical units, legal status, translations, authority IDs, and field/component rights
 - `docs/PUBLIC_PRIVATE_BOUNDARY.md`
 
 Then read only the relevant source registries/dossiers.
 
-## Source ingestion or archival research
+## Source ingestion, APIs, archival research, or source accounts
 
 Read:
 
 - `docs/DATA_SOURCES.md`
 - `docs/SOURCE_RIGHTS.md`
+- `docs/PRE_INGESTION_NORMALIZATION_POLICY.md`
 - `docs/PUBLIC_PRIVATE_BOUNDARY.md`
+- **`docs/HUMAN_SOURCE_SETUP.md`** — canonical human accounts, source-access requests, no-key sources, local research tools, and credential rules
+- **`.env.example`** — canonical environment-variable names; never invent alternate credential names
 - relevant entries in `research/sources.yml` and source-specific registries
 
-For images/maps/material culture, also use `docs/ART_AND_MAP_SOURCES.md`, `docs/VISUAL_ASSET_STRATEGY.md`, and `research/art_sources.yml`.
+For **TNA/Colonial Office/HCA, privateering/prize records, port books/customs, Privy Council, or local Jamaica/Curaçao/Barbados archival research**, also read:
 
-For shipwreck/museum enrichment, use `docs/SHIPWRECKS_AND_MUSEUMS.md` and `research/shipwreck_museum_sources.yml`.
+- **`docs/DOCUMENTARY_SOURCE_ACCESS.md`** — practical search, catalogue, reference-conversion, copy/onsite-access, and archival-identifier workflows;
+- **`research/documentary_sources.yml`** — machine-readable access posture and source-specific caveats.
+
+Do not build an automated source adapter merely because a web catalogue is searchable. First follow the documented access/rights route and determine whether the source is an original, catalogue description, editorial calendar, transcription, or scholarly derivative.
+
+Credential rules:
+
+- research API credentials are local ETL/research inputs, not browser configuration;
+- never expose them through Astro `PUBLIC_*` variables;
+- never request that the human paste a real key into an agent prompt;
+- never log or commit values;
+- missing optional credentials should not block unrelated source work;
+- possession of a credential does not establish publication/reuse rights.
+
+For **weather, winds, tides, water levels, currents, bathymetry, or other physical-ocean/environmental history**, also read `docs/OCEAN_WEATHER_SOURCE_SETUP.md` and `research/environmental_sources.yml`. Preserve the distinction between period observations, reconstructed/hydrographic conditions, and modern contextual/reanalysis data; never silently substitute one evidence class for another.
+
+For **historical images, maps, manuscript/document scans, prints, material culture, design references, IIIF acquisition, crops/derivatives, or georeferencing**, read:
+
+- `docs/ART_AND_MAP_SOURCES.md` — strategic source dossier;
+- **`docs/VISUAL_SOURCE_ACCESS.md`** — canonical acquisition, rights, IIIF, derivative, credit, and publication workflow;
+- `docs/VISUAL_ASSET_STRATEGY.md` — product/design use of historical visual material;
+- **`research/art_sources.yml`** — machine-readable per-source access and rights posture.
+
+Institution-first is the default. Aggregators and Wikimedia Commons may aid discovery, but do not erase the holding institution or substitute an aggregator license for item/media rights. Do not download anonymous web images, bypass watermarks/restrictions, or treat IIIF availability as a reuse license.
+
+For shipwreck/museum enrichment, use `docs/SHIPWRECKS_AND_MUSEUMS.md`, `docs/SHIPWRECK_MUSEUM_SOURCE_SETUP.md`, and `research/shipwreck_museum_sources.yml`.
 
 ## Architecture or dependency changes
 

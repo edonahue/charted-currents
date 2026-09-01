@@ -1,93 +1,164 @@
-# Human Source Access & Credentials Checklist
+# Human Source Access, Credentials & Research-Tool Checklist
 
 **For:** Charted Currents  
 **Last reviewed:** 2026-08-31  
-**Purpose:** the small set of setup/actions that require a human account, API credential, permission request, or item-specific reproduction request.
+**Canonical status:** this file replaces the former `HUMAN_SOURCE_SETUP_ADDENDUM.md`.  
+**Purpose:** define the human accounts, API credentials, outbound access requests, no-account sources, and local research tools that should be prepared for source work after Packet 1.
 
-Most Charted Currents sources do **not** require an account. Do not create accounts just because a service offers one.
+Most Charted Currents sources do **not** require an account. Do not create accounts simply because a service offers one, and do not make a new hosted platform part of the application unless a documented requirement justifies it.
 
-## The short version
-
-When you are back at your desk, the highest-value human actions are:
-
-1. **Create/use an ORCID and sign into World Historical Gazetteer; generate a WHG API token.** WHG's 2026 authentication announcement uses ORCID; if the production login UI differs from the documentation, follow the live login flow.
-2. **Create a free Europeana account and personal API key.**
-3. **Optionally register a Smithsonian Open Access API key.** It is useful but not blocking because weekly bulk data is public on GitHub.
-4. **Request a DPLA API key** by the documented email-based POST.
-5. **Send a British Online Archives inquiry** about Naval Office Shipping Lists / `Power and Profit`.
-6. **Send a Prize Papers structured-data inquiry.**
-7. Do **not** request Protomaps or NYPL API credentials now.
-8. Use PARES/BNE/ANOM/TNA/JCB reproduction requests only when a specific chosen asset needs higher resolution or explicit permission.
-9. **Do not create accounts for BnF/Gallica or ANOM** for ordinary research/API access; both can be used without a key for our initial purposes.
-
-Estimated active setup time, excluding waiting for replies: roughly 20-30 minutes.
+Packet 1 requires **none of these credentials**. They are preparation for Packet 2+ research/ETL and can be completed in parallel with the UI build.
 
 ---
 
-## Credential table
+## 1. Canonical credential contract for Gemini and local tooling
 
-| Source | Priority | What you need | Cost | Environment variable | Blocks v0.1? |
-| --- | --- | --- | --- | --- | --- |
-| **World Historical Gazetteer** | **Do first** | ORCID login/current WHG auth + WHG API token | Free | `WHG_API_TOKEN` | Not blocking, but very valuable |
-| **Europeana** | High | Free account + personal API key | Free | `EUROPEANA_API_KEY` | No |
-| **Smithsonian Open Access** | Medium | api.data.gov API key | Free | `SMITHSONIAN_API_KEY` | No - bulk GitHub data exists |
-| **DPLA** | Medium | API key emailed after POST | Free | `DPLA_API_KEY` | No |
-| Protomaps hosted API | Later | Only if hosted service chosen | Varies | `PROTOMAPS_API_KEY` | **No - do not create now** |
-| NYPL Repo API | None | API retired 2026-08-01 | N/A | none | No |
+`.env.example` is the canonical list of environment-variable names. Agents/scripts must **not invent alternate names**.
 
-Create a local `.env` from the repo's `.env.example`. **Never paste real keys into GitHub issues, documentation, commits, Gemini prompts, or screenshots.**
+### Recommended research credentials to prepare now
+
+| Service | Canonical environment variable | Priority | Purpose | Browser/public app? |
+| --- | --- | --- | --- | --- |
+| World Historical Gazetteer | `WHG_API_TOKEN` | **Highest** | historical-place entity/reconciliation API | **Never** |
+| GeoNames | `GEONAMES_USERNAME` | **High** | independent modern gazetteer/place lookup and fallback | **Never as a secret/public config** |
+| Europeana | `EUROPEANA_API_KEY` | High | cultural-heritage discovery/metadata/IIIF discovery | **Never** |
+| Smithsonian Open Access | `SMITHSONIAN_API_KEY` | Medium | museum/material-culture discovery and metadata | **Never** |
+| DPLA | `DPLA_API_KEY` | Medium | US cultural-institution discovery/metadata | **Never** |
+
+### Optional/later credentials — names reserved, not expected for Packet 2 startup
+
+| Service | Reserved environment variable | Why later |
+| --- | --- | --- |
+| US National Archives Catalog API | `NARA_API_KEY` | valid read-only research API, but lower priority for the 1650–1730 Greater Caribbean core |
+| ArcGIS Location Platform | `ARCGIS_API_KEY` | only if an Esri secure location service becomes genuinely useful; public ArcGIS REST datasets often need no key |
+| Protomaps hosted service | `PROTOMAPS_API_KEY` | only if the project deliberately adopts a hosted Protomaps service; current MapLibre/OpenFreeMap path does not need it |
+
+### Agent rules for credentials
+
+- Never ask the human to paste a real secret into a Gemini/AGY prompt.
+- Never commit `.env`, tokens, usernames tied to a private account, or authentication responses.
+- Never rename a variable because another SDK/example uses a different convention; adapt at the source adapter boundary.
+- Do not prefix research credentials with Astro `PUBLIC_`; they are for **local research/ETL scripts**, not browser JavaScript.
+- Do not expose a secret in `public/`, `src/pages/`, client-side scripts, screenshots, logs, or generated review artifacts.
+- When debugging, report `credential present` / `credential missing`, never the credential value.
+- Missing optional credentials must not block unrelated work.
+- A key allows access; it does **not** establish reuse/publication rights for returned records or media.
+
+Create local secrets once:
+
+```bash
+cp .env.example .env
+```
+
+Then fill only the credentials actually obtained.
 
 ---
 
-# 1. World Historical Gazetteer - do this first
+## 2. Recommended human action order
 
-WHG is likely to be the most useful credential because historical place-name normalization is a core problem.
+### Do now / before Packet 2
+
+1. [ ] Use/create an **ORCID**, sign into World Historical Gazetteer, and generate a WHG API token.
+2. [ ] Create a **GeoNames** account, confirm the email, and enable free web services.
+3. [ ] Create a free **Europeana** account and personal API key.
+4. [ ] Get a **Smithsonian Open Access** API key if convenient.
+5. [ ] Request a **DPLA** API key.
+6. [ ] Send the **British Online Archives / Power and Profit** independent-research + derived-data inquiry.
+7. [ ] Verify the current **Prize Papers** research contact and send the structured-data/reuse inquiry.
+8. [ ] Install **OpenRefine** and **QGIS** locally; no account/API key is required for either.
+
+### Useful but not urgent
+
+9. [ ] Optionally request a read-only **NARA Catalog API** key.
+10. [ ] Optionally create a free **ArcGIS Location Platform** account for Map Viewer / Esri research tooling; do **not** make it an application dependency or enable paid services merely for Charted Currents setup.
+11. [ ] Try **Allmaps** with one IIIF-compatible historical map when period-map georeferencing work begins; no Charted Currents credential is currently planned for it.
+
+### Do only after a specific item/use case exists
+
+- PARES / ANOM / BnF partner / TNA / JCB reproduction or image-use requests.
+- TNA Discovery API access (IP-based access request; not a normal key in `.env`).
+- Hosted Protomaps credentials.
+- ArcGIS API key credentials for secure Esri services.
+- Paid archive subscriptions.
+
+---
+
+# 3. World Historical Gazetteer (WHG) — first priority
+
+Why it matters: historical place-name resolution is a core Charted Currents problem. WHG can return place entities with names, geometry, temporal bounds, authority links, and linked-place metadata, and its reconciliation service is designed to work with OpenRefine.
 
 Current docs:
 https://docs.whgazetteer.org/content/technical/apis.html
 
-Login:
-https://whgazetteer.org/accounts/login/
+Authentication announcement:
+https://blog.whgazetteer.org/2026/03/20/whg-transitions-to-orcid-authentication/
 
-### Steps
+### Human setup
 
-- [ ] If you already have an ORCID, use it.
-- [ ] If not, WHG's March 2026 authentication announcement says you can create an ORCID during sign-in; ORCID is free and does not require academic affiliation.
-- [ ] Use the **current production WHG login flow**. Some WHG documentation pages have been transitioning and may describe an older account path, so trust the live login screen over stale screenshots/text.
-- [ ] Open your WHG **Profile**.
-- [ ] Generate/copy your API token.
-- [ ] Put it in local `.env` as:
+- [ ] Use an existing ORCID or create one during/for WHG sign-in.
+- [ ] Sign into the **current production WHG login flow**.
+- [ ] Open WHG Profile.
+- [ ] Generate/copy the API token.
+- [ ] Store locally:
 
 ```bash
 WHG_API_TOKEN=...
 ```
 
-- [ ] Record completion date below, but **not the token**.
+- [ ] Copy/save the WHG-provided OpenRefine reconciliation service URL for later human reconciliation work.
+
+WHG requires a suitable User-Agent for API calls. Recommended project identity:
+
+```text
+charted-currents/<version> (independent historical-data project; https://github.com/edonahue/charted-currents)
+```
+
+Do not expose `WHG_API_TOKEN` in the public application.
 
 Completion date: __________________
 
-### Test later from the x600
+---
 
-The coding agent can use the token with the WHG Entity/Reconciliation API. Requests should include a descriptive User-Agent.
+# 4. GeoNames — prepare alongside WHG
 
-Recommended user-agent identity:
-`charted-currents/<version> (independent historical-data project; contact via project GitHub)`
+Why it matters: GeoNames is a useful independent modern gazetteer for place lookup, hierarchy, coordinates, nearby-place queries, and cross-checking. WHG can reconcile against GeoNames, but direct access gives the local pipeline a second deterministic path.
+
+Web-service docs:
+https://www.geonames.org/export/web-services.html
+
+### Human setup
+
+- [ ] Register a GeoNames username.
+- [ ] Confirm the email.
+- [ ] Enable the account for web services from the GeoNames account page.
+- [ ] Store locally:
+
+```bash
+GEONAMES_USERNAME=...
+```
+
+GeoNames requires the `username` parameter on requests and explicitly says not to use its shared `demo` account for applications/tests.
+
+`GEONAMES_USERNAME` is not an API secret in the same sense as a bearer token, but keep it in local `.env` so adapters use one canonical configuration path and the public repository does not need to encode a personal account identity.
+
+The Packet 1 development-anchor coordinates already carry source/CC BY attribution separately; this username is for future research calls, not for changing that provenance.
+
+Completion date: __________________
 
 ---
 
-# 2. Europeana - create a personal key
+# 5. Europeana — high-value discovery key
 
-Europeana is useful as a cross-European discovery layer for maps, paintings, prints, books, and maritime objects.
+Europeana is useful as a cross-European discovery layer for maps, prints, books, museum objects, and IIIF-capable cultural-heritage records.
 
 Key instructions:
 https://www.europeana.eu/en/how-to-register-for-and-manage-an-api-key
 
-### Steps
+### Human setup
 
 - [ ] Create/log into a free Europeana account.
-- [ ] Open **My Profile**.
-- [ ] Choose **Manage API key**.
-- [ ] Accept the API key terms.
+- [ ] Open **My Profile → Manage API key**.
+- [ ] Accept the terms.
 - [ ] Request a **personal API key**.
 - [ ] Store locally:
 
@@ -95,44 +166,43 @@ https://www.europeana.eu/en/how-to-register-for-and-manage-an-api-key
 EUROPEANA_API_KEY=...
 ```
 
-Completion date: __________________
+A personal key is appropriate for exploration and development. Do not request a project key unless Charted Currents later relies on Europeana operationally at higher volume.
 
-A project key is unnecessary for the initial build. Request one only if a live Charted Currents service later depends heavily on Europeana API volume.
+Completion date: __________________
 
 ---
 
-# 3. Smithsonian Open Access - optional but useful
+# 6. Smithsonian Open Access — useful, non-blocking
 
 Developer tools:
 https://www.si.edu/openaccess/devtools
 
-Smithsonian provides two relevant access paths:
-- weekly refreshed Open Access data on GitHub - **no key**;
-- public API via api.data.gov - free key.
+Smithsonian provides:
 
-### Recommendation
+- weekly refreshed Open Access data on GitHub — **no key**;
+- public API access through api.data.gov — free key.
 
-Get the free key if convenient, but do not let it delay work.
+### Human setup
 
-- [ ] Register for Smithsonian's public API key through its api.data.gov link.
-- [ ] Store as:
+- [ ] Register through the Smithsonian/api.data.gov API-key path.
+- [ ] Store locally:
 
 ```bash
 SMITHSONIAN_API_KEY=...
 ```
 
+This key is convenient for focused queries; bulk/open data means it should never block the project.
+
 Completion date: __________________
 
 ---
 
-# 4. DPLA - easy optional key
+# 7. DPLA — easy discovery key
 
 Policy/key instructions:
 https://pro.dp.la/developers/policies
 
-DPLA sends a key by email after an HTTP POST containing your email address.
-
-From your terminal:
+Request a key by POSTing an email address:
 
 ```bash
 curl -X POST "https://api.dp.la/v2/api_key/YOUR_EMAIL@example.com"
@@ -140,22 +210,67 @@ curl -X POST "https://api.dp.la/v2/api_key/YOUR_EMAIL@example.com"
 
 Then:
 
-- [ ] Wait for the DPLA email.
-- [ ] Store the 32-character key locally:
+- [ ] Receive the 32-character key by email.
+- [ ] Store locally:
 
 ```bash
 DPLA_API_KEY=...
 ```
 
-Completion date: __________________
+DPLA is a discovery/metadata source. Rights for images/items remain source-institution/item-specific.
 
-DPLA is a discovery/metadata source. Image rights still come from the contributing institution/item.
+Completion date: __________________
 
 ---
 
-# 5. British Online Archives - send this inquiry
+# 8. US National Archives (NARA) — valid optional key, lower initial priority
 
-**Priority:** high because Naval Office Shipping Lists may be the best British shipping source for the initial period.
+Catalog API:
+https://www.archives.gov/research/catalog/help/api
+
+Anyone may request a read-only Catalog API key; the current default limit is 10,000 queries/month. NARA is not a first-line source for the project's 1650–1730 Caribbean core, so this is useful preparation rather than a Packet 2 prerequisite.
+
+If obtained, store as:
+
+```bash
+NARA_API_KEY=...
+```
+
+Use a read-only key only. Do not request contribution/write capability for Charted Currents.
+
+Before building a large ingestion path, re-check NARA's current API/data-use terms and whether bulk/open datasets are a better fit for reproducible local ETL.
+
+Completion date: __________________
+
+---
+
+# 9. ArcGIS / Esri — optional research account, not an app dependency
+
+Esri developer docs:
+https://developers.arcgis.com/documentation/mapping-and-location-services/get-started/
+
+A free **ArcGIS Location Platform** account can be useful for exploring Esri-hosted services, Map Viewer workflows, and optional secure geocoding/location services.
+
+Recommendation:
+
+- [ ] Creating the free account is reasonable if useful to the human research workflow.
+- [ ] Do **not** enable pay-as-you-go solely for this project setup.
+- [ ] Do **not** generate/use an API key unless a specific secure Esri service earns a place in the research pipeline.
+- [ ] Do **not** replace MapLibre/OpenFreeMap or introduce ArcGIS SDKs merely because the account exists.
+
+If a future approved adapter needs a key, its reserved variable is:
+
+```bash
+ARCGIS_API_KEY=...
+```
+
+Many public government ArcGIS REST FeatureServer/MapServer endpoints can be queried without any ArcGIS account; prefer direct open-service access when appropriate.
+
+---
+
+# 10. British Online Archives — send access/data-use inquiry now
+
+**Priority:** high because `Power and Profit: British Colonial Trade in America and the Caribbean, 1678–1825`, especially the Naval Office Shipping Lists, contains unusually relevant voyage fields.
 
 Collection:
 https://britishonlinearchives.com/collections/68/power-and-profit-british-colonial-trade-in-america-and-the-caribbean-1678-1825
@@ -163,54 +278,43 @@ https://britishonlinearchives.com/collections/68/power-and-profit-british-coloni
 General inquiries:
 `info@britishonlinearchives.com`
 
-Independent-research trial page:
-https://sales.britishonlinearchives.com/trials
+Current public collection access is presented primarily through institutional trial/sales. Ask before purchasing unrelated/general access.
 
-Important: the current `Power and Profit` overview presents **institutional trial/sales access** rather than a clearly available individual purchase for this specific collection. Other BOA collections do offer short-term single-user licenses, which makes it especially important not to buy a generic/other collection license assuming it covers `Power and Profit`. Ask first.
+### Ask specifically
 
-### What we need to learn
+- Can an independent researcher obtain temporary access to **Power and Profit**?
+- Is structured metadata, OCR/HTR, export, MARC/collection metadata, or any research-data/API access available beyond the public collection-level downloads?
+- Can normalized factual fields such as vessel, master, origin/destination, tonnage, crew, guns, cargo, owner, and dates be used in an openly accessible noncommercial derived research dataset/site?
+- What attribution, retention, or redistribution limits apply?
+- How should the project distinguish underlying archival/public-sector information from BOA scans/transcriptions/presentation?
 
-- Can an independent researcher obtain temporary research access?
-- Is any structured export, metadata export, OCR/HTR export, or API available?
-- Would BOA authorize a **noncommercial open derived dataset of factual ship/voyage fields** from this collection?
-- What attribution and publication conditions would apply?
-- How do they distinguish underlying TNA historical facts from BOA scans/transcriptions/presentation for reuse purposes?
+### Draft inquiry
 
-### Draft email
-
-**Subject:** Independent research/data-use inquiry - Naval Office Shipping Lists / Power and Profit
+**Subject:** Independent research/data-use inquiry — Naval Office Shipping Lists / Power and Profit
 
 Hello British Online Archives team,
 
-I am building an independent, open, noncommercial digital-history project called **Charted Currents** that explores the maritime Greater Caribbean, initially around 1650-1730. The project connects provenance-aware records of ships, voyages, ports, cargo, privateering/piracy, and historical context in an interactive map and research interface.
+I am building an independent, open, noncommercial digital-history project called **Charted Currents** focused initially on the maritime Greater Caribbean, 1650–1730. The project connects provenance-aware records of ships, voyages, ports, cargo, privateering/piracy, and historical context in an interactive map and research interface.
 
-Your **Power and Profit: British Colonial Trade in America and the Caribbean, 1678-1825** collection, particularly the Naval Office Shipping Lists, is exceptionally relevant to the project.
+Your **Power and Profit: British Colonial Trade in America and the Caribbean, 1678–1825** collection, particularly the Naval Office Shipping Lists, is exceptionally relevant.
 
-Before I make any use of the collection, I would like to clarify what forms of research and derived-data use you can permit. I am specifically interested in factual fields such as vessel name, master, origin/destination, tonnage, crew, guns, cargo, owners, and dates. I am **not** looking to republish BOA scans, page images, or a substitute copy of the collection.
+Before using the collection, I would like to clarify what forms of research and derived-data use you can permit. I am interested in normalized factual fields such as vessel name, master, origin/destination, tonnage, crew, guns, cargo, owners, and dates. I am **not** seeking to republish BOA scans/page images or create a substitute copy of the collection.
 
-Could you advise on:
+Could you advise on independent-research access, any structured metadata/data/OCR export or API, permission for an openly accessible noncommercial derived factual dataset/site with attribution, and any limits or preferred licensing route?
 
-1. whether independent-research access to Power and Profit is available;
-2. whether any structured metadata/data export, OCR/HTR export, or API exists;
-3. whether BOA could authorize use of normalized factual fields in an openly accessible, noncommercial derived research dataset/site with attribution;
-4. any limits, attribution requirements, or data-retention conditions you would want applied; and
-5. whether you have a preferred research/data-use licensing route for a project of this kind?
-
-The project repository is public and is designed to keep source provenance and rights information visible at the record level. I would be happy to share a more detailed description of the planned use.
+The public project repository is:
+https://github.com/edonahue/charted-currents
 
 Thank you,
-
-Erich Donahue  
-Charted Currents  
-https://github.com/edonahue/charted-currents
+Erich Donahue
 
 - [ ] Sent: __________________
 - [ ] Reply received: __________________
-- [ ] Outcome / restrictions recorded in `research/sources.yml`: __________________
+- [ ] Outcome/restrictions recorded in `research/sources.yml`: __________________
 
 ---
 
-# 6. Prize Papers Project - send structured-data inquiry
+# 11. Prize Papers Project — send structured-data inquiry now
 
 Portal:
 https://portal.prizepapers.de/
@@ -218,241 +322,168 @@ https://portal.prizepapers.de/
 Project:
 https://www.prizepapers.de/
 
-The Portal's beta documentation says future versions will allow access to the project's structured data for subsequent use. The data model is unusually aligned with Charted Currents: ships, aliases, journey legs, captures, masters, places, flags/authorities, lading, and court processes.
+The Prize Papers model is unusually aligned with Charted Currents: ships, aliases, journey legs, captures, masters, places, flags/authorities, lading, court processes, and digitized source material. Public project materials have described structured-data reuse/access as an intended portal capability.
 
-A current public research contact in recent project materials is Dr Lucas Haasis (`lucas.haasis@uol.de`). **Verify the project's current contact page before sending**, because project roles/addresses can change.
+The goal is **structured metadata/research data**, not blanket permission to republish TNA scans.
 
-### What we need
+Verify the current project contact immediately before sending. Recent public project materials list Dr Lucas Haasis as a project contact.
 
-We want structured **metadata/research data**, not permission to bulk republish TNA scans.
+### Draft inquiry
 
-### Draft email
+**Subject:** Structured data access/reuse inquiry — Prize Papers and Charted Currents
 
-**Subject:** Structured data access/reuse inquiry - Prize Papers and Charted Currents
+Hello Prize Papers team,
 
-Hello Dr Haasis / Prize Papers team,
+I am developing an independent open digital-history project, **Charted Currents**, focused initially on the maritime Greater Caribbean around 1650–1730.
 
-I am developing an independent open digital-history project, **Charted Currents**, focused initially on the maritime Greater Caribbean around 1650-1730.
+The project connects source-provenanced records of ships, journey legs, ports, cargo, captures, people, and historical context in a map-first exploratory interface. The Prize Papers ship/journey/capture data model is especially relevant.
 
-The project is intended to connect source-provenanced records of ships, journey legs, ports, cargo, captures, people, and historical context in a map-first exploratory interface. The Prize Papers Portal's ship/journey/capture data model is especially relevant, and I noticed the beta documentation states that future Portal versions will allow access to the structured data for subsequent use.
+Could you advise whether a structured export, API, dump, or research-data release is currently available or planned; what terms apply to those structured data; whether they may be used in an openly accessible noncommercial derived project preserving Prize Papers identifiers/links/attribution/uncertainty; and any preferred citation, versioning, rate-limit, or collaboration practices?
 
-I would be grateful for guidance on the current or planned route for researchers to obtain and reuse that structured data.
+For clarity, I am treating **document images separately** and would follow The National Archives/image-use requirements rather than assuming metadata terms apply to scans.
 
-Specifically:
-
-1. Is a structured export, API, dump, or research-data release currently available or planned?
-2. What license/terms apply or are expected to apply to the ship, journey, capture, court-process, and related metadata?
-3. Would those structured data be usable in an openly accessible, noncommercial derived research project that preserves Prize Papers identifiers, links, attribution, and uncertainty?
-4. Are there preferred citation, update/versioning, rate-limit, or data-retention practices?
-5. If public structured access is not available yet, would the team be open to a small research collaboration or sample export for a Caribbean-focused feasibility prototype?
-
-For clarity, I am treating **document images separately** and would follow The National Archives' image-use requirements rather than assuming the metadata/data terms apply to scans.
-
-The public project stub is here:
+Project repository:
 https://github.com/edonahue/charted-currents
 
-Thank you for any direction you can provide.
-
-Best,
+Thank you,
 Erich Donahue
 
 - [ ] Current contact verified: __________________
 - [ ] Sent: __________________
 - [ ] Reply received: __________________
-- [ ] Outcome / restrictions recorded: __________________
+- [ ] Outcome/restrictions recorded in `research/sources.yml`: __________________
 
 ---
 
-# 7. PARES - no account now; request only specific assets
+# 12. UK National Archives Discovery API — do not request by default
 
-PARES:
-https://pares.cultura.gob.es/pares/en/inicio.html
+Current terms/access:
+https://www.nationalarchives.gov.uk/terms-and-conditions/discovery-for-developers-about-the-application-programming-interface-api/
 
-No registration is required for ordinary viewing/research.
+Discovery API access currently requires contacting TNA and supplying the IP address from which requests will be sent. It is therefore **not represented by a canonical API-key environment variable**.
 
-### When to make a reproduction request
+More importantly, current Discovery API terms say not to cache/store returned API content. That is a poor fit for Charted Currents' preferred reproducible local source-snapshot → normalization → publication pipeline.
 
-Only after we identify a specific document that:
-- is not digitized; or
-- needs a higher-resolution copy for public presentation; or
-- has rights conditions that require authorization.
-
-PARES says to contact the archive holding the original and include identity details plus the document reference/signature and title. For publication, include the page/folio and publication title.
-
-### Request record
-
-Asset/document: __________________  
-Holding archive: __________________  
-Reference/signature: __________________  
-PARES permalink: __________________  
-Purpose: __________________  
-Public-domain status: __________________  
-Request sent: __________________  
-Fee/conditions: __________________
+Use Discovery interactively/catalogue-first, Prize Papers structured-data channels where available, and source-specific/bulk routes where possible. Request Discovery API access only if a bounded discovery task demonstrates a need compatible with its current terms.
 
 ---
 
-# 8. ANOM — no account; request reproductions only after item selection
+# 13. Local research tools to install before serious source work
 
-Research guide:
-https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/antilles-francaises
+## OpenRefine
 
-Reproduction service:
-https://archives-nationales-outre-mer.culture.gouv.fr/infos-pratiques/obtenir-une-reproduction
+Use for messy archival names, tabular cleaning, and human-reviewed reconciliation. WHG provides a personalized OpenRefine reconciliation service URL from the WHG profile.
 
-ANOM requires no API key/account for the ordinary online research we need. Its French Antilles holdings should be actively researched because they balance the British/Spanish/Dutch source lanes.
+- [ ] Install before large place/person/source reconciliation work.
+- [ ] No account/key required.
+- [ ] Keep accepted/rejected reconciliation decisions as explicit project artifacts rather than silently overwriting source strings.
 
-When a specific undigitized or higher-resolution item is selected:
+## QGIS
 
-- [ ] record the full `FR ANOM` archival reference;
-- [ ] confirm communicability/public-domain or other rights status;
-- [ ] use ANOM's reproduction form/service if a better file is needed;
-- [ ] record any fee and conditions;
-- [ ] retain the required source credit in the public asset record.
+Use for inspecting GeoJSON/GeoPackage/raster data, government ArcGIS REST services, coordinate systems, transformations, and eventual historical-map georeferencing QA.
 
-Current reproduction pricing is modest for ordinary requests, so **requesting a handful of genuinely important documents/maps is realistic** once we know exactly what we want.
+- [ ] Install before Packet 2/period-map geospatial work becomes substantial.
+- [ ] No account/key required.
+- [ ] QGIS output is research tooling; publication still follows project provenance/rights/precision policy.
 
----
+## Allmaps
 
-# 9. BnF / Gallica — no key; rights-review selected images
+Useful later for IIIF-based historical-map georeferencing/annotation and MapLibre-compatible experiments.
 
-API/data portal:
-https://api.bnf.fr/
-
-Gallica provides public SRU/OAI, document/OCR and IIIF services without a project API credential in the current documentation. No account setup is needed for the initial research pipeline.
-
-For each selected visual asset:
-
-- [ ] preserve the Gallica ARK/permalink;
-- [ ] note whether the source is BnF itself or a partner institution;
-- [ ] record the exact reuse terms;
-- [ ] use the required source credit (`Source gallica.bnf.fr / BnF` for applicable BnF material);
-- [ ] flag any intended commercial/promotional reuse for a fresh rights check.
-
-A first human-curated target should be a French Antilles map around 1700–1720 to sit beside the Herman Moll 1715 benchmark.
+- [ ] No Charted Currents credential expected now.
+- [ ] Test only after a real IIIF map has been selected and its rights/provenance are understood.
 
 ---
 
-# 10. TNA Image Library - only for selected Prize Papers images
+# 14. No-account / no-key sources — nothing to prepare
 
-Prize Papers Portal image terms:
-https://portal.prizepapers.de/termsofuse/
+Do **not** spend setup time creating credentials for these initial access paths:
 
-Portal scans reproduced from The National Archives are restricted to research/private study/education under the Portal terms; other uses are directed to the TNA Image Library.
+- Library of Congress JSON/YAML API — no key.
+- PARES / Spanish State Archives — ordinary online research does not require registration.
+- ANOM — normal online research; reproduction request only for selected items.
+- BnF / Gallica — public SRU/OAI/document/OCR/IIIF services for initial use; item-level reuse terms still matter.
+- Rijksmuseum search/open-data services under the current documented open access path.
+- Nationaal Archief open data / OAI-METS-file access for open material.
+- BNE Digital / Biblioteca Digital Hispánica normal open discovery.
+- John Carter Brown Library / Americana initial discovery/open material.
+- Natural Earth — public-domain geospatial data.
+- Wikidata SPARQL — public; respect service limits.
+- NOAA public data / public ArcGIS REST services used by the project.
+- SlaveVoyages open research database/access paths used by the project.
+- CrespoDynCoopNet direct data download.
+- International Maritime Labour Market 1650–1815 open data.
+- Greater Caribbean Mapping catalog/data downloads already identified in project research.
 
-Do **not** open a general licensing process now.
-
-When a specific Prize Papers scan becomes important enough for the public site:
-- record the HCA reference;
-- record the Portal item/permalink;
-- identify the exact crop/page;
-- contact the TNA Image Library for the intended web/public use;
-- store the written permission/license terms in the private project records and a non-secret summary in `research/art_sources.yml`.
-
----
-
-# No-account sources - nothing to set up
-
-Do not spend time creating credentials for these:
-
-- **CrespoDynCoopNet** - direct MDB download.
-- **International Maritime Labour Market 1650-1815** - open CSV download, no registration.
-- **PARES** - open/free research access.
-- **SlaveVoyages** - open database access.
-- **NOAA ICOADS** - public data.
-- **Library of Congress loc.gov API** - no key.
-- **Greater Caribbean Mapping CSV** - direct catalog download.
-- **Rijksmuseum Search/OAI APIs** - no key under the current data services.
-- **Nationaal Archief open data** - public OAI/METS/file access for open material.
-- **Natural Earth** - public-domain download.
-- **BNE Digital / Biblioteca Digital Hispánica** - no key for normal open access.
-- **BnF / Gallica** - public SRU/OAI/Document/IIIF services; no key indicated for initial use.
-- **Archives nationales d’outre-mer (ANOM)** - no key/account for normal online research; reproduction requests only after selecting items.
-- **John Carter Brown Library / Americana** - no key for initial open-access discovery/use.
-- **Wikidata** - public SPARQL; be polite with query limits.
+No-account does **not** mean no-rights-check: every public historical asset/record still follows `docs/SOURCE_RIGHTS.md`, provenance, and item-level publication rules.
 
 ---
 
-# Do not bother setting these up yet
+# 15. Item-specific reproduction/licensing only after selection
 
-### NYPL Repo API
+Do not open broad licensing workflows in advance. For a specific item that has earned a place in the product, record the stable source identifier/permalink, holding institution, exact page/folio/crop, rights state, proposed public use, request date, fee/conditions, and required credit.
 
-The NYPL API documentation says the Repo API was deprecated and ceased availability on **2026-08-01**, with no public replacement planned. Use the Digital Collections website and public-domain downloads instead.
+This applies especially to:
 
-### Protomaps hosted/API account
+- PARES / holding Spanish archive;
+- ANOM;
+- BNE/BnF partner material where terms require it;
+- The National Archives Image Library for selected Prize Papers/TNA scans;
+- JCB or other institutional reproduction services where the item record requires permission.
 
-Not needed for v0.1. We can:
-- use Natural Earth;
-- create our own project layers;
-- later extract a regional PMTiles archive from public Protomaps builds if OSM detail is desired;
-- host PMTiles ourselves/static-first.
-
-Only create hosted-map credentials if the technical prototype demonstrates a real need.
-
-### Paid archive subscriptions without a rights answer
-
-Do not purchase access merely to discover afterward that our intended derived-data workflow is outside the license. Ask BOA first.
+Historical document-image rights are separate from permission to use factual/structured metadata.
 
 ---
 
-# Local secret handling
+# 16. Do not set these up yet
 
-The repository should contain only `.env.example`.
+## NYPL Repo API
 
-Local `.env`:
+The repo's prior source research records the public Repo API as retired on 2026-08-01 with no public replacement planned. Use current Digital Collections/open-download paths rather than preparing a dead credential.
+
+## Protomaps hosted API
+
+Current Packet 1 uses MapLibre + OpenFreeMap. Do not create hosted-map credentials until measured product requirements justify a different service.
+
+Reserved future variable only:
+
+```bash
+PROTOMAPS_API_KEY=...
+```
+
+## Paid archive access without a rights answer
+
+Do not buy access merely to discover afterward that derived-data publication is outside the license. Ask first, especially for BOA.
+
+---
+
+# 17. Local `.env` reference
+
+Recommended-now configuration:
 
 ```bash
 WHG_API_TOKEN=
+GEONAMES_USERNAME=
 EUROPEANA_API_KEY=
 SMITHSONIAN_API_KEY=
 DPLA_API_KEY=
+```
 
-# Later only:
+Optional/later reserved names:
+
+```bash
+# NARA_API_KEY=
+# ARCGIS_API_KEY=
 # PROTOMAPS_API_KEY=
 ```
 
+There is intentionally no `TNA_API_KEY`, `LOC_API_KEY`, `GALLICA_API_KEY`, `PARES_API_KEY`, or similar variable in the current contract.
+
 Checklist:
+
 - [ ] `.env` is ignored by Git.
-- [ ] Never include full tokens in screenshots.
-- [ ] Never paste keys into Gemini or other hosted-model prompts.
-- [ ] When debugging, log “credential present/missing,” not the credential.
-- [ ] Rotate a key if it ever enters Git history.
-
----
-
-# Account/request status sheet
-
-| Source | Setup/request date | Status | Follow-up date | Notes |
-| --- | --- | --- | --- | --- |
-| WHG | | | | |
-| Europeana | | | | |
-| Smithsonian | | | | |
-| DPLA | | | | |
-| British Online Archives | | | | |
-| Prize Papers | | | | |
-| PARES item request | | | | |
-| ANOM item/reproduction request | | | | |
-| BnF/Gallica rights review | | | | |
-| TNA image request | | | | |
-
----
-
-# Recommended order when you return to the desk
-
-**First 10 minutes**
-1. WHG / ORCID / token.
-2. Europeana personal API key.
-
-**Next 5 minutes**
-3. Smithsonian key if convenient.
-4. DPLA curl request.
-
-**Next 10 minutes**
-5. Send BOA inquiry.
-6. Verify current Prize Papers contact and send structured-data inquiry.
-
-**When you have a longer research block**
-7. Bookmark ANOM French Antilles + cartothèque searches and identify 3–5 core-period candidates.
-8. Use Gallica/BnF to identify at least one 1700–1720 French Antilles map/atlas item for the visual benchmark set.
-
-Then stop. Do not create more accounts until the actual ingestion prototype proves they are useful.
+- [ ] No real secret appears in prompts/screenshots/logs.
+- [ ] Local adapters read the canonical names above.
+- [ ] Browser code receives none of these credentials.
+- [ ] Credential presence never substitutes for source-rights validation.
+- [ ] If a secret ever enters Git history, rotate/revoke it immediately.
