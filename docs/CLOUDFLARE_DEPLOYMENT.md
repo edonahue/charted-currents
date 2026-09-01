@@ -1,6 +1,12 @@
 # Cloudflare Pages deployment
 
-**Goal:** get the first verified Charted Currents shell onto a public URL as soon as Packet 1 is complete, without making custom-domain/path integration a prerequisite.
+**Status: Established and Live**
+- **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+- **Git Integration**: Active from `edonahue/charted-currents` branch `main`
+- **Hosted Verification**: Verified on 2026-09-01 (see [`design/reviews/packet1-hosted-review.md`](../design/reviews/packet1-hosted-review.md))
+- **Indexing Posture**: Prototype `noindex` and `robots.txt` disallow active
+
+**Goal:** keep the verified Charted Currents shell deployable directly from `main` without requiring complex server/adapter overhead.
 
 ## Initial deployment strategy
 
@@ -132,12 +138,12 @@ A local `npm run build` or `npm run verify` is necessary but is not evidence tha
 
 ## Later hardening
 
-Do not block the first deploy on these. Add them as the public slice matures:
+Addressed / mature:
+- GitHub Actions CI / local verification parity is implemented via `.github/workflows/ci.yml`.
+- Headless browser verification and review capture harness is implemented via `npm run review:capture`.
 
-- GitHub Actions/local verification parity;
-- required checks/branch protection if useful;
+Remaining as the public slice matures:
 - security headers appropriate to the final asset/runtime needs;
 - canonical metadata and production indexing decision;
-- custom domain/subdomain;
-- deployment smoke checks;
+- custom domain/subdomain routing;
 - build-watch optimization.

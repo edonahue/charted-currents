@@ -46,6 +46,10 @@ The repository already contains the project bootstrap code. Packet 0 is workstat
 
 ### Outcome
 
+**Status: Complete — deployed and hosted-verified on Cloudflare Pages on 2026-09-01.**
+- Production URL: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+- Hosted Closeout Record: [`design/reviews/packet1-hosted-review.md`](../design/reviews/packet1-hosted-review.md)
+
 Turn the existing bootable Astro/MapLibre scaffold into a polished, deployable application that proves the primary interaction model and is ready for its first Cloudflare Pages deployment.
 
 This packet intentionally combines the former foundation and interaction-spine sessions. The first public deployment should happen **after this packet**, before real-corpus work becomes a dependency.
