@@ -106,7 +106,29 @@ const TIMELINE_EVENTS = [
   const eventButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-timeline-event]"));
 
   eventButtons.forEach((btn) => {
+    let triggeredByKeyboard = false;
+
+    btn.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        triggeredByKeyboard = true;
+        const selectionId = btn.dataset.selectionId;
+        const kind = btn.dataset.eventKind as EntityKind;
+        if (selectionId && kind) {
+          recordSelectionTrigger({
+            modality: "keyboard",
+            origin: "timeline",
+            returnTarget: btn,
+          });
+          selectionStore.set({ kind, id: selectionId });
+        }
+      }
+    });
+
     btn.addEventListener("click", () => {
+      if (triggeredByKeyboard) {
+        triggeredByKeyboard = false;
+        return;
+      }
       const selectionId = btn.dataset.selectionId;
       const kind = btn.dataset.eventKind as EntityKind;
       if (selectionId && kind) {
@@ -155,10 +177,15 @@ const TIMELINE_EVENTS = [
     transition: transform 120ms ease;
   }
 
-  .timeline-event-marker:hover,
+  .timeline-event-marker:hover {
+    transform: translate(-50%, -60%);
+  }
+
   .timeline-event-marker:focus-visible {
     transform: translate(-50%, -60%);
-    outline: none;
+    outline: 2px solid var(--cc-atlantic);
+    outline-offset: 3px;
+    border-radius: var(--cc-radius-xs);
   }
 
   .timeline-event-dot {

@@ -102,5 +102,27 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
+// Test 7: Invalid inspection_state on source record fails
+{
+  const tmpDir = createTempDataCopy();
+  const sources = JSON.parse(fs.readFileSync(path.join(tmpDir, "sources.json"), "utf8"));
+  sources.source_records[0].inspection_state = "unverified_speculation";
+  fs.writeFileSync(path.join(tmpDir, "sources.json"), JSON.stringify(sources));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when source record has invalid inspection_state");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 8: Nonexistent upstream_archive_source_id fails
+{
+  const tmpDir = createTempDataCopy();
+  const sources = JSON.parse(fs.readFileSync(path.join(tmpDir, "sources.json"), "utf8"));
+  sources.source_records[0].upstream_archive_source_id = "src_fake_archive";
+  fs.writeFileSync(path.join(tmpDir, "sources.json"), JSON.stringify(sources));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when upstream_archive_source_id does not exist");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
 console.log(`\nNegative Test Summary: ${passedTests} passed, ${failedTests} failed.`);
 process.exit(failedTests > 0 ? 1 : 0);

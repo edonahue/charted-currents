@@ -20,7 +20,8 @@
         "geometry_provenance": "modern_generalized_navigation_reference",
         "source_assertion_ids": [
           "ast_2052_voyage",
-          "ast_2228_voyage"
+          "ast_2228_voyage",
+          "ast_loc_map_title"
         ],
         "notes": "Island centroid reference. Represents the colony/island as recorded in transatlantic voyage origins (IMLM 2052, 2228)."
       }
@@ -43,10 +44,11 @@
         "geographic_precision": "populated_place",
         "geometry_provenance": "modern_navigation_reference_coordinate",
         "source_assertion_ids": [
+          "ast_loc_map_port_royal",
           "ast_eq_location",
-          "ast_loc_map_title"
+          "ast_eq_letter_tl"
         ],
-        "notes": "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart and 1692 earthquake correspondence."
+        "notes": "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart ('Port Royall') and 1692 earthquake correspondence."
       }
     },
     {

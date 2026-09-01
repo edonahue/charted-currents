@@ -118,7 +118,7 @@
         "occ_ship_imlm_2052"
       ],
       "reported_burden_display": "300 tons reported burden",
-      "construction_display": "English built (~1685)",
+      "construction_display": "English built · reported age 20 at capture",
       "owner_display": "London",
       "voyage_display": "Jamaica → London",
       "capture_display": "Dartmouth, Devon (May 1705)"
@@ -176,7 +176,8 @@
       "notes": "Island centroid reference. Represents the colony/island as recorded in transatlantic voyage origins (IMLM 2052, 2228).",
       "source_assertion_ids": [
         "ast_2052_voyage",
-        "ast_2228_voyage"
+        "ast_2228_voyage",
+        "ast_loc_map_title"
       ]
     },
     {
@@ -190,10 +191,11 @@
         17.93738
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart and 1692 earthquake correspondence.",
+      "notes": "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart ('Port Royall') and 1692 earthquake correspondence.",
       "source_assertion_ids": [
+        "ast_loc_map_port_royal",
         "ast_eq_location",
-        "ast_loc_map_title"
+        "ast_eq_letter_tl"
       ]
     },
     {
@@ -268,7 +270,8 @@
       "asset_path": "assets/visuals/bochart-knollis-jamaica-1684.jpg",
       "assertion_ids": [
         "ast_loc_map_title",
-        "ast_loc_map_date"
+        "ast_loc_map_date",
+        "ast_loc_map_port_royal"
       ]
     }
   ]

@@ -70,12 +70,14 @@ class TestHistoricalInvariants(unittest.TestCase):
         for occ_id in ship_occ_ids:
             self.assertIn(occ_id, edge_occurrences, f"Occurrence {occ_id} lacks an explicit resolution edge")
 
-    def test_no_direct_inspection_claim_on_upstream_tna(self):
-        """TNA HCA 32 upstream archive collection cited by IMLM must have directly_inspected == False."""
-        sources_by_id = {s["id"]: s for s in self.sources["sources"]}
-        self.assertIn("src_tna_hca_32", sources_by_id)
-        tna_src = sources_by_id["src_tna_hca_32"]
-        self.assertFalse(tna_src["directly_inspected"], "Upstream archive reference TNA HCA 32 must have directly_inspected: false")
+    def test_inspection_states_declared_honestly(self):
+        """Source records must declare specific inspection states matching actual research actions."""
+        records_by_id = {r["id"]: r for r in self.sources["source_records"]}
+        self.assertEqual(records_by_id["sr_imlm_ship_2052"]["inspection_state"], "dataset_record_inspected")
+        self.assertEqual(records_by_id["sr_imlm_ship_2228"]["inspection_state"], "dataset_record_inspected")
+        self.assertEqual(records_by_id["sr_rs_el_l5_117"]["inspection_state"], "metadata_only")
+        self.assertEqual(records_by_id["sr_rs_phil_trans_209"]["inspection_state"], "digital_content_inspected")
+        self.assertEqual(records_by_id["sr_loc_ct008911"]["inspection_state"], "digital_content_inspected")
 
     def test_no_jamaica_to_port_royal_conflation(self):
         """Jamaica (island/colony) must never be silently converted into Port Royal."""
@@ -121,14 +123,19 @@ class TestHistoricalInvariants(unittest.TestCase):
             self.assertNotIn(dartmouth_coords, coords)
             self.assertNotIn(plymouth_coords, coords)
 
-    def test_tonnage_values_preserved_accurately(self):
-        """Raw tonnage numbers must match source documentation faithfully."""
+    def test_tonnage_and_construction_values_preserved(self):
+        """Raw metrics match source documentation and canonical displays avoid unmodeled inferences."""
         ship_occs = {occ["id"]: occ for occ in self.entities["ship_occurrences"]}
         self.assertEqual(ship_occs["occ_ship_imlm_2052"]["raw_tonnage"], "300")
         self.assertEqual(ship_occs["occ_ship_imlm_2228"]["raw_tonnage"], "60")
 
+        ships_by_id = {s["id"]: s for s in self.entities["ships"]}
+        # Verify no ~1685 embedded in Richard & Sarah canonical display
+        self.assertNotIn("~1685", ships_by_id["ship_richard_and_sarah_1705"]["construction_display"])
+        self.assertEqual(ships_by_id["ship_richard_and_sarah_1705"]["construction_display"], "English built · reported age 20 at capture")
+
     def test_earthquake_provenance_split(self):
-        """1692 Port Royal Earthquake must reference split Royal Society source records."""
+        """1692 Port Royal Earthquake must reference split Royal Society manuscript (T L) and Phil. Trans. records."""
         events_by_id = {e["id"]: e for e in self.events["events"]}
         self.assertIn("event_port_royal_earthquake_1692", events_by_id)
         eq = events_by_id["event_port_royal_earthquake_1692"]
@@ -137,6 +144,20 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(eq["evidence_state"], "contextual")
         self.assertIn("src_royal_society_el_l5_117", eq["sources"])
         self.assertIn("src_royal_society_phil_trans_1694", eq["sources"])
+
+        # Check creator of EL/L5/117 is T L
+        sources_by_id = {s["id"]: s for s in self.sources["sources"]}
+        self.assertEqual(sources_by_id["src_royal_society_el_l5_117"]["creator"], "T L")
+
+    def test_port_royal_map_assertion_linked(self):
+        """Port Royal place entity must link to explicit cartographic label assertion on 1684 map."""
+        places_by_id = {p["id"]: p for p in self.entities["places"]}
+        port_royal = places_by_id["place_port_royal"]
+        self.assertIn("ast_loc_map_port_royal", port_royal["source_assertion_ids"])
+
+        assertions_by_id = {a["id"]: a for a in self.sources["assertions"]}
+        self.assertIn("ast_loc_map_port_royal", assertions_by_id)
+        self.assertEqual(assertions_by_id["ast_loc_map_port_royal"]["raw_value"], "Port Royall")
 
     def test_visual_asset_uncertainty_and_loc_source(self):
         """The Bochart & Knollis chart must preserve date uncertainty [1684?] and LOC attribution."""

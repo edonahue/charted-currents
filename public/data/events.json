@@ -8,15 +8,16 @@
       "place_id": "place_port_royal",
       "kind": "environmental",
       "evidence_state": "contextual",
-      "summary": "On 7 June 1692 (Julian / Old Style), an earthquake struck Port Royal, Jamaica, as recorded in eyewitness accounts transmitted to the Royal Society (Archives EL/L5/117; Phil. Trans. 1694).",
+      "summary": "On 7 June 1692 (Julian / Old Style), an earthquake struck Port Royal, Jamaica, as recorded in eyewitness accounts transmitted to the Royal Society (Archives EL/L5/117; Phil. Trans. Vol. 18, No. 209, 1694).",
       "sources": [
-        "src_royal_society_el_l5_117",
-        "src_royal_society_phil_trans_1694"
+        "src_royal_society_phil_trans_1694",
+        "src_royal_society_el_l5_117"
       ],
       "assertion_ids": [
         "ast_eq_date",
         "ast_eq_location",
-        "ast_eq_account"
+        "ast_eq_account_heath",
+        "ast_eq_letter_tl"
       ]
     },
     {

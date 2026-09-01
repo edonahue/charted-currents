@@ -41,7 +41,7 @@ The Spanish government catalog links the **Open Data Commons Database Contents L
 
 UK Data Service / ReShare record (SN 852135, Van Lottum, Jelle) marks `Ship.csv` and `Crew.csv` open access and available to anyone without registration.
 
-**Allowed project posture:** Approved by maintainer governance decision for small, attributed, derived factual publication in Charted Currents. Raw bulk CSV redistribution is prohibited; attribution to Jelle Van Lottum / University of Birmingham and UK Data Service SN 852135 is mandatory. Historical facts from underlying TNA HCA 32 Prize Papers are classified as documented public domain.
+**Allowed project posture:** Approved by maintainer governance decision for small, attributed, derived factual publication in Charted Currents. Charted Currents does not assert or exercise bulk redistribution rights for the IMLM CSVs; bulk mirroring is outside the approved Packet 2 use. Attribution to Jelle Van Lottum / University of Birmingham and UK Data Service SN 852135 is mandatory. Historical facts from underlying TNA HCA 32 Prize Papers are classified as documented public domain.
 
 ### PARES / Spanish State Archives
 

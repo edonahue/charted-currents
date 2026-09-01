@@ -23,6 +23,13 @@ const REQUIRED_FILES = [
   "sources.json",
 ];
 
+const VALID_INSPECTION_STATES = new Set([
+  "dataset_record_inspected",
+  "digital_content_inspected",
+  "metadata_only",
+  "upstream_cited_only",
+]);
+
 export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   let errorCount = 0;
 
@@ -58,37 +65,118 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   const sourceIds = new Set();
   for (const src of sourcesData.sources || []) {
     assert(typeof src.id === "string", "Source missing id");
+    assert(!sourceIds.has(src.id), `Duplicate source ID: ${src.id}`);
     sourceIds.add(src.id);
     assert(typeof src.title === "string", `Source ${src.id} missing title`);
     assert(typeof src.holding_institution === "string", `Source ${src.id} missing holding_institution`);
     assert(typeof src.rights_posture === "string", `Source ${src.id} missing rights_posture`);
     assert(src.rights_posture !== "unknown_review_required", `Source ${src.id} cannot be unknown_review_required`);
-    assert(typeof src.directly_inspected === "boolean", `Source ${src.id} must declare boolean directly_inspected`);
   }
 
   const sourceRecordIds = new Set();
   for (const sr of sourcesData.source_records || []) {
     assert(typeof sr.id === "string", "Source record missing id");
+    assert(!sourceRecordIds.has(sr.id), `Duplicate source record ID: ${sr.id}`);
     sourceRecordIds.add(sr.id);
     assert(sourceIds.has(sr.source_id), `Source record ${sr.id} references nonexistent source_id ${sr.source_id}`);
     assert(typeof sr.record_type === "string", `Source record ${sr.id} missing record_type`);
     assert(typeof sr.native_identifier === "string", `Source record ${sr.id} missing native_identifier`);
+    assert(VALID_INSPECTION_STATES.has(sr.inspection_state), `Source record ${sr.id} has invalid inspection_state: ${sr.inspection_state}`);
+
+    if (sr.upstream_archive_source_id) {
+      assert(sourceIds.has(sr.upstream_archive_source_id), `Source record ${sr.id} references nonexistent upstream_archive_source_id ${sr.upstream_archive_source_id}`);
+    }
+  }
+
+  for (const sr of sourcesData.source_records || []) {
+    if (sr.parent_ship_record_id) {
+      assert(sourceRecordIds.has(sr.parent_ship_record_id), `Source record ${sr.id} references nonexistent parent_ship_record_id ${sr.parent_ship_record_id}`);
+    }
   }
 
   const assertionIds = new Set();
   for (const ast of sourcesData.assertions || []) {
     assert(typeof ast.id === "string", "Assertion missing id");
+    assert(!assertionIds.has(ast.id), `Duplicate assertion ID: ${ast.id}`);
     assertionIds.add(ast.id);
     assert(sourceRecordIds.has(ast.source_record_id), `Assertion ${ast.id} references nonexistent source_record_id ${ast.source_record_id}`);
     assert(typeof ast.field === "string", `Assertion ${ast.id} missing field`);
   }
 
-  // 2. Manifest
-  const manifest = JSON.parse(fs.readFileSync(path.join(dataDir, "manifest.json"), "utf8"));
-  assert(typeof manifest.version === "string", "manifest.json missing version string");
-  assert(typeof manifest.corpusId === "string", "manifest.json missing corpusId");
-  assert(typeof manifest.publishedAt === "string", "manifest.json missing publishedAt");
-  assert(manifest.counts && typeof manifest.counts.ships === "number", "manifest.json missing valid counts");
+  // 2. Entities JSON
+  const entities = JSON.parse(fs.readFileSync(path.join(dataDir, "entities.json"), "utf8"));
+  assert(Array.isArray(entities.ship_occurrences) && entities.ship_occurrences.length > 0, "entities.json missing ship_occurrences");
+  assert(Array.isArray(entities.crew_occurrences) && entities.crew_occurrences.length > 0, "entities.json missing crew_occurrences");
+  assert(Array.isArray(entities.ships) && entities.ships.length > 0, "entities.json missing ships array");
+  assert(Array.isArray(entities.entity_resolution_edges) && entities.entity_resolution_edges.length > 0, "entities.json missing entity_resolution_edges");
+  assert(Array.isArray(entities.places) && entities.places.length > 0, "entities.json missing places array");
+
+  const placeIds = new Set();
+  for (const p of entities.places || []) {
+    assert(typeof p.id === "string", "Place missing id");
+    assert(!placeIds.has(p.id), `Duplicate place ID: ${p.id}`);
+    placeIds.add(p.id);
+    assert(typeof p.canonical_name === "string", `Place ${p.id} missing canonical_name`);
+    assert(Array.isArray(p.coordinates) && p.coordinates.length === 2, `Place ${p.id} invalid coordinates`);
+    for (const astId of p.source_assertion_ids || []) {
+      assert(assertionIds.has(astId), `Place ${p.id} references nonexistent assertion ${astId}`);
+    }
+  }
+
+  const shipOccIds = new Set();
+  for (const occ of entities.ship_occurrences || []) {
+    assert(typeof occ.id === "string", "Ship occurrence missing id");
+    assert(!shipOccIds.has(occ.id), `Duplicate ship occurrence ID: ${occ.id}`);
+    shipOccIds.add(occ.id);
+    assert(sourceRecordIds.has(occ.source_record_id), `Ship occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
+    assert(Array.isArray(occ.assertion_ids) && occ.assertion_ids.length > 0, `Ship occurrence ${occ.id} missing assertion_ids`);
+    for (const astId of occ.assertion_ids || []) {
+      assert(assertionIds.has(astId), `Ship occurrence ${occ.id} references nonexistent assertion ${astId}`);
+    }
+  }
+
+  const crewOccIds = new Set();
+  for (const occ of entities.crew_occurrences || []) {
+    assert(typeof occ.id === "string", "Crew occurrence missing id");
+    assert(!crewOccIds.has(occ.id), `Duplicate crew occurrence ID: ${occ.id}`);
+    crewOccIds.add(occ.id);
+    assert(sourceRecordIds.has(occ.source_record_id), `Crew occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
+    assert(shipOccIds.has(occ.ship_occurrence_id), `Crew occurrence ${occ.id} references nonexistent ship_occurrence_id ${occ.ship_occurrence_id}`);
+    for (const astId of occ.assertion_ids || []) {
+      assert(assertionIds.has(astId), `Crew occurrence ${occ.id} references nonexistent assertion ${astId}`);
+    }
+  }
+
+  const shipIds = new Set();
+  for (const s of entities.ships || []) {
+    assert(typeof s.id === "string", "Ship missing id");
+    assert(!shipIds.has(s.id), `Duplicate ship ID: ${s.id}`);
+    shipIds.add(s.id);
+    assert(typeof s.canonical_name === "string", `Ship ${s.id} missing canonical_name`);
+    assert(s.evidence_state === "documented", `Ship ${s.id} evidence_state must be 'documented'`);
+    assert(Array.isArray(s.occurrence_ids) && s.occurrence_ids.length > 0, `Ship ${s.id} missing occurrence_ids`);
+    for (const occId of s.occurrence_ids || []) {
+      assert(shipOccIds.has(occId), `Ship ${s.id} references nonexistent occurrence_id ${occId}`);
+    }
+  }
+
+  for (const edge of entities.entity_resolution_edges || []) {
+    assert(shipOccIds.has(edge.occurrence_id), `Resolution edge references nonexistent occurrence_id ${edge.occurrence_id}`);
+    assert(shipIds.has(edge.target_entity_id), `Resolution edge references nonexistent target_entity_id ${edge.target_entity_id}`);
+    assert(typeof edge.resolution_state === "string", `Resolution edge missing resolution_state`);
+    for (const astId of edge.evidence_assertions || []) {
+      assert(assertionIds.has(astId), `Resolution edge references nonexistent assertion ${astId}`);
+    }
+  }
+
+  for (const vis of entities.visuals || []) {
+    assert(typeof vis.id === "string", "Visual missing id");
+    assert(sourceIds.has(vis.source_id), `Visual ${vis.id} references nonexistent source_id ${vis.source_id}`);
+    assert(vis.rights_state !== "unknown_review_required", `Visual ${vis.id} rights cannot be unknown_review_required`);
+    for (const astId of vis.assertion_ids || []) {
+      assert(assertionIds.has(astId), `Visual ${vis.id} references nonexistent assertion ${astId}`);
+    }
+  }
 
   // 3. Ports GeoJSON
   const ports = JSON.parse(fs.readFileSync(path.join(dataDir, "ports.geojson"), "utf8"));
@@ -99,12 +187,9 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(f.type === "Feature", `Port ${f.id} is not a Feature`);
     assert(f.geometry && f.geometry.type === "Point", `Port ${f.id} geometry must be Point`);
     assert(Array.isArray(f.geometry.coordinates) && f.geometry.coordinates.length === 2, `Port ${f.id} coordinates must be [lng, lat]`);
+    assert(placeIds.has(f.id), `Port feature ${f.id} does not match any place ID`);
     assert(typeof f.properties.canonical_name === "string", `Port ${f.id} missing canonical_name`);
     assert(typeof f.properties.geographic_precision === "string", `Port ${f.id} missing geographic_precision`);
-    assert(Array.isArray(f.properties.source_assertion_ids), `Port ${f.id} missing source_assertion_ids array`);
-    for (const astId of f.properties.source_assertion_ids || []) {
-      assert(assertionIds.has(astId), `Port ${f.id} references nonexistent assertion ${astId}`);
-    }
   }
 
   // 4. Routes GeoJSON
@@ -119,62 +204,16 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(f.properties.geometry_kind === "endpoints_only", `Route ${f.id} geometry_kind must be 'endpoints_only'`);
     assert(f.properties.evidence_state === "documented", `Route ${f.id} evidence_state must be 'documented'`);
     assert(f.properties.is_track_observed === false, `Route ${f.id} is_track_observed must be false`);
+    assert(shipIds.has(f.properties.vessel_id), `Route ${f.id} references nonexistent vessel_id ${f.properties.vessel_id}`);
+    assert(placeIds.has(f.properties.origin_place_id), `Route ${f.id} references nonexistent origin_place_id ${f.properties.origin_place_id}`);
+    assert(placeIds.has(f.properties.destination_place_id), `Route ${f.id} references nonexistent destination_place_id ${f.properties.destination_place_id}`);
     assert(Array.isArray(f.properties.source_assertion_ids) && f.properties.source_assertion_ids.length > 0, `Route ${f.id} missing source_assertion_ids`);
     for (const astId of f.properties.source_assertion_ids || []) {
       assert(assertionIds.has(astId), `Route ${f.id} references nonexistent assertion ${astId}`);
     }
   }
 
-  // 5. Entities JSON
-  const entities = JSON.parse(fs.readFileSync(path.join(dataDir, "entities.json"), "utf8"));
-  assert(Array.isArray(entities.ship_occurrences) && entities.ship_occurrences.length > 0, "entities.json missing ship_occurrences");
-  assert(Array.isArray(entities.crew_occurrences) && entities.crew_occurrences.length > 0, "entities.json missing crew_occurrences");
-  assert(Array.isArray(entities.ships) && entities.ships.length > 0, "entities.json missing ships array");
-  assert(Array.isArray(entities.entity_resolution_edges) && entities.entity_resolution_edges.length > 0, "entities.json missing entity_resolution_edges");
-  assert(Array.isArray(entities.places) && entities.places.length > 0, "entities.json missing places array");
-
-  const shipOccIds = new Set();
-  for (const occ of entities.ship_occurrences || []) {
-    assert(typeof occ.id === "string", "Ship occurrence missing id");
-    shipOccIds.add(occ.id);
-    assert(sourceRecordIds.has(occ.source_record_id), `Ship occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
-    assert(Array.isArray(occ.assertion_ids) && occ.assertion_ids.length > 0, `Ship occurrence ${occ.id} missing assertion_ids`);
-    for (const astId of occ.assertion_ids || []) {
-      assert(assertionIds.has(astId), `Ship occurrence ${occ.id} references nonexistent assertion ${astId}`);
-    }
-  }
-
-  for (const occ of entities.crew_occurrences || []) {
-    assert(typeof occ.id === "string", "Crew occurrence missing id");
-    assert(sourceRecordIds.has(occ.source_record_id), `Crew occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
-    assert(shipOccIds.has(occ.ship_occurrence_id), `Crew occurrence ${occ.id} references nonexistent ship_occurrence_id ${occ.ship_occurrence_id}`);
-  }
-
-  const shipIds = new Set();
-  for (const s of entities.ships || []) {
-    assert(typeof s.id === "string", "Ship missing id");
-    shipIds.add(s.id);
-    assert(typeof s.canonical_name === "string", `Ship ${s.id} missing canonical_name`);
-    assert(s.evidence_state === "documented", `Ship ${s.id} evidence_state must be 'documented'`);
-    assert(Array.isArray(s.occurrence_ids) && s.occurrence_ids.length > 0, `Ship ${s.id} missing occurrence_ids`);
-    for (const occId of s.occurrence_ids || []) {
-      assert(shipOccIds.has(occId), `Ship ${s.id} references nonexistent occurrence_id ${occId}`);
-    }
-  }
-
-  for (const edge of entities.entity_resolution_edges || []) {
-    assert(shipOccIds.has(edge.occurrence_id), `Resolution edge references nonexistent occurrence_id ${edge.occurrence_id}`);
-    assert(shipIds.has(edge.target_entity_id), `Resolution edge references nonexistent target_entity_id ${edge.target_entity_id}`);
-    assert(typeof edge.resolution_state === "string", `Resolution edge missing resolution_state`);
-  }
-
-  for (const vis of entities.visuals || []) {
-    assert(typeof vis.id === "string", "Visual missing id");
-    assert(sourceIds.has(vis.source_id), `Visual ${vis.id} references nonexistent source_id ${vis.source_id}`);
-    assert(vis.rights_state !== "unknown_review_required", `Visual ${vis.id} rights cannot be unknown_review_required`);
-  }
-
-  // 6. Events JSON
+  // 5. Events JSON
   const events = JSON.parse(fs.readFileSync(path.join(dataDir, "events.json"), "utf8"));
   assert(Array.isArray(events.events) && events.events.length > 0, "events.json missing events array");
 
@@ -182,6 +221,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(typeof e.id === "string", "Event missing id");
     assert(typeof e.title === "string", `Event ${e.id} missing title`);
     assert(typeof e.date === "string", `Event ${e.id} missing date`);
+    assert(placeIds.has(e.place_id), `Event ${e.id} references nonexistent place_id ${e.place_id}`);
     assert(Array.isArray(e.sources) && e.sources.length > 0, `Event ${e.id} must have at least one source`);
     for (const srcId of e.sources || []) {
       assert(sourceIds.has(srcId), `Event ${e.id} references nonexistent source ${srcId}`);
@@ -191,6 +231,20 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
       assert(assertionIds.has(astId), `Event ${e.id} references nonexistent assertion ${astId}`);
     }
   }
+
+  // 6. Manifest
+  const manifest = JSON.parse(fs.readFileSync(path.join(dataDir, "manifest.json"), "utf8"));
+  assert(typeof manifest.version === "string", "manifest.json missing version string");
+  assert(typeof manifest.corpusId === "string", "manifest.json missing corpusId");
+  assert(typeof manifest.publishedAt === "string", "manifest.json missing publishedAt");
+  assert(manifest.counts && typeof manifest.counts.ships === "number", "manifest.json missing valid counts");
+  assert(manifest.counts.sources === sourcesData.sources.length, "Manifest sources count mismatch");
+  assert(manifest.counts.source_records === sourcesData.source_records.length, "Manifest source_records count mismatch");
+  assert(manifest.counts.assertions === sourcesData.assertions.length, "Manifest assertions count mismatch");
+  assert(manifest.counts.ships === entities.ships.length, "Manifest ships count mismatch");
+  assert(manifest.counts.places === entities.places.length, "Manifest places count mismatch");
+  assert(manifest.counts.routes === routes.features.length, "Manifest routes count mismatch");
+  assert(manifest.counts.events === events.events.length, "Manifest events count mismatch");
 
   if (errorCount > 0) {
     log(`\n[FAIL] Published data validation failed with ${errorCount} error(s).`);

@@ -87,7 +87,7 @@
           <p class="inspector-note" data-place-note></p>
         </section>
 
-        <!-- Sourced Historical Visual Section for Port Royal & Jamaica -->
+        <!-- Sourced Historical Visual Section for Jamaica -->
         <section class="inspector-section" data-place-visual-wrap hidden aria-label="Historical map reference">
           <p class="panel-kicker">Contemporary Cartographic Reference</p>
           <div class="inspector-visual-card">
@@ -109,6 +109,18 @@
               </button>
             </div>
           </div>
+        </section>
+
+        <!-- Generic Place Evidence Action Button -->
+        <section class="inspector-section" aria-label="Place evidence actions">
+          <p class="panel-kicker">Archival & Cartographic Evidence</p>
+          <button
+            type="button"
+            class="inspector-action-btn"
+            data-open-place-source
+          >
+            Inspect Place Evidence ↗
+          </button>
         </section>
       </div>
 
@@ -234,6 +246,7 @@
   const placeNote = document.querySelector<HTMLElement>("[data-place-note]");
   const placeVisualWrap = document.querySelector<HTMLElement>("[data-place-visual-wrap]");
   const openVisualBtn = document.querySelector<HTMLButtonElement>("[data-open-visual-source]");
+  const openPlaceSourceBtn = document.querySelector<HTMLButtonElement>("[data-open-place-source]");
 
   // Ship Elements
   const shipRawName = document.querySelector<HTMLElement>("[data-ship-raw-name]");
@@ -255,7 +268,10 @@
   let entitiesCache: PublishedEntities | null = null;
   let eventsCache: PublishedEvents | null = null;
   let sourcesCache: PublishedSources | null = null;
-  let activeSourceId: string | null = null;
+
+  let activePlaceAssertionIds: string[] = [];
+  let activeShipAssertionIds: string[] = [];
+  let activeEventAssertionIds: string[] = [];
   let activeUpstreamRef: string | null = null;
 
   async function loadData() {
@@ -285,12 +301,8 @@
     selectionStore.clear();
 
     const trigger = consumeSelectionTrigger();
-    if (trigger.origin === "map") {
-      const mapCanvas = document.getElementById("charted-currents-map");
-      mapCanvas?.focus();
-    } else if (trigger.origin === "locator_menu") {
-      const toggle = trigger.returnTarget || document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
-      toggle?.focus();
+    if (trigger.returnTarget) {
+      trigger.returnTarget.focus();
     } else {
       const mapCanvas = document.getElementById("charted-currents-map");
       mapCanvas?.focus();
@@ -317,11 +329,16 @@
     if (viewShip) viewShip.hidden = true;
     if (viewEvent) viewEvent.hidden = true;
 
+    activePlaceAssertionIds = [];
+    activeShipAssertionIds = [];
+    activeEventAssertionIds = [];
     activeUpstreamRef = null;
 
     if (selection.kind === "port") {
       const place = entitiesCache.places.find((p) => p.id === selection.id);
       if (!place) return;
+
+      activePlaceAssertionIds = place.source_assertion_ids || [];
 
       if (kickerEl) kickerEl.textContent = "Historical Place";
       if (badgeWrap) badgeWrap.hidden = true;
@@ -340,13 +357,6 @@
         placeVisualWrap.hidden = !hasVisual;
       }
 
-      if (place.id === "place_jamaica") {
-        activeSourceId = "src_loc_g4960_1684";
-      } else if (place.id === "place_port_royal") {
-        activeSourceId = "src_royal_society_el_l5_117";
-      } else {
-        activeSourceId = "src_imlm_ukda_852135";
-      }
       if (viewPlace) viewPlace.hidden = false;
     } else if (selection.kind === "ship") {
       const ship = entitiesCache.ships.find((s) => s.id === selection.id);
@@ -354,6 +364,8 @@
 
       const occ = entitiesCache.ship_occurrences.find((o) => ship.occurrence_ids.includes(o.id));
       if (!occ) return;
+
+      activeShipAssertionIds = occ.assertion_ids || [];
 
       if (kickerEl) kickerEl.textContent = "Documented Vessel";
       if (badgeWrap) badgeWrap.hidden = false;
@@ -366,7 +378,7 @@
 
       if (shipRawName) shipRawName.textContent = occ.raw_name;
       if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
-      if (shipConstruction) shipConstruction.textContent = `${occ.raw_construction_place} ${occ.reported_age_years ? `(~${occ.reported_age_years} yrs old in ${occ.recorded_capture_date.slice(0,4)})` : ""}`;
+      if (shipConstruction) shipConstruction.textContent = ship.construction_display;
       if (shipOwner) shipOwner.textContent = occ.reported_owner_residence;
       if (shipVoyage) shipVoyage.textContent = `${occ.recorded_voyage_origin} → ${occ.recorded_voyage_destination}`;
       if (shipCapture) shipCapture.textContent = `${occ.recorded_capture_location} (${occ.recorded_capture_date})`;
@@ -407,13 +419,14 @@
 
       // Find upstream HCA reference
       const sr = sourcesCache?.source_records.find((r) => r.id === occ.source_record_id);
-      activeSourceId = sr?.source_id || "src_imlm_ukda_852135";
       activeUpstreamRef = sr?.upstream_archive_reference || null;
 
       if (viewShip) viewShip.hidden = false;
     } else if (selection.kind === "event") {
       const event = eventsCache.events.find((e) => e.id === selection.id);
       if (!event) return;
+
+      activeEventAssertionIds = event.assertion_ids || [];
 
       if (kickerEl) kickerEl.textContent = "Historical Event";
       if (badgeWrap) badgeWrap.hidden = false;
@@ -428,7 +441,6 @@
       if (eventKind) eventKind.textContent = event.kind;
       if (eventSummary) eventSummary.textContent = event.summary;
 
-      activeSourceId = event.sources[0] || null;
       if (viewEvent) viewEvent.hidden = false;
     }
 
@@ -446,18 +458,23 @@
   }
 
   // Open Source Drawer triggers
-  function triggerOpenSource(sourceId: string | null, targetBtn: HTMLElement | null, upstreamRef?: string | null) {
-    if (!sourceId) return;
+  function triggerOpenSource(options: { sourceId?: string | null; assertionIds?: string[] | null; triggerEl?: HTMLElement | null; upstreamRef?: string | null }) {
     window.dispatchEvent(
       new CustomEvent("cc:open-source", {
-        detail: { sourceId, triggerEl: targetBtn, upstreamRef: upstreamRef || activeUpstreamRef },
+        detail: {
+          sourceId: options.sourceId,
+          assertionIds: options.assertionIds,
+          triggerEl: options.triggerEl,
+          upstreamRef: options.upstreamRef || activeUpstreamRef,
+        },
       }),
     );
   }
 
-  openVisualBtn?.addEventListener("click", () => triggerOpenSource("src_loc_g4960_1684", openVisualBtn));
-  openShipSourceBtn?.addEventListener("click", () => triggerOpenSource(activeSourceId, openShipSourceBtn, activeUpstreamRef));
-  openEventSourceBtn?.addEventListener("click", () => triggerOpenSource(activeSourceId, openEventSourceBtn));
+  openVisualBtn?.addEventListener("click", () => triggerOpenSource({ sourceId: "src_loc_g4960_1684", triggerEl: openVisualBtn }));
+  openPlaceSourceBtn?.addEventListener("click", () => triggerOpenSource({ assertionIds: activePlaceAssertionIds, triggerEl: openPlaceSourceBtn }));
+  openShipSourceBtn?.addEventListener("click", () => triggerOpenSource({ assertionIds: activeShipAssertionIds, triggerEl: openShipSourceBtn, upstreamRef: activeUpstreamRef }));
+  openEventSourceBtn?.addEventListener("click", () => triggerOpenSource({ assertionIds: activeEventAssertionIds, triggerEl: openEventSourceBtn }));
 
   closeButton?.addEventListener("click", closeInspector);
 

@@ -25,6 +25,14 @@ export const GEOGRAPHIC_PRECISIONS = [
 ] as const;
 export type GeographicPrecision = (typeof GEOGRAPHIC_PRECISIONS)[number];
 
+export const INSPECTION_STATES = [
+  "dataset_record_inspected",
+  "digital_content_inspected",
+  "metadata_only",
+  "upstream_cited_only",
+] as const;
+export type InspectionState = (typeof INSPECTION_STATES)[number];
+
 export interface EntitySelection {
   kind: EntityKind;
   id: string;
@@ -106,7 +114,6 @@ export interface PublishedSource {
   public_use_basis: string;
   attribution_required: boolean;
   credit_line: string;
-  directly_inspected: boolean;
   notes?: string;
 }
 
@@ -115,6 +122,7 @@ export interface PublishedSourceRecord {
   source_id: string;
   record_type: string;
   native_identifier: string;
+  inspection_state: InspectionState;
   upstream_archive_source_id?: string;
   upstream_archive_reference?: string;
   parent_ship_record_id?: string;

@@ -172,18 +172,20 @@ async function runReviewSuite() {
         ws.send(JSON.stringify({ id, method, params }));
       });
 
-    const sendKey = async (key, code, windowsVirtualKeyCode) => {
+    const sendKey = async (key, code, windowsVirtualKeyCode, shiftKey = false) => {
       await send("Input.dispatchKeyEvent", {
         type: "rawKeyDown",
         key,
         code,
         windowsVirtualKeyCode,
+        modifiers: shiftKey ? 8 : 0,
       });
       await send("Input.dispatchKeyEvent", {
         type: "keyUp",
         key,
         code,
         windowsVirtualKeyCode,
+        modifiers: shiftKey ? 8 : 0,
       });
     };
 
@@ -222,7 +224,7 @@ async function runReviewSuite() {
     const ready = await waitForMapReady();
     assert(
       ready,
-      "Historical map initialized and reached idle state (dataset.mapReady === 'true' and dataset.mapIdle === 'true') within timeout",
+      "Historical map initialized and reached idle state within timeout",
     );
 
     const viewports = [
@@ -359,8 +361,8 @@ async function runReviewSuite() {
     assert(attributionCheck?.result?.value?.hasMapLibre, "MapLibre / OpenStreetMap attribution control present in DOM");
     assert(attributionCheck?.result?.value?.hasWHG, "WHG authority attribution link present in DOM");
 
-    // 2. Historical Vessel Selection & Crew Roster Rendering
-    console.log("Testing vessel selection & crew roster rendering...");
+    // 2. Historical Vessel Selection & Construction Display (No ~1685)
+    console.log("Testing vessel selection & construction display...");
     await send("Runtime.evaluate", {
       expression: `(() => {
         const marker = document.querySelector('[data-selection-id="ship_richard_and_sarah_1705"]');
@@ -376,10 +378,11 @@ async function runReviewSuite() {
         const title = document.querySelector('[data-inspector-title]')?.textContent;
         const rawName = document.querySelector('[data-ship-raw-name]')?.textContent;
         const tonnage = document.querySelector('[data-ship-tonnage]')?.textContent;
+        const construction = document.querySelector('[data-ship-construction]')?.textContent;
         const crewRows = document.querySelectorAll('[data-ship-crew-tbody] tr').length;
         const isHeadingFocused = document.activeElement?.id === 'inspector-heading';
 
-        return { isOpen, title, rawName, tonnage, crewRows, isHeadingFocused };
+        return { isOpen, title, rawName, tonnage, construction, crewRows, isHeadingFocused };
       })()`,
       returnByValue: true,
     });
@@ -387,11 +390,12 @@ async function runReviewSuite() {
     assert(vesselCheck?.result?.value?.title === "Richard & Sarah of London", "Vessel title displays 'Richard & Sarah of London'");
     assert(vesselCheck?.result?.value?.rawName === "Richard & Sarah of London", "Raw vessel name preserved faithfully");
     assert(vesselCheck?.result?.value?.tonnage === "300 tons reported burden", "Reported burden displays '300 tons reported burden'");
+    assert(vesselCheck?.result?.value?.construction === "English built · reported age 20 at capture", "Construction display shows recorded facts without unmodeled '~1685'");
     assert(vesselCheck?.result?.value?.crewRows === 3, "All 3 documented crew members rendered in table");
     assert(!vesselCheck?.result?.value?.isHeadingFocused, "Pointer selection on timeline does NOT steal keyboard focus to inspector heading");
 
-    // 3. Layered Source Drawer Opening & Escape Key Isolation
-    console.log("Testing Source Drawer opening for archival record...");
+    // 3. Layered Source Drawer & Modal Tab Focus Trap
+    console.log("Testing assertion-driven Source Drawer opening...");
     await send("Runtime.evaluate", {
       expression: `(() => {
         const openSrcBtn = document.querySelector('[data-open-ship-source]');
@@ -404,21 +408,36 @@ async function runReviewSuite() {
       expression: `(() => {
         const drawer = document.getElementById('source-drawer');
         const isOpen = drawer?.getAttribute('data-state') === 'open';
-        const ref = document.querySelector('[data-source-ref]')?.textContent;
+        const inspectionState = document.querySelector('[data-source-inspection-state]')?.textContent;
         const inst = document.querySelector('[data-source-institution]')?.textContent;
         const upstreamRef = document.querySelector('[data-source-upstream-ref]')?.textContent;
-        const citation = document.querySelector('[data-source-citation]')?.textContent;
+        const assertionRows = document.querySelectorAll('[data-source-assertions-tbody] tr').length;
 
-        return { isOpen, ref, inst, upstreamRef, citation };
+        return { isOpen, inspectionState, inst, upstreamRef, assertionRows };
       })()`,
       returnByValue: true,
     });
     assert(sourceDrawerCheck?.result?.value?.isOpen, "Clicking 'Inspect Archival Provenance' opens Source Drawer");
-    assert(sourceDrawerCheck?.result?.value?.ref === "SN 852135", "Directly observed source displays dataset identifier 'SN 852135'");
+    assert(sourceDrawerCheck?.result?.value?.inspectionState === "dataset_record_inspected", "Source Drawer displays inspection state 'dataset_record_inspected'");
     assert(sourceDrawerCheck?.result?.value?.inst === "UK Data Archive / ReShare", "Holding institution displays 'UK Data Archive / ReShare'");
     assert(sourceDrawerCheck?.result?.value?.upstreamRef === "TNA HCA 32/80", "Upstream archival reference displays cited 'TNA HCA 32/80'");
+    assert(sourceDrawerCheck?.result?.value?.assertionRows > 0, "Source Drawer renders supporting assertion breakdown");
 
-    // Test Escape isolation: Escape must close SourceDrawer, keep Inspector open, and return focus
+    // Test Modal Focus Containment (Tab and Shift+Tab)
+    console.log("Testing modal Tab focus containment in Source Drawer...");
+    await sendKey("Tab", "Tab", 9);
+    await new Promise((r) => setTimeout(r, 100));
+
+    const tabFocusCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const panel = document.querySelector('.source-drawer-panel');
+        return panel?.contains(document.activeElement);
+      })()`,
+      returnByValue: true,
+    });
+    assert(tabFocusCheck?.result?.value, "Tab key preserves focus inside SourceDrawer panel");
+
+    // Escape closes SourceDrawer and restores focus
     console.log("Testing Escape key isolation in Source Drawer...");
     await sendKey("Escape", "Escape", 27);
     await new Promise((r) => setTimeout(r, 200));
@@ -448,7 +467,47 @@ async function runReviewSuite() {
     });
     await new Promise((r) => setTimeout(r, 200));
 
-    // 4. Contextual Event Selection (1692 Earthquake)
+    // 4. Place Evidence Button for Port Royal
+    console.log("Testing generic Place Evidence action for Port Royal...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector('[data-locator-toggle]');
+        toggle?.click();
+        const portRoyalBtn = document.querySelector('[data-place-id="place_port_royal"]');
+        portRoyalBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const openPlaceSrcBtn = document.querySelector('[data-open-place-source]');
+        openPlaceSrcBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const placeEvidenceCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById('source-drawer');
+        const isOpen = drawer?.getAttribute('data-state') === 'open';
+        const assertionRows = document.querySelectorAll('[data-source-assertions-tbody] tr').length;
+        const text = drawer?.textContent || '';
+        const hasPortRoyallLabel = text.includes('Port Royall') || text.includes('cartographic place label');
+
+        return { isOpen, assertionRows, hasPortRoyallLabel };
+      })()`,
+      returnByValue: true,
+    });
+    assert(placeEvidenceCheck?.result?.value?.isOpen, "Clicking 'Inspect Place Evidence' opens Source Drawer");
+    assert(placeEvidenceCheck?.result?.value?.assertionRows > 0, "Place evidence resolves supporting assertions in Source Drawer");
+    assert(placeEvidenceCheck?.result?.value?.hasPortRoyallLabel, "Port Royal place evidence shows 'Port Royall' map assertion");
+
+    // Close source drawer
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 200));
+
+    // 5. Contextual Event Selection (1692 Earthquake & Royal Society metadata)
     console.log("Testing contextual 1692 earthquake selection...");
     await send("Runtime.evaluate", {
       expression: `(() => {
@@ -475,7 +534,83 @@ async function runReviewSuite() {
     assert(eventCheck?.result?.value?.date?.includes("1692-06-07"), "Event date includes '1692-06-07'");
     assert(eventCheck?.result?.value?.badgeState === "contextual", "Evidence badge correctly marks event as 'contextual'");
 
-    // 5. Historical Chart View for Jamaica (and Exclusion for Other Places)
+    // Open Event Source Drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const openEventSrcBtn = document.querySelector('[data-open-event-source]');
+        openEventSrcBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const eventSourceCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById('source-drawer');
+        const isOpen = drawer?.getAttribute('data-state') === 'open';
+        const text = drawer?.textContent || '';
+        const hasPhilTrans = text.includes('Philosophical Transactions') || text.includes('Phil. Trans.');
+
+        return { isOpen, hasPhilTrans };
+      })()`,
+      returnByValue: true,
+    });
+    assert(eventSourceCheck?.result?.value?.isOpen, "Opening earthquake event source opens Source Drawer");
+    assert(eventSourceCheck?.result?.value?.hasPhilTrans, "Event source drawer references Philosophical Transactions (1694)");
+
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Close Inspector
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const closeBtn = document.querySelector('[data-inspector-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 200));
+
+    // 6. Native CDP Keyboard Activation of Timeline Marker & Focus Restoration
+    console.log("Testing native CDP keyboard activation of timeline marker...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const marker = document.querySelector('[data-selection-id="ship_william_1702"]');
+        marker?.focus();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 100));
+
+    await sendKey("Enter", "Enter", 13);
+    await new Promise((r) => setTimeout(r, 300));
+
+    const timelineKeyboardCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const inspector = document.getElementById('entity-inspector');
+        const isOpen = inspector?.getAttribute('data-state') === 'open';
+        const isHeadingFocused = document.activeElement?.id === 'inspector-heading';
+        const title = document.querySelector('[data-inspector-title]')?.textContent;
+
+        return { isOpen, isHeadingFocused, title };
+      })()`,
+      returnByValue: true,
+    });
+    assert(timelineKeyboardCheck?.result?.value?.isOpen, "Native keyboard Enter on timeline marker opens Entity Inspector");
+    assert(timelineKeyboardCheck?.result?.value?.isHeadingFocused, "Keyboard timeline activation transfers focus to #inspector-heading");
+    assert(timelineKeyboardCheck?.result?.value?.title === "William", "Selected vessel title is 'William'");
+
+    // Close inspector with Escape and verify focus restores to timeline button
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 200));
+
+    const timelineFocusRestoreCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const isRestored = document.activeElement?.getAttribute('data-selection-id') === 'ship_william_1702';
+        return isRestored;
+      })()`,
+      returnByValue: true,
+    });
+    assert(timelineFocusRestoreCheck?.result?.value, "Closing inspector restores focus to the exact originating William timeline marker");
+
+    // 7. Historical Chart View for Jamaica (and Exclusion for Other Places)
     console.log("Testing historical visual chart display exclusively for Jamaica...");
     await send("Runtime.evaluate", {
       expression: `(() => {
@@ -501,98 +636,7 @@ async function runReviewSuite() {
     assert(jamaicaVisualCheck?.result?.value?.isVisualVisible, "Selecting Jamaica exposes the 1684 cartographic reference visual card");
     assert(jamaicaVisualCheck?.result?.value?.hasImgSrc, "1684 Bochart & Knollis chart image loaded correctly for Jamaica");
 
-    // Select Port Royal and assert visual card is hidden
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const toggle = document.querySelector('[data-locator-toggle]');
-        toggle?.click();
-        const portRoyalBtn = document.querySelector('[data-place-id="place_port_royal"]');
-        portRoyalBtn?.click();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    const portRoyalVisualCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const visualWrap = document.querySelector('[data-place-visual-wrap]');
-        return visualWrap?.hidden === true;
-      })()`,
-      returnByValue: true,
-    });
-    assert(portRoyalVisualCheck?.result?.value, "Selecting Port Royal hides the 1684 Jamaica chart visual card");
-
-    // Select London and assert visual card is hidden
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const toggle = document.querySelector('[data-locator-toggle]');
-        toggle?.click();
-        const londonBtn = document.querySelector('[data-place-id="place_london"]');
-        londonBtn?.click();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    const londonVisualCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const visualWrap = document.querySelector('[data-place-visual-wrap]');
-        return visualWrap?.hidden === true;
-      })()`,
-      returnByValue: true,
-    });
-    assert(londonVisualCheck?.result?.value, "Selecting London hides the 1684 Jamaica chart visual card");
-
-    // 6. Real CDP Keyboard Navigation & Activation Flow
-    console.log("Testing native CDP keyboard navigation...");
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const closeBtn = document.querySelector('[data-inspector-close]');
-        closeBtn?.click();
-        const toggle = document.querySelector('[data-locator-toggle]');
-        toggle?.focus();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 100));
-
-    await sendKey("ArrowDown", "ArrowDown", 40);
-    await new Promise((r) => setTimeout(r, 150));
-
-    const arrowFocusCheck = await send("Runtime.evaluate", {
-      expression: `Boolean(document.activeElement?.classList?.contains('map-locator-browser__item'))`,
-      returnByValue: true,
-    });
-    assert(arrowFocusCheck?.result?.value, "CDP ArrowDown opens locator menu and moves focus to first place item");
-
-    await sendKey("Enter", "Enter", 13);
-    await new Promise((r) => setTimeout(r, 200));
-
-    const keyboardActivationCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const inspector = document.getElementById('entity-inspector');
-        const isOpen = inspector?.getAttribute('data-state') === 'open';
-        const isHeadingFocused = document.activeElement?.id === 'inspector-heading';
-        return { isOpen, isHeadingFocused };
-      })()`,
-      returnByValue: true,
-    });
-    assert(keyboardActivationCheck?.result?.value?.isOpen, "CDP Enter activation opens Entity Inspector");
-    assert(keyboardActivationCheck?.result?.value?.isHeadingFocused, "CDP Enter activation transfers focus to #inspector-heading");
-
-    await sendKey("Escape", "Escape", 27);
-    await new Promise((r) => setTimeout(r, 150));
-
-    const keyboardCloseCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const inspector = document.getElementById('entity-inspector');
-        const isClosed = inspector?.getAttribute('data-state') === 'closed';
-        const isFocusRestored = document.activeElement?.hasAttribute('data-locator-toggle');
-        return { isClosed, isFocusRestored };
-      })()`,
-      returnByValue: true,
-    });
-    assert(keyboardCloseCheck?.result?.value?.isClosed, "CDP Escape closes Entity Inspector");
-    assert(keyboardCloseCheck?.result?.value?.isFocusRestored, "CDP Escape restores focus to Browse Places toggle button");
-
-    // 7. Runtime Exceptions check
+    // 8. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

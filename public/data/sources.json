@@ -11,7 +11,6 @@
       "public_use_basis": "maintainer_approved_small_derived_factual_publication",
       "attribution_required": true,
       "credit_line": "Van Lottum, Jelle. The international maritime labour market in Europe, relational database 1650-1815. UK Data Service SN 852135",
-      "directly_inspected": true,
       "notes": "Directly accessed research dataset; bulk mirroring is outside approved Packet 2 use."
     },
     {
@@ -25,26 +24,25 @@
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
       "credit_line": "The National Archives, Kew",
-      "directly_inspected": false,
       "notes": "Upstream archival series cited by IMLM. Physical manuscripts at Kew were not independently examined by Charted Currents."
     },
     {
       "id": "src_royal_society_el_l5_117",
-      "title": "Letter from Rev. Edmund Heath to the Royal Society giving an account of the Port Royal Earthquake",
-      "creator": "Rev. Edmund Heath",
+      "title": "Letter, from T L [to the Royal Society]",
+      "creator": "T L",
       "holding_institution": "The Royal Society, London",
       "stable_identifier": "Royal Society Archives EL/L5/117",
+      "item_url": "https://makingscience.royalsociety.org/s/rs/items/EL-L5-117",
       "rights_posture": "public_domain",
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
       "credit_line": "The Royal Society Archives (EL/L5/117)",
-      "directly_inspected": true,
-      "notes": "Contemporary manuscript letter recording the 7 June 1692 Port Royal earthquake."
+      "notes": "Contemporary manuscript letter dated 27 June 1692 containing eyewitness observations of the Port Royal earthquake."
     },
     {
       "id": "src_royal_society_phil_trans_1694",
       "title": "A Full Account of the Late Dreadful Earthquake at Port-Royal in Jamaica: Written in Two Letters by the Minister of That Place",
-      "creator": "Philosophical Transactions of the Royal Society of London",
+      "creator": "Philosophical Transactions of the Royal Society of London / Rev. Edmund Heath",
       "holding_institution": "The Royal Society, London",
       "stable_identifier": "Phil. Trans. Vol. 18, No. 209 (1694), pp. 83-100",
       "item_url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1694.0017",
@@ -52,8 +50,7 @@
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
       "credit_line": "Philosophical Transactions of the Royal Society, Vol. 18 (1694)",
-      "directly_inspected": true,
-      "notes": "Published contemporary letters on the 1692 earthquake printed in London."
+      "notes": "Published contemporary letters on the 7 June 1692 earthquake printed in London (DOI: 10.1098/rstl.1694.0017)."
     },
     {
       "id": "src_loc_g4960_1684",
@@ -66,7 +63,6 @@
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
       "credit_line": "Library of Congress, Geography and Map Division",
-      "directly_inspected": true,
       "notes": "Engraved map created [1684?]; no known copyright restrictions in digitized collection."
     }
   ],
@@ -76,6 +72,7 @@
       "source_id": "src_imlm_ukda_852135",
       "record_type": "dataset_row",
       "native_identifier": "IdShip 2052",
+      "inspection_state": "dataset_record_inspected",
       "upstream_archive_source_id": "src_tna_hca_32",
       "upstream_archive_reference": "TNA HCA 32/80"
     },
@@ -84,6 +81,7 @@
       "source_id": "src_imlm_ukda_852135",
       "record_type": "dataset_row",
       "native_identifier": "IdCrew 5035",
+      "inspection_state": "dataset_record_inspected",
       "parent_ship_record_id": "sr_imlm_ship_2052"
     },
     {
@@ -91,6 +89,7 @@
       "source_id": "src_imlm_ukda_852135",
       "record_type": "dataset_row",
       "native_identifier": "IdCrew 5036",
+      "inspection_state": "dataset_record_inspected",
       "parent_ship_record_id": "sr_imlm_ship_2052"
     },
     {
@@ -98,6 +97,7 @@
       "source_id": "src_imlm_ukda_852135",
       "record_type": "dataset_row",
       "native_identifier": "IdCrew 5037",
+      "inspection_state": "dataset_record_inspected",
       "parent_ship_record_id": "sr_imlm_ship_2052"
     },
     {
@@ -105,6 +105,7 @@
       "source_id": "src_imlm_ukda_852135",
       "record_type": "dataset_row",
       "native_identifier": "IdShip 2228",
+      "inspection_state": "dataset_record_inspected",
       "upstream_archive_source_id": "src_tna_hca_32",
       "upstream_archive_reference": "TNA HCA 32/86"
     },
@@ -113,25 +114,29 @@
       "source_id": "src_imlm_ukda_852135",
       "record_type": "dataset_row",
       "native_identifier": "IdCrew 5508",
+      "inspection_state": "dataset_record_inspected",
       "parent_ship_record_id": "sr_imlm_ship_2228"
     },
     {
       "id": "sr_rs_el_l5_117",
       "source_id": "src_royal_society_el_l5_117",
       "record_type": "archival_manuscript",
-      "native_identifier": "EL/L5/117"
+      "native_identifier": "EL/L5/117",
+      "inspection_state": "metadata_only"
     },
     {
       "id": "sr_rs_phil_trans_209",
       "source_id": "src_royal_society_phil_trans_1694",
       "record_type": "published_article",
-      "native_identifier": "Phil. Trans. Vol. 18, No. 209 (1694)"
+      "native_identifier": "Phil. Trans. Vol. 18, No. 209 (1694)",
+      "inspection_state": "digital_content_inspected"
     },
     {
       "id": "sr_loc_ct008911",
       "source_id": "src_loc_g4960_1684",
       "record_type": "catalog_map_item",
-      "native_identifier": "99463761 / ct008911"
+      "native_identifier": "99463761 / ct008911",
+      "inspection_state": "digital_content_inspected"
     }
   ],
   "assertions": [
@@ -173,8 +178,10 @@
       "field": "capture",
       "location_raw": "Dartmouth, Devon",
       "place_raw": "England",
-      "date_as_recorded": "1705-05",
-      "precision": "month_year"
+      "year_as_recorded": 1705,
+      "month_as_recorded": 5,
+      "precision": "month",
+      "display": "May 1705"
     },
     {
       "id": "ast_2052_upstream_hca",
@@ -255,8 +262,10 @@
       "source_record_id": "sr_imlm_ship_2228",
       "field": "capture",
       "location_raw": "Plymouth, Devon",
-      "date_as_recorded": "1702-09",
-      "precision": "month_year"
+      "year_as_recorded": 1702,
+      "month_as_recorded": 9,
+      "precision": "month",
+      "display": "September 1702"
     },
     {
       "id": "ast_2228_upstream_hca",
@@ -280,22 +289,35 @@
     },
     {
       "id": "ast_eq_date",
-      "source_record_id": "sr_rs_el_l5_117",
+      "source_record_id": "sr_rs_phil_trans_209",
       "field": "event_date",
-      "date_as_recorded": "1692-06-07",
-      "calendar_system": "Julian (Old Style)"
+      "date_as_recorded": "7 June 1692",
+      "calendar_system": "Julian (Old Style)",
+      "precision": "day",
+      "year": 1692,
+      "month": 6,
+      "day": 7,
+      "notes": "Grounded in Phil. Trans. Vol. 18, No. 209 (1694), p. 83."
     },
     {
       "id": "ast_eq_location",
-      "source_record_id": "sr_rs_el_l5_117",
+      "source_record_id": "sr_rs_phil_trans_209",
       "field": "event_location",
       "place_name": "Port Royal"
     },
     {
-      "id": "ast_eq_account",
+      "id": "ast_eq_account_heath",
       "source_record_id": "sr_rs_phil_trans_209",
-      "field": "eyewitness_account",
-      "title": "Account of the Earthquake at Port-Royal"
+      "field": "published_account",
+      "title": "A Full Account of the Late Dreadful Earthquake at Port-Royal in Jamaica"
+    },
+    {
+      "id": "ast_eq_letter_tl",
+      "source_record_id": "sr_rs_el_l5_117",
+      "field": "manuscript_letter",
+      "creator": "T L",
+      "letter_date": "27 June 1692",
+      "description": "Observations of an earthquake at Port Royal, Jamaica"
     },
     {
       "id": "ast_loc_map_title",
@@ -310,6 +332,13 @@
       "year_recorded": 1684,
       "date_display": "[1684?]",
       "is_uncertain": true
+    },
+    {
+      "id": "ast_loc_map_port_royal",
+      "source_record_id": "sr_loc_ct008911",
+      "field": "cartographic_place_label",
+      "raw_value": "Port Royall",
+      "notes": "Port Royal depicted and labeled on the 1684 Bochart & Knollis map of Jamaica (ct008911)."
     }
   ]
 }

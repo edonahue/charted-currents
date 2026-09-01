@@ -2,8 +2,8 @@
 /**
  * src/components/evidence/SourceDrawer.astro
  *
- * Sourced archival provenance drawer. Displays layered provenance:
- * directly inspected research datasets vs upstream cited archival collections.
+ * Sourced archival provenance drawer. Displays assertion-driven provenance:
+ * directly observed source records, explicit inspection states, and upstream archival references.
  */
 ---
 
@@ -42,7 +42,7 @@
 
       <div class="source-drawer-body">
         <section class="inspector-section" aria-label="Archive details">
-          <p class="panel-kicker">Directly Observed Source</p>
+          <p class="panel-kicker">Observed Source Record</p>
           <dl class="inspector-meta">
             <div class="inspector-meta__row">
               <dt>Repository / Host</dt>
@@ -53,6 +53,10 @@
               <dd data-source-ref class="inspector-mono"></dd>
             </div>
             <div class="inspector-meta__row">
+              <dt>Inspection State</dt>
+              <dd data-source-inspection-state class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
               <dt>Creator / Authority</dt>
               <dd data-source-creator></dd>
             </div>
@@ -61,7 +65,7 @@
               <dd data-source-rights class="inspector-mono"></dd>
             </div>
             <div class="inspector-meta__row" data-source-link-row>
-              <dt>Direct Source Link</dt>
+              <dt>Source Link</dt>
               <dd>
                 <a
                   href="#"
@@ -91,12 +95,28 @@
             </div>
             <div class="inspector-meta__row">
               <dt>Inspection State</dt>
-              <dd class="inspector-mono">Cited via dataset (not independently examined)</dd>
+              <dd class="inspector-mono">upstream_cited_only (not independently examined)</dd>
             </div>
           </dl>
           <p class="inspector-note" data-source-upstream-note>
             Seventeenth/eighteenth-century High Court of Admiralty prize court papers cited in IMLM dataset. The physical manuscript at Kew was not independently examined by Charted Currents.
           </p>
+        </section>
+
+        <!-- Supporting Assertions Section -->
+        <section class="inspector-section" data-source-assertions-section hidden aria-label="Supporting assertions">
+          <p class="panel-kicker">Supporting Source Assertions</p>
+          <div class="inspector-table-wrap">
+            <table class="inspector-crew-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Raw Sourced Value</th>
+                </tr>
+              </thead>
+              <tbody data-source-assertions-tbody></tbody>
+            </table>
+          </div>
         </section>
 
         <section class="inspector-section" aria-label="Scholarly attribution">
@@ -118,12 +138,14 @@
   import { publishedDataUrl } from "../../lib/data/loadPublished";
 
   const drawer = document.getElementById("source-drawer");
+  const panel = document.querySelector<HTMLElement>(".source-drawer-panel");
   const closeBtn = document.querySelector<HTMLButtonElement>("[data-source-drawer-close]");
   const backdrop = document.querySelector<HTMLElement>("[data-source-drawer-backdrop]");
   const titleEl = document.querySelector<HTMLElement>("[data-source-title]");
   const subtitleEl = document.querySelector<HTMLElement>("[data-source-subtitle]");
   const instEl = document.querySelector<HTMLElement>("[data-source-institution]");
   const refEl = document.querySelector<HTMLElement>("[data-source-ref]");
+  const inspectionStateEl = document.querySelector<HTMLElement>("[data-source-inspection-state]");
   const creatorEl = document.querySelector<HTMLElement>("[data-source-creator]");
   const rightsEl = document.querySelector<HTMLElement>("[data-source-rights]");
   const citationEl = document.querySelector<HTMLElement>("[data-source-citation]");
@@ -132,6 +154,8 @@
   const permalink = document.querySelector<HTMLAnchorElement>("[data-source-permalink]");
   const upstreamSection = document.querySelector<HTMLElement>("[data-source-upstream-section]");
   const upstreamRef = document.querySelector<HTMLElement>("[data-source-upstream-ref]");
+  const assertionsSection = document.querySelector<HTMLElement>("[data-source-assertions-section]");
+  const assertionsTbody = document.querySelector<HTMLElement>("[data-source-assertions-tbody]");
 
   let sourcesCache: PublishedSources | null = null;
   let returnElement: HTMLElement | null = null;
@@ -150,40 +174,96 @@
 
   loadSources();
 
-  export async function openSourceDrawer(sourceId: string, triggerEl?: HTMLElement | null, upstreamReference?: string | null): Promise<void> {
+  export async function openSourceDrawer(options: {
+    sourceId?: string | null;
+    assertionIds?: string[] | null;
+    upstreamRef?: string | null;
+    triggerEl?: HTMLElement | null;
+  }): Promise<void> {
     if (!drawer) return;
-    returnElement = triggerEl || (document.activeElement as HTMLElement);
+    returnElement = options.triggerEl || (document.activeElement as HTMLElement);
 
     const sources = await loadSources();
     if (!sources) return;
 
-    const source = sources.sources.find((s) => s.id === sourceId);
-    if (!source) return;
+    let targetSource = options.sourceId ? sources.sources.find((s) => s.id === options.sourceId) : null;
+    let targetRecord = null;
+    const resolvedAssertions = [];
 
-    if (titleEl) titleEl.textContent = source.title;
-    if (subtitleEl) subtitleEl.textContent = `${source.holding_institution} · ${source.stable_identifier}`;
-    if (instEl) instEl.textContent = source.holding_institution;
-    if (refEl) refEl.textContent = source.stable_identifier;
-    if (creatorEl) creatorEl.textContent = source.creator;
-    if (rightsEl) rightsEl.textContent = source.rights_posture;
-    if (citationEl) citationEl.textContent = source.credit_line;
-    if (notesEl) notesEl.textContent = source.notes || "Sourced historical record verified by Charted Currents.";
+    if (options.assertionIds && options.assertionIds.length > 0) {
+      for (const astId of options.assertionIds) {
+        const ast = sources.assertions.find((a) => a.id === astId);
+        if (ast) {
+          resolvedAssertions.push(ast);
+          if (!targetRecord) {
+            targetRecord = sources.source_records.find((r) => r.id === ast.source_record_id);
+          }
+        }
+      }
+    }
+
+    if (targetRecord && !targetSource) {
+      targetSource = sources.sources.find((s) => s.id === targetRecord.source_id) || null;
+    }
+
+    if (!targetSource && sources.sources.length > 0) {
+      targetSource = sources.sources[0];
+    }
+
+    if (!targetSource) return;
+
+    if (titleEl) titleEl.textContent = targetSource.title;
+    if (subtitleEl) subtitleEl.textContent = `${targetSource.holding_institution} · ${targetSource.stable_identifier}`;
+    if (instEl) instEl.textContent = targetSource.holding_institution;
+    if (refEl) refEl.textContent = targetRecord ? `${targetRecord.native_identifier} (${targetSource.stable_identifier})` : targetSource.stable_identifier;
+    if (inspectionStateEl) {
+      inspectionStateEl.textContent = targetRecord?.inspection_state || "digital_content_inspected";
+    }
+    if (creatorEl) creatorEl.textContent = targetSource.creator;
+    if (rightsEl) rightsEl.textContent = targetSource.rights_posture;
+    if (citationEl) citationEl.textContent = targetSource.credit_line;
+    if (notesEl) notesEl.textContent = targetSource.notes || "Sourced historical record verified by Charted Currents.";
 
     if (permalink && linkRow) {
-      if (source.item_url) {
-        permalink.href = source.item_url;
+      if (targetSource.item_url) {
+        permalink.href = targetSource.item_url;
         linkRow.hidden = false;
       } else {
         linkRow.hidden = true;
       }
     }
 
+    // Upstream reference section
+    const effectiveUpstreamRef = options.upstreamRef || targetRecord?.upstream_archive_reference;
     if (upstreamSection && upstreamRef) {
-      if (upstreamReference) {
-        upstreamRef.textContent = upstreamReference;
+      if (effectiveUpstreamRef) {
+        upstreamRef.textContent = effectiveUpstreamRef;
         upstreamSection.hidden = false;
       } else {
         upstreamSection.hidden = true;
+      }
+    }
+
+    // Render resolved assertions table
+    if (assertionsSection && assertionsTbody) {
+      if (resolvedAssertions.length > 0) {
+        assertionsSection.hidden = false;
+        assertionsTbody.replaceChildren();
+        for (const ast of resolvedAssertions) {
+          const tr = document.createElement("tr");
+          const tdField = document.createElement("td");
+          tdField.textContent = ast.field.replace(/_/g, " ");
+
+          const tdVal = document.createElement("td");
+          const rawVal = ast.raw_value || ast.raw_title || ast.place_name || ast.title || ast.location_raw || ast.date_as_recorded || JSON.stringify(ast);
+          tdVal.textContent = String(rawVal);
+          tdVal.className = "inspector-mono";
+
+          tr.append(tdField, tdVal);
+          assertionsTbody.appendChild(tr);
+        }
+      } else {
+        assertionsSection.hidden = true;
       }
     }
 
@@ -202,6 +282,7 @@
   closeBtn?.addEventListener("click", closeSourceDrawer);
   backdrop?.addEventListener("click", closeSourceDrawer);
 
+  // Escape keydown with capture isolation
   window.addEventListener(
     "keydown",
     (e) => {
@@ -215,9 +296,33 @@
     { capture: true },
   );
 
-  window.addEventListener("cc:open-source", ((e: CustomEvent<{ sourceId: string; triggerEl?: HTMLElement; upstreamRef?: string }>) => {
-    if (e.detail?.sourceId) {
-      openSourceDrawer(e.detail.sourceId, e.detail.triggerEl, e.detail.upstreamRef);
+  // Modal Focus Trap: Tab / Shift+Tab containment within drawer
+  panel?.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key !== "Tab") return;
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  window.addEventListener("cc:open-source", ((e: CustomEvent<{ sourceId?: string; assertionIds?: string[]; triggerEl?: HTMLElement; upstreamRef?: string }>) => {
+    if (e.detail) {
+      openSourceDrawer({
+        sourceId: e.detail.sourceId,
+        assertionIds: e.detail.assertionIds,
+        triggerEl: e.detail.triggerEl,
+        upstreamRef: e.detail.upstreamRef,
+      });
     }
   }) as EventListener);
 </script>
@@ -245,7 +350,7 @@
   .source-drawer-panel {
     position: relative;
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     height: 100%;
     background: var(--cc-paper-raised);
     border-left: 1px solid var(--cc-line);
