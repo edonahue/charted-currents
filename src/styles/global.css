@@ -22,7 +22,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Accessibility utility */
+/* Accessibility & visibility utilities */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -33,6 +33,15 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+[hidden],
+.inspector-shell [hidden],
+.inspector-body [hidden],
+.inspector-section[hidden],
+.map-locator-browser [hidden],
+.source-drawer [hidden] {
+  display: none !important;
 }
 
 button,

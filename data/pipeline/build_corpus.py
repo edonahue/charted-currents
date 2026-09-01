@@ -77,36 +77,80 @@ def main():
         ]
     }
 
+    # Map ships to capture dates for machine-readable route temporal metadata
+    ship_to_capture_date = {}
+    for ship in ships:
+        occ_ids = ship.get("occurrence_ids", [])
+        if occ_ids:
+            for occ in ship_occurrences:
+                if occ["id"] == occ_ids[0]:
+                    ship_to_capture_date[ship["id"]] = occ.get("recorded_capture_date", "")
+                    break
+
+    # Group routes by directional endpoint pair for aggregation
+    pair_groups = {}
+    for r in routes:
+        pair_key = f"{r['origin_place_id']}->{r['destination_place_id']}"
+        if pair_key not in pair_groups:
+            pair_groups[pair_key] = []
+        pair_groups[pair_key].append(r)
+
     # 2. routes.geojson
+    route_features = []
+    for r in routes:
+        cap_date = ship_to_capture_date.get(r["vessel_id"], "")
+        year = None
+        month = None
+        if cap_date:
+            parts = cap_date.split("-")
+            if parts[0].isdigit():
+                year = int(parts[0])
+            if len(parts) > 1 and parts[1].isdigit():
+                month = int(parts[1])
+
+        pair_key = f"{r['origin_place_id']}->{r['destination_place_id']}"
+        group = pair_groups[pair_key]
+        constituent_vessels = [it["vessel_id"] for it in group]
+        constituent_routes = [it["id"] for it in group]
+        rec_count = len(group)
+        route_group_id = f"route_group_{r['origin_place_id']}_{r['destination_place_id']}"
+
+        route_features.append({
+            "type": "Feature",
+            "id": r["id"],
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    place_coords[r["origin_place_id"]],
+                    place_coords[r["destination_place_id"]]
+                ]
+            },
+            "properties": {
+                "id": r["id"],
+                "vessel_id": r["vessel_id"],
+                "origin_place_id": r["origin_place_id"],
+                "destination_place_id": r["destination_place_id"],
+                "date_display": r.get("date_display", ""),
+                "associated_record_year": year,
+                "associated_record_month": month,
+                "temporal_basis": "capture_record",
+                "date_precision": "year_month" if month else "year",
+                "route_group_id": route_group_id,
+                "constituent_vessel_ids": constituent_vessels,
+                "constituent_route_ids": constituent_routes,
+                "record_count": rec_count,
+                "geometry_kind": r.get("geometry_kind", "endpoints_only"),
+                "evidence_state": r.get("evidence_state", "documented"),
+                "is_track_observed": False,
+                "geometry_provenance": r.get("geometry_provenance", "project visualization between resolved endpoint references"),
+                "source_assertion_ids": r.get("source_assertion_ids", []),
+                "notes": r.get("notes", "")
+            }
+        })
+
     routes_geojson = {
         "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "id": r["id"],
-                "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
-                        place_coords[r["origin_place_id"]],
-                        place_coords[r["destination_place_id"]]
-                    ]
-                },
-                "properties": {
-                    "id": r["id"],
-                    "vessel_id": r["vessel_id"],
-                    "origin_place_id": r["origin_place_id"],
-                    "destination_place_id": r["destination_place_id"],
-                    "date_display": r.get("date_display", ""),
-                    "geometry_kind": r.get("geometry_kind", "endpoints_only"),
-                    "evidence_state": r.get("evidence_state", "documented"),
-                    "is_track_observed": False,
-                    "geometry_provenance": r.get("geometry_provenance", "project visualization between resolved endpoint references"),
-                    "source_assertion_ids": r.get("source_assertion_ids", []),
-                    "notes": r.get("notes", "")
-                }
-            }
-            for r in routes
-        ]
+        "features": route_features
     }
 
     # 3. entities.json

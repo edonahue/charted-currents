@@ -95,6 +95,21 @@
     }
   }
 
+  function humanizeRightsPosture(posture: string): string {
+    switch (posture) {
+      case "open_access_no_registration_required":
+        return "Open access · No registration required";
+      case "open_public_domain":
+        return "Open public domain";
+      case "cc_by_4_0":
+        return "Creative Commons Attribution 4.0 (CC BY 4.0)";
+      case "uk_open_government_licence":
+        return "Open Government Licence (OGL)";
+      default:
+        return posture.replace(/_/g, " ");
+    }
+  }
+
   function formatAssertionValue(ast: PublishedAssertion): string {
     const field = ast.field;
 
@@ -124,7 +139,7 @@
       if (ast.birthplace) parts.push(`b. ${ast.birthplace}`);
       if (ast.residence) parts.push(`res. ${ast.residence}`);
       if (ast.subject_of) parts.push(`subject of ${ast.subject_of}`);
-      if (ast.signature) parts.push(`✍ ${ast.signature}`);
+      if (ast.signature) parts.push(`[${ast.signature}]`);
       return parts.join(" · ");
     }
     if (field === "event_date") {
@@ -143,7 +158,12 @@
     if (field === "map_date") return `${ast.date_display || ast.year_recorded || ""}`;
     if (field === "cartographic_place_label") return `"${ast.raw_value}" depicted and labeled on contemporary chart`;
 
-    return String(ast.raw_value || ast.raw_title || ast.title || ast.place_name || "");
+    // Fallback
+    const kv = Object.entries(ast)
+      .filter(([k]) => !["id", "source_record_id", "field"].includes(k))
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(", ");
+    return kv || String(ast.raw_value || ast.raw_title || ast.title || ast.place_name || "");
   }
 
   function renderSourceCard(
@@ -181,10 +201,8 @@
     dtState.textContent = "Inspection State";
     const ddState = document.createElement("dd");
     const stateVal = record?.inspection_state || "digital_content_inspected";
-    ddState.textContent = stateVal;
-    ddState.className = "inspector-mono";
+    ddState.textContent = humanizeInspectionState(stateVal);
     ddState.setAttribute("data-source-inspection-state", stateVal);
-    ddState.setAttribute("title", humanizeInspectionState(stateVal));
     rowState.append(dtState, ddState);
     dl.appendChild(rowState);
 
@@ -217,8 +235,8 @@
     const dtRights = document.createElement("dt");
     dtRights.textContent = "Rights Posture";
     const ddRights = document.createElement("dd");
-    ddRights.textContent = source.rights_posture;
-    ddRights.className = "inspector-mono";
+    ddRights.textContent = humanizeRightsPosture(source.rights_posture);
+    ddRights.setAttribute("data-source-rights", source.rights_posture);
     rowRights.append(dtRights, ddRights);
     dl.appendChild(rowRights);
 

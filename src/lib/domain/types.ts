@@ -89,6 +89,14 @@ export interface PublishedRouteFeature {
     origin_place_id: string;
     destination_place_id: string;
     date_display: string;
+    associated_record_year?: number | null;
+    associated_record_month?: number | null;
+    temporal_basis?: string;
+    date_precision?: string;
+    route_group_id?: string;
+    constituent_vessel_ids?: string[];
+    constituent_route_ids?: string[];
+    record_count?: number;
     geometry_kind: GeometryKind;
     evidence_state: EvidenceState;
     is_track_observed: boolean;

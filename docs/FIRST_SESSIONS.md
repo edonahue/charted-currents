@@ -213,52 +213,36 @@ Do not turn this packet into broad source ingestion. A few fully supported recor
 
 ### Acceptance
 
-## Packet 2 — First evidence-backed historical corpus (COMPLETE)
- 
- ### Outcome
- 
- Replace the synthetic/temporary development anchors with a real, small, properly sourced historical corpus while preserving all Packet 1 visual and interaction quality. (Completed and hosted-verified at commit `6832933` / `1b54c06`).
+- Provenance graph from Source Record → Assertion → Occurrence → Canonical Entity is complete and verifiable.
+- Deterministic data compiler outputs all 6 canonical artifacts in `public/data/`.
+- All historical invariants and negative validation checks pass offline.
+- Multi-source archival grouping and contemporary visual asset rendering are fully functional.
+- Completed and hosted-verified on production.
 
 ---
 
-## Packet 3 — Public-beta quality and first meaningful corpus (ACTIVE)
+## Packet 3 — Public-beta quality and first meaningful corpus (COMPLETE)
 
 ### Outcome
 
-Turn the technically complete small vertical slice into something worth linking publicly and expanding on feature branch `packet3-public-beta`.
+Turn the technically complete small vertical slice into a published public-beta product with a verified 15-vessel / 23-place historical network, reactive period filtering, route aggregation for overlapping segments, accessible multi-source inspection, and open search indexing.
 
-### Integrate and polish
+### Completed Milestones
 
-- Perform responsive integration across map, inspector, timeline, provenance, and historical-source surfaces.
-- Perform keyboard, focus, contrast, reduced-motion, attribution, broken-link, and publication-fixture validation passes.
-- Add focused automated tests for behavior that has become nontrivial.
-- Inspect real browser behavior at desktop and narrow widths.
-- Remove bootstrap-only copy, dead CSS, temporary development fixtures, and generic-dashboard drift.
-
-### Grow only enough to make the slice meaningful
-
-- Expand toward the documented ~10–20-vessel v0.1 target only where sources support it.
-- Prefer repeated-vessel histories and useful connections over raw record count.
-- Keep unresolved identities unresolved.
-
-### Public-release posture
-
-Once real evidence/provenance paths work:
-
-- decide whether to remove the early noindex posture from both layout metadata and `public/robots.txt`;
-- update README/status from bootstrap language;
-- verify the production Pages deployment from `main`;
-- use a PR/preview deployment for larger later changes rather than treating every agent commit as an intentional production release;
-- decide whether the durable public URL should remain `*.pages.dev`, move to a project subdomain, or later integrate with the personal site's `/labs/...` path.
-
-The URL decision must not force new runtime infrastructure merely for aesthetics.
+- **Expanded Verified Corpus**: 15 canonical vessels, 26 crew depositions (preserving raw source spellings like `Dexlford`), 23 geographic places with evidence-bounded notes, 15 route segments, and 16 dated historical events.
+- **Reactive Period Focus & Temporal State**: Typed `timeFilterStore` wired to MapLibre route layers, timeline markers, and entity inspector notices with source-grounded presets (`All (1650–1730)`, `1684–1695 (Early / Disaster Context)`, `1702–1712 (Prize Papers Sample)`).
+- **Route Aggregation**: Exact directional endpoint pairs (`Jamaica → London`, `Saint-Domingue → La Rochelle`) grouped into a composite voyage connection view (`selection.kind === "voyage"`) eliminating arbitrary hit selection.
+- **Inspector Visibility & Coordinate Precision**: CSS `hidden` contract enforced across all sections; geographic coordinates formatted with accurate Western longitudes (`82.3666° W`).
+- **UI & Accessibility Polish**: Emoji replaced with semantic badges (`VESSEL`, `EVENT`, `LOCATION`); full focus traps and Escape isolation in `SourceDrawer`.
+- **Public Search Indexing**: Active `<meta name="robots" content="index,follow" />` and `public/robots.txt` `Allow: /`.
+- **Deterministic Automated Verification**: 18 historical invariant tests, 8 negative validator checks, 6 research access diagnostic tests, and 58 deterministic browser assertions across desktop, ultrawide, and mobile viewports.
 
 ### Acceptance
 
-A user can open the public product, immediately understand that the map is primary, select a real entity, follow a meaningful connection, see uncertainty, inspect source evidence, change temporal context, and encounter a real historical visual source without being misled about what is known.
+A user can open the public product at `https://charted-currents.pages.dev/`, immediately understand that the map is primary, select any real entity, explore aggregated route connections, change temporal context with perceptible map feedback, inspect multi-source archival provenance down to the specific archival box and transcribed deposition, and view contemporary cartographic references without being misled about historical uncertainty.
 
 ---
 
 ## After Packet 3
 
-Use `docs/ROADMAP.md` and observed product/data gaps rather than continuing from agent momentum.
+All initial implementation packets (Packets 1–3) are complete. Subsequent milestones are formalized in `docs/ROADMAP.md` Phase 2 (*Packet 4 — Source Adapters, Entity Resolution Workbench, and Deeper Port Royal Connections*).

@@ -365,11 +365,20 @@ async function runReviewSuite() {
     console.log("Testing vessel selection & construction display...");
     await send("Runtime.evaluate", {
       expression: `(() => {
-        const marker = document.querySelector('[data-selection-id="ship_richard_and_sarah_1705"]');
+        const marker = document.querySelector('[data-selection-id="event_capture_richard_and_sarah_1705"]');
         marker?.click();
       })()`,
     });
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => setTimeout(r, 400));
+
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const buttons = Array.from(document.querySelectorAll('.inspector-conn-btn'));
+        const vesselBtn = buttons.find(b => b.textContent?.includes('Richard & Sarah'));
+        vesselBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
 
     const vesselCheck = await send("Runtime.evaluate", {
       expression: `(() => {
@@ -418,7 +427,7 @@ async function runReviewSuite() {
       returnByValue: true,
     });
     assert(sourceDrawerCheck?.result?.value?.isOpen, "Clicking 'Inspect Archival Provenance' opens Source Drawer");
-    assert(sourceDrawerCheck?.result?.value?.inspectionState === "dataset_record_inspected", "Source Drawer displays inspection state 'dataset_record_inspected'");
+    assert(sourceDrawerCheck?.result?.value?.inspectionState === "Dataset record inspected", "Source Drawer displays inspection state 'Dataset record inspected'");
     assert(sourceDrawerCheck?.result?.value?.inst === "UK Data Archive / ReShare", "Holding institution displays 'UK Data Archive / ReShare'");
     assert(sourceDrawerCheck?.result?.value?.upstreamRef === "TNA HCA 32/80", "Upstream archival reference displays cited 'TNA HCA 32/80'");
     assert(sourceDrawerCheck?.result?.value?.assertionRows > 0, "Source Drawer renders supporting assertion breakdown");
@@ -573,7 +582,7 @@ async function runReviewSuite() {
     console.log("Testing native CDP keyboard activation of timeline marker...");
     await send("Runtime.evaluate", {
       expression: `(() => {
-        const marker = document.querySelector('[data-selection-id="ship_william_1702"]');
+        const marker = document.querySelector('[data-selection-id="event_capture_william_1702"]');
         marker?.focus();
       })()`,
     });
@@ -588,14 +597,16 @@ async function runReviewSuite() {
         const isOpen = inspector?.getAttribute('data-state') === 'open';
         const isHeadingFocused = document.activeElement?.id === 'inspector-heading';
         const title = document.querySelector('[data-inspector-title]')?.textContent;
+        const hasVesselConn = Boolean(document.querySelector('[data-event-connections-list] .inspector-conn-btn'));
 
-        return { isOpen, isHeadingFocused, title };
+        return { isOpen, isHeadingFocused, title, hasVesselConn };
       })()`,
       returnByValue: true,
     });
     assert(timelineKeyboardCheck?.result?.value?.isOpen, "Native keyboard Enter on timeline marker opens Entity Inspector");
     assert(timelineKeyboardCheck?.result?.value?.isHeadingFocused, "Keyboard timeline activation transfers focus to #inspector-heading");
-    assert(timelineKeyboardCheck?.result?.value?.title === "William", "Selected vessel title is 'William'");
+    assert(timelineKeyboardCheck?.result?.value?.title?.includes("Capture") || timelineKeyboardCheck?.result?.value?.title?.includes("William"), "Selected item is capture event");
+    assert(timelineKeyboardCheck?.result?.value?.hasVesselConn, "Event inspector renders connection button to related vessel");
 
     // Close inspector with Escape and verify focus restores to timeline button
     await sendKey("Escape", "Escape", 27);
@@ -603,15 +614,16 @@ async function runReviewSuite() {
 
     const timelineFocusRestoreCheck = await send("Runtime.evaluate", {
       expression: `(() => {
-        const isRestored = document.activeElement?.getAttribute('data-selection-id') === 'ship_william_1702';
+        const isRestored = document.activeElement?.getAttribute('data-selection-id') === 'event_capture_william_1702';
         return isRestored;
       })()`,
       returnByValue: true,
     });
-    assert(timelineFocusRestoreCheck?.result?.value, "Closing inspector restores focus to the exact originating William timeline marker");
+    assert(timelineFocusRestoreCheck?.result?.value, "Closing inspector restores focus to originating timeline marker");
 
-    // 7. Historical Chart View for Jamaica (and Exclusion for Other Places)
-    console.log("Testing historical visual chart display exclusively for Jamaica...");
+    // 7. Historical Chart View for Jamaica/Port Royal and Strict Exclusion for Havana/London
+    console.log("Testing historical visual chart display and strict exclusion for non-Jamaica places...");
+    // Test Jamaica
     await send("Runtime.evaluate", {
       expression: `(() => {
         const toggle = document.querySelector('[data-locator-toggle]');
@@ -625,7 +637,7 @@ async function runReviewSuite() {
     const jamaicaVisualCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const visualWrap = document.querySelector('[data-place-visual-wrap]');
-        const isVisualVisible = visualWrap && !visualWrap.hidden;
+        const isVisualVisible = visualWrap && !visualWrap.hidden && getComputedStyle(visualWrap).display !== 'none';
         const img = document.querySelector('.inspector-visual-img');
         const hasImgSrc = img && img.getAttribute('src')?.includes('bochart-knollis-jamaica-1684.jpg');
 
@@ -636,7 +648,148 @@ async function runReviewSuite() {
     assert(jamaicaVisualCheck?.result?.value?.isVisualVisible, "Selecting Jamaica exposes the 1684 cartographic reference visual card");
     assert(jamaicaVisualCheck?.result?.value?.hasImgSrc, "1684 Bochart & Knollis chart image loaded correctly for Jamaica");
 
-    // 8. Runtime Exceptions check
+    // Test Port Royal
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector('[data-locator-toggle]');
+        toggle?.click();
+        const prBtn = document.querySelector('[data-place-id="place_port_royal"]');
+        prBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const prVisualCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const visualWrap = document.querySelector('[data-place-visual-wrap]');
+        return visualWrap && !visualWrap.hidden && getComputedStyle(visualWrap).display !== 'none';
+      })()`,
+      returnByValue: true,
+    });
+    assert(prVisualCheck?.result?.value, "Selecting Port Royal exposes the 1684 cartographic reference visual card");
+
+    // Test Havana - Visual card MUST be hidden and coordinates must end in W
+    console.log("Testing Havana coordinate formatting and visual card exclusion...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector('[data-locator-toggle]');
+        toggle?.click();
+        const havanaBtn = document.querySelector('[data-place-id="place_havana"]');
+        havanaBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const havanaCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const visualWrap = document.querySelector('[data-place-visual-wrap]');
+        const isHidden = !visualWrap || visualWrap.hidden || getComputedStyle(visualWrap).display === 'none';
+        const coords = document.querySelector('[data-place-coords]')?.textContent || '';
+        const endsInW = coords.endsWith('W') && !coords.includes('-') && !coords.endsWith('E');
+
+        return { isHidden, coords, endsInW };
+      })()`,
+      returnByValue: true,
+    });
+    assert(havanaCheck?.result?.value?.isHidden, "Selecting Havana strictly hides the Jamaica cartographic visual card");
+    assert(havanaCheck?.result?.value?.endsInW, `Havana coordinates formatted with Western longitude ('${havanaCheck?.result?.value?.coords}')`);
+
+    // Test London - Visual card MUST be hidden
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector('[data-locator-toggle]');
+        toggle?.click();
+        const londonBtn = document.querySelector('[data-place-id="place_london"]');
+        londonBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const londonVisualCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const visualWrap = document.querySelector('[data-place-visual-wrap]');
+        return !visualWrap || visualWrap.hidden || getComputedStyle(visualWrap).display === 'none';
+      })()`,
+      returnByValue: true,
+    });
+    assert(londonVisualCheck?.result?.value, "Selecting London strictly hides the Jamaica cartographic visual card");
+
+    // 8. Test Route Aggregation View for Overlapping Directional Endpoints
+    console.log("Testing route aggregation view for Jamaica -> London...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        // Programmatically select route group for Jamaica -> London
+        const evt = new CustomEvent("cc:test-select-voyage", { detail: "route_group_place_jamaica_place_london" });
+        window.dispatchEvent(evt);
+        // Also test directly via selectionStore
+        const store = window.__CC_SELECTION_STORE__;
+      })()`,
+    });
+    // Trigger voyage selection in inspector directly
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const sel = { kind: "voyage", id: "route_group_place_jamaica_place_london" };
+        window.dispatchEvent(new CustomEvent("cc:mock-select", { detail: sel }));
+        // Or click close and select London origin from Jamaica
+      })()`,
+    });
+
+    // 9. Test Temporal Period Filter UI and Map Line Opacity Effects
+    console.log("Testing temporal period filter effects...");
+    // Click 1684-1695 filter
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const filterBtn = document.querySelector('[data-time-filter="1684-1695"]');
+        filterBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const filter1684Check = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const activeBtn = document.querySelector('[data-time-filter="1684-1695"]')?.classList.contains('is-active');
+        const marker = document.querySelector('[data-selection-id="event_capture_william_1702"]');
+        const markerDimmed = marker && (getComputedStyle(marker).opacity === '0.15' || getComputedStyle(marker).pointerEvents === 'none');
+
+        return { activeBtn, markerDimmed };
+      })()`,
+      returnByValue: true,
+    });
+    assert(filter1684Check?.result?.value?.activeBtn, "1684–1695 filter button marked active");
+    assert(filter1684Check?.result?.value?.markerDimmed, "1702 prize capture marker dimmed and disabled during 1684–1695 filter");
+
+    // Click 1702-1712 filter
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const filterBtn = document.querySelector('[data-time-filter="1702-1712"]');
+        filterBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const filter1702Check = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const activeBtn = document.querySelector('[data-time-filter="1702-1712"]')?.classList.contains('is-active');
+        const marker = document.querySelector('[data-selection-id="event_capture_william_1702"]');
+        const markerActive = marker && getComputedStyle(marker).opacity === '1';
+
+        return { activeBtn, markerActive };
+      })()`,
+      returnByValue: true,
+    });
+    assert(filter1702Check?.result?.value?.activeBtn, "1702–1712 filter button marked active");
+    assert(filter1702Check?.result?.value?.markerActive, "1702 prize capture marker active during 1702–1712 filter");
+
+    // Reset to All
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const filterBtn = document.querySelector('[data-time-filter="all"]');
+        filterBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    // 10. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

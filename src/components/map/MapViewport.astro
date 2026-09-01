@@ -85,6 +85,7 @@ const PLACES = (entitiesData.places || []).map((p) => ({
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
   import { selectionStore } from "../../lib/state/selection";
+  import { timeFilterStore, type TimeFilterState } from "../../lib/state/timeFilter";
 
   setWorkerUrl(workerUrl);
 
@@ -100,6 +101,7 @@ const PLACES = (entitiesData.places || []).map((p) => ({
   let hoveredFeatureId: string | null = null;
   let portsData: PublishedPortFeatureCollection | null = null;
   let routesData: PublishedRouteFeatureCollection | null = null;
+  let activeTimeFilter: TimeFilterState = timeFilterStore.get();
 
   async function initMap() {
     if (!container) return;
@@ -348,19 +350,135 @@ const PLACES = (entitiesData.places || []).map((p) => ({
 
       m.on("click", "historical-routes-hit-target", (e) => {
         const feature = e.features?.[0];
-        if (feature && feature.properties?.vessel_id) {
-          recordSelectionTrigger({
-            modality: "pointer",
-            origin: "map",
-            returnTarget: container,
-          });
-          selectionStore.set({ kind: "ship", id: String(feature.properties.vessel_id) });
+        if (!feature || !feature.properties) return;
+        const props = feature.properties;
+        const recCount = Number(props.record_count) || 1;
+        recordSelectionTrigger({
+          modality: "pointer",
+          origin: "map",
+          returnTarget: container,
+        });
+        if (recCount > 1) {
+          selectionStore.set({ kind: "voyage", id: String(props.route_group_id || props.id) });
+        } else if (props.vessel_id) {
+          selectionStore.set({ kind: "ship", id: String(props.vessel_id) });
         }
+      });
+
+      timeFilterStore.subscribe((filter) => {
+        activeTimeFilter = filter;
+        updateRouteVisualHierarchy(selectionStore.get(), activeTimeFilter);
       });
 
       syncMapToSelection(selectionStore.get());
     } catch (err) {
       console.error("Failed to load historical map data:", err);
+    }
+  }
+
+  function updateRouteVisualHierarchy(selection: Selection, timeFilter: TimeFilterState): void {
+    if (!map || !map.getLayer("historical-routes-line")) return;
+
+    const filterActive = timeFilter.id !== "all";
+    const startY = timeFilter.startYear;
+    const endY = timeFilter.endYear;
+
+    // Helper condition: is route inside active temporal filter?
+    const inTimeCondition: any = filterActive
+      ? [
+          "all",
+          [">=", ["get", "associated_record_year"], startY],
+          ["<=", ["get", "associated_record_year"], endY],
+        ]
+      : true;
+
+    if (selection && selection.kind === "port") {
+      const isConnectedToPort: any = [
+        "any",
+        ["==", ["get", "origin_place_id"], selection.id],
+        ["==", ["get", "destination_place_id"], selection.id],
+      ];
+
+      map.setPaintProperty("historical-routes-line", "line-opacity", [
+        "case",
+        isConnectedToPort,
+        0.95,
+        inTimeCondition,
+        0.12,
+        0.02,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-width", [
+        "case",
+        isConnectedToPort,
+        2.4,
+        1.4,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
+    } else if (selection && selection.kind === "ship") {
+      const isSelectedShip: any = ["==", ["get", "vessel_id"], selection.id];
+
+      map.setPaintProperty("historical-routes-line", "line-opacity", [
+        "case",
+        isSelectedShip,
+        1.0,
+        inTimeCondition,
+        0.12,
+        0.02,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-width", [
+        "case",
+        isSelectedShip,
+        2.8,
+        1.4,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-color", [
+        "case",
+        isSelectedShip,
+        "#c85a32",
+        "#7a5840",
+      ]);
+    } else if (selection && selection.kind === "voyage") {
+      const isSelectedGroup: any = [
+        "any",
+        ["==", ["get", "route_group_id"], selection.id],
+        ["==", ["get", "id"], selection.id],
+      ];
+
+      map.setPaintProperty("historical-routes-line", "line-opacity", [
+        "case",
+        isSelectedGroup,
+        1.0,
+        inTimeCondition,
+        0.12,
+        0.02,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-width", [
+        "case",
+        isSelectedGroup,
+        2.8,
+        1.4,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-color", [
+        "case",
+        isSelectedGroup,
+        "#c85a32",
+        "#7a5840",
+      ]);
+    } else {
+      // Default: no selection
+      map.setPaintProperty("historical-routes-line", "line-opacity", [
+        "case",
+        inTimeCondition,
+        0.45,
+        0.04,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-width", [
+        "case",
+        inTimeCondition,
+        1.8,
+        1.0,
+      ]);
+      map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
     }
   }
 
@@ -401,31 +519,6 @@ const PLACES = (entitiesData.places || []).map((p) => ({
           });
         }
       }
-
-      // Update route opacity hierarchy for selected place
-      if (map.getLayer("historical-routes-line")) {
-        map.setPaintProperty("historical-routes-line", "line-opacity", [
-          "case",
-          [
-            "any",
-            ["==", ["get", "origin_place_id"], selection.id],
-            ["==", ["get", "destination_place_id"], selection.id],
-          ],
-          0.95,
-          0.12,
-        ]);
-        map.setPaintProperty("historical-routes-line", "line-width", [
-          "case",
-          [
-            "any",
-            ["==", ["get", "origin_place_id"], selection.id],
-            ["==", ["get", "destination_place_id"], selection.id],
-          ],
-          2.4,
-          1.4,
-        ]);
-        map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
-      }
     } else if (selection && selection.kind === "ship") {
       const routeFeature = routesData?.features.find((f) => f.properties.vessel_id === selection.id);
       if (routeFeature && routeFeature.geometry.coordinates.length >= 2) {
@@ -448,36 +541,34 @@ const PLACES = (entitiesData.places || []).map((p) => ({
           });
         }
       }
+    } else if (selection && selection.kind === "voyage") {
+      const matchingRoutes = routesData?.features.filter(
+        (r) => r.properties.route_group_id === selection.id || r.properties.id === selection.id
+      );
+      if (matchingRoutes && matchingRoutes.length > 0) {
+        const bounds = new LngLatBounds();
+        for (const r of matchingRoutes) {
+          for (const coord of r.geometry.coordinates) {
+            bounds.extend(coord as [number, number]);
+          }
+        }
+        const padding = isDesktop
+          ? { right: 420, top: 70, bottom: 70, left: 60 }
+          : { bottom: 280, top: 50, left: 30, right: 30 };
 
-      // Update route paint property to highlight active vessel route
-      if (map.getLayer("historical-routes-line")) {
-        map.setPaintProperty("historical-routes-line", "line-opacity", [
-          "case",
-          ["==", ["get", "vessel_id"], selection.id],
-          1.0,
-          0.10,
-        ]);
-        map.setPaintProperty("historical-routes-line", "line-width", [
-          "case",
-          ["==", ["get", "vessel_id"], selection.id],
-          2.8,
-          1.4,
-        ]);
-        map.setPaintProperty("historical-routes-line", "line-color", [
-          "case",
-          ["==", ["get", "vessel_id"], selection.id],
-          "#c85a32",
-          "#7a5840",
-        ]);
-      }
-    } else {
-      // Default: Reset network styling
-      if (map.getLayer("historical-routes-line")) {
-        map.setPaintProperty("historical-routes-line", "line-opacity", 0.45);
-        map.setPaintProperty("historical-routes-line", "line-width", 1.8);
-        map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
+        if (isReducedMotion) {
+          map.fitBounds(bounds, { padding, maxZoom: 5.5, duration: 0 });
+        } else {
+          map.fitBounds(bounds, {
+            padding,
+            maxZoom: 5.5,
+            duration: SELECTION_CAMERA.durationMs,
+          });
+        }
       }
     }
+
+    updateRouteVisualHierarchy(selection, activeTimeFilter);
   }
 
   function openLocatorMenu(focusFirstItem = false): void {

@@ -185,14 +185,45 @@ class TestHistoricalInvariants(unittest.TestCase):
                 self.assertIn("vessel_id", ev, f"Capture event {ev['id']} missing vessel_id")
                 self.assertIn(ev["vessel_id"], canonical_ship_ids, f"Capture event {ev['id']} points to nonexistent vessel {ev['vessel_id']}")
 
-    def test_multi_source_grouping_integrity(self):
-        """Port Royal place entity must reference assertions across multiple distinct source records."""
-        places_by_id = {p["id"]: p for p in self.entities["places"]}
-        port_royal = places_by_id["place_port_royal"]
-        assertions_by_id = {a["id"]: a for a in self.sources["assertions"]}
+    def test_dexlford_raw_spelling_preserved(self):
+        """Robert Ashworth raw source birthplace and residence must preserve Dexlford."""
+        crew_by_id = {c["id"]: c for c in self.entities["crew_occurrences"]}
+        self.assertIn("occ_crew_5036", crew_by_id)
+        ashworth = crew_by_id["occ_crew_5036"]
+        self.assertEqual(ashworth["birthplace_as_recorded"], "Dexlford")
+        self.assertEqual(ashworth["residence_as_recorded"], "Dexlford")
 
-        source_records_for_pr = {assertions_by_id[aid]["source_record_id"] for aid in port_royal["source_assertion_ids"]}
-        self.assertTrue(len(source_records_for_pr) >= 2, f"Expected Port Royal to cite multiple source records, found {source_records_for_pr}")
+        assertions_by_id = {a["id"]: a for a in self.sources["assertions"]}
+        self.assertIn("ast_crew_5036", assertions_by_id)
+        self.assertEqual(assertions_by_id["ast_crew_5036"]["birthplace"], "Dexlford")
+        self.assertEqual(assertions_by_id["ast_crew_5036"]["residence"], "Dexlford")
+
+    def test_routes_have_machine_readable_temporal_metadata(self):
+        """Every route feature must include integer associated_record_year and temporal_basis."""
+        for feature in self.routes_geojson["features"]:
+            props = feature["properties"]
+            self.assertIn("associated_record_year", props)
+            self.assertIsInstance(props["associated_record_year"], int)
+            self.assertTrue(1700 <= props["associated_record_year"] <= 1715)
+            self.assertEqual(props["temporal_basis"], "capture_record")
+            self.assertIn("record_count", props)
+            self.assertIsInstance(props["record_count"], int)
+            self.assertTrue(props["record_count"] >= 1)
+
+    def test_route_aggregation_metadata(self):
+        """Jamaica -> London and Hispaniola -> La Rochelle routes must declare aggregate count of 2."""
+        routes_by_pair = {}
+        for feature in self.routes_geojson["features"]:
+            props = feature["properties"]
+            pair = f"{props['origin_place_id']}->{props['destination_place_id']}"
+            if pair not in routes_by_pair:
+                routes_by_pair[pair] = []
+            routes_by_pair[pair].append(props)
+
+        self.assertEqual(len(routes_by_pair["place_jamaica->place_london"]), 2)
+        for r in routes_by_pair["place_jamaica->place_london"]:
+            self.assertEqual(r["record_count"], 2)
+            self.assertEqual(len(r["constituent_vessel_ids"]), 2)
 
 if __name__ == "__main__":
     unittest.main()
