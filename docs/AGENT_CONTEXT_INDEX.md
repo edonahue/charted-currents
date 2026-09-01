@@ -2,11 +2,13 @@
 
 Use this file to load **the minimum useful context for the task**. Do not read the entire documentation tree simply because a large context window is available.
 
-## First project run
+## Current phase
 
-Start with `docs/KICKOFF.md`. It contains the exact local command sequence and Packet 1 plan/execution prompts for the existing bootable scaffold.
+Packet 1 is complete, deployed, and hosted-verified. Packet 2 is the active work packet.
 
-Do not run a fresh framework scaffolder; the repository already owns the initial Astro/MapLibre structure and pinned toolchain.
+For new implementation/research sessions, start with the current packet in `docs/FIRST_SESSIONS.md` plus the task-specific routes below. `docs/KICKOFF.md` remains the historical Packet 1 bootstrap record; do not rerun its Packet 1 initialization workflow.
+
+The repository already owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1 interaction/design architecture. Do not reinitialize or redesign that foundation when beginning Packet 2.
 
 ## Always for substantial implementation
 
@@ -16,15 +18,13 @@ Do not run a fresh framework scaffolder; the repository already owns the initial
 4. Current unfinished **work packet** in `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
 5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
 
-For Packet 1, also read `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, and `docs/VISUAL_ASSET_STRATEGY.md`; the first-build product direction, visual-quality bar, and visual-asset/technique posture are settled there and should not be reopened.
-
-For the initial implementation run, also use `docs/ANTIGRAVITY_SETUP.md` so routine sandboxed commands do not generate unnecessary approval churn.
+Packet 1's settled product/visual contracts remain constraints when Packet 2 adds real historical content. Read `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, and `docs/VISUAL_ASSET_STRATEGY.md` only when the Packet 2 work affects the existing UI, map composition, or historical visual surfaces; do not reopen the completed Packet 1 direction.
 
 ## UI / product work
 
 Read only what is needed from:
 
-- `docs/PACKET1_DIRECTION.md` during Packet 1;
+- `docs/PACKET1_DIRECTION.md` for the settled existing composition;
 - `docs/VISUAL_QUALITY_CONTRACT.md`;
 - `docs/VISUAL_ASSET_STRATEGY.md` when deciding whether to add/use visual assets or richer visual techniques;
 - `docs/PROJECT_BRIEF.md`;
@@ -37,7 +37,7 @@ For interaction precedents, use `design/MODERN_INTERACTION_REFERENCES.md`. These
 
 For map UI/runtime work, also read `docs/BASEMAP_RUNTIME.md` and `src/lib/map/visualPolicy.ts` rather than reopening provider/style research.
 
-For Packet 1 visual styling, inspect the locally synced images plus `manifest.json` under `design/reference-board/`. Do not browse for arbitrary replacement aesthetics merely because external search is available.
+For historical visual work, inspect the reviewed local reference board plus the source-access/rights material below. Do not browse for arbitrary replacement aesthetics merely because external search is available.
 
 For layout or styling work, do not automatically load large source dossiers.
 
@@ -80,6 +80,7 @@ Credential rules:
 - never expose them through Astro `PUBLIC_*` variables;
 - never request that the human paste a real key into an agent prompt;
 - never log or commit values;
+- test credentials only by presence or a minimal non-secret API request;
 - missing optional credentials should not block unrelated source work;
 - possession of a credential does not establish publication/reuse rights.
 
@@ -106,7 +107,7 @@ Read:
 - `docs/IMPLEMENTATION_CONTRACT.md`
 - `docs/MAINTAINER_EXPECTATIONS.md`
 
-A settled direction should change through an ADR, not an incidental implementation choice. The pinned Packet 1 versions are not an invitation to perform dependency upgrades during feature work.
+A settled direction should change through an ADR, not an incidental implementation choice. The pinned versions are not an invitation to perform dependency upgrades during feature work.
 
 ## Deployment / Cloudflare
 
@@ -115,8 +116,9 @@ Read:
 - `docs/CLOUDFLARE_DEPLOYMENT.md`
 - `docs/PUBLIC_PRIVATE_BOUNDARY.md`
 - `docs/IMPLEMENTATION_CONTRACT.md`
+- `design/reviews/packet1-hosted-review.md` when production-history context matters.
 
-The first deployment target is the independent Pages project root. Do not solve the eventual `/labs/...` URL shape during Packet 1.
+The root Cloudflare Pages deployment already exists at the recorded production URL. Packet 2 should preserve the noindex prototype posture unless a later explicit indexing decision changes it. Do not solve the eventual `/labs/...` URL shape during historical-data work.
 
 ## Benchmark, environment, data-export, screenshot, or config work
 
