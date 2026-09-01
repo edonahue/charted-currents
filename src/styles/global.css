@@ -458,10 +458,8 @@ a {
 }
 
 .inspector-disclaimer {
-  padding: var(--cc-space-3);
-  border: var(--cc-rule-thin) solid var(--cc-line-strong);
-  border-radius: var(--cc-radius-xs);
-  background: var(--cc-paper);
+  padding-top: var(--cc-space-3);
+  border-top: var(--cc-rule-thin) solid var(--cc-line);
 }
 
 .inspector-disclaimer p {

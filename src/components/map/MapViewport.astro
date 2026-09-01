@@ -208,7 +208,11 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
     m.on("click", "dev-anchors-hit-target", (e) => {
       const feature = e.features?.[0];
       if (feature && feature.properties?.selectionId) {
-        recordSelectionTrigger("pointer");
+        recordSelectionTrigger({
+          modality: "pointer",
+          origin: "map",
+          returnTarget: container,
+        });
         selectionStore.set({ kind: "port", id: String(feature.properties.selectionId) });
       }
     });
@@ -374,6 +378,24 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
       }
 
       const activeIdx = locatorItems.indexOf(document.activeElement as HTMLButtonElement);
+      if (e.key === "Enter" || e.key === " ") {
+        const item = document.activeElement as HTMLButtonElement;
+        if (locatorItems.includes(item)) {
+          e.preventDefault();
+          const selectionId = item.dataset.selectionId;
+          if (selectionId) {
+            recordSelectionTrigger({
+              modality: "keyboard",
+              origin: "locator_menu",
+              returnTarget: locatorToggle,
+            });
+            selectionStore.set({ kind: "port", id: selectionId });
+            toggleMenu(false);
+          }
+        }
+        return;
+      }
+
       if (e.key === "ArrowDown") {
         e.preventDefault();
         const nextIdx = (activeIdx + 1) % locatorItems.length;
@@ -405,7 +427,11 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
         const selectionId = btn.dataset.selectionId;
         if (selectionId) {
           const isKeyboard = e.detail === 0;
-          recordSelectionTrigger(isKeyboard ? "keyboard" : "pointer", btn);
+          recordSelectionTrigger({
+            modality: isKeyboard ? "keyboard" : "pointer",
+            origin: "locator_menu",
+            returnTarget: locatorToggle,
+          });
           selectionStore.set({ kind: "port", id: selectionId });
           toggleMenu(false);
           // For pointer selection, return focus to toggle so active focus is not orphaned on document.body

@@ -6,64 +6,61 @@
 
 ## Viewport Artifacts Retained
 
-The following final representative screenshots from the real application runtime are retained under `design/reviews/`:
+The following representative screenshots from the real application runtime are regenerated and verified under `design/reviews/`:
 
-- `packet1-desktop-1440x900.png`: Standard desktop viewport showing the quiet atlas basemap, masthead, "Browse places (4)" control, zoom chrome, and 1650–1730 period rail.
-- `packet1-ultrawide-3440x1440.png`: Ultrawide viewport demonstrating full canvas utilization without awkward stretched cards.
-- `packet1-phone-390x844.png`: Compact phone viewport with top masthead brand, map workspace, and bottom period rail.
-- `packet1-phone-430x932.png`: Large phone viewport verifying responsive layout scaling.
-- `packet1-desktop-selected-1440x900.png`: Desktop viewport with an active place selection (Port Royal), showing the right-side folio dock claiming its constrained width while the map remains dominant.
-- `packet1-phone-selected-390x844.png`: Mobile viewport with an active place selection, showing the bottom sheet anchored at `bottom: 0` with drag handle, title, coordinates, and prototype disclaimer.
+- `packet1-desktop-1440x900.png` (221 KB): Standard desktop viewport showing the quiet atlas basemap, masthead, "Browse places (4)" control, zoom chrome, and 1650–1730 period rail.
+- `packet1-ultrawide-3440x1440.png` (514 KB): Ultrawide viewport demonstrating full canvas utilization without awkward stretched cards.
+- `packet1-phone-390x844.png` (77 KB): Compact phone viewport with top masthead brand, map workspace, and bottom period rail.
+- `packet1-phone-430x932.png` (90 KB): Large phone viewport verifying responsive layout scaling.
+- `packet1-desktop-selected-1440x900.png` (219 KB): Desktop viewport with an active place selection (Port Royal), showing the right-side folio dock claiming its constrained width while the map remains dominant.
+- `packet1-phone-selected-390x844.png` (61 KB): Mobile viewport with an active place selection, showing the bottom sheet anchored at `bottom: 0` with drag handle, title, coordinates, and prototype disclaimer.
 
-## Hardening & Visual Refinements
+## Hardening & Evidence Refinements
 
-During the initial visual pass and subsequent cleanup and rebuttal review, the following concrete changes were made based on real browser observations, strict assertions, and accessibility audits:
+During the initial visual pass and subsequent rebuttal reviews, the following concrete changes were made and verified:
 
-1. **Strict Deterministic Assertion Suite & Exit Code Gates**:
-   - *Observation*: Initial review scripts logged assertions without failing on falsy conditions, and swallowed errors inside `finally`.
-   - *Refinement*: Replaced lenient reporting with a 24-check assertion suite in `scripts/capture-reviews.mjs` (via `npm run review:capture`) that enforces non-zero exit codes on any failure, timeout, or uncaught runtime exception (`Runtime.exceptionThrown`).
+1. **Static Web Worker Assets & Vector Tile Rendering**:
+   - *Observation*: `maplibre-gl` v6 worker chunks (`maplibre-gl-worker.mjs`, `maplibre-gl-shared.mjs`) were not emitted automatically by Astro/Vite into static output, causing a 404 in worker instantiation that prevented vector tiles from decoding.
+   - *Refinement*: Configured static worker assets under `public/maplibre/`, initialized via `setWorkerUrl(withBase("/maplibre/maplibre-gl-worker.mjs"))` in `MapViewport.astro`, and added preflight assertions.
 
-2. **Deterministic Map Lifecycle Synchronization**:
-   - *Observation*: Headless browsers without active frame rendering did not trigger MapLibre's render-bound `load` event until a paint occurred, causing timeout warnings.
-   - *Refinement*: Subscribed to `style.load` alongside `load` and `isStyleLoaded()`, ensuring `dataset.mapReady = "true"` is set deterministically immediately upon style readiness.
+2. **Real Causal Basemap Failure Verification**:
+   - *Observation*: Initial review scripts simulated fallback by directly mutating DOM elements.
+   - *Refinement*: Replaced with a real causal test using CDP `Network.setBlockedURLs` on `*tiles.openfreemap.org*`, allowing production `map.on("error")` to fire naturally, exposing the fallback banner, and proving that Browse Places and the Entity Inspector remain operational during outages.
 
-3. **Focus Modality & Escape Isolation**:
-   - *Observation*: Escape inside the "Browse places" disclosure closed both the menu and cleared the active selection due to bubbling; pointer opening forced focus into the list; pointer selection orphaned focus on `document.body` after menu closure.
-   - *Refinement*: Added `e.stopPropagation()` on menu Escape, input-aware `toggleMenu(open, focusFirstItem)`, focus return to toggle on pointer item selection, arrow key menu navigation, and defensive `!e.defaultPrevented` check on inspector Escape.
+3. **Native CDP Keyboard Navigation & Activation**:
+   - *Observation*: Previous tests constructed synthetic `MouseEvent(detail: 0)` clicks.
+   - *Refinement*: Upgraded to native Chrome CDP key events (`Input.dispatchKeyEvent` for <kbd>ArrowDown</kbd>, <kbd>Enter</kbd>, and <kbd>Escape</kbd>), testing real browser focus movement, disclosure opening, inspector activation, and focus transfer to `#inspector-heading`.
 
-4. **Mobile Bottom Sheet Accessibility Affordance**:
-   - *Observation*: Handle button lacked `aria-controls` and dynamic accessible label updates between partial and expanded states.
-   - *Refinement*: Added `aria-controls="entity-inspector"`, synchronized `aria-expanded="false"` / `"true"`, and dynamic labels (`Expand place details` / `Collapse place details`).
+4. **Map-Origin vs. Locator-Origin Focus Restoration**:
+   - *Observation*: Closing the inspector after map marker clicks jumped focus to the Browse Places button.
+   - *Refinement*: Implemented structured `SelectionTrigger` tracking origin (`map` vs `locator_menu`). Map marker selections restore focus to the `#charted-currents-map` canvas on close; locator selections restore focus to `[data-locator-toggle]`.
 
-5. **Basemap Unavailable Fallback Simulation**:
-   - *Observation*: Fallback behavior was implemented in code but unexercised by automated review.
-   - *Refinement*: Integrated automated fallback simulation proving the error banner is visibly exposed and place locators remain functional even if basemap services are offline.
+5. **Bottom Sheet Semantic Precision & UI Polish**:
+   - *Observation*: Mobile sheet handle `aria-controls` targeted the parent container rather than the collapsible content area.
+   - *Refinement*: Assigned `id="inspector-content"` and updated `aria-controls="inspector-content"`. Removed the static uninformative amber indicator dot from the header kicker, and refined the disclaimer surface to an understated editorial top rule.
 
-6. **Elimination of Translucent Glassmorphism & Status Box Dismissal**:
-   - *Observation*: Floating status boxes and translucent/blurred surfaces introduced generic web-dashboard aesthetics.
-   - *Refinement*: Replaced translucent overlays with solid book-arts paper surfaces (`var(--cc-paper-raised)`), and dismissed the success status banner into an accessible live region (`sr-only`), keeping it visible only during genuine fallback/error conditions.
+6. **Harness Integrity & Verified Screenshot Outputs**:
+   - *Observation*: Ephemeral debugging port used random offsets and did not assert generated file sizes.
+   - *Refinement*: Acquired guaranteed free ports using `net.createServer().listen(0)` and asserted that every captured viewport produced a non-empty image file (>15 KB).
 
-7. **Public Copy Refinement**:
-   - *Observation*: Internal project-management terms ("Packet 1", "Development Locators") were visible in UI chrome.
-   - *Refinement*: Updated titles, masthead kickers, headers, and disclaimers to public-safe reference phrasing ("Reference places", "Modern populated place", "Modern location reference only").
+## Evidence Classification Summary
 
-## Verification Evidence Categories
-
-- **Deterministic Automated Proofs (`npm run review:capture`)**:
-  - Map initialization & readiness gate (`dataset.mapReady === "true"`);
-  - MapLibre & GeoNames CC BY 4.0 attribution DOM presence;
-  - Pointer selection flow & focus return to toggle button;
-  - Escape isolation in disclosure menu with active inspector dock;
-  - Keyboard selection flow & focus transfer to `#inspector-heading`;
-  - Escape focus restoration to triggering element / toggle;
-  - Mobile sheet toggle, `aria-controls`, and dynamic label updates;
-  - Shift+Arrow 2D gesture interception (`map.getBearing() === 0`);
-  - Basemap fallback notice visibility & disclosure operability;
-  - 0 uncaught runtime exceptions.
-- **Automated Type & Build Checks (`npm run verify`)**:
-  - Astro diagnostics (0 errors, 0 warnings, 0 hints across 23 files);
-  - Static production build (`dist/` directory generated).
-- **Zero-Dependency Preflight (`npm run preflight`)**:
-  - Node floor `>=22.19.0 <23`, required files, lockfile validation.
-- **GitHub Actions CI Workflow (`.github/workflows/ci.yml`)**:
-  - Remote verification of preflight, Astro check, and static build on push/PR.
+- **Real End-to-End Browser Interactions (CDP Input / Network)**:
+  - Vector tile rendering with WebGL framebuffer output;
+  - Causal network blocking failure and fallback banner exposure;
+  - Native CDP ArrowDown disclosure navigation;
+  - Native CDP Enter inspector activation & heading focus transfer;
+  - Native CDP Escape inspector dismissal & focus restoration;
+  - Real runtime exception monitoring (`Runtime.exceptionThrown` count = 0).
+- **Component Interaction & DOM State Assertions**:
+  - MapLibre & GeoNames CC BY 4.0 attribution links;
+  - Browse Places pointer selection and toggle focus return;
+  - Escape key isolation between disclosure menu and folio dock;
+  - Mobile bottom sheet `aria-controls`, dynamic `aria-expanded`, and state transitions;
+  - Shift+Arrow 2D rotation prevention.
+- **Screenshot Artifact Verification**:
+  - Valid image byte stream and file size threshold (>15 KB) verified across all 6 viewports.
+- **Static Code & Type Verification**:
+  - `npm run preflight` (Node `>=22.19.0`, required files, lockfile);
+  - `npm run verify` (`astro check` 0 errors/warnings across 23 files, `astro build` static output);
+  - GitHub Actions CI workflow on `main`.

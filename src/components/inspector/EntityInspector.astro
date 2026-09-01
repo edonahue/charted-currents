@@ -18,7 +18,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
       class="inspector-sheet__handle"
       aria-label="Expand place details"
       aria-expanded="false"
-      aria-controls="entity-inspector"
+      aria-controls="inspector-content"
       data-sheet-handle
     >
       <span class="inspector-sheet__handle-bar" aria-hidden="true"></span>
@@ -28,7 +28,6 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
   <header class="inspector-header">
     <div class="inspector-header__kicker-wrap">
       <p class="panel-kicker" data-inspector-kicker>Modern Reference</p>
-      <span class="inspector-status-indicator" aria-hidden="true"></span>
     </div>
     <button
       type="button"
@@ -43,7 +42,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     </button>
   </header>
 
-  <div class="inspector-content">
+  <div id="inspector-content" class="inspector-content">
     <div class="inspector-title-group">
       <h2 id="inspector-heading" class="inspector-title" data-inspector-title tabindex="-1"></h2>
       <p class="inspector-subtitle" data-inspector-subtitle></p>
@@ -96,7 +95,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
 <script>
   import type { Selection } from "../../lib/domain/types";
   import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
-  import { getLastSelectionTrigger, popLastKeyboardTrigger } from "../../lib/map/interactionState";
+  import { consumeSelectionTrigger, getSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
 
   const inspector = document.getElementById("entity-inspector");
@@ -118,18 +117,16 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
   function closeInspector(): void {
     selectionStore.clear();
 
-    // Restore focus if triggered by keyboard without stale global leakage
-    const triggerEl = popLastKeyboardTrigger();
-    if (triggerEl instanceof HTMLElement && document.contains(triggerEl) && !triggerEl.closest("[hidden]")) {
-      triggerEl.focus();
+    const trigger = consumeSelectionTrigger();
+    if (trigger.origin === "map") {
+      const mapCanvas = document.getElementById("charted-currents-map");
+      mapCanvas?.focus();
+    } else if (trigger.origin === "locator_menu") {
+      const toggle = trigger.returnTarget || document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
+      toggle?.focus();
     } else {
-      const toggle = document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
-      if (toggle && document.contains(toggle)) {
-        toggle.focus();
-      } else {
-        const mapCanvas = document.getElementById("charted-currents-map");
-        mapCanvas?.focus();
-      }
+      const mapCanvas = document.getElementById("charted-currents-map");
+      mapCanvas?.focus();
     }
   }
 
@@ -173,7 +170,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     appShell?.setAttribute("data-inspector-open", "true");
 
     // Input-aware focus transfer
-    if (getLastSelectionTrigger() === "keyboard" && titleEl) {
+    if (getSelectionTrigger().modality === "keyboard" && titleEl) {
       requestAnimationFrame(() => {
         titleEl.focus();
       });
