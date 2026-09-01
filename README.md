@@ -108,11 +108,13 @@ The committed `package-lock.json` pins dependencies deterministically. `refs:syn
 
 Packet 1 displays four real **modern locator** anchors to make the shell explorable without inventing historical activity. They remain outside the published historical-data bundle and provide the GeoNames CC BY 4.0 attribution defined in `src/lib/map/developmentAnchors.ts`.
 
-## First public deployment posture
+## Public deployment
 
-The first deployment should not wait for the final domain architecture. Packet 1 targets a root-hosted Cloudflare Pages project and a real `*.pages.dev` URL, with an honest prototype/noindex posture until the evidence-backed corpus exists.
+The Packet 1 interactive atlas shell is live on Cloudflare Pages:
 
-The earlier idea of ultimately surfacing the project at `erichdonahue.com/labs/charted-currents/` remains possible, but it is deliberately **not** a Packet 1 infrastructure requirement. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
+- **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+- **Indexing posture**: Strict `noindex` and `robots.txt` crawling block active during prototype development.
+- **Hosted verification**: Verified on edge with Vite-bundled MapLibre worker, OpenFreeMap vector tiles, modern locator anchors, and zero runtime errors. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
 
 ## Design references
 
