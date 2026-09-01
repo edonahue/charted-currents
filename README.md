@@ -110,9 +110,9 @@ Packet 1 displays four real **modern locator** anchors to make the shell explora
 
 ## Public deployment
 
-The Packet 1 interactive atlas shell is live on Cloudflare Pages:
-
-- **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+**Status**: Packet 2 historical corpus and evidence hardening complete; Packet 3 public-beta quality and meaningful corpus expansion active on `packet3-public-beta`.
+**Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+**Active Corpus**: Greater Caribbean & Transatlantic sample (1684–1712), including Port Royal context, Bochart & Knollis cartography, and TNA HCA 32 Prize Paper records (via UK Data Service SN 852135).
 - **Indexing posture**: Strict `noindex` and `robots.txt` crawling block active during prototype development.
 - **Hosted verification**: Verified on edge with Vite-bundled MapLibre worker, OpenFreeMap vector tiles, modern locator anchors, and zero runtime errors. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
 

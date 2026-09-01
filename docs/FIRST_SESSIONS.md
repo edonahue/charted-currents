@@ -213,22 +213,19 @@ Do not turn this packet into broad source ingestion. A few fully supported recor
 
 ### Acceptance
 
-- Every public historical assertion exercised by the fixture traces to a source record.
-- Source/rights metadata is validated deterministically.
-- Browser loads only deliberately published/right-safe artifacts.
-- No raw/staging/private/restricted data is served or committed.
-- Map → entity → source is complete.
-- Timeline/context remains semantically distinct from voyage evidence.
-- The historical visual is dated and attributed.
-- Full current verification and real browser inspection pass.
+## Packet 2 — First evidence-backed historical corpus (COMPLETE)
+ 
+ ### Outcome
+ 
+ Replace the synthetic/temporary development anchors with a real, small, properly sourced historical corpus while preserving all Packet 1 visual and interaction quality. (Completed and hosted-verified at commit `6832933` / `1b54c06`).
 
 ---
 
-## Packet 3 — Public-beta quality and first meaningful corpus
+## Packet 3 — Public-beta quality and first meaningful corpus (ACTIVE)
 
 ### Outcome
 
-Turn the technically complete small vertical slice into something worth linking publicly and expanding.
+Turn the technically complete small vertical slice into something worth linking publicly and expanding on feature branch `packet3-public-beta`.
 
 ### Integrate and polish
 

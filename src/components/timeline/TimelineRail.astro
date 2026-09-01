@@ -2,44 +2,48 @@
 /**
  * src/components/timeline/TimelineRail.astro
  *
- * Sourced Timeline Rail for Charted Currents Packet 2.
- * Renders verified temporal markers for contextual disaster events and prize captures.
+ * Sourced Timeline Rail for Charted Currents Packet 3.
+ * Renders data-driven dual lanes (Contextual vs Captures), source coverage bands,
+ * collision-free hover/focus tooltips, and a minimal 3-way temporal filter.
  */
+import eventsData from "../../../public/data/events.json";
 import { TIMELINE_RANGE } from "../../lib/time/config";
 
 const majorYears = [1650, 1670, 1690, 1710, 1730] as const;
 const allDecades = [1650, 1660, 1670, 1680, 1690, 1700, 1710, 1720, 1730] as const;
 const totalSpan = TIMELINE_RANGE.endYear - TIMELINE_RANGE.startYear;
 
-const TIMELINE_EVENTS = [
-  {
-    id: "event_port_royal_earthquake_1692",
-    year: 1692,
-    dateLabel: "7 June 1692",
-    title: "Port Royal Earthquake",
-    kind: "event",
-    selectionId: "event_port_royal_earthquake_1692",
-    state: "contextual",
-  },
-  {
-    id: "ship_william_1702",
-    year: 1702,
-    dateLabel: "Sept 1702",
-    title: "William (Capture)",
-    kind: "ship",
-    selectionId: "ship_william_1702",
-    state: "documented",
-  },
-  {
-    id: "ship_richard_and_sarah_1705",
-    year: 1705,
-    dateLabel: "May 1705",
-    title: "Richard & Sarah (Capture)",
-    kind: "ship",
-    selectionId: "ship_richard_and_sarah_1705",
-    state: "documented",
-  },
-] as const;
+const rawEvents = (eventsData.events || eventsData || []) as Array<{
+  id: string;
+  date: string;
+  title: string;
+  kind: string;
+  vessel_id?: string;
+  evidence_state: string;
+}>;
+
+const formattedEvents = rawEvents.map((ev) => {
+  const yearMatch = ev.date.match(/^(\d{4})/);
+  const year = yearMatch ? parseInt(yearMatch[1], 10) : 1700;
+  const isContext = ev.kind === "environmental";
+  return {
+    id: ev.id,
+    year,
+    title: ev.title,
+    date: ev.date,
+    kind: isContext ? "event" : (ev.vessel_id ? "ship" : "event"),
+    selectionId: isContext ? ev.id : (ev.vessel_id || ev.id),
+    state: ev.evidence_state,
+    isContext,
+  };
+});
+
+// Source coverage bands (expressed as percentages of total timeline span)
+const COVERAGE_BANDS = [
+  { label: "1684 Map", start: 1683, end: 1685 },
+  { label: "1692 Earthquake", start: 1692, end: 1694 },
+  { label: "1702–1712 Prize Papers", start: 1702, end: 1712 },
+];
 ---
 
 <section
@@ -48,13 +52,38 @@ const TIMELINE_EVENTS = [
   data-component="timeline-rail"
   data-interactive="true"
 >
-  <div class="timeline-shell__heading">
-    <p class="panel-kicker">Period</p>
-    <span>{TIMELINE_RANGE.startYear}–{TIMELINE_RANGE.endYear}</span>
+  <div class="timeline-shell__top">
+    <div class="timeline-shell__heading">
+      <p class="panel-kicker">Period Focus</p>
+      <div class="timeline-filters" role="group" aria-label="Temporal period filter">
+        <button type="button" class="timeline-filter-btn is-active" data-time-filter="all">All (1650–1730)</button>
+        <button type="button" class="timeline-filter-btn" data-time-filter="1680-1695">1680–1695 (Early / Disaster)</button>
+        <button type="button" class="timeline-filter-btn" data-time-filter="1700-1715">1700–1715 (Prize Captures)</button>
+      </div>
+    </div>
   </div>
 
   <div class="timeline-shell__rail" aria-label="1650 to 1730 period rail">
+    <!-- Source Coverage Background Shading -->
+    <div class="timeline-coverage-layer" aria-hidden="true">
+      {COVERAGE_BANDS.map((band) => {
+        const left = ((band.start - TIMELINE_RANGE.startYear) / totalSpan) * 100;
+        const width = ((band.end - band.start) / totalSpan) * 100;
+        return (
+          <div
+            class="timeline-coverage-band"
+            style={`left: ${left}%; width: ${Math.max(width, 1.8)}%;`}
+            title={`Source coverage: ${band.label}`}
+          >
+            <span class="timeline-coverage-label">{band.label}</span>
+          </div>
+        );
+      })}
+    </div>
+
     <div class="timeline-shell__rule" aria-hidden="true"></div>
+
+    <!-- Ticks & Decades -->
     <div class="timeline-shell__ticks" aria-hidden="true">
       {allDecades.map((year) => {
         const isMajor = (majorYears as readonly number[]).includes(year);
@@ -71,163 +100,365 @@ const TIMELINE_EVENTS = [
       })}
     </div>
 
-    <!-- Interactive Historical Event Markers -->
+    <!-- Dual Lanes for Interactive Event Markers -->
     <div class="timeline-shell__events" role="region" aria-label="Dated timeline occurrences">
-      {TIMELINE_EVENTS.map((evt) => {
+      {formattedEvents.map((evt) => {
         const position = ((evt.year - TIMELINE_RANGE.startYear) / totalSpan) * 100;
+        const laneClass = evt.isContext ? "timeline-event-marker--context" : "timeline-event-marker--capture";
         return (
           <button
             type="button"
-            class="timeline-event-marker"
+            class={`timeline-event-marker ${laneClass}`}
             data-timeline-event
+            data-event-year={evt.year}
             data-event-kind={evt.kind}
             data-selection-id={evt.selectionId}
             data-evidence-state={evt.state}
             style={`left: ${position}%`}
-            title={`${evt.dateLabel}: ${evt.title}`}
-            aria-label={`${evt.dateLabel}: ${evt.title} (${evt.state})`}
+            aria-label={`${evt.date}: ${evt.title} (${evt.state})`}
           >
             <span class="timeline-event-dot" aria-hidden="true"></span>
-            <span class="timeline-event-label" aria-hidden="true">{evt.title}</span>
+            <span class="timeline-event-tooltip" role="tooltip">{evt.date}: {evt.title}</span>
           </button>
         );
       })}
     </div>
   </div>
 
-  <span class="timeline-shell__note">1650–1730 timeline · Select any dated marker to inspect primary evidence.</span>
+  <footer class="timeline-shell__footer">
+    <span class="timeline-shell__note">
+      Shaded intervals indicate source coverage in current corpus; unshaded intervals reflect documentary gaps, not absence of historical activity.
+    </span>
+  </footer>
 </section>
 
 <script>
-  import type { EntityKind, Selection } from "../../lib/domain/types";
+  import type { Selection } from "../../lib/domain/types";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
 
-  const eventButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-timeline-event]"));
+  const markers = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-timeline-event]"));
+  const filterBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-time-filter]"));
 
-  eventButtons.forEach((btn) => {
-    let triggeredByKeyboard = false;
+  markers.forEach((btn) => {
+    let keydownTriggered = false;
 
-    btn.addEventListener("keydown", (e: KeyboardEvent) => {
+    btn.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
-        triggeredByKeyboard = true;
-        const selectionId = btn.dataset.selectionId;
-        const kind = btn.dataset.eventKind as EntityKind;
-        if (selectionId && kind) {
+        keydownTriggered = true;
+        e.preventDefault();
+        const kind = btn.dataset.eventKind as "event" | "ship" | "port";
+        const id = btn.dataset.selectionId;
+        if (kind && id) {
           recordSelectionTrigger({
             modality: "keyboard",
             origin: "timeline",
             returnTarget: btn,
           });
-          selectionStore.set({ kind, id: selectionId });
+          selectionStore.set({ kind, id });
         }
       }
     });
 
     btn.addEventListener("click", () => {
-      if (triggeredByKeyboard) {
-        triggeredByKeyboard = false;
+      if (keydownTriggered) {
+        keydownTriggered = false;
         return;
       }
-      const selectionId = btn.dataset.selectionId;
-      const kind = btn.dataset.eventKind as EntityKind;
-      if (selectionId && kind) {
+      const kind = btn.dataset.eventKind as "event" | "ship" | "port";
+      const id = btn.dataset.selectionId;
+      if (kind && id) {
         recordSelectionTrigger({
           modality: "pointer",
           origin: "timeline",
           returnTarget: btn,
         });
-        selectionStore.set({ kind, id: selectionId });
+        selectionStore.set({ kind, id });
       }
     });
   });
 
-  function syncTimelineToSelection(selection: Selection) {
-    eventButtons.forEach((btn) => {
-      const isSelected = btn.dataset.selectionId === selection?.id;
-      btn.setAttribute("aria-current", isSelected ? "true" : "false");
-      btn.classList.toggle("timeline-event-marker--selected", isSelected);
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterBtns.forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+
+      const filterType = btn.dataset.timeFilter;
+      let startYear = 1650;
+      let endYear = 1730;
+
+      if (filterType === "1680-1695") {
+        startYear = 1680;
+        endYear = 1695;
+      } else if (filterType === "1700-1715") {
+        startYear = 1700;
+        endYear = 1715;
+      }
+
+      markers.forEach((m) => {
+        const y = parseInt(m.dataset.eventYear || "0", 10);
+        if (filterType === "all" || (y >= startYear && y <= endYear)) {
+          m.style.opacity = "1";
+          m.style.pointerEvents = "auto";
+        } else {
+          m.style.opacity = "0.15";
+          m.style.pointerEvents = "none";
+        }
+      });
+
+      window.dispatchEvent(
+        new CustomEvent("cc:filter-time", {
+          detail: { startYear, endYear, filterType },
+        })
+      );
+    });
+  });
+
+  function syncTimelineSelection(selection: Selection) {
+    markers.forEach((btn) => {
+      const isSelected = selection && btn.dataset.selectionId === selection.id;
+      btn.classList.toggle("is-selected", Boolean(isSelected));
+      btn.setAttribute("aria-pressed", String(Boolean(isSelected)));
     });
   }
 
-  selectionStore.subscribe(syncTimelineToSelection);
+  selectionStore.subscribe(syncTimelineSelection);
 </script>
 
 <style>
-  .timeline-shell__events {
+  .timeline-shell {
+    position: relative;
+    background: var(--cc-paper);
+    border-top: 1px solid var(--cc-line);
+    padding: 0.75rem 1.5rem 0.65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    z-index: 50;
+  }
+
+  .timeline-shell__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .timeline-shell__heading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .timeline-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .timeline-filter-btn {
+    background: transparent;
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    padding: 0.2rem 0.5rem;
+    font-family: var(--cc-font-mono);
+    font-size: 0.68rem;
+    color: var(--cc-ink-muted);
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+
+  .timeline-filter-btn:hover {
+    color: var(--cc-ink);
+    border-color: var(--cc-sand);
+  }
+
+  .timeline-filter-btn.is-active {
+    background: var(--cc-paper-raised);
+    color: var(--cc-ink);
+    border-color: var(--cc-sand);
+    font-weight: 600;
+  }
+
+  .timeline-filter-btn:focus-visible {
+    outline: 2px solid var(--cc-atlantic);
+    outline-offset: 1px;
+  }
+
+  .timeline-shell__rail {
+    position: relative;
+    height: 48px;
+    margin: 0.25rem 0;
+  }
+
+  .timeline-coverage-layer {
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
 
+  .timeline-coverage-band {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    background: color-mix(in srgb, var(--cc-sand) 16%, transparent);
+    border-left: 1px dashed color-mix(in srgb, var(--cc-sand) 60%, transparent);
+    border-right: 1px dashed color-mix(in srgb, var(--cc-sand) 60%, transparent);
+    border-radius: 2px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 2px;
+  }
+
+  .timeline-coverage-label {
+    font-family: var(--cc-font-mono);
+    font-size: 0.6rem;
+    color: var(--cc-ink-muted);
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+
+  .timeline-shell__rule {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--cc-line);
+  }
+
+  .timeline-shell__ticks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .timeline-shell__tick {
+    position: absolute;
+    left: var(--tick-position);
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateX(-50%);
+  }
+
+  .timeline-shell__tick-mark {
+    width: 1px;
+    background: var(--cc-ink-muted);
+  }
+
+  .timeline-shell__tick-label {
+    margin-top: 0.4rem;
+    font-family: var(--cc-font-mono);
+    font-size: 0.65rem;
+    color: var(--cc-ink-muted);
+  }
+
+  .timeline-shell__events {
+    position: absolute;
+    inset: 0;
+  }
+
   .timeline-event-marker {
     position: absolute;
-    top: 50%;
     transform: translate(-50%, -50%);
     background: transparent;
     border: none;
     padding: 6px;
-    margin: 0;
     cursor: pointer;
-    pointer-events: auto;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 2px;
-    transition: transform 120ms ease;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 150ms ease;
   }
 
-  .timeline-event-marker:hover {
-    transform: translate(-50%, -60%);
+  .timeline-event-marker--context {
+    top: 14px;
   }
 
-  .timeline-event-marker:focus-visible {
-    transform: translate(-50%, -60%);
-    outline: 2px solid var(--cc-atlantic);
-    outline-offset: 3px;
-    border-radius: var(--cc-radius-xs);
+  .timeline-event-marker--capture {
+    top: 34px;
   }
 
   .timeline-event-dot {
-    width: 8px;
-    height: 8px;
+    display: block;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    background: var(--cc-atlantic);
-    border: 1.5px solid var(--cc-paper-raised);
-    box-shadow: 0 0 0 1px var(--cc-line);
-    transition: background 150ms ease, transform 150ms ease;
+    background: var(--cc-sand);
+    border: 1.5px solid var(--cc-paper);
+    box-shadow: 0 0 0 1px var(--cc-ink);
+    transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
   }
 
-  .timeline-event-marker[data-evidence-state="contextual"] .timeline-event-dot {
-    background: var(--cc-brass);
-  }
-
-  .timeline-event-marker--selected .timeline-event-dot {
+  .timeline-event-marker[data-event-kind="event"] .timeline-event-dot {
     background: var(--cc-terracotta);
-    transform: scale(1.35);
-    box-shadow: 0 0 0 2px var(--cc-terracotta);
+    border-radius: 1px;
+    transform: rotate(45deg);
   }
 
-  .timeline-event-label {
-    font-family: var(--cc-font-mono);
-    font-size: 0.65rem;
-    color: var(--cc-ink-soft);
+  .timeline-event-marker:hover .timeline-event-dot,
+  .timeline-event-marker:focus-visible .timeline-event-dot,
+  .timeline-event-marker.is-selected .timeline-event-dot {
+    transform: scale(1.4);
+    box-shadow: 0 0 0 2px var(--cc-atlantic);
+  }
+
+  .timeline-event-marker[data-event-kind="event"]:hover .timeline-event-dot,
+  .timeline-event-marker[data-event-kind="event"]:focus-visible .timeline-event-dot,
+  .timeline-event-marker[data-event-kind="event"].is-selected .timeline-event-dot {
+    transform: rotate(45deg) scale(1.4);
+  }
+
+  .timeline-event-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: var(--cc-ink);
+    color: var(--cc-paper);
+    font-family: var(--cc-font-sans);
+    font-size: 0.68rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--cc-radius-xs);
     white-space: nowrap;
-    opacity: 0.85;
-    background: color-mix(in srgb, var(--cc-paper-raised) 85%, transparent);
-    padding: 0 2px;
-    border-radius: 2px;
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 150ms ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 20;
   }
 
-  .timeline-event-marker--selected .timeline-event-label {
-    font-weight: 600;
-    color: var(--cc-ink);
+  .timeline-event-marker:hover .timeline-event-tooltip,
+  .timeline-event-marker:focus-visible .timeline-event-tooltip,
+  .timeline-event-marker.is-selected .timeline-event-tooltip {
     opacity: 1;
   }
 
-  @media (max-width: 600px) {
-    .timeline-event-label {
+  .timeline-shell__footer {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .timeline-shell__note {
+    font-family: var(--cc-font-sans);
+    font-size: 0.65rem;
+    color: var(--cc-ink-muted);
+    line-height: 1.3;
+  }
+
+  @media (max-width: 767px) {
+    .timeline-shell {
+      padding: 0.5rem 0.75rem 0.5rem;
+    }
+    .timeline-shell__heading {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+    .timeline-coverage-label {
       display: none;
     }
   }

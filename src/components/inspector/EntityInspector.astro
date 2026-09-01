@@ -4,7 +4,7 @@
  *
  * Sourced Entity Inspector for Charted Currents.
  * Renders verified historical metadata, crew demographics, evidence badges,
- * and period cartographic references for selected places, vessels, and events.
+ * contemporary cartographic visuals, and network connections.
  */
 ---
 
@@ -35,7 +35,7 @@
     <div class="inspector-header__kicker-wrap">
       <p class="panel-kicker" data-inspector-kicker>Historical Entity</p>
       <div data-inspector-badge-wrap hidden>
-        <span class="evidence-badge" data-inspector-badge>Documented</span>
+        <span class="evidence-badge" data-inspector-badge data-evidence-state="documented">Documented</span>
       </div>
     </div>
     <button
@@ -82,12 +82,12 @@
           </dl>
         </section>
 
-        <section class="inspector-section" aria-label="Reference note">
+        <section class="inspector-section" aria-label="Historical context">
           <p class="panel-kicker">Historical Context</p>
           <p class="inspector-note" data-place-note></p>
         </section>
 
-        <!-- Sourced Historical Visual Section for Jamaica -->
+        <!-- Sourced Historical Visual Section for Jamaica / Port Royal -->
         <section class="inspector-section" data-place-visual-wrap hidden aria-label="Historical map reference">
           <p class="panel-kicker">Contemporary Cartographic Reference</p>
           <div class="inspector-visual-card">
@@ -98,39 +98,37 @@
               loading="lazy"
             />
             <div class="inspector-visual-caption">
-              <p class="inspector-visual-title">A new & exact mapp of the island of Jamaica [1684?]</p>
-              <p class="inspector-visual-meta">Charles Bochart & Humphrey Knollis · Library of Congress (G4960 1684 .B6)</p>
-              <button
-                type="button"
-                class="inspector-action-btn"
-                data-open-visual-source
-              >
-                Inspect Map Source (LOC) ↗
-              </button>
+              <p class="inspector-visual-title">A new &amp; exact mapp of the island of Jamaica [1684?]</p>
+              <p class="inspector-visual-creator">Charles Bochart &amp; Humphrey Knollis · Philip Lea, London</p>
+              <p class="inspector-visual-credit">Library of Congress, Geography &amp; Map Division (G4960 1684 .B6 / ct008911)</p>
+              <p class="inspector-visual-desc" data-place-visual-desc>
+                Contemporary engraved map depicting the island parishes and harbor settlements.
+              </p>
             </div>
           </div>
         </section>
 
-        <!-- Generic Place Evidence Action Button -->
-        <section class="inspector-section" aria-label="Place evidence actions">
-          <p class="panel-kicker">Archival & Cartographic Evidence</p>
-          <button
-            type="button"
-            class="inspector-action-btn"
-            data-open-place-source
-          >
-            Inspect Place Evidence ↗
+        <!-- Place Connections -->
+        <section class="inspector-section" data-place-connections-wrap hidden aria-label="Network connections">
+          <p class="panel-kicker">Network Connections</p>
+          <div class="inspector-connections-list" data-place-connections-list></div>
+        </section>
+
+        <section class="inspector-section" aria-label="Place evidence">
+          <p class="panel-kicker">Archival Provenance</p>
+          <button type="button" class="inspector-evidence-btn" data-place-evidence-btn data-open-place-source>
+            Inspect Supporting Sourced Evidence ↗
           </button>
         </section>
       </div>
 
       <!-- SHIP VIEW -->
       <div data-view-ship hidden>
-        <section class="inspector-section" aria-label="Vessel documentation">
-          <p class="panel-kicker">Vessel Metrics & Provenance</p>
+        <section class="inspector-section" aria-label="Vessel recorded facts">
+          <p class="panel-kicker">Documented Vessel Facts</p>
           <dl class="inspector-meta">
             <div class="inspector-meta__row">
-              <dt>Raw Recorded Name</dt>
+              <dt>Raw Vessel Name</dt>
               <dd data-ship-raw-name class="inspector-mono"></dd>
             </div>
             <div class="inspector-meta__row">
@@ -150,22 +148,24 @@
               <dd data-ship-voyage></dd>
             </div>
             <div class="inspector-meta__row">
-              <dt>Wartime Capture</dt>
+              <dt>Capture Record</dt>
               <dd data-ship-capture></dd>
             </div>
           </dl>
         </section>
 
-        <section class="inspector-section" data-ship-crew-section hidden aria-label="Documented crew members">
-          <p class="panel-kicker">Documented Crew Roster</p>
+        <!-- Crew Roster Table -->
+        <section class="inspector-section" data-ship-crew-section hidden aria-label="Examined crew depositions">
+          <p class="panel-kicker">Examined Crew Depositions</p>
+          <p class="inspector-crew-caption">Sourced depositions recorded in Prize Court examinations.</p>
           <div class="inspector-table-wrap">
             <table class="inspector-crew-table">
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Rank</th>
+                  <th>Rank / Role</th>
                   <th>Birthplace / Origin</th>
-                  <th>Sovereign</th>
+                  <th>Sovereignty / Allegiance</th>
                 </tr>
               </thead>
               <tbody data-ship-crew-tbody></tbody>
@@ -173,43 +173,55 @@
           </div>
         </section>
 
-        <section class="inspector-section" aria-label="Archival source actions">
-          <p class="panel-kicker">Archival Source</p>
-          <button
-            type="button"
-            class="inspector-action-btn"
-            data-open-ship-source
-          >
-            Inspect Archival Provenance (IMLM / TNA HCA 32) ↗
-          </button>
+        <!-- Ship Connections -->
+        <section class="inspector-section" data-ship-connections-wrap hidden aria-label="Network connections">
+          <p class="panel-kicker">Network Connections</p>
+          <div class="inspector-connections-list" data-ship-connections-list></div>
+        </section>
+
+        <section class="inspector-section" aria-label="Ship provenance">
+          <p class="panel-kicker">Archival Provenance</p>
+          <div class="inspector-provenance-box">
+            <p class="inspector-provenance-title">UK Data Service SN 852135 (IMLM)</p>
+            <p class="inspector-provenance-subtitle" data-ship-upstream-ref></p>
+            <button type="button" class="inspector-evidence-btn" data-ship-evidence-btn data-open-ship-source>
+              Inspect Supporting Sourced Evidence ↗
+            </button>
+          </div>
         </section>
       </div>
 
       <!-- EVENT VIEW -->
       <div data-view-event hidden>
-        <section class="inspector-section" aria-label="Event details">
+        <section class="inspector-section" aria-label="Historical event details">
           <p class="panel-kicker">Event Summary</p>
           <dl class="inspector-meta">
             <div class="inspector-meta__row">
-              <dt>Recorded Date</dt>
+              <dt>Historical Date</dt>
               <dd data-event-date class="inspector-mono"></dd>
             </div>
             <div class="inspector-meta__row">
               <dt>Event Kind</dt>
               <dd data-event-kind></dd>
             </div>
+            <div class="inspector-meta__row">
+              <dt>Location</dt>
+              <dd data-event-place></dd>
+            </div>
           </dl>
           <p class="inspector-note" data-event-summary></p>
         </section>
 
-        <section class="inspector-section" aria-label="Event source actions">
-          <p class="panel-kicker">Primary Evidence</p>
-          <button
-            type="button"
-            class="inspector-action-btn"
-            data-open-event-source
-          >
-            Inspect Archival Record (Royal Society) ↗
+        <!-- Event Connections -->
+        <section class="inspector-section" data-event-connections-wrap hidden aria-label="Network connections">
+          <p class="panel-kicker">Network Connections</p>
+          <div class="inspector-connections-list" data-event-connections-list></div>
+        </section>
+
+        <section class="inspector-section" aria-label="Event sources">
+          <p class="panel-kicker">Archival Provenance</p>
+          <button type="button" class="inspector-evidence-btn" data-event-evidence-btn data-open-event-source>
+            Inspect Supporting Sourced Evidence ↗
           </button>
         </section>
       </div>
@@ -218,14 +230,13 @@
 </aside>
 
 <script>
-  import type { PublishedEntities, PublishedEvents, PublishedSources, Selection } from "../../lib/domain/types";
+  import type { PublishedEntities, PublishedEvent, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
-  import { consumeSelectionTrigger, getSelectionTrigger } from "../../lib/map/interactionState";
+  import { consumeSelectionTrigger, recordSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
 
   const inspector = document.getElementById("entity-inspector");
-  const appShell = document.querySelector<HTMLElement>(".app-shell");
-  const closeButton = document.querySelector<HTMLButtonElement>("[data-inspector-close]");
+  const closeBtn = document.querySelector<HTMLButtonElement>("[data-inspector-close]");
   const sheetHandle = document.querySelector<HTMLButtonElement>("[data-sheet-handle]");
   const kickerEl = document.querySelector<HTMLElement>("[data-inspector-kicker]");
   const badgeWrap = document.querySelector<HTMLElement>("[data-inspector-badge-wrap]");
@@ -233,22 +244,19 @@
   const titleEl = document.querySelector<HTMLElement>("[data-inspector-title]");
   const subtitleEl = document.querySelector<HTMLElement>("[data-inspector-subtitle]");
 
-  // Views
   const viewPlace = document.querySelector<HTMLElement>("[data-view-place]");
-  const viewShip = document.querySelector<HTMLElement>("[data-view-ship]");
-  const viewEvent = document.querySelector<HTMLElement>("[data-view-event]");
-
-  // Place Elements
   const placeRawName = document.querySelector<HTMLElement>("[data-place-raw-name]");
   const placePrecision = document.querySelector<HTMLElement>("[data-place-precision]");
   const placeCoords = document.querySelector<HTMLElement>("[data-place-coords]");
   const placeGeomProv = document.querySelector<HTMLElement>("[data-place-geom-provenance]");
   const placeNote = document.querySelector<HTMLElement>("[data-place-note]");
   const placeVisualWrap = document.querySelector<HTMLElement>("[data-place-visual-wrap]");
-  const openVisualBtn = document.querySelector<HTMLButtonElement>("[data-open-visual-source]");
-  const openPlaceSourceBtn = document.querySelector<HTMLButtonElement>("[data-open-place-source]");
+  const placeVisualDesc = document.querySelector<HTMLElement>("[data-place-visual-desc]");
+  const placeConnectionsWrap = document.querySelector<HTMLElement>("[data-place-connections-wrap]");
+  const placeConnectionsList = document.querySelector<HTMLElement>("[data-place-connections-list]");
+  const placeEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-place-evidence-btn]");
 
-  // Ship Elements
+  const viewShip = document.querySelector<HTMLElement>("[data-view-ship]");
   const shipRawName = document.querySelector<HTMLElement>("[data-ship-raw-name]");
   const shipTonnage = document.querySelector<HTMLElement>("[data-ship-tonnage]");
   const shipConstruction = document.querySelector<HTMLElement>("[data-ship-construction]");
@@ -257,316 +265,629 @@
   const shipCapture = document.querySelector<HTMLElement>("[data-ship-capture]");
   const shipCrewSection = document.querySelector<HTMLElement>("[data-ship-crew-section]");
   const shipCrewTbody = document.querySelector<HTMLElement>("[data-ship-crew-tbody]");
-  const openShipSourceBtn = document.querySelector<HTMLButtonElement>("[data-open-ship-source]");
+  const shipUpstreamRef = document.querySelector<HTMLElement>("[data-ship-upstream-ref]");
+  const shipConnectionsWrap = document.querySelector<HTMLElement>("[data-ship-connections-wrap]");
+  const shipConnectionsList = document.querySelector<HTMLElement>("[data-ship-connections-list]");
+  const shipEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-ship-evidence-btn]");
 
-  // Event Elements
+  const viewEvent = document.querySelector<HTMLElement>("[data-view-event]");
   const eventDate = document.querySelector<HTMLElement>("[data-event-date]");
   const eventKind = document.querySelector<HTMLElement>("[data-event-kind]");
+  const eventPlace = document.querySelector<HTMLElement>("[data-event-place]");
   const eventSummary = document.querySelector<HTMLElement>("[data-event-summary]");
-  const openEventSourceBtn = document.querySelector<HTMLButtonElement>("[data-open-event-source]");
+  const eventConnectionsWrap = document.querySelector<HTMLElement>("[data-event-connections-wrap]");
+  const eventConnectionsList = document.querySelector<HTMLElement>("[data-event-connections-list]");
+  const eventEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-event-evidence-btn]");
 
   let entitiesCache: PublishedEntities | null = null;
-  let eventsCache: PublishedEvents | null = null;
-  let sourcesCache: PublishedSources | null = null;
-
-  let activePlaceAssertionIds: string[] = [];
-  let activeShipAssertionIds: string[] = [];
-  let activeEventAssertionIds: string[] = [];
-  let activeUpstreamRef: string | null = null;
+  let routesCache: PublishedRouteFeatureCollection | null = null;
+  let eventsCache: PublishedEvent[] | null = null;
+  let currentReturnTarget: HTMLElement | null = null;
 
   async function loadData() {
-    if (!entitiesCache) {
-      const res = await fetch(publishedDataUrl("entities"));
-      if (res.ok) entitiesCache = await res.json();
-    }
-    if (!eventsCache) {
-      const res = await fetch(publishedDataUrl("events"));
-      if (res.ok) eventsCache = await res.json();
-    }
-    if (!sourcesCache) {
-      const res = await fetch(publishedDataUrl("sources"));
-      if (res.ok) sourcesCache = await res.json();
+    try {
+      const [entRes, routesRes, evRes] = await Promise.all([
+        fetch(publishedDataUrl("entities")),
+        fetch(publishedDataUrl("routes")),
+        fetch(publishedDataUrl("events")),
+      ]);
+      if (entRes.ok) entitiesCache = await entRes.json();
+      if (routesRes.ok) routesCache = await routesRes.json();
+      if (evRes.ok) {
+        const evData = await evRes.json();
+        eventsCache = Array.isArray(evData) ? evData : evData.events || [];
+      }
+    } catch (e) {
+      console.error("Failed to load inspector data:", e);
     }
   }
 
   loadData();
 
-  function formatCoordinates(lng: number, lat: number): string {
-    const latDir = lat >= 0 ? "N" : "S";
-    const lngDir = lng >= 0 ? "E" : "W";
-    return `${Math.abs(lat).toFixed(5)}° ${latDir}, ${Math.abs(lng).toFixed(5)}° ${lngDir}`;
-  }
-
-  function closeInspector(): void {
-    selectionStore.clear();
-
-    const trigger = consumeSelectionTrigger();
-    if (trigger.returnTarget) {
-      trigger.returnTarget.focus();
-    } else {
-      const mapCanvas = document.getElementById("charted-currents-map");
-      mapCanvas?.focus();
+  function humanizePrecision(prec: string): string {
+    switch (prec) {
+      case "colony_or_island":
+        return "Colony / Island reference";
+      case "populated_place":
+        return "Settlement / Populated place";
+      case "port_city":
+        return "Port city";
+      case "port_town":
+        return "Port town";
+      case "modern_navigation_reference_coordinate":
+        return "Modern coordinate reference";
+      case "modern_generalized_navigation_reference":
+        return "Modern regional centroid";
+      default:
+        return prec.replace(/_/g, " ");
     }
   }
 
-  async function updateInspector(selection: Selection): Promise<void> {
+  function humanizeDate(raw: string, cal?: string): string {
+    if (!raw) return "Unrecorded date";
+    const [y, m, d] = raw.split("-");
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let out = raw;
+    if (y && m && d) {
+      const mIdx = parseInt(m, 10) - 1;
+      const mName = months[mIdx] || m;
+      out = `${raw} (${parseInt(d, 10)} ${mName} ${y})`;
+    } else if (y && m) {
+      const mIdx = parseInt(m, 10) - 1;
+      const mName = months[mIdx] || m;
+      out = `${raw} (${mName} ${y})`;
+    }
+    if (cal) out += ` · ${cal}`;
+    return out;
+  }
+
+  function createConnectionButton(label: string, kind: "port" | "ship" | "event", id: string): HTMLElement {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "inspector-conn-btn";
+    btn.textContent = label;
+    btn.addEventListener("click", () => {
+      recordSelectionTrigger({
+        modality: "pointer",
+        origin: "inspector_connection",
+        returnTarget: btn,
+      });
+      selectionStore.set({ kind, id });
+    });
+    return btn;
+  }
+
+  function renderPlace(placeId: string) {
+    if (!entitiesCache) return;
+    const place = entitiesCache.places.find((p) => p.id === placeId);
+    if (!place) return;
+
+    if (kickerEl) kickerEl.textContent = "Geographic Place";
+    if (badgeWrap && badgeEl) {
+      badgeWrap.hidden = false;
+      badgeEl.textContent = "Documented";
+      badgeEl.setAttribute("data-evidence-state", "documented");
+    }
+    if (titleEl) titleEl.textContent = place.canonical_name;
+    if (subtitleEl) subtitleEl.textContent = `${place.region} · Modern coordinates for navigation`;
+
+    if (placeRawName) placeRawName.textContent = place.raw_source_name;
+    if (placePrecision) placePrecision.textContent = humanizePrecision(place.geographic_precision);
+    if (placeCoords) placeCoords.textContent = `${place.coordinates[1].toFixed(4)}° N, ${place.coordinates[0].toFixed(4)}° E`;
+    if (placeGeomProv) placeGeomProv.textContent = humanizePrecision(place.geometry_provenance);
+    if (placeNote) placeNote.textContent = place.notes || "";
+
+    // Show visual card for Jamaica and Port Royal
+    if (placeVisualWrap) {
+      if (place.id === "place_jamaica" || place.id === "place_port_royal") {
+        placeVisualWrap.hidden = false;
+        if (placeVisualDesc) {
+          placeVisualDesc.textContent =
+            place.id === "place_port_royal"
+              ? 'Contemporary engraved chart explicitly depicting and labeling "Port Royall" on the harbor spit.'
+              : "Contemporary engraved chart depicting the 17th-century island parishes and settlements.";
+        }
+      } else {
+        placeVisualWrap.hidden = true;
+      }
+    }
+
+    // Render Place Connections
+    if (placeConnectionsWrap && placeConnectionsList) {
+      placeConnectionsList.replaceChildren();
+      const connectedRoutes = routesCache?.features.filter(
+        (r) => r.properties.origin_place_id === place.id || r.properties.destination_place_id === place.id
+      ) || [];
+      const connectedEvents = eventsCache?.filter((ev) => ev.place_id === place.id) || [];
+
+      if (connectedRoutes.length > 0 || connectedEvents.length > 0) {
+        placeConnectionsWrap.hidden = false;
+
+        for (const r of connectedRoutes) {
+          const ship = entitiesCache.ships.find((s) => s.id === r.properties.vessel_id);
+          const shipName = ship ? ship.canonical_name : r.properties.vessel_id;
+          const label = `🚢 ${shipName} (${r.properties.date_display})`;
+          placeConnectionsList.appendChild(createConnectionButton(label, "ship", r.properties.vessel_id));
+        }
+
+        for (const ev of connectedEvents) {
+          const label = `📌 ${ev.title} (${ev.date})`;
+          placeConnectionsList.appendChild(createConnectionButton(label, "event", ev.id));
+        }
+      } else {
+        placeConnectionsWrap.hidden = true;
+      }
+    }
+
+    if (placeEvidenceBtn) {
+      placeEvidenceBtn.onclick = () => {
+        window.dispatchEvent(
+          new CustomEvent("cc:open-source", {
+            detail: {
+              assertionIds: place.source_assertion_ids,
+              triggerEl: placeEvidenceBtn,
+            },
+          })
+        );
+      };
+    }
+
+    viewPlace?.removeAttribute("hidden");
+    viewShip?.setAttribute("hidden", "");
+    viewEvent?.setAttribute("hidden", "");
+  }
+
+  function renderShip(shipId: string) {
+    if (!entitiesCache) return;
+    const ship = entitiesCache.ships.find((s) => s.id === shipId);
+    if (!ship) return;
+
+    if (kickerEl) kickerEl.textContent = "Documented Vessel";
+    if (badgeWrap && badgeEl) {
+      badgeWrap.hidden = false;
+      badgeEl.textContent = "Documented";
+      badgeEl.setAttribute("data-evidence-state", "documented");
+    }
+    if (titleEl) titleEl.textContent = ship.canonical_name;
+    if (subtitleEl) subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
+
+    // Find ship occurrence and crew occurrences
+    const occId = ship.occurrence_ids[0];
+    const shipOcc = entitiesCache.ship_occurrences.find((o) => o.id === occId);
+    const crewOccs = entitiesCache.crew_occurrences.filter((c) => c.ship_occurrence_id === occId);
+
+    if (shipRawName) shipRawName.textContent = shipOcc ? shipOcc.raw_name : ship.canonical_name;
+    if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
+    if (shipConstruction) shipConstruction.textContent = ship.construction_display;
+    if (shipOwner) shipOwner.textContent = `Owner resident at ${ship.owner_display}`;
+    if (shipVoyage) shipVoyage.textContent = ship.voyage_display;
+    if (shipCapture) shipCapture.textContent = ship.capture_display;
+
+    if (shipCrewSection && shipCrewTbody) {
+      shipCrewTbody.replaceChildren();
+      if (crewOccs.length > 0) {
+        shipCrewSection.hidden = false;
+        for (const crew of crewOccs) {
+          const tr = document.createElement("tr");
+          const tdName = document.createElement("td");
+          tdName.textContent = `${crew.first_name} ${crew.last_name}${crew.age_as_recorded ? ` (${crew.age_as_recorded})` : ""}`;
+
+          const tdRank = document.createElement("td");
+          tdRank.textContent = crew.rank_as_recorded;
+
+          const tdOrigin = document.createElement("td");
+          tdOrigin.textContent = crew.birthplace_as_recorded || crew.residence_as_recorded || "Unrecorded";
+
+          const tdSub = document.createElement("td");
+          tdSub.textContent = crew.subject_of_as_recorded || "Unrecorded";
+
+          tr.append(tdName, tdRank, tdOrigin, tdSub);
+          shipCrewTbody.appendChild(tr);
+        }
+      } else {
+        shipCrewSection.hidden = true;
+      }
+    }
+
+    if (shipUpstreamRef) {
+      shipUpstreamRef.textContent = `Upstream Archive: TNA High Court of Admiralty Prize Papers`;
+    }
+
+    // Render Ship Connections
+    if (shipConnectionsWrap && shipConnectionsList) {
+      shipConnectionsList.replaceChildren();
+      const route = routesCache?.features.find((r) => r.properties.vessel_id === ship.id);
+      const connectedEvents = eventsCache?.filter((ev) => ev.vessel_id === ship.id) || [];
+
+      if (route || connectedEvents.length > 0) {
+        shipConnectionsWrap.hidden = false;
+
+        if (route) {
+          const originPlace = entitiesCache.places.find((p) => p.id === route.properties.origin_place_id);
+          const destPlace = entitiesCache.places.find((p) => p.id === route.properties.destination_place_id);
+          if (originPlace) {
+            shipConnectionsList.appendChild(
+              createConnectionButton(`Origin: ${originPlace.canonical_name}`, "port", originPlace.id)
+            );
+          }
+          if (destPlace) {
+            shipConnectionsList.appendChild(
+              createConnectionButton(`Destination: ${destPlace.canonical_name}`, "port", destPlace.id)
+            );
+          }
+        }
+
+        for (const ev of connectedEvents) {
+          shipConnectionsList.appendChild(
+            createConnectionButton(`📌 ${ev.title} (${ev.date})`, "event", ev.id)
+          );
+        }
+      } else {
+        shipConnectionsWrap.hidden = true;
+      }
+    }
+
+    if (shipEvidenceBtn) {
+      shipEvidenceBtn.onclick = () => {
+        const allAsts = [
+          ...(shipOcc?.assertion_ids || []),
+          ...crewOccs.flatMap((c) => c.assertion_ids),
+        ];
+        window.dispatchEvent(
+          new CustomEvent("cc:open-source", {
+            detail: {
+              sourceId: "src_imlm_ukda_852135",
+              assertionIds: allAsts,
+              triggerEl: shipEvidenceBtn,
+            },
+          })
+        );
+      };
+    }
+
+    viewShip?.removeAttribute("hidden");
+    viewPlace?.setAttribute("hidden", "");
+    viewEvent?.setAttribute("hidden", "");
+  }
+
+  function renderEvent(eventId: string) {
+    if (!eventsCache || !entitiesCache) return;
+    const ev = eventsCache.find((e) => e.id === eventId);
+    if (!ev) return;
+
+    if (kickerEl) kickerEl.textContent = "Historical Event";
+    if (badgeWrap && badgeEl) {
+      badgeWrap.hidden = false;
+      badgeEl.textContent = ev.evidence_state === "contextual" ? "Contextual" : "Documented";
+      badgeEl.setAttribute("data-evidence-state", ev.evidence_state);
+    }
+    if (titleEl) titleEl.textContent = ev.title;
+    if (subtitleEl) subtitleEl.textContent = humanizeDate(ev.date, ev.calendar_system);
+
+    if (eventDate) eventDate.textContent = humanizeDate(ev.date, ev.calendar_system);
+    if (eventKind) eventKind.textContent = ev.kind.replace(/_/g, " ");
+
+    const place = entitiesCache.places.find((p) => p.id === ev.place_id);
+    if (eventPlace) eventPlace.textContent = place ? place.canonical_name : ev.place_id;
+    if (eventSummary) eventSummary.textContent = ev.summary;
+
+    // Render Event Connections
+    if (eventConnectionsWrap && eventConnectionsList) {
+      eventConnectionsList.replaceChildren();
+      let hasConnections = false;
+
+      if (place) {
+        eventConnectionsList.appendChild(
+          createConnectionButton(`📍 Location: ${place.canonical_name}`, "port", place.id)
+        );
+        hasConnections = true;
+      }
+
+      if (ev.vessel_id) {
+        const ship = entitiesCache.ships.find((s) => s.id === ev.vessel_id);
+        const shipName = ship ? ship.canonical_name : ev.vessel_id;
+        eventConnectionsList.appendChild(
+          createConnectionButton(`🚢 Vessel: ${shipName}`, "ship", ev.vessel_id)
+        );
+        hasConnections = true;
+      }
+
+      eventConnectionsWrap.hidden = !hasConnections;
+    }
+
+    if (eventEvidenceBtn) {
+      eventEvidenceBtn.onclick = () => {
+        window.dispatchEvent(
+          new CustomEvent("cc:open-source", {
+            detail: {
+              sourceId: ev.sources[0],
+              assertionIds: ev.assertion_ids,
+              triggerEl: eventEvidenceBtn,
+            },
+          })
+        );
+      };
+    }
+
+    viewEvent?.removeAttribute("hidden");
+    viewPlace?.setAttribute("hidden", "");
+    viewShip?.setAttribute("hidden", "");
+  }
+
+  function syncInspector(selection: Selection) {
     if (!inspector) return;
 
     if (!selection) {
       inspector.hidden = true;
       inspector.setAttribute("data-state", "closed");
       inspector.setAttribute("data-sheet-state", "closed");
-      sheetHandle?.setAttribute("aria-expanded", "false");
-      appShell?.setAttribute("data-inspector-open", "false");
+      if (currentReturnTarget) {
+        currentReturnTarget.focus();
+        currentReturnTarget = null;
+      }
       return;
     }
 
-    await loadData();
-    if (!entitiesCache || !eventsCache) return;
-
-    // Reset views
-    if (viewPlace) viewPlace.hidden = true;
-    if (viewShip) viewShip.hidden = true;
-    if (viewEvent) viewEvent.hidden = true;
-
-    activePlaceAssertionIds = [];
-    activeShipAssertionIds = [];
-    activeEventAssertionIds = [];
-    activeUpstreamRef = null;
-
-    if (selection.kind === "port") {
-      const place = entitiesCache.places.find((p) => p.id === selection.id);
-      if (!place) return;
-
-      activePlaceAssertionIds = place.source_assertion_ids || [];
-
-      if (kickerEl) kickerEl.textContent = "Historical Place";
-      if (badgeWrap) badgeWrap.hidden = true;
-      if (titleEl) titleEl.textContent = place.canonical_name;
-      if (subtitleEl) subtitleEl.textContent = `${place.region} · Sourced Geographic Reference`;
-
-      if (placeRawName) placeRawName.textContent = place.raw_source_name;
-      if (placePrecision) placePrecision.textContent = place.geographic_precision.replace(/_/g, " ");
-      if (placeCoords) placeCoords.textContent = formatCoordinates(place.coordinates[0], place.coordinates[1]);
-      if (placeGeomProv) placeGeomProv.textContent = place.geometry_provenance.replace(/_/g, " ");
-      if (placeNote) placeNote.textContent = place.notes || "Historical place reference verified by Charted Currents.";
-
-      // Show visual card exclusively for Jamaica (place_jamaica)
-      if (placeVisualWrap) {
-        const hasVisual = place.id === "place_jamaica";
-        placeVisualWrap.hidden = !hasVisual;
-      }
-
-      if (viewPlace) viewPlace.hidden = false;
-    } else if (selection.kind === "ship") {
-      const ship = entitiesCache.ships.find((s) => s.id === selection.id);
-      if (!ship) return;
-
-      const occ = entitiesCache.ship_occurrences.find((o) => ship.occurrence_ids.includes(o.id));
-      if (!occ) return;
-
-      activeShipAssertionIds = occ.assertion_ids || [];
-
-      if (kickerEl) kickerEl.textContent = "Documented Vessel";
-      if (badgeWrap) badgeWrap.hidden = false;
-      if (badgeEl) {
-        badgeEl.textContent = "Documented";
-        badgeEl.setAttribute("data-evidence-state", "documented");
-      }
-      if (titleEl) titleEl.textContent = ship.canonical_name;
-      if (subtitleEl) subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
-
-      if (shipRawName) shipRawName.textContent = occ.raw_name;
-      if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
-      if (shipConstruction) shipConstruction.textContent = ship.construction_display;
-      if (shipOwner) shipOwner.textContent = occ.reported_owner_residence;
-      if (shipVoyage) shipVoyage.textContent = `${occ.recorded_voyage_origin} → ${occ.recorded_voyage_destination}`;
-      if (shipCapture) shipCapture.textContent = `${occ.recorded_capture_location} (${occ.recorded_capture_date})`;
-
-      // Safely render crew roster using standard DOM element construction (no innerHTML)
-      if (shipCrewSection && shipCrewTbody) {
-        const crew = entitiesCache.crew_occurrences.filter((c) => c.ship_occurrence_id === occ.id);
-        if (crew.length > 0) {
-          shipCrewSection.hidden = false;
-          shipCrewTbody.replaceChildren();
-          for (const c of crew) {
-            const tr = document.createElement("tr");
-
-            const tdName = document.createElement("td");
-            const strong = document.createElement("strong");
-            strong.textContent = `${c.first_name} ${c.last_name}`;
-            tdName.appendChild(strong);
-            if (c.signature_recorded === "Signed") {
-              tdName.append(" ✍");
-            }
-
-            const tdRank = document.createElement("td");
-            tdRank.textContent = c.rank_as_recorded;
-
-            const tdOrigin = document.createElement("td");
-            tdOrigin.textContent = c.birthplace_as_recorded || c.residence_as_recorded || "Unrecorded";
-
-            const tdSovereign = document.createElement("td");
-            tdSovereign.textContent = c.subject_of_as_recorded || "Unrecorded";
-
-            tr.append(tdName, tdRank, tdOrigin, tdSovereign);
-            shipCrewTbody.appendChild(tr);
-          }
-        } else {
-          shipCrewSection.hidden = true;
-        }
-      }
-
-      // Find upstream HCA reference
-      const sr = sourcesCache?.source_records.find((r) => r.id === occ.source_record_id);
-      activeUpstreamRef = sr?.upstream_archive_reference || null;
-
-      if (viewShip) viewShip.hidden = false;
-    } else if (selection.kind === "event") {
-      const event = eventsCache.events.find((e) => e.id === selection.id);
-      if (!event) return;
-
-      activeEventAssertionIds = event.assertion_ids || [];
-
-      if (kickerEl) kickerEl.textContent = "Historical Event";
-      if (badgeWrap) badgeWrap.hidden = false;
-      if (badgeEl) {
-        badgeEl.textContent = event.evidence_state === "contextual" ? "Contextual" : "Documented";
-        badgeEl.setAttribute("data-evidence-state", event.evidence_state);
-      }
-      if (titleEl) titleEl.textContent = event.title;
-      if (subtitleEl) subtitleEl.textContent = `${event.date} ${event.calendar_system ? `(${event.calendar_system})` : ""}`;
-
-      if (eventDate) eventDate.textContent = `${event.date} ${event.calendar_system ? `(${event.calendar_system})` : ""}`;
-      if (eventKind) eventKind.textContent = event.kind;
-      if (eventSummary) eventSummary.textContent = event.summary;
-
-      if (viewEvent) viewEvent.hidden = false;
-    }
+    const trigger = consumeSelectionTrigger();
+    currentReturnTarget = trigger.returnTarget || null;
 
     inspector.hidden = false;
     inspector.setAttribute("data-state", "open");
     inspector.setAttribute("data-sheet-state", "open");
-    sheetHandle?.setAttribute("aria-expanded", "true");
-    appShell?.setAttribute("data-inspector-open", "true");
 
-    // Only move focus to inspector heading if selection was activated by keyboard
-    const trigger = getSelectionTrigger();
+    if (selection.kind === "port") {
+      renderPlace(selection.id);
+    } else if (selection.kind === "ship") {
+      renderShip(selection.id);
+    } else if (selection.kind === "event") {
+      renderEvent(selection.id);
+    }
+
     if (trigger.modality === "keyboard") {
       titleEl?.focus();
     }
   }
 
-  // Open Source Drawer triggers
-  function triggerOpenSource(options: { sourceId?: string | null; assertionIds?: string[] | null; triggerEl?: HTMLElement | null; upstreamRef?: string | null }) {
-    window.dispatchEvent(
-      new CustomEvent("cc:open-source", {
-        detail: {
-          sourceId: options.sourceId,
-          assertionIds: options.assertionIds,
-          triggerEl: options.triggerEl,
-          upstreamRef: options.upstreamRef || activeUpstreamRef,
-        },
-      }),
-    );
-  }
+  selectionStore.subscribe(syncInspector);
 
-  openVisualBtn?.addEventListener("click", () => triggerOpenSource({ sourceId: "src_loc_g4960_1684", triggerEl: openVisualBtn }));
-  openPlaceSourceBtn?.addEventListener("click", () => triggerOpenSource({ assertionIds: activePlaceAssertionIds, triggerEl: openPlaceSourceBtn }));
-  openShipSourceBtn?.addEventListener("click", () => triggerOpenSource({ assertionIds: activeShipAssertionIds, triggerEl: openShipSourceBtn, upstreamRef: activeUpstreamRef }));
-  openEventSourceBtn?.addEventListener("click", () => triggerOpenSource({ assertionIds: activeEventAssertionIds, triggerEl: openEventSourceBtn }));
-
-  closeButton?.addEventListener("click", closeInspector);
+  closeBtn?.addEventListener("click", () => {
+    selectionStore.set(null);
+  });
 
   sheetHandle?.addEventListener("click", () => {
-    const isExpanded = sheetHandle.getAttribute("aria-expanded") === "true";
-    inspector?.setAttribute("data-sheet-state", isExpanded ? "peek" : "open");
-    sheetHandle.setAttribute("aria-expanded", isExpanded ? "false" : "true");
-    sheetHandle.setAttribute("aria-label", isExpanded ? "Expand entity details" : "Collapse entity details");
+    if (!inspector) return;
+    const current = inspector.getAttribute("data-sheet-state");
+    const next = current === "expanded" ? "open" : "expanded";
+    inspector.setAttribute("data-sheet-state", next);
+    sheetHandle.setAttribute("aria-expanded", String(next === "expanded"));
   });
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && inspector && !inspector.hidden) {
-      // If SourceDrawer is currently open, SourceDrawer handles Escape; do not dismiss EntityInspector
-      const drawer = document.getElementById("source-drawer");
-      if (drawer && !drawer.hidden && drawer.getAttribute("data-state") === "open") {
-        return;
+  window.addEventListener(
+    "keydown",
+    (e) => {
+      if (
+        e.key === "Escape" &&
+        inspector &&
+        !inspector.hidden &&
+        inspector.getAttribute("data-state") === "open"
+      ) {
+        const drawer = document.getElementById("source-drawer");
+        if (!drawer || drawer.hidden || drawer.getAttribute("data-state") !== "open") {
+          selectionStore.set(null);
+        }
       }
-      event.preventDefault();
-      closeInspector();
-    }
-  });
-
-  selectionStore.subscribe((selection) => {
-    updateInspector(selection);
-  });
+    },
+    { capture: false }
+  );
 </script>
 
 <style>
-  .inspector-action-btn {
+  .inspector-shell {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    width: 380px;
+    max-width: calc(100vw - 2rem);
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-md);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .inspector-shell[hidden] {
+    display: none;
+  }
+
+  .inspector-sheet__handle-wrap {
+    display: none;
+  }
+
+  .inspector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--cc-line);
+    background: var(--cc-paper);
+  }
+
+  .inspector-header__kicker-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .inspector-close {
+    background: transparent;
+    border: none;
+    padding: 0.35rem;
+    color: var(--cc-ink-muted);
+    cursor: pointer;
+    border-radius: var(--cc-radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 120ms ease, background 120ms ease;
+  }
+
+  .inspector-close:hover,
+  .inspector-close:focus-visible {
+    color: var(--cc-ink);
+    background: color-mix(in srgb, var(--cc-line) 50%, transparent);
+    outline: none;
+  }
+
+  .inspector-content {
+    padding: 1.25rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .inspector-title {
+    font-family: var(--cc-font-serif);
+    font-size: var(--cc-text-lg);
+    font-weight: 400;
+    color: var(--cc-ink);
+    margin: 0 0 0.25rem;
+  }
+
+  .inspector-subtitle {
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink-muted);
+    margin: 0;
+  }
+
+  .inspector-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .inspector-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .inspector-note {
+    font-size: var(--cc-text-xs);
+    line-height: 1.5;
+    color: var(--cc-ink-muted);
+    margin: 0;
+  }
+
+  .inspector-connections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .inspector-conn-btn {
+    text-align: left;
+    background: var(--cc-paper);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    padding: 0.45rem 0.65rem;
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+  }
+
+  .inspector-conn-btn:hover,
+  .inspector-conn-btn:focus-visible {
+    background: color-mix(in srgb, var(--cc-paper-raised) 80%, transparent);
+    border-color: var(--cc-sand);
+    outline: none;
+  }
+
+  .inspector-evidence-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.4rem;
-    padding: 0.5rem 0.85rem;
+    width: 100%;
+    padding: 0.55rem 0.85rem;
     background: var(--cc-paper);
     border: 1px solid var(--cc-line);
     border-radius: var(--cc-radius-xs);
     font-family: var(--cc-font-sans);
     font-size: var(--cc-text-xs);
-    color: var(--cc-atlantic);
+    font-weight: 500;
+    color: var(--cc-ink);
     cursor: pointer;
-    text-decoration: none;
     transition: background 150ms ease, border-color 150ms ease;
   }
 
-  .inspector-action-btn:hover {
+  .inspector-evidence-btn:hover,
+  .inspector-evidence-btn:focus-visible {
     background: var(--cc-paper-raised);
-    border-color: var(--cc-atlantic);
+    border-color: var(--cc-sand);
+    outline: none;
   }
 
   .inspector-visual-card {
     border: 1px solid var(--cc-line);
-    border-radius: var(--cc-radius-sm);
+    border-radius: var(--cc-radius-xs);
     overflow: hidden;
     background: var(--cc-paper);
-    margin-top: 0.5rem;
   }
 
   .inspector-visual-img {
     width: 100%;
     height: auto;
-    max-height: 180px;
-    object-fit: cover;
     display: block;
     border-bottom: 1px solid var(--cc-line);
   }
 
   .inspector-visual-caption {
-    padding: 0.75rem;
+    padding: 0.6rem 0.75rem;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.2rem;
   }
 
   .inspector-visual-title {
     font-family: var(--cc-font-serif);
-    font-size: var(--cc-text-sm);
+    font-size: var(--cc-text-xs);
+    font-weight: 600;
     color: var(--cc-ink);
     margin: 0;
   }
 
-  .inspector-visual-meta {
-    font-size: var(--cc-text-xs);
+  .inspector-visual-creator,
+  .inspector-visual-credit {
+    font-size: 0.68rem;
     color: var(--cc-ink-muted);
-    margin: 0 0 0.4rem;
+    margin: 0;
+  }
+
+  .inspector-visual-desc {
+    font-size: 0.72rem;
+    color: var(--cc-ink);
+    margin: 0.25rem 0 0;
+    line-height: 1.4;
   }
 
   .inspector-table-wrap {
     overflow-x: auto;
-    margin-top: 0.5rem;
     border: 1px solid var(--cc-line);
     border-radius: var(--cc-radius-xs);
     background: var(--cc-paper);
+  }
+
+  .inspector-crew-caption {
+    font-size: 0.7rem;
+    color: var(--cc-ink-muted);
+    margin: 0;
   }
 
   .inspector-crew-table {
@@ -584,13 +905,49 @@
 
   .inspector-crew-table th {
     font-family: var(--cc-font-mono);
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     color: var(--cc-ink-muted);
-    background: color-mix(in srgb, var(--cc-paper-raised) 75%, transparent);
+    background: color-mix(in srgb, var(--cc-paper-raised) 70%, transparent);
   }
 
   .inspector-crew-table tr:last-child td {
     border-bottom: none;
+  }
+
+  @media (max-width: 767px) {
+    .inspector-shell {
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-width: 100%;
+      border-radius: var(--cc-radius-lg) var(--cc-radius-lg) 0 0;
+      max-height: 80vh;
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.22);
+    }
+
+    .inspector-sheet__handle-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 0.4rem 0 0.1rem;
+      background: var(--cc-paper);
+    }
+
+    .inspector-sheet__handle {
+      background: transparent;
+      border: none;
+      padding: 0.35rem 1.5rem;
+      cursor: pointer;
+    }
+
+    .inspector-sheet__handle-bar {
+      display: block;
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--cc-line);
+    }
   }
 </style>

@@ -1,18 +1,29 @@
 ---
+/**
+ * src/components/map/MapViewport.astro
+ *
+ * MapLibre map viewport with SSR-rendered place locators, selection hierarchy,
+ * transatlantic fitBounds camera behavior, and epistemic route legend.
+ */
 import "maplibre-gl/dist/maplibre-gl.css";
+import entitiesData from "../../../public/data/entities.json";
 
-// Server-side historical places for locator dropdown
-const PLACES = [
-  { id: "place_jamaica", label: "Jamaica", region: "Greater Antilles", precision: "Colony / Island reference" },
-  { id: "place_port_royal", label: "Port Royal", region: "Jamaica", precision: "Harbor spit / Sourced 1684" },
-  { id: "place_london", label: "London", region: "England", precision: "Port city" },
-  { id: "place_dartmouth", label: "Dartmouth, Devon", region: "England", precision: "Capture roadstead" },
-  { id: "place_plymouth", label: "Plymouth, Devon", region: "England", precision: "Capture roadstead" },
-] as const;
+const PLACES = (entitiesData.places || []).map((p) => ({
+  id: p.id,
+  label: p.canonical_name,
+  region: p.region,
+  precision: p.geographic_precision.replace(/_/g, " "),
+}));
 ---
 
 <section class="map-viewport" aria-label="Greater Caribbean map" data-component="map-viewport">
   <div id="charted-currents-map" class="map-viewport__canvas" tabindex="0" aria-label="Interactive map canvas. Use arrow keys to pan, plus and minus to zoom."></div>
+
+  <!-- Epistemic map legend -->
+  <aside class="map-epistemic-legend" aria-label="Map notation">
+    <span class="map-epistemic-legend__icon" aria-hidden="true">┄</span>
+    <span class="map-epistemic-legend__text">Dashed lines connect documented endpoints · Not observed sailing tracks</span>
+  </aside>
 
   <!-- Perceivable locator browser for keyboard, screen-reader, and quick place navigation -->
   <div class="map-locator-browser" data-locator-browser>
@@ -41,7 +52,7 @@ const PLACES = [
     >
       <div class="map-locator-browser__header">
         <p class="panel-kicker">Historical Places</p>
-        <span class="map-locator-browser__caption">Sourced Corpus (1684–1705)</span>
+        <span class="map-locator-browser__caption">Sourced Corpus (1684–1712)</span>
       </div>
       <ul class="map-locator-browser__list">
         {PLACES.map((place) => (
@@ -65,7 +76,7 @@ const PLACES = [
 </section>
 
 <script>
-  import { Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
+  import { AttributionControl, LngLatBounds, Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
   import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
   import type { PublishedPortFeatureCollection, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
@@ -90,16 +101,75 @@ const PLACES = [
   let portsData: PublishedPortFeatureCollection | null = null;
   let routesData: PublishedRouteFeatureCollection | null = null;
 
-  async function ensureProjectLayers(m: Map): Promise<void> {
-    if (m.getSource("historical-ports")) return;
+  async function initMap() {
+    if (!container) return;
 
+    try {
+      map = new Map({
+        container,
+        style: INITIAL_MAP_STYLE_URL,
+        center: INITIAL_MAP_VIEW.center,
+        zoom: INITIAL_MAP_VIEW.zoom,
+        minZoom: 2,
+        maxZoom: 9,
+        bearing: 0,
+        pitch: 0,
+        dragRotate: false,
+        pitchWithRotate: false,
+        touchPitch: false,
+        attributionControl: false,
+      });
+
+      map.addControl(
+        new AttributionControl({
+          compact: true,
+          customAttribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> | <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>',
+        }),
+        "bottom-right"
+      );
+
+      map.addControl(
+        new NavigationControl({
+          showCompass: false,
+          showZoom: true,
+          visualizePitch: false,
+        }),
+        "bottom-right"
+      );
+
+      map.on("load", () => {
+        if (!map || !container) return;
+        container.dataset.mapReady = "true";
+        applyBasemapVisualPolicy(map);
+        loadHistoricalData(map);
+      });
+
+      map.on("idle", () => {
+        if (!container) return;
+        container.dataset.mapIdle = "true";
+      });
+
+      selectionStore.subscribe((selection) => {
+        syncMapToSelection(selection);
+      });
+
+      initLocatorBrowser();
+    } catch (err) {
+      console.error("Map initialization failed:", err);
+      if (status) status.textContent = "Map failed to initialize.";
+    }
+  }
+
+  async function loadHistoricalData(m: Map) {
     try {
       const [portsRes, routesRes] = await Promise.all([
         fetch(publishedDataUrl("ports")),
         fetch(publishedDataUrl("routes")),
       ]);
 
-      if (!portsRes.ok || !routesRes.ok) return;
+      if (!portsRes.ok || !routesRes.ok) {
+        throw new Error("Failed to load historical data artifacts");
+      }
 
       portsData = await portsRes.json();
       routesData = await routesRes.json();
@@ -110,40 +180,20 @@ const PLACES = [
         data: routesData!,
       });
 
-      // Route Casing
-      m.addLayer({
-        id: "historical-routes-casing",
-        type: "line",
-        source: "historical-routes",
-        layout: {
-          "line-cap": "round",
-          "line-join": "round",
-        },
-        paint: {
-          "line-color": "#f8f3e9",
-          "line-width": 4,
-          "line-opacity": 0.85,
-        },
-      });
-
-      // Route Dashed Line
+      // Render schematic dashed line
       m.addLayer({
         id: "historical-routes-line",
         type: "line",
         source: "historical-routes",
-        layout: {
-          "line-cap": "round",
-          "line-join": "round",
-        },
         paint: {
-          "line-color": "#243f48",
-          "line-width": 2,
-          "line-dasharray": [3, 2],
-          "line-opacity": 0.85,
+          "line-color": "#7a5840",
+          "line-width": 1.8,
+          "line-opacity": 0.45,
+          "line-dasharray": [3, 2.5],
         },
       });
 
-      // Route Hit Target
+      // Hit-target layer for routes
       m.addLayer({
         id: "historical-routes-hit-target",
         type: "line",
@@ -161,7 +211,7 @@ const PLACES = [
         data: portsData!,
       });
 
-      // Concentric outer ring layer with selected and hover states
+      // Concentric outer ring layer
       m.addLayer({
         id: "historical-ports-outer-ring",
         type: "circle",
@@ -245,7 +295,7 @@ const PLACES = [
         },
       });
 
-      // Generous transparent hit-target layer
+      // Hit-target layer for ports
       m.addLayer({
         id: "historical-ports-hit-target",
         type: "circle",
@@ -320,10 +370,13 @@ const PLACES = [
     if (previousSelectedFeatureId) {
       map.setFeatureState(
         { source: "historical-ports", id: previousSelectedFeatureId },
-        { selected: false },
+        { selected: false }
       );
       previousSelectedFeatureId = null;
     }
+
+    const isDesktop = window.innerWidth >= 768;
+    const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (selection && selection.kind === "port") {
       const portFeature = portsData?.features.find((f) => f.properties.id === selection.id);
@@ -331,179 +384,179 @@ const PLACES = [
         previousSelectedFeatureId = portFeature.id;
         map.setFeatureState(
           { source: "historical-ports", id: portFeature.id },
-          { selected: true },
+          { selected: true }
         );
 
-        const isDesktop = window.innerWidth >= 768;
-        const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const padding = isDesktop
           ? { right: 380, top: 40, bottom: 40, left: 40 }
           : { bottom: 260, top: 40, left: 20, right: 20 };
 
         if (isReducedMotion) {
-          map.jumpTo({ center: portFeature.geometry.coordinates, padding });
+          map.jumpTo({ center: portFeature.geometry.coordinates as [number, number], padding });
         } else {
           map.easeTo({
-            center: portFeature.geometry.coordinates,
+            center: portFeature.geometry.coordinates as [number, number],
             padding,
             duration: SELECTION_CAMERA.durationMs,
           });
         }
       }
+
+      // Update route opacity hierarchy for selected place
+      if (map.getLayer("historical-routes-line")) {
+        map.setPaintProperty("historical-routes-line", "line-opacity", [
+          "case",
+          [
+            "any",
+            ["==", ["get", "origin_place_id"], selection.id],
+            ["==", ["get", "destination_place_id"], selection.id],
+          ],
+          0.95,
+          0.12,
+        ]);
+        map.setPaintProperty("historical-routes-line", "line-width", [
+          "case",
+          [
+            "any",
+            ["==", ["get", "origin_place_id"], selection.id],
+            ["==", ["get", "destination_place_id"], selection.id],
+          ],
+          2.4,
+          1.4,
+        ]);
+        map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
+      }
     } else if (selection && selection.kind === "ship") {
       const routeFeature = routesData?.features.find((f) => f.properties.vessel_id === selection.id);
-      if (routeFeature) {
-        const originCoord = routeFeature.geometry.coordinates[0];
-        if (originCoord) {
-          const isDesktop = window.innerWidth >= 768;
-          const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          const padding = isDesktop
-            ? { right: 380, top: 40, bottom: 40, left: 40 }
-            : { bottom: 260, top: 40, left: 20, right: 20 };
+      if (routeFeature && routeFeature.geometry.coordinates.length >= 2) {
+        const bounds = new LngLatBounds();
+        for (const coord of routeFeature.geometry.coordinates) {
+          bounds.extend(coord as [number, number]);
+        }
 
-          if (isReducedMotion) {
-            map.jumpTo({ center: originCoord, padding });
-          } else {
-            map.easeTo({
-              center: originCoord,
-              padding,
-              duration: SELECTION_CAMERA.durationMs,
-            });
-          }
+        const padding = isDesktop
+          ? { right: 420, top: 70, bottom: 70, left: 60 }
+          : { bottom: 280, top: 50, left: 30, right: 30 };
+
+        if (isReducedMotion) {
+          map.fitBounds(bounds, { padding, maxZoom: 5.5, duration: 0 });
+        } else {
+          map.fitBounds(bounds, {
+            padding,
+            maxZoom: 5.5,
+            duration: SELECTION_CAMERA.durationMs,
+          });
         }
       }
-    }
 
-    // Synchronize active state in locator menu
-    locatorItems.forEach((btn) => {
-      const isSelected = btn.dataset.selectionId === selection?.id;
-      btn.setAttribute("aria-current", isSelected ? "true" : "false");
-    });
-  }
-
-  async function onMapReady(): Promise<void> {
-    if (!map || !container || container.dataset.mapReady === "true") return;
-    applyBasemapVisualPolicy(map);
-    await ensureProjectLayers(map);
-    container.dataset.mapReady = "true";
-    if (status) {
-      status.textContent = "Historical map ready.";
-      status.classList.add("sr-only");
-      status.classList.remove("map-viewport__status--error");
-    }
-
-    map.once("idle", () => {
-      container.dataset.mapIdle = "true";
-    });
-  }
-
-  if (container instanceof HTMLElement) {
-    try {
-      map = new Map({
-        container,
-        style: INITIAL_MAP_STYLE_URL,
-        center: INITIAL_MAP_VIEW.center,
-        zoom: INITIAL_MAP_VIEW.zoom,
-        bearing: 0,
-        pitch: 0,
-        maxPitch: 0,
-        dragRotate: false,
-        pitchWithRotate: false,
-        touchPitch: false,
-      });
-
-      map.addControl(new NavigationControl({ showCompass: false }), "top-right");
-      map.touchZoomRotate.disableRotation();
-
-      container.addEventListener(
-        "keydown",
-        (event) => {
-          if (
-            event instanceof KeyboardEvent &&
-            event.shiftKey &&
-            ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)
-          ) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-        },
-        { capture: true },
-      );
-
-      if (map.isStyleLoaded()) {
-        onMapReady();
-      } else {
-        map.once("style.load", onMapReady);
-        map.once("load", onMapReady);
+      // Update route paint property to highlight active vessel route
+      if (map.getLayer("historical-routes-line")) {
+        map.setPaintProperty("historical-routes-line", "line-opacity", [
+          "case",
+          ["==", ["get", "vessel_id"], selection.id],
+          1.0,
+          0.10,
+        ]);
+        map.setPaintProperty("historical-routes-line", "line-width", [
+          "case",
+          ["==", ["get", "vessel_id"], selection.id],
+          2.8,
+          1.4,
+        ]);
+        map.setPaintProperty("historical-routes-line", "line-color", [
+          "case",
+          ["==", ["get", "vessel_id"], selection.id],
+          "#c85a32",
+          "#7a5840",
+        ]);
       }
-
-      map.on("error", () => {
-        if (container.dataset.mapReady !== "true" && status) {
-          status.textContent =
-            "The basemap is temporarily unavailable. Historical places remain browsable via Browse Places.";
-          status.classList.remove("sr-only");
-          status.classList.add("map-viewport__status--error");
-        }
-      });
-
-      selectionStore.subscribe((selection) => {
-        syncMapToSelection(selection);
-      });
-    } catch {
-      if (status) {
-        status.textContent =
-          "The basemap is temporarily unavailable. Historical places remain browsable via Browse Places.";
-        status.classList.remove("sr-only");
-        status.classList.add("map-viewport__status--error");
+    } else {
+      // Default: Reset network styling
+      if (map.getLayer("historical-routes-line")) {
+        map.setPaintProperty("historical-routes-line", "line-opacity", 0.45);
+        map.setPaintProperty("historical-routes-line", "line-width", 1.8);
+        map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
       }
     }
   }
 
-  // Locator Browser Controls (Dropdown disclosure)
-  if (locatorToggle && locatorMenu) {
-    const toggleMenu = (open?: boolean, focusFirstItem: boolean = false) => {
-      const willOpen = open ?? locatorMenu.hidden;
-      locatorMenu.hidden = !willOpen;
-      locatorToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
-      if (willOpen && focusFirstItem) {
-        locatorItems[0]?.focus();
-      }
-    };
+  function openLocatorMenu(focusFirstItem = false): void {
+    if (!locatorMenu || !locatorToggle || !locatorBrowser) return;
+    locatorMenu.hidden = false;
+    locatorToggle.setAttribute("aria-expanded", "true");
+    locatorBrowser.classList.add("is-open");
+    if (focusFirstItem) {
+      locatorItems[0]?.focus();
+    }
+  }
+
+  function closeLocatorMenu(): void {
+    if (!locatorMenu || !locatorToggle || !locatorBrowser) return;
+    locatorMenu.hidden = true;
+    locatorToggle.setAttribute("aria-expanded", "false");
+    locatorBrowser.classList.remove("is-open");
+  }
+
+  function initLocatorBrowser(): void {
+    if (!locatorBrowser || !locatorToggle || !locatorMenu) return;
 
     locatorToggle.addEventListener("click", (e) => {
-      toggleMenu(undefined, e.detail === 0);
+      const isKeyboard = e.detail === 0;
+      const isExpanded = locatorToggle.getAttribute("aria-expanded") === "true";
+      if (isExpanded) {
+        closeLocatorMenu();
+      } else {
+        openLocatorMenu(isKeyboard);
+      }
     });
 
     locatorToggle.addEventListener("keydown", (e) => {
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        toggleMenu(true, true);
+        openLocatorMenu(true);
       }
+    });
+
+    locatorItems.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const placeId = btn.dataset.placeId;
+        if (placeId) {
+          recordSelectionTrigger({
+            modality: "pointer",
+            origin: "locator_menu",
+            returnTarget: locatorToggle,
+          });
+          selectionStore.set({ kind: "port", id: placeId });
+          closeLocatorMenu();
+          locatorToggle.focus();
+        }
+      });
     });
 
     locatorMenu.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
-        toggleMenu(false);
+        closeLocatorMenu();
         locatorToggle.focus();
         return;
       }
 
       const activeIdx = locatorItems.indexOf(document.activeElement as HTMLButtonElement);
+
       if (e.key === "Enter" || e.key === " ") {
         const item = document.activeElement as HTMLButtonElement;
         if (locatorItems.includes(item)) {
           e.preventDefault();
-          const selectionId = item.dataset.selectionId;
-          if (selectionId) {
+          const placeId = item.dataset.placeId;
+          if (placeId) {
             recordSelectionTrigger({
               modality: "keyboard",
               origin: "locator_menu",
               returnTarget: locatorToggle,
             });
-            selectionStore.set({ kind: "port", id: selectionId });
-            toggleMenu(false);
+            selectionStore.set({ kind: "port", id: placeId });
+            closeLocatorMenu();
           }
         }
         return;
@@ -526,31 +579,188 @@ const PLACES = [
       }
     });
 
-    document.addEventListener("click", (e) => {
-      if (!locatorBrowser?.contains(e.target as Node)) {
-        if (!locatorMenu.hidden) {
-          toggleMenu(false);
-        }
+    window.addEventListener("click", (e) => {
+      if (!locatorBrowser.contains(e.target as Node)) {
+        closeLocatorMenu();
       }
     });
-
-    locatorItems.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const selectionId = btn.dataset.selectionId;
-        if (selectionId) {
-          const isKeyboard = e.detail === 0;
-          recordSelectionTrigger({
-            modality: isKeyboard ? "keyboard" : "pointer",
-            origin: "locator_menu",
-            returnTarget: locatorToggle,
-          });
-          selectionStore.set({ kind: "port", id: selectionId });
-          toggleMenu(false);
-          if (!isKeyboard) {
-            locatorToggle.focus();
-          }
-        }
-      });
-    });
   }
+
+  initMap();
 </script>
+
+<style>
+  .map-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--cc-sea);
+    overflow: hidden;
+  }
+
+  .map-viewport__canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .map-viewport__canvas:focus-visible {
+    outline: 2px solid var(--cc-atlantic);
+    outline-offset: -2px;
+  }
+
+  .map-epistemic-legend {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.65rem;
+    background: color-mix(in srgb, var(--cc-paper) 92%, transparent);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+  }
+
+  .map-epistemic-legend__icon {
+    font-family: var(--cc-font-mono);
+    font-size: 0.9rem;
+    color: var(--cc-sand);
+    line-height: 1;
+  }
+
+  .map-epistemic-legend__text {
+    font-family: var(--cc-font-sans);
+    font-size: 0.68rem;
+    color: var(--cc-ink-muted);
+    letter-spacing: 0.01em;
+  }
+
+  .map-locator-browser {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .map-locator-browser__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-sm);
+    color: var(--cc-ink);
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .map-locator-browser__toggle:hover {
+    background: var(--cc-paper);
+    border-color: var(--cc-sand);
+  }
+
+  .map-locator-browser__toggle:focus-visible {
+    outline: 2px solid var(--cc-atlantic);
+    outline-offset: 2px;
+  }
+
+  .map-locator-browser__icon {
+    display: inline-flex;
+    color: var(--cc-sand);
+  }
+
+  .map-locator-browser__count {
+    color: var(--cc-ink-muted);
+    font-family: var(--cc-font-mono);
+    font-size: 0.7rem;
+  }
+
+  .map-locator-browser__menu {
+    margin-top: 0.35rem;
+    width: 260px;
+    max-height: 380px;
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-sm);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .map-locator-browser__menu[hidden] {
+    display: none;
+  }
+
+  .map-locator-browser__header {
+    padding: 0.6rem 0.85rem 0.4rem;
+    border-bottom: 1px solid var(--cc-line);
+    background: var(--cc-paper);
+  }
+
+  .map-locator-browser__caption {
+    font-family: var(--cc-font-mono);
+    font-size: 0.65rem;
+    color: var(--cc-ink-muted);
+  }
+
+  .map-locator-browser__list {
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0;
+  }
+
+  .map-locator-browser__item {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 0.45rem 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink);
+    cursor: pointer;
+    transition: background 120ms ease;
+  }
+
+  .map-locator-browser__item:hover,
+  .map-locator-browser__item:focus-visible {
+    background: color-mix(in srgb, var(--cc-paper) 70%, transparent);
+    outline: none;
+  }
+
+  .map-locator-browser__item-label {
+    font-weight: 500;
+  }
+
+  .map-locator-browser__item-region {
+    font-family: var(--cc-font-mono);
+    font-size: 0.65rem;
+    color: var(--cc-ink-muted);
+  }
+
+  @media (max-width: 767px) {
+    .map-locator-browser {
+      top: 0.75rem;
+      left: 0.75rem;
+    }
+    .map-epistemic-legend {
+      bottom: 4.5rem;
+      left: 0.75rem;
+    }
+  }
+</style>

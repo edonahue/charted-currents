@@ -152,7 +152,7 @@ async function runReviewSuite() {
     ws.onmessage = (evt) => {
       const data = JSON.parse(evt.data);
       if (data.method === "Runtime.exceptionThrown") {
-        console.error("[RUNTIME EXCEPTION]", data.params.exceptionDetails?.text || data.params.exceptionDetails);
+        console.error("[RUNTIME EXCEPTION]", data.params.exceptionDetails?.exception?.description || data.params.exceptionDetails?.text || data.params.exceptionDetails);
         uncaughtExceptions.push(data.params.exceptionDetails);
       }
     };

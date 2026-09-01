@@ -43,6 +43,273 @@
         "ast_2228_capture",
         "ast_2228_upstream_hca"
       ]
+    },
+    {
+      "id": "occ_ship_imlm_2154",
+      "source_record_id": "sr_imlm_ship_2154",
+      "raw_name": "Sarah Galley of London",
+      "raw_tonnage": "Unrecorded",
+      "raw_construction_place": "Unrecorded",
+      "reported_owner_residence": "Virginia",
+      "recorded_voyage_origin": "Barbados",
+      "recorded_voyage_destination": "London",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1703-05",
+      "assertion_ids": [
+        "ast_2154_name",
+        "ast_2154_owner",
+        "ast_2154_voyage",
+        "ast_2154_capture",
+        "ast_2154_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_2155",
+      "source_record_id": "sr_imlm_ship_2155",
+      "raw_name": "Stapleton",
+      "raw_tonnage": "Unrecorded",
+      "raw_construction_place": "Unrecorded",
+      "reported_owner_residence": "Bristoll",
+      "recorded_voyage_origin": "Antigua",
+      "recorded_voyage_destination": "Bristol",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1703-06",
+      "assertion_ids": [
+        "ast_2155_name",
+        "ast_2155_owner",
+        "ast_2155_voyage",
+        "ast_2155_capture",
+        "ast_2155_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_2144",
+      "source_record_id": "sr_imlm_ship_2144",
+      "raw_name": "Thomas & John of Bristoll",
+      "raw_tonnage": "80",
+      "raw_construction_place": "Bristoll",
+      "reported_owner_residence": "Bristoll",
+      "recorded_voyage_origin": "Island of Nevis",
+      "recorded_voyage_destination": "Bristol",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1702-08",
+      "assertion_ids": [
+        "ast_2144_name",
+        "ast_2144_tonnage",
+        "ast_2144_construction",
+        "ast_2144_owner",
+        "ast_2144_voyage",
+        "ast_2144_capture",
+        "ast_2144_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_2106",
+      "source_record_id": "sr_imlm_ship_2106",
+      "raw_name": "Samuel of London",
+      "raw_tonnage": "70",
+      "raw_construction_place": "English built",
+      "reported_owner_residence": "London",
+      "recorded_voyage_origin": "St Christopher",
+      "recorded_voyage_destination": "London",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1704-08",
+      "assertion_ids": [
+        "ast_2106_name",
+        "ast_2106_tonnage",
+        "ast_2106_construction",
+        "ast_2106_owner",
+        "ast_2106_voyage",
+        "ast_2106_capture",
+        "ast_2106_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_2098",
+      "source_record_id": "sr_imlm_ship_2098",
+      "raw_name": "Success of Boston",
+      "raw_tonnage": "45",
+      "raw_construction_place": "New England built",
+      "reported_owner_residence": "Boston",
+      "recorded_voyage_origin": "Montserrat",
+      "recorded_voyage_destination": "London",
+      "recorded_capture_location": "Guernsey",
+      "recorded_capture_date": "1704-09",
+      "assertion_ids": [
+        "ast_2098_name",
+        "ast_2098_tonnage",
+        "ast_2098_construction",
+        "ast_2098_owner",
+        "ast_2098_voyage",
+        "ast_2098_capture",
+        "ast_2098_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1511",
+      "source_record_id": "sr_imlm_ship_1511",
+      "raw_name": "John & Susanna of Bristoll",
+      "raw_tonnage": "Unrecorded",
+      "raw_construction_place": "Unrecorded",
+      "reported_owner_residence": "Bristol",
+      "recorded_voyage_origin": "Bristol",
+      "recorded_voyage_destination": "Barbados",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1705-06",
+      "assertion_ids": [
+        "ast_1511_name",
+        "ast_1511_owner",
+        "ast_1511_voyage",
+        "ast_1511_capture",
+        "ast_1511_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1245",
+      "source_record_id": "sr_imlm_ship_1245",
+      "raw_name": "St Francis de Rochelle",
+      "raw_tonnage": "75",
+      "raw_construction_place": "English built",
+      "reported_owner_residence": "Rochelle",
+      "recorded_voyage_origin": "St Domingo on the island of Hispaniola",
+      "recorded_voyage_destination": "Rochelle",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1709-12",
+      "assertion_ids": [
+        "ast_1245_name",
+        "ast_1245_tonnage",
+        "ast_1245_construction",
+        "ast_1245_owner",
+        "ast_1245_voyage",
+        "ast_1245_capture",
+        "ast_1245_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1993",
+      "source_record_id": "sr_imlm_ship_1993",
+      "raw_name": "St Peter Galley",
+      "raw_tonnage": "120",
+      "raw_construction_place": "English built",
+      "reported_owner_residence": "Rochelle",
+      "recorded_voyage_origin": "St Domingo on the Island of Hispaniola",
+      "recorded_voyage_destination": "Rochelle",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1711-03",
+      "assertion_ids": [
+        "ast_1993_name",
+        "ast_1993_tonnage",
+        "ast_1993_construction",
+        "ast_1993_owner",
+        "ast_1993_voyage",
+        "ast_1993_capture",
+        "ast_1993_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1516",
+      "source_record_id": "sr_imlm_ship_1516",
+      "raw_name": "John & James de Rochell",
+      "raw_tonnage": "90",
+      "raw_construction_place": "Boston in New England",
+      "reported_owner_residence": "Martinicoe",
+      "recorded_voyage_origin": "Martinicoe",
+      "recorded_voyage_destination": "Rochelle",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1705-04",
+      "assertion_ids": [
+        "ast_1516_name",
+        "ast_1516_tonnage",
+        "ast_1516_construction",
+        "ast_1516_owner",
+        "ast_1516_voyage",
+        "ast_1516_capture",
+        "ast_1516_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1278",
+      "source_record_id": "sr_imlm_ship_1278",
+      "raw_name": "Francis Ameriquain de Nantes",
+      "raw_tonnage": "90",
+      "raw_construction_place": "English built",
+      "reported_owner_residence": "Nantes",
+      "recorded_voyage_origin": "the river Nantes",
+      "recorded_voyage_destination": "Martinique in the West Indies",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1710-10",
+      "assertion_ids": [
+        "ast_1278_name",
+        "ast_1278_tonnage",
+        "ast_1278_construction",
+        "ast_1278_owner",
+        "ast_1278_voyage",
+        "ast_1278_capture",
+        "ast_1278_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1582",
+      "source_record_id": "sr_imlm_ship_1582",
+      "raw_name": "St John Baptiste of St Augustine",
+      "raw_tonnage": "25",
+      "raw_construction_place": "english built",
+      "reported_owner_residence": "St Augustine",
+      "recorded_voyage_origin": "Havana",
+      "recorded_voyage_destination": "St Augustine",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1712-06",
+      "assertion_ids": [
+        "ast_1582_name",
+        "ast_1582_tonnage",
+        "ast_1582_construction",
+        "ast_1582_owner",
+        "ast_1582_voyage",
+        "ast_1582_capture",
+        "ast_1582_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1964",
+      "source_record_id": "sr_imlm_ship_1964",
+      "raw_name": "St Patrick & St Paul",
+      "raw_tonnage": "250",
+      "raw_construction_place": "New England built",
+      "reported_owner_residence": "Marseilles",
+      "recorded_voyage_origin": "Carthegena",
+      "recorded_voyage_destination": "Marseille",
+      "recorded_capture_location": "Port Mahon, Minorca",
+      "recorded_capture_date": "1709-08",
+      "assertion_ids": [
+        "ast_1964_name",
+        "ast_1964_tonnage",
+        "ast_1964_construction",
+        "ast_1964_owner",
+        "ast_1964_voyage",
+        "ast_1964_capture",
+        "ast_1964_upstream_hca"
+      ]
+    },
+    {
+      "id": "occ_ship_imlm_1982",
+      "source_record_id": "sr_imlm_ship_1982",
+      "raw_name": "Port Royal of Biddeford",
+      "raw_tonnage": "40",
+      "raw_construction_place": "near Biddeford",
+      "reported_owner_residence": "Biddeford",
+      "recorded_voyage_origin": "South Carolina",
+      "recorded_voyage_destination": "Biddeford, Devon",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1709-06",
+      "assertion_ids": [
+        "ast_1982_name",
+        "ast_1982_tonnage",
+        "ast_1982_construction",
+        "ast_1982_owner",
+        "ast_1982_voyage",
+        "ast_1982_capture",
+        "ast_1982_upstream_hca"
+      ]
     }
   ],
   "crew_occurrences": [
@@ -68,8 +335,8 @@
       "first_name": "Robert",
       "last_name": "Ashworth",
       "rank_as_recorded": "carpenter navis",
-      "birthplace_as_recorded": "Dexlford",
-      "residence_as_recorded": "Dexlford",
+      "birthplace_as_recorded": "Deptford",
+      "residence_as_recorded": "Deptford",
       "subject_of_as_recorded": "Queen of Great Britain",
       "signature_recorded": "Signed",
       "assertion_ids": [
@@ -107,6 +374,336 @@
       "assertion_ids": [
         "ast_crew_5508"
       ]
+    },
+    {
+      "id": "occ_crew_5320",
+      "source_record_id": "sr_imlm_crew_5320",
+      "ship_occurrence_id": "occ_ship_imlm_2154",
+      "first_name": "William",
+      "last_name": "Gullifer",
+      "rank_as_recorded": "mariner",
+      "birthplace_as_recorded": "London",
+      "residence_as_recorded": "London",
+      "subject_of_as_recorded": "Queen of England",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5320"
+      ]
+    },
+    {
+      "id": "occ_crew_5321",
+      "source_record_id": "sr_imlm_crew_5321",
+      "ship_occurrence_id": "occ_ship_imlm_2155",
+      "first_name": "Thomas",
+      "last_name": "Morgan",
+      "rank_as_recorded": "naut",
+      "birthplace_as_recorded": "Bristol",
+      "residence_as_recorded": "Bristol",
+      "subject_of_as_recorded": "Queen of England",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5321"
+      ]
+    },
+    {
+      "id": "occ_crew_5301",
+      "source_record_id": "sr_imlm_crew_5301",
+      "ship_occurrence_id": "occ_ship_imlm_2144",
+      "first_name": "Richard",
+      "last_name": "Davis",
+      "rank_as_recorded": "master",
+      "birthplace_as_recorded": "Bristol",
+      "residence_as_recorded": "Bristol",
+      "subject_of_as_recorded": "Queen of England",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5301"
+      ]
+    },
+    {
+      "id": "occ_crew_5189",
+      "source_record_id": "sr_imlm_crew_5189",
+      "ship_occurrence_id": "occ_ship_imlm_2106",
+      "first_name": "James",
+      "last_name": "Ramsay",
+      "rank_as_recorded": "mate",
+      "birthplace_as_recorded": "Dundee",
+      "residence_as_recorded": "London",
+      "subject_of_as_recorded": "Queen of Great Britain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5189"
+      ]
+    },
+    {
+      "id": "occ_crew_5190",
+      "source_record_id": "sr_imlm_crew_5190",
+      "ship_occurrence_id": "occ_ship_imlm_2106",
+      "first_name": "William",
+      "last_name": "Smith",
+      "rank_as_recorded": "carpenter",
+      "birthplace_as_recorded": "Hull",
+      "residence_as_recorded": "Hull",
+      "subject_of_as_recorded": "Queen of Great Britain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5190"
+      ]
+    },
+    {
+      "id": "occ_crew_5174",
+      "source_record_id": "sr_imlm_crew_5174",
+      "ship_occurrence_id": "occ_ship_imlm_2098",
+      "first_name": "Benjamin",
+      "last_name": "Farnum",
+      "rank_as_recorded": "naut",
+      "birthplace_as_recorded": "Boston",
+      "residence_as_recorded": "Boston",
+      "subject_of_as_recorded": "Queen of England",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5174"
+      ]
+    },
+    {
+      "id": "occ_crew_3816",
+      "source_record_id": "sr_imlm_crew_3816",
+      "ship_occurrence_id": "occ_ship_imlm_1511",
+      "first_name": "George",
+      "last_name": "Cranfield",
+      "rank_as_recorded": "master",
+      "birthplace_as_recorded": "Bristol",
+      "residence_as_recorded": "Bristol",
+      "subject_of_as_recorded": "Queen of England",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3816"
+      ]
+    },
+    {
+      "id": "occ_crew_3817",
+      "source_record_id": "sr_imlm_crew_3817",
+      "ship_occurrence_id": "occ_ship_imlm_1511",
+      "first_name": "Henry",
+      "last_name": "Baker",
+      "rank_as_recorded": "mate",
+      "birthplace_as_recorded": "Bideford",
+      "residence_as_recorded": "Bristol",
+      "subject_of_as_recorded": "Queen of England",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3817"
+      ]
+    },
+    {
+      "id": "occ_crew_3037",
+      "source_record_id": "sr_imlm_crew_3037",
+      "ship_occurrence_id": "occ_ship_imlm_1245",
+      "first_name": "Jean",
+      "last_name": "Lafont",
+      "rank_as_recorded": "capitaine",
+      "birthplace_as_recorded": "La Rochelle",
+      "residence_as_recorded": "La Rochelle",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3037"
+      ]
+    },
+    {
+      "id": "occ_crew_3038",
+      "source_record_id": "sr_imlm_crew_3038",
+      "ship_occurrence_id": "occ_ship_imlm_1245",
+      "first_name": "Pierre",
+      "last_name": "Masson",
+      "rank_as_recorded": "lieutenant",
+      "birthplace_as_recorded": "Bordeaux",
+      "residence_as_recorded": "La Rochelle",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3038"
+      ]
+    },
+    {
+      "id": "occ_crew_4901",
+      "source_record_id": "sr_imlm_crew_4901",
+      "ship_occurrence_id": "occ_ship_imlm_1993",
+      "first_name": "Jacques",
+      "last_name": "Peron",
+      "rank_as_recorded": "chirurgien",
+      "birthplace_as_recorded": "Nantes",
+      "residence_as_recorded": "La Rochelle",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4901"
+      ]
+    },
+    {
+      "id": "occ_crew_4902",
+      "source_record_id": "sr_imlm_crew_4902",
+      "ship_occurrence_id": "occ_ship_imlm_1993",
+      "first_name": "Francois",
+      "last_name": "Martin",
+      "rank_as_recorded": "matelot",
+      "birthplace_as_recorded": "St Malo",
+      "residence_as_recorded": "La Rochelle",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4902"
+      ]
+    },
+    {
+      "id": "occ_crew_3832",
+      "source_record_id": "sr_imlm_crew_3832",
+      "ship_occurrence_id": "occ_ship_imlm_1516",
+      "first_name": "Guillaume",
+      "last_name": "Giraud",
+      "rank_as_recorded": "matelot",
+      "birthplace_as_recorded": "Martinique",
+      "residence_as_recorded": "Martinique",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3832"
+      ]
+    },
+    {
+      "id": "occ_crew_3833",
+      "source_record_id": "sr_imlm_crew_3833",
+      "ship_occurrence_id": "occ_ship_imlm_1516",
+      "first_name": "Etienne",
+      "last_name": "Dupont",
+      "rank_as_recorded": "charpentier",
+      "birthplace_as_recorded": "Nantes",
+      "residence_as_recorded": "Martinique",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3833"
+      ]
+    },
+    {
+      "id": "occ_crew_3145",
+      "source_record_id": "sr_imlm_crew_3145",
+      "ship_occurrence_id": "occ_ship_imlm_1278",
+      "first_name": "Michel",
+      "last_name": "Bouyer",
+      "rank_as_recorded": "second capitaine",
+      "birthplace_as_recorded": "Nantes",
+      "residence_as_recorded": "Nantes",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3145"
+      ]
+    },
+    {
+      "id": "occ_crew_3146",
+      "source_record_id": "sr_imlm_crew_3146",
+      "ship_occurrence_id": "occ_ship_imlm_1278",
+      "first_name": "Antoine",
+      "last_name": "Richard",
+      "rank_as_recorded": "matelot",
+      "birthplace_as_recorded": "Rennes",
+      "residence_as_recorded": "Nantes",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_3146"
+      ]
+    },
+    {
+      "id": "occ_crew_4001",
+      "source_record_id": "sr_imlm_crew_4001",
+      "ship_occurrence_id": "occ_ship_imlm_1582",
+      "first_name": "Juan",
+      "last_name": "Rodriguez",
+      "rank_as_recorded": "patron",
+      "birthplace_as_recorded": "San Agustin",
+      "residence_as_recorded": "San Agustin",
+      "subject_of_as_recorded": "King of Spain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4001"
+      ]
+    },
+    {
+      "id": "occ_crew_4002",
+      "source_record_id": "sr_imlm_crew_4002",
+      "ship_occurrence_id": "occ_ship_imlm_1582",
+      "first_name": "Manuel",
+      "last_name": "Gomez",
+      "rank_as_recorded": "marinero",
+      "birthplace_as_recorded": "La Habana",
+      "residence_as_recorded": "San Agustin",
+      "subject_of_as_recorded": "King of Spain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4002"
+      ]
+    },
+    {
+      "id": "occ_crew_4821",
+      "source_record_id": "sr_imlm_crew_4821",
+      "ship_occurrence_id": "occ_ship_imlm_1964",
+      "first_name": "Honoré",
+      "last_name": "Sauveur",
+      "rank_as_recorded": "capitaine",
+      "birthplace_as_recorded": "Marseille",
+      "residence_as_recorded": "Marseille",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4821"
+      ]
+    },
+    {
+      "id": "occ_crew_4822",
+      "source_record_id": "sr_imlm_crew_4822",
+      "ship_occurrence_id": "occ_ship_imlm_1964",
+      "first_name": "Laurent",
+      "last_name": "Blanc",
+      "rank_as_recorded": "pilote",
+      "birthplace_as_recorded": "Toulon",
+      "residence_as_recorded": "Marseille",
+      "subject_of_as_recorded": "King of France",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4822"
+      ]
+    },
+    {
+      "id": "occ_crew_4873",
+      "source_record_id": "sr_imlm_crew_4873",
+      "ship_occurrence_id": "occ_ship_imlm_1982",
+      "first_name": "William",
+      "last_name": "Horwood",
+      "rank_as_recorded": "master",
+      "birthplace_as_recorded": "Bideford",
+      "residence_as_recorded": "Bideford",
+      "subject_of_as_recorded": "Queen of Great Britain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4873"
+      ]
+    },
+    {
+      "id": "occ_crew_4874",
+      "source_record_id": "sr_imlm_crew_4874",
+      "ship_occurrence_id": "occ_ship_imlm_1982",
+      "first_name": "John",
+      "last_name": "Dennis",
+      "rank_as_recorded": "naut",
+      "birthplace_as_recorded": "Appledore",
+      "residence_as_recorded": "Bideford",
+      "subject_of_as_recorded": "Queen of Great Britain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_4874"
+      ]
     }
   ],
   "ships": [
@@ -135,6 +732,175 @@
       "owner_display": "London",
       "voyage_display": "Jamaica → London",
       "capture_display": "Plymouth, Devon (September 1702)"
+    },
+    {
+      "id": "ship_sarah_galley_1703",
+      "canonical_name": "Sarah Galley of London",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_2154"
+      ],
+      "reported_burden_display": "Unrecorded burden",
+      "construction_display": "Unrecorded construction origin",
+      "owner_display": "Virginia",
+      "voyage_display": "Barbados → London",
+      "capture_display": "Plymouth, Devon (May 1703)"
+    },
+    {
+      "id": "ship_stapleton_1703",
+      "canonical_name": "Stapleton",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_2155"
+      ],
+      "reported_burden_display": "Unrecorded burden",
+      "construction_display": "Unrecorded construction origin",
+      "owner_display": "Bristol",
+      "voyage_display": "Antigua → Bristol",
+      "capture_display": "Plymouth, Devon (June 1703)"
+    },
+    {
+      "id": "ship_thomas_and_john_1702",
+      "canonical_name": "Thomas & John of Bristoll",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_2144"
+      ],
+      "reported_burden_display": "80 tons reported burden",
+      "construction_display": "Bristol built",
+      "owner_display": "Bristol",
+      "voyage_display": "Nevis → Bristol",
+      "capture_display": "Plymouth, Devon (August 1702)"
+    },
+    {
+      "id": "ship_samuel_1704",
+      "canonical_name": "Samuel of London",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_2106"
+      ],
+      "reported_burden_display": "70 tons reported burden",
+      "construction_display": "English built",
+      "owner_display": "London",
+      "voyage_display": "St Christopher → London",
+      "capture_display": "Plymouth, Devon (August 1704)"
+    },
+    {
+      "id": "ship_success_of_boston_1704",
+      "canonical_name": "Success of Boston",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_2098"
+      ],
+      "reported_burden_display": "45 tons reported burden",
+      "construction_display": "New England built",
+      "owner_display": "Boston",
+      "voyage_display": "Montserrat → London",
+      "capture_display": "Guernsey (September 1704)"
+    },
+    {
+      "id": "ship_john_and_susanna_1705",
+      "canonical_name": "John & Susanna of Bristoll",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1511"
+      ],
+      "reported_burden_display": "Unrecorded burden",
+      "construction_display": "Unrecorded construction origin",
+      "owner_display": "Bristol",
+      "voyage_display": "Bristol → Barbados",
+      "capture_display": "Plymouth, Devon (June 1705)"
+    },
+    {
+      "id": "ship_st_francis_de_rochelle_1709",
+      "canonical_name": "St Francis de Rochelle",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1245"
+      ],
+      "reported_burden_display": "75 tons reported burden",
+      "construction_display": "English built",
+      "owner_display": "La Rochelle",
+      "voyage_display": "Saint-Domingue → La Rochelle",
+      "capture_display": "Plymouth, Devon (December 1709)"
+    },
+    {
+      "id": "ship_st_peter_galley_1711",
+      "canonical_name": "St Peter Galley",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1993"
+      ],
+      "reported_burden_display": "120 tons reported burden",
+      "construction_display": "English built",
+      "owner_display": "La Rochelle",
+      "voyage_display": "Saint-Domingue → La Rochelle",
+      "capture_display": "Plymouth, Devon (March 1711)"
+    },
+    {
+      "id": "ship_john_and_james_1705",
+      "canonical_name": "John & James de Rochell",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1516"
+      ],
+      "reported_burden_display": "90 tons reported burden",
+      "construction_display": "Boston built (New England)",
+      "owner_display": "Martinique",
+      "voyage_display": "Martinique → La Rochelle",
+      "capture_display": "Plymouth, Devon (April 1705)"
+    },
+    {
+      "id": "ship_francis_ameriquain_1710",
+      "canonical_name": "Francis Ameriquain de Nantes",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1278"
+      ],
+      "reported_burden_display": "90 tons reported burden",
+      "construction_display": "English built",
+      "owner_display": "Nantes",
+      "voyage_display": "Nantes → Martinique",
+      "capture_display": "Plymouth, Devon (October 1710)"
+    },
+    {
+      "id": "ship_st_john_baptiste_augustine_1712",
+      "canonical_name": "St John Baptiste of St Augustine",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1582"
+      ],
+      "reported_burden_display": "25 tons reported burden",
+      "construction_display": "English built",
+      "owner_display": "St Augustine",
+      "voyage_display": "Havana → St Augustine",
+      "capture_display": "Plymouth, Devon (June 1712)"
+    },
+    {
+      "id": "ship_st_patrick_and_st_paul_1709",
+      "canonical_name": "St Patrick & St Paul",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1964"
+      ],
+      "reported_burden_display": "250 tons reported burden",
+      "construction_display": "New England built",
+      "owner_display": "Marseille",
+      "voyage_display": "Cartagena → Marseille",
+      "capture_display": "Port Mahon, Minorca (August 1709)"
+    },
+    {
+      "id": "ship_port_royal_biddeford_1709",
+      "canonical_name": "Port Royal of Biddeford",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_1982"
+      ],
+      "reported_burden_display": "40 tons reported burden",
+      "construction_display": "Bideford built",
+      "owner_display": "Bideford",
+      "voyage_display": "South Carolina → Bideford",
+      "capture_display": "Plymouth, Devon (June 1709)"
     }
   ],
   "entity_resolution_edges": [
@@ -159,6 +925,146 @@
         "ast_2228_tonnage",
         "ast_2228_voyage"
       ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_2154",
+      "target_entity_id": "ship_sarah_galley_1703",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_2154_name",
+        "ast_2154_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_2155",
+      "target_entity_id": "ship_stapleton_1703",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_2155_name",
+        "ast_2155_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_2144",
+      "target_entity_id": "ship_thomas_and_john_1702",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_2144_name",
+        "ast_2144_tonnage",
+        "ast_2144_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_2106",
+      "target_entity_id": "ship_samuel_1704",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_2106_name",
+        "ast_2106_tonnage",
+        "ast_2106_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_2098",
+      "target_entity_id": "ship_success_of_boston_1704",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_2098_name",
+        "ast_2098_tonnage",
+        "ast_2098_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1511",
+      "target_entity_id": "ship_john_and_susanna_1705",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1511_name",
+        "ast_1511_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1245",
+      "target_entity_id": "ship_st_francis_de_rochelle_1709",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1245_name",
+        "ast_1245_tonnage",
+        "ast_1245_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1993",
+      "target_entity_id": "ship_st_peter_galley_1711",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1993_name",
+        "ast_1993_tonnage",
+        "ast_1993_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1516",
+      "target_entity_id": "ship_john_and_james_1705",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1516_name",
+        "ast_1516_tonnage",
+        "ast_1516_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1278",
+      "target_entity_id": "ship_francis_ameriquain_1710",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1278_name",
+        "ast_1278_tonnage",
+        "ast_1278_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1582",
+      "target_entity_id": "ship_st_john_baptiste_augustine_1712",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1582_name",
+        "ast_1582_tonnage",
+        "ast_1582_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1964",
+      "target_entity_id": "ship_st_patrick_and_st_paul_1709",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1964_name",
+        "ast_1964_tonnage",
+        "ast_1964_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_1982",
+      "target_entity_id": "ship_port_royal_biddeford_1709",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_1982_name",
+        "ast_1982_tonnage",
+        "ast_1982_voyage"
+      ]
     }
   ],
   "places": [
@@ -173,7 +1079,7 @@
         18.1096
       ],
       "geometry_provenance": "modern_generalized_navigation_reference",
-      "notes": "Island centroid reference. Represents the colony/island as recorded in transatlantic voyage origins (IMLM 2052, 2228).",
+      "notes": "Island centroid reference. Represents the colony/island recorded in transatlantic voyage origins (IMLM 2052, 2228).",
       "source_assertion_ids": [
         "ast_2052_voyage",
         "ast_2228_voyage",
@@ -209,10 +1115,31 @@
         51.5074
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Port of London destination recorded in transatlantic voyage records (IMLM 2052, 2228).",
+      "notes": "Port of London transatlantic destination (IMLM 2052, 2228, 2154, 2106, 2098).",
       "source_assertion_ids": [
         "ast_2052_voyage",
-        "ast_2228_voyage"
+        "ast_2228_voyage",
+        "ast_2154_voyage",
+        "ast_2106_voyage",
+        "ast_2098_voyage"
+      ]
+    },
+    {
+      "id": "place_bristol",
+      "canonical_name": "Bristol",
+      "raw_source_name": "Bristoll",
+      "region": "England",
+      "geographic_precision": "port_city",
+      "coordinates": [
+        -2.5879,
+        51.4545
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "Major western English port connected to West Indies sugar trade (IMLM 2155, 2144, 1511).",
+      "source_assertion_ids": [
+        "ast_2155_voyage",
+        "ast_2144_voyage",
+        "ast_1511_voyage"
       ]
     },
     {
@@ -242,9 +1169,297 @@
         50.3755
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Devon port and naval station; recorded capture location of William (September 1702).",
+      "notes": "Primary Channel naval port and Admiralty prize station (IMLM 2228, 2154, 2155, 2144, 2106, 1511, 1245, 1993, 1516, 1278, 1582, 1982).",
       "source_assertion_ids": [
-        "ast_2228_capture"
+        "ast_2228_capture",
+        "ast_2154_capture",
+        "ast_2155_capture",
+        "ast_2144_capture",
+        "ast_2106_capture",
+        "ast_1511_capture",
+        "ast_1245_capture",
+        "ast_1993_capture",
+        "ast_1516_capture",
+        "ast_1278_capture",
+        "ast_1582_capture",
+        "ast_1982_capture"
+      ]
+    },
+    {
+      "id": "place_barbados",
+      "canonical_name": "Barbados",
+      "raw_source_name": "Barbados",
+      "region": "Windward Islands",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -59.5432,
+        13.1939
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "English sugar colony island reference (IMLM 2154, 1511).",
+      "source_assertion_ids": [
+        "ast_2154_voyage",
+        "ast_1511_voyage"
+      ]
+    },
+    {
+      "id": "place_antigua",
+      "canonical_name": "Antigua",
+      "raw_source_name": "Antigua",
+      "region": "Leeward Islands",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -61.7964,
+        17.0608
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "Leeward Islands colony reference (IMLM 2155).",
+      "source_assertion_ids": [
+        "ast_2155_voyage"
+      ]
+    },
+    {
+      "id": "place_nevis",
+      "canonical_name": "Nevis",
+      "raw_source_name": "Island of Nevis",
+      "region": "Leeward Islands",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -62.5804,
+        17.1551
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "Leeward Islands sugar island reference (IMLM 2144).",
+      "source_assertion_ids": [
+        "ast_2144_voyage"
+      ]
+    },
+    {
+      "id": "place_st_christopher",
+      "canonical_name": "St Christopher (St Kitts)",
+      "raw_source_name": "St Christopher in the West Indies",
+      "region": "Leeward Islands",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -62.783,
+        17.3578
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "Leeward Islands island reference (IMLM 2106).",
+      "source_assertion_ids": [
+        "ast_2106_voyage"
+      ]
+    },
+    {
+      "id": "place_montserrat",
+      "canonical_name": "Montserrat",
+      "raw_source_name": "Montserrat",
+      "region": "Leeward Islands",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -62.1874,
+        16.7425
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "Leeward Islands island reference (IMLM 2098).",
+      "source_assertion_ids": [
+        "ast_2098_voyage"
+      ]
+    },
+    {
+      "id": "place_st_domingo",
+      "canonical_name": "Saint-Domingue (Hispaniola)",
+      "raw_source_name": "St Domingo on the island of Hispaniola",
+      "region": "Greater Antilles",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -69.9312,
+        18.4861
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "Hispaniola French/Spanish colony reference (IMLM 1245, 1993).",
+      "source_assertion_ids": [
+        "ast_1245_voyage",
+        "ast_1993_voyage"
+      ]
+    },
+    {
+      "id": "place_martinique",
+      "canonical_name": "Martinique",
+      "raw_source_name": "Martinicoe in the West Indies",
+      "region": "Windward Islands",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -61.0242,
+        14.6415
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "French West Indies island reference (IMLM 1516, 1278).",
+      "source_assertion_ids": [
+        "ast_1516_voyage",
+        "ast_1278_voyage"
+      ]
+    },
+    {
+      "id": "place_havana",
+      "canonical_name": "Havana",
+      "raw_source_name": "Havana",
+      "region": "Cuba",
+      "geographic_precision": "port_city",
+      "coordinates": [
+        -82.3666,
+        23.1136
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "Spanish colonial hub and fleet rendezvous (IMLM 1582).",
+      "source_assertion_ids": [
+        "ast_1582_voyage"
+      ]
+    },
+    {
+      "id": "place_st_augustine",
+      "canonical_name": "St Augustine",
+      "raw_source_name": "St Augustine",
+      "region": "Florida",
+      "geographic_precision": "populated_place",
+      "coordinates": [
+        -81.3124,
+        29.8947
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "Spanish presidio and regional port in Florida (IMLM 1582).",
+      "source_assertion_ids": [
+        "ast_1582_voyage"
+      ]
+    },
+    {
+      "id": "place_cartagena",
+      "canonical_name": "Cartagena",
+      "raw_source_name": "Carthegena",
+      "region": "Spanish Main",
+      "geographic_precision": "port_city",
+      "coordinates": [
+        -75.5144,
+        10.391
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "Spanish Main fortified port and treasure terminal (IMLM 1964).",
+      "source_assertion_ids": [
+        "ast_1964_voyage"
+      ]
+    },
+    {
+      "id": "place_marseille",
+      "canonical_name": "Marseille",
+      "raw_source_name": "Marseille",
+      "region": "France",
+      "geographic_precision": "port_city",
+      "coordinates": [
+        5.3698,
+        43.2965
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "French Mediterranean port destination (IMLM 1964).",
+      "source_assertion_ids": [
+        "ast_1964_voyage"
+      ]
+    },
+    {
+      "id": "place_rochelle",
+      "canonical_name": "La Rochelle",
+      "raw_source_name": "Rochelle",
+      "region": "France",
+      "geographic_precision": "port_city",
+      "coordinates": [
+        -1.1511,
+        46.1603
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "French Atlantic port destination for West Indies trade (IMLM 1245, 1993, 1516).",
+      "source_assertion_ids": [
+        "ast_1245_voyage",
+        "ast_1993_voyage",
+        "ast_1516_voyage"
+      ]
+    },
+    {
+      "id": "place_nantes",
+      "canonical_name": "Nantes",
+      "raw_source_name": "the river Nantes",
+      "region": "France",
+      "geographic_precision": "port_city",
+      "coordinates": [
+        -1.5536,
+        47.2184
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "French Atlantic river port origin (IMLM 1278).",
+      "source_assertion_ids": [
+        "ast_1278_voyage"
+      ]
+    },
+    {
+      "id": "place_south_carolina",
+      "canonical_name": "South Carolina",
+      "raw_source_name": "South Carolina",
+      "region": "North America",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -80.945,
+        33.8361
+      ],
+      "geometry_provenance": "modern_generalized_navigation_reference",
+      "notes": "North American colony origin (IMLM 1982).",
+      "source_assertion_ids": [
+        "ast_1982_voyage"
+      ]
+    },
+    {
+      "id": "place_biddeford",
+      "canonical_name": "Bideford, Devon",
+      "raw_source_name": "Biddeford, Devon",
+      "region": "England",
+      "geographic_precision": "port_town",
+      "coordinates": [
+        -4.2098,
+        51.0185
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "North Devon port destination (IMLM 1982).",
+      "source_assertion_ids": [
+        "ast_1982_voyage"
+      ]
+    },
+    {
+      "id": "place_guernsey",
+      "canonical_name": "Guernsey",
+      "raw_source_name": "Guernsey",
+      "region": "Channel Islands",
+      "geographic_precision": "colony_or_island",
+      "coordinates": [
+        -2.5853,
+        49.4482
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "Channel Island privateering and prize station (IMLM 2098).",
+      "source_assertion_ids": [
+        "ast_2098_capture"
+      ]
+    },
+    {
+      "id": "place_port_mahon",
+      "canonical_name": "Port Mahon, Minorca",
+      "raw_source_name": "Port Mahon",
+      "region": "Mediterranean",
+      "geographic_precision": "port_town",
+      "coordinates": [
+        4.2658,
+        39.889
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "Mediterranean naval base and prize station (IMLM 1964).",
+      "source_assertion_ids": [
+        "ast_1964_capture"
       ]
     }
   ],
@@ -264,7 +1479,7 @@
       "holding_institution": "Library of Congress Geography and Map Division",
       "call_number": "G4960 1684 .B6",
       "digital_id": "g4960.ct008911",
-      "item_url": "http://www.loc.gov/item/99463761/",
+      "item_url": "https://www.loc.gov/item/99463761/",
       "rights_state": "open_public_domain",
       "credit_line": "Library of Congress, Geography and Map Division",
       "asset_path": "assets/visuals/bochart-knollis-jamaica-1684.jpg",

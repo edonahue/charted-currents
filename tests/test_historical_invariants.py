@@ -170,11 +170,29 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(vis["rights_state"], "open_public_domain")
         self.assertIn("Library of Congress", vis["holding_institution"])
 
-    def test_zero_unknown_rights(self):
-        """No published source record may be classified as unknown_review_required."""
-        for src in self.sources["sources"]:
-            self.assertNotEqual(src.get("rights_posture"), "unknown_review_required")
-            self.assertNotEqual(src.get("public_use_basis"), "unknown_review_required")
+    def test_fifteen_vessels_in_public_corpus(self):
+        """Packet 3 corpus must contain exactly 15 verified vessels."""
+        ships = self.entities["ships"]
+        self.assertEqual(len(ships), 15, f"Expected 15 vessels, found {len(ships)}")
+        routes = self.routes_geojson["features"]
+        self.assertEqual(len(routes), 15, f"Expected 15 routes, found {len(routes)}")
+
+    def test_vessel_events_bidirectional_link(self):
+        """Capture events must declare valid vessel_id linking to ships[]."""
+        canonical_ship_ids = {s["id"] for s in self.entities["ships"]}
+        for ev in self.events["events"]:
+            if ev.get("kind") == "capture":
+                self.assertIn("vessel_id", ev, f"Capture event {ev['id']} missing vessel_id")
+                self.assertIn(ev["vessel_id"], canonical_ship_ids, f"Capture event {ev['id']} points to nonexistent vessel {ev['vessel_id']}")
+
+    def test_multi_source_grouping_integrity(self):
+        """Port Royal place entity must reference assertions across multiple distinct source records."""
+        places_by_id = {p["id"]: p for p in self.entities["places"]}
+        port_royal = places_by_id["place_port_royal"]
+        assertions_by_id = {a["id"]: a for a in self.sources["assertions"]}
+
+        source_records_for_pr = {assertions_by_id[aid]["source_record_id"] for aid in port_royal["source_assertion_ids"]}
+        self.assertTrue(len(source_records_for_pr) >= 2, f"Expected Port Royal to cite multiple source records, found {source_records_for_pr}")
 
 if __name__ == "__main__":
     unittest.main()

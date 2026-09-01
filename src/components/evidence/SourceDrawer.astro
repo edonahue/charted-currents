@@ -2,8 +2,8 @@
 /**
  * src/components/evidence/SourceDrawer.astro
  *
- * Sourced archival provenance drawer. Displays assertion-driven provenance:
- * directly observed source records, explicit inspection states, and upstream archival references.
+ * Sourced archival provenance drawer. Displays multi-source evidence grouped
+ * by source record, explicit inspection states, and human-readable assertions.
  */
 ---
 
@@ -19,7 +19,7 @@
   <div class="source-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="source-drawer-title">
     <header class="source-drawer-header">
       <div class="source-drawer-header__kicker-wrap">
-        <p class="panel-kicker">Archival Provenance</p>
+        <p class="panel-kicker">Evidence & Provenance</p>
       </div>
       <button
         type="button"
@@ -36,105 +36,23 @@
 
     <div class="source-drawer-content">
       <div class="source-drawer-title-group">
-        <h2 id="source-drawer-title" class="source-drawer-title" data-source-title tabindex="-1"></h2>
-        <p class="source-drawer-subtitle" data-source-subtitle></p>
+        <h2 id="source-drawer-title" class="source-drawer-title" data-source-title tabindex="-1">
+          Historical Evidence & Provenance
+        </h2>
+        <p class="source-drawer-subtitle" data-source-subtitle>
+          Sourced archival depositions, contemporary publications, and cartographic references.
+        </p>
       </div>
 
-      <div class="source-drawer-body">
-        <section class="inspector-section" aria-label="Archive details">
-          <p class="panel-kicker">Observed Source Record</p>
-          <dl class="inspector-meta">
-            <div class="inspector-meta__row">
-              <dt>Repository / Host</dt>
-              <dd data-source-institution></dd>
-            </div>
-            <div class="inspector-meta__row">
-              <dt>Identifier / Ref</dt>
-              <dd data-source-ref class="inspector-mono"></dd>
-            </div>
-            <div class="inspector-meta__row">
-              <dt>Inspection State</dt>
-              <dd data-source-inspection-state class="inspector-mono"></dd>
-            </div>
-            <div class="inspector-meta__row">
-              <dt>Creator / Authority</dt>
-              <dd data-source-creator></dd>
-            </div>
-            <div class="inspector-meta__row">
-              <dt>Rights Posture</dt>
-              <dd data-source-rights class="inspector-mono"></dd>
-            </div>
-            <div class="inspector-meta__row" data-source-link-row>
-              <dt>Source Link</dt>
-              <dd>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-source-permalink
-                  class="inspector-link"
-                >
-                  View Source Record ↗
-                </a>
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        <!-- Upstream Archival Reference Section (when cited via dataset) -->
-        <section class="inspector-section" data-source-upstream-section hidden aria-label="Upstream archival reference">
-          <p class="panel-kicker">Upstream Archival Reference (Cited by Source)</p>
-          <dl class="inspector-meta">
-            <div class="inspector-meta__row">
-              <dt>Archival Collection</dt>
-              <dd data-source-upstream-repo>The National Archives, Kew</dd>
-            </div>
-            <div class="inspector-meta__row">
-              <dt>Archival Reference</dt>
-              <dd data-source-upstream-ref class="inspector-mono"></dd>
-            </div>
-            <div class="inspector-meta__row">
-              <dt>Inspection State</dt>
-              <dd class="inspector-mono">upstream_cited_only (not independently examined)</dd>
-            </div>
-          </dl>
-          <p class="inspector-note" data-source-upstream-note>
-            Seventeenth/eighteenth-century High Court of Admiralty prize court papers cited in IMLM dataset. The physical manuscript at Kew was not independently examined by Charted Currents.
-          </p>
-        </section>
-
-        <!-- Supporting Assertions Section -->
-        <section class="inspector-section" data-source-assertions-section hidden aria-label="Supporting assertions">
-          <p class="panel-kicker">Supporting Source Assertions</p>
-          <div class="inspector-table-wrap">
-            <table class="inspector-crew-table">
-              <thead>
-                <tr>
-                  <th>Field</th>
-                  <th>Raw Sourced Value</th>
-                </tr>
-              </thead>
-              <tbody data-source-assertions-tbody></tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="inspector-section" aria-label="Scholarly attribution">
-          <p class="panel-kicker">Scholarly Extraction & Dataset Citation</p>
-          <p class="inspector-note" data-source-citation></p>
-        </section>
-
-        <section class="inspector-section" aria-label="Audit and derivation notes">
-          <p class="panel-kicker">Provenance & Derivation Audit</p>
-          <p class="inspector-note" data-source-notes></p>
-        </section>
+      <div class="source-drawer-body" data-source-cards-container>
+        <!-- Dynamic source record cards rendered by JavaScript -->
       </div>
     </div>
   </div>
 </aside>
 
 <script>
-  import type { PublishedSources } from "../../lib/domain/types";
+  import type { PublishedAssertion, PublishedSource, PublishedSourceRecord, PublishedSources } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
 
   const drawer = document.getElementById("source-drawer");
@@ -143,19 +61,7 @@
   const backdrop = document.querySelector<HTMLElement>("[data-source-drawer-backdrop]");
   const titleEl = document.querySelector<HTMLElement>("[data-source-title]");
   const subtitleEl = document.querySelector<HTMLElement>("[data-source-subtitle]");
-  const instEl = document.querySelector<HTMLElement>("[data-source-institution]");
-  const refEl = document.querySelector<HTMLElement>("[data-source-ref]");
-  const inspectionStateEl = document.querySelector<HTMLElement>("[data-source-inspection-state]");
-  const creatorEl = document.querySelector<HTMLElement>("[data-source-creator]");
-  const rightsEl = document.querySelector<HTMLElement>("[data-source-rights]");
-  const citationEl = document.querySelector<HTMLElement>("[data-source-citation]");
-  const notesEl = document.querySelector<HTMLElement>("[data-source-notes]");
-  const linkRow = document.querySelector<HTMLElement>("[data-source-link-row]");
-  const permalink = document.querySelector<HTMLAnchorElement>("[data-source-permalink]");
-  const upstreamSection = document.querySelector<HTMLElement>("[data-source-upstream-section]");
-  const upstreamRef = document.querySelector<HTMLElement>("[data-source-upstream-ref]");
-  const assertionsSection = document.querySelector<HTMLElement>("[data-source-assertions-section]");
-  const assertionsTbody = document.querySelector<HTMLElement>("[data-source-assertions-tbody]");
+  const container = document.querySelector<HTMLElement>("[data-source-cards-container]");
 
   let sourcesCache: PublishedSources | null = null;
   let returnElement: HTMLElement | null = null;
@@ -174,97 +80,322 @@
 
   loadSources();
 
+  function humanizeInspectionState(state: string): string {
+    switch (state) {
+      case "dataset_record_inspected":
+        return "Dataset record inspected";
+      case "digital_content_inspected":
+        return "Digital source inspected";
+      case "metadata_only":
+        return "Catalogue metadata inspected";
+      case "upstream_cited_only":
+        return "Cited upstream; not independently inspected";
+      default:
+        return state.replace(/_/g, " ");
+    }
+  }
+
+  function formatAssertionValue(ast: PublishedAssertion): string {
+    const field = ast.field;
+
+    if (field === "ship_name") return String(ast.raw_value || "");
+    if (field === "tonnage") return `${ast.raw_value} tons reported burden`;
+    if (field === "construction_place") {
+      const ageStr = ast.reported_age_years ? ` (reported age: ${ast.reported_age_years})` : "";
+      return `${ast.raw_value}${ageStr}`;
+    }
+    if (field === "owner_residence") return `Owner resident at ${ast.raw_value}`;
+    if (field === "voyage") {
+      const musterStr = ast.muster_raw ? ` (muster: ${ast.muster_raw})` : "";
+      return `${ast.origin_raw || "Unknown"} → ${ast.destination_raw || "Unknown"}${musterStr}`;
+    }
+    if (field === "capture") {
+      const dateStr = ast.display ? ` (${ast.display})` : "";
+      return `${ast.location_raw || "Unrecorded location"}${dateStr}`;
+    }
+    if (field === "upstream_archive_reference") {
+      return `Cited in upstream archival series: ${ast.raw_value}`;
+    }
+    if (field === "crew_examination") {
+      const parts: string[] = [];
+      if (ast.first_name || ast.last_name) parts.push(`${ast.first_name || ""} ${ast.last_name || ""}`.trim());
+      if (ast.age) parts.push(`age ${ast.age}`);
+      if (ast.rank) parts.push(String(ast.rank));
+      if (ast.birthplace) parts.push(`b. ${ast.birthplace}`);
+      if (ast.residence) parts.push(`res. ${ast.residence}`);
+      if (ast.subject_of) parts.push(`subject of ${ast.subject_of}`);
+      if (ast.signature) parts.push(`✍ ${ast.signature}`);
+      return parts.join(" · ");
+    }
+    if (field === "event_date") {
+      const cal = ast.calendar_system ? ` (${ast.calendar_system})` : "";
+      return `${ast.date_as_recorded || ast.display || ast.year || ""}${cal}`;
+    }
+    if (field === "event_location") return String(ast.place_name || ast.raw_value || "");
+    if (field === "published_account") return String(ast.title || ast.raw_value || "");
+    if (field === "manuscript_letter") {
+      const by = ast.creator ? `Letter from ${ast.creator}` : "Letter";
+      const date = ast.letter_date ? ` (${ast.letter_date})` : "";
+      const desc = ast.description ? `: ${ast.description}` : "";
+      return `${by}${date}${desc}`;
+    }
+    if (field === "map_title") return `"${ast.raw_title || ast.raw_value || ""}"`;
+    if (field === "map_date") return `${ast.date_display || ast.year_recorded || ""}`;
+    if (field === "cartographic_place_label") return `"${ast.raw_value}" depicted and labeled on contemporary chart`;
+
+    return String(ast.raw_value || ast.raw_title || ast.title || ast.place_name || "");
+  }
+
+  function renderSourceCard(
+    source: PublishedSource,
+    record: PublishedSourceRecord | null,
+    assertions: PublishedAssertion[],
+    upstreamRef?: string | null
+  ): HTMLElement {
+    const card = document.createElement("article");
+    card.className = "source-card";
+
+    // Source Card Header
+    const header = document.createElement("header");
+    header.className = "source-card__header";
+
+    const title = document.createElement("h3");
+    title.className = "source-card__title";
+    title.textContent = source.title;
+
+    const subtitle = document.createElement("p");
+    subtitle.className = "source-card__subtitle";
+    subtitle.textContent = `${source.holding_institution} · ${record ? record.native_identifier : source.stable_identifier}`;
+
+    header.append(title, subtitle);
+    card.appendChild(header);
+
+    // Metadata DL
+    const dl = document.createElement("dl");
+    dl.className = "inspector-meta";
+
+    // Inspection State Row
+    const rowState = document.createElement("div");
+    rowState.className = "inspector-meta__row";
+    const dtState = document.createElement("dt");
+    dtState.textContent = "Inspection State";
+    const ddState = document.createElement("dd");
+    const stateVal = record?.inspection_state || "digital_content_inspected";
+    ddState.textContent = stateVal;
+    ddState.className = "inspector-mono";
+    ddState.setAttribute("data-source-inspection-state", stateVal);
+    ddState.setAttribute("title", humanizeInspectionState(stateVal));
+    rowState.append(dtState, ddState);
+    dl.appendChild(rowState);
+
+    // Repository Row
+    const rowInst = document.createElement("div");
+    rowInst.className = "inspector-meta__row";
+    const dtInst = document.createElement("dt");
+    dtInst.textContent = "Repository / Host";
+    const ddInst = document.createElement("dd");
+    ddInst.textContent = source.holding_institution;
+    ddInst.setAttribute("data-source-institution", source.holding_institution);
+    rowInst.append(dtInst, ddInst);
+    dl.appendChild(rowInst);
+
+    // Creator Row
+    if (source.creator) {
+      const rowCreator = document.createElement("div");
+      rowCreator.className = "inspector-meta__row";
+      const dtCreator = document.createElement("dt");
+      dtCreator.textContent = "Creator / Authority";
+      const ddCreator = document.createElement("dd");
+      ddCreator.textContent = source.creator;
+      rowCreator.append(dtCreator, ddCreator);
+      dl.appendChild(rowCreator);
+    }
+
+    // Rights Posture
+    const rowRights = document.createElement("div");
+    rowRights.className = "inspector-meta__row";
+    const dtRights = document.createElement("dt");
+    dtRights.textContent = "Rights Posture";
+    const ddRights = document.createElement("dd");
+    ddRights.textContent = source.rights_posture;
+    ddRights.className = "inspector-mono";
+    rowRights.append(dtRights, ddRights);
+    dl.appendChild(rowRights);
+
+    // Source Permalink Row
+    if (source.item_url) {
+      const rowLink = document.createElement("div");
+      rowLink.className = "inspector-meta__row";
+      const dtLink = document.createElement("dt");
+      dtLink.textContent = "Source Link";
+      const ddLink = document.createElement("dd");
+      const a = document.createElement("a");
+      a.href = source.item_url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "inspector-link";
+      a.textContent = "View Repository Record ↗";
+      ddLink.appendChild(a);
+      rowLink.append(dtLink, ddLink);
+      dl.appendChild(rowLink);
+    }
+
+    card.appendChild(dl);
+
+    // Upstream Archival Reference (if cited via dataset)
+    const effectiveUpstream = upstreamRef || record?.upstream_archive_reference;
+    if (effectiveUpstream) {
+      const upSection = document.createElement("div");
+      upSection.className = "source-card__upstream";
+
+      const upKicker = document.createElement("p");
+      upKicker.className = "panel-kicker";
+      upKicker.textContent = "Upstream Archival Citation";
+
+      const upDl = document.createElement("dl");
+      upDl.className = "inspector-meta";
+
+      const upRow = document.createElement("div");
+      upRow.className = "inspector-meta__row";
+      const upDt = document.createElement("dt");
+      upDt.textContent = "Archival Reference";
+      const upDd = document.createElement("dd");
+      upDd.className = "inspector-mono";
+      upDd.textContent = effectiveUpstream;
+      upDd.setAttribute("data-source-upstream-ref", effectiveUpstream);
+      upRow.append(upDt, upDd);
+      upDl.appendChild(upRow);
+
+      const upNote = document.createElement("p");
+      upNote.className = "inspector-note";
+      upNote.textContent =
+        "Cited in dataset extract from High Court of Admiralty prize papers. The physical 17th/18th-century manuscript at Kew was not independently examined.";
+
+      upSection.append(upKicker, upDl, upNote);
+      card.appendChild(upSection);
+    }
+
+    // Supporting Assertions Table
+    if (assertions.length > 0) {
+      const astSection = document.createElement("div");
+      astSection.className = "source-card__assertions";
+
+      const astKicker = document.createElement("p");
+      astKicker.className = "panel-kicker";
+      astKicker.textContent = "Supporting Sourced Assertions";
+
+      const tableWrap = document.createElement("div");
+      tableWrap.className = "inspector-table-wrap";
+
+      const table = document.createElement("table");
+      table.className = "inspector-crew-table";
+
+      const thead = document.createElement("thead");
+      const headTr = document.createElement("tr");
+      const thField = document.createElement("th");
+      thField.textContent = "Assertion Field";
+      const thVal = document.createElement("th");
+      thVal.textContent = "Recorded Source Value";
+      headTr.append(thField, thVal);
+      thead.appendChild(headTr);
+
+      const tbody = document.createElement("tbody");
+      tbody.setAttribute("data-source-assertions-tbody", "");
+
+      for (const ast of assertions) {
+        const tr = document.createElement("tr");
+        const tdField = document.createElement("td");
+        tdField.textContent = ast.field.replace(/_/g, " ");
+
+        const tdVal = document.createElement("td");
+        tdVal.textContent = formatAssertionValue(ast);
+        tdVal.className = "inspector-mono";
+
+        tr.append(tdField, tdVal);
+        tbody.appendChild(tr);
+      }
+
+      table.append(thead, tbody);
+      tableWrap.appendChild(table);
+      astSection.append(astKicker, tableWrap);
+      card.appendChild(astSection);
+    }
+
+    // Citation Note
+    if (source.credit_line) {
+      const citSection = document.createElement("div");
+      citSection.className = "source-card__citation";
+      const citKicker = document.createElement("p");
+      citKicker.className = "panel-kicker";
+      citKicker.textContent = "Citation & Attribution";
+      const citNote = document.createElement("p");
+      citNote.className = "inspector-note";
+      citNote.textContent = source.credit_line;
+      citSection.append(citKicker, citNote);
+      card.appendChild(citSection);
+    }
+
+    return card;
+  }
+
   export async function openSourceDrawer(options: {
     sourceId?: string | null;
     assertionIds?: string[] | null;
     upstreamRef?: string | null;
     triggerEl?: HTMLElement | null;
   }): Promise<void> {
-    if (!drawer) return;
+    if (!drawer || !container) return;
     returnElement = options.triggerEl || (document.activeElement as HTMLElement);
 
     const sources = await loadSources();
     if (!sources) return;
 
-    let targetSource = options.sourceId ? sources.sources.find((s) => s.id === options.sourceId) : null;
-    let targetRecord = null;
-    const resolvedAssertions = [];
+    container.replaceChildren();
 
     if (options.assertionIds && options.assertionIds.length > 0) {
+      // Group assertions by source_record_id
+      const astByRecordId = new Map<string, PublishedAssertion[]>();
       for (const astId of options.assertionIds) {
         const ast = sources.assertions.find((a) => a.id === astId);
         if (ast) {
-          resolvedAssertions.push(ast);
-          if (!targetRecord) {
-            targetRecord = sources.source_records.find((r) => r.id === ast.source_record_id);
-          }
+          const list = astByRecordId.get(ast.source_record_id) || [];
+          list.push(ast);
+          astByRecordId.set(ast.source_record_id, list);
         }
       }
-    }
 
-    if (targetRecord && !targetSource) {
-      targetSource = sources.sources.find((s) => s.id === targetRecord.source_id) || null;
-    }
-
-    if (!targetSource && sources.sources.length > 0) {
-      targetSource = sources.sources[0];
-    }
-
-    if (!targetSource) return;
-
-    if (titleEl) titleEl.textContent = targetSource.title;
-    if (subtitleEl) subtitleEl.textContent = `${targetSource.holding_institution} · ${targetSource.stable_identifier}`;
-    if (instEl) instEl.textContent = targetSource.holding_institution;
-    if (refEl) refEl.textContent = targetRecord ? `${targetRecord.native_identifier} (${targetSource.stable_identifier})` : targetSource.stable_identifier;
-    if (inspectionStateEl) {
-      inspectionStateEl.textContent = targetRecord?.inspection_state || "digital_content_inspected";
-    }
-    if (creatorEl) creatorEl.textContent = targetSource.creator;
-    if (rightsEl) rightsEl.textContent = targetSource.rights_posture;
-    if (citationEl) citationEl.textContent = targetSource.credit_line;
-    if (notesEl) notesEl.textContent = targetSource.notes || "Sourced historical record verified by Charted Currents.";
-
-    if (permalink && linkRow) {
-      if (targetSource.item_url) {
-        permalink.href = targetSource.item_url;
-        linkRow.hidden = false;
-      } else {
-        linkRow.hidden = true;
+      if (titleEl) titleEl.textContent = "Supporting Evidence & Provenance";
+      if (subtitleEl) {
+        subtitleEl.textContent = `Resolving ${options.assertionIds.length} historical assertion(s) across ${astByRecordId.size} source record(s).`;
       }
-    }
 
-    // Upstream reference section
-    const effectiveUpstreamRef = options.upstreamRef || targetRecord?.upstream_archive_reference;
-    if (upstreamSection && upstreamRef) {
-      if (effectiveUpstreamRef) {
-        upstreamRef.textContent = effectiveUpstreamRef;
-        upstreamSection.hidden = false;
-      } else {
-        upstreamSection.hidden = true;
-      }
-    }
-
-    // Render resolved assertions table
-    if (assertionsSection && assertionsTbody) {
-      if (resolvedAssertions.length > 0) {
-        assertionsSection.hidden = false;
-        assertionsTbody.replaceChildren();
-        for (const ast of resolvedAssertions) {
-          const tr = document.createElement("tr");
-          const tdField = document.createElement("td");
-          tdField.textContent = ast.field.replace(/_/g, " ");
-
-          const tdVal = document.createElement("td");
-          const rawVal = ast.raw_value || ast.raw_title || ast.place_name || ast.title || ast.location_raw || ast.date_as_recorded || JSON.stringify(ast);
-          tdVal.textContent = String(rawVal);
-          tdVal.className = "inspector-mono";
-
-          tr.append(tdField, tdVal);
-          assertionsTbody.appendChild(tr);
+      for (const [recordId, recordAsts] of astByRecordId.entries()) {
+        const record = sources.source_records.find((r) => r.id === recordId) || null;
+        const source = record ? sources.sources.find((s) => s.id === record.source_id) : null;
+        if (source) {
+          const card = renderSourceCard(source, record, recordAsts, options.upstreamRef);
+          container.appendChild(card);
         }
-      } else {
-        assertionsSection.hidden = true;
       }
+    } else if (options.sourceId) {
+      const source = sources.sources.find((s) => s.id === options.sourceId);
+      if (source) {
+        if (titleEl) titleEl.textContent = source.title;
+        if (subtitleEl) subtitleEl.textContent = `${source.holding_institution} · ${source.stable_identifier}`;
+
+        const relatedRecords = sources.source_records.filter((r) => r.source_id === source.id);
+        const firstRecord = relatedRecords.length > 0 ? relatedRecords[0] : null;
+        const relatedAsts = sources.assertions.filter((a) =>
+          relatedRecords.some((r) => r.id === a.source_record_id)
+        );
+
+        const card = renderSourceCard(source, firstRecord, relatedAsts, options.upstreamRef);
+        container.appendChild(card);
+      }
+    } else if (sources.sources.length > 0) {
+      const source = sources.sources[0];
+      const card = renderSourceCard(source, null, []);
+      container.appendChild(card);
     }
 
     drawer.hidden = false;
@@ -282,7 +413,6 @@
   closeBtn?.addEventListener("click", closeSourceDrawer);
   backdrop?.addEventListener("click", closeSourceDrawer);
 
-  // Escape keydown with capture isolation
   window.addEventListener(
     "keydown",
     (e) => {
@@ -293,10 +423,9 @@
         closeSourceDrawer();
       }
     },
-    { capture: true },
+    { capture: true }
   );
 
-  // Modal Focus Trap: Tab / Shift+Tab containment within drawer
   panel?.addEventListener("keydown", (e: KeyboardEvent) => {
     if (e.key !== "Tab") return;
     const focusable = panel.querySelectorAll<HTMLElement>(
@@ -350,7 +479,7 @@
   .source-drawer-panel {
     position: relative;
     width: 100%;
-    max-width: 460px;
+    max-width: 500px;
     height: 100%;
     background: var(--cc-paper-raised);
     border-left: 1px solid var(--cc-line);
@@ -368,6 +497,9 @@
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--cc-line);
     background: var(--cc-paper);
+    position: sticky;
+    top: 0;
+    z-index: 2;
   }
 
   .source-drawer-content {
@@ -390,6 +522,77 @@
     font-size: var(--cc-text-xs);
     color: var(--cc-ink-muted);
     margin: 0;
+  }
+
+  .source-drawer-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .source-card {
+    background: var(--cc-paper);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-sm);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .source-card__title {
+    font-family: var(--cc-font-serif);
+    font-size: var(--cc-text-base);
+    color: var(--cc-ink);
+    margin: 0 0 0.25rem;
+  }
+
+  .source-card__subtitle {
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink-muted);
+    margin: 0;
+  }
+
+  .source-card__upstream,
+  .source-card__assertions,
+  .source-card__citation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid color-mix(in srgb, var(--cc-line) 65%, transparent);
+  }
+
+  .inspector-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    background: var(--cc-paper-raised);
+  }
+
+  .inspector-crew-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--cc-text-xs);
+    text-align: left;
+  }
+
+  .inspector-crew-table th,
+  .inspector-crew-table td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--cc-line);
+  }
+
+  .inspector-crew-table th {
+    font-family: var(--cc-font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    color: var(--cc-ink-muted);
+    background: color-mix(in srgb, var(--cc-paper) 80%, transparent);
+  }
+
+  .inspector-crew-table tr:last-child td {
+    border-bottom: none;
   }
 
   @media (max-width: 767px) {

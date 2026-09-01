@@ -64,6 +64,422 @@
         ],
         "notes": "Documented Jamaica → London voyage relationship from IMLM 2228; rendered line is schematic."
       }
+    },
+    {
+      "type": "Feature",
+      "id": "route_sarah_galley_1703",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -59.5432,
+            13.1939
+          ],
+          [
+            -0.1278,
+            51.5074
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_sarah_galley_1703",
+        "vessel_id": "ship_sarah_galley_1703",
+        "origin_place_id": "place_barbados",
+        "destination_place_id": "place_london",
+        "date_display": "Associated with May 1703 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_2154_voyage"
+        ],
+        "notes": "Documented Barbados → London voyage relationship from IMLM 2154; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_stapleton_1703",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -61.7964,
+            17.0608
+          ],
+          [
+            -2.5879,
+            51.4545
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_stapleton_1703",
+        "vessel_id": "ship_stapleton_1703",
+        "origin_place_id": "place_antigua",
+        "destination_place_id": "place_bristol",
+        "date_display": "Associated with June 1703 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_2155_voyage"
+        ],
+        "notes": "Documented Antigua → Bristol voyage relationship from IMLM 2155; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_thomas_and_john_1702",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -62.5804,
+            17.1551
+          ],
+          [
+            -2.5879,
+            51.4545
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_thomas_and_john_1702",
+        "vessel_id": "ship_thomas_and_john_1702",
+        "origin_place_id": "place_nevis",
+        "destination_place_id": "place_bristol",
+        "date_display": "Associated with August 1702 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_2144_voyage"
+        ],
+        "notes": "Documented Nevis → Bristol voyage relationship from IMLM 2144; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_samuel_1704",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -62.783,
+            17.3578
+          ],
+          [
+            -0.1278,
+            51.5074
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_samuel_1704",
+        "vessel_id": "ship_samuel_1704",
+        "origin_place_id": "place_st_christopher",
+        "destination_place_id": "place_london",
+        "date_display": "Associated with August 1704 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_2106_voyage"
+        ],
+        "notes": "Documented St Christopher → London voyage relationship from IMLM 2106; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_success_of_boston_1704",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -62.1874,
+            16.7425
+          ],
+          [
+            -0.1278,
+            51.5074
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_success_of_boston_1704",
+        "vessel_id": "ship_success_of_boston_1704",
+        "origin_place_id": "place_montserrat",
+        "destination_place_id": "place_london",
+        "date_display": "Associated with September 1704 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_2098_voyage"
+        ],
+        "notes": "Documented Montserrat → London voyage relationship from IMLM 2098; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_john_and_susanna_1705",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -2.5879,
+            51.4545
+          ],
+          [
+            -59.5432,
+            13.1939
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_john_and_susanna_1705",
+        "vessel_id": "ship_john_and_susanna_1705",
+        "origin_place_id": "place_bristol",
+        "destination_place_id": "place_barbados",
+        "date_display": "Associated with June 1705 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1511_voyage"
+        ],
+        "notes": "Documented Bristol → Barbados outward voyage relationship from IMLM 1511; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_st_francis_de_rochelle_1709",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -69.9312,
+            18.4861
+          ],
+          [
+            -1.1511,
+            46.1603
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_st_francis_de_rochelle_1709",
+        "vessel_id": "ship_st_francis_de_rochelle_1709",
+        "origin_place_id": "place_st_domingo",
+        "destination_place_id": "place_rochelle",
+        "date_display": "Associated with December 1709 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1245_voyage"
+        ],
+        "notes": "Documented Saint-Domingue → La Rochelle voyage relationship from IMLM 1245; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_st_peter_galley_1711",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -69.9312,
+            18.4861
+          ],
+          [
+            -1.1511,
+            46.1603
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_st_peter_galley_1711",
+        "vessel_id": "ship_st_peter_galley_1711",
+        "origin_place_id": "place_st_domingo",
+        "destination_place_id": "place_rochelle",
+        "date_display": "Associated with March 1711 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1993_voyage"
+        ],
+        "notes": "Documented Saint-Domingue → La Rochelle voyage relationship from IMLM 1993; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_john_and_james_1705",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -61.0242,
+            14.6415
+          ],
+          [
+            -1.1511,
+            46.1603
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_john_and_james_1705",
+        "vessel_id": "ship_john_and_james_1705",
+        "origin_place_id": "place_martinique",
+        "destination_place_id": "place_rochelle",
+        "date_display": "Associated with April 1705 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1516_voyage"
+        ],
+        "notes": "Documented Martinique → La Rochelle voyage relationship from IMLM 1516; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_francis_ameriquain_1710",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -1.5536,
+            47.2184
+          ],
+          [
+            -61.0242,
+            14.6415
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_francis_ameriquain_1710",
+        "vessel_id": "ship_francis_ameriquain_1710",
+        "origin_place_id": "place_nantes",
+        "destination_place_id": "place_martinique",
+        "date_display": "Associated with October 1710 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1278_voyage"
+        ],
+        "notes": "Documented Nantes → Martinique outward voyage relationship from IMLM 1278; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_st_john_baptiste_augustine_1712",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -82.3666,
+            23.1136
+          ],
+          [
+            -81.3124,
+            29.8947
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_st_john_baptiste_augustine_1712",
+        "vessel_id": "ship_st_john_baptiste_augustine_1712",
+        "origin_place_id": "place_havana",
+        "destination_place_id": "place_st_augustine",
+        "date_display": "Associated with June 1712 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1582_voyage"
+        ],
+        "notes": "Documented Havana → St Augustine regional voyage relationship from IMLM 1582; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_st_patrick_and_st_paul_1709",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -75.5144,
+            10.391
+          ],
+          [
+            5.3698,
+            43.2965
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_st_patrick_and_st_paul_1709",
+        "vessel_id": "ship_st_patrick_and_st_paul_1709",
+        "origin_place_id": "place_cartagena",
+        "destination_place_id": "place_marseille",
+        "date_display": "Associated with August 1709 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1964_voyage"
+        ],
+        "notes": "Documented Cartagena → Marseille voyage relationship from IMLM 1964; rendered line is schematic."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route_port_royal_biddeford_1709",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -80.945,
+            33.8361
+          ],
+          [
+            -4.2098,
+            51.0185
+          ]
+        ]
+      },
+      "properties": {
+        "id": "route_port_royal_biddeford_1709",
+        "vessel_id": "ship_port_royal_biddeford_1709",
+        "origin_place_id": "place_south_carolina",
+        "destination_place_id": "place_biddeford",
+        "date_display": "Associated with June 1709 capture record",
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "source_assertion_ids": [
+          "ast_1982_voyage"
+        ],
+        "notes": "Documented South Carolina → Bideford voyage relationship from IMLM 1982; rendered line is schematic."
+      }
     }
   ]
 }

@@ -1,20 +1,20 @@
 {
-  "version": "0.2.0",
-  "corpusId": "greater_caribbean_port_royal_sample",
-  "corpusTitle": "Jamaica & Transatlantic Maritime Commerce (1684–1705)",
+  "version": "0.3.0",
+  "corpusId": "greater_caribbean_public_beta",
+  "corpusTitle": "The Greater Caribbean & Transatlantic Maritime Commerce (1684–1712)",
   "publishedAt": "2026-09-01",
   "reviewStatus": "reviewed_for_publication",
   "counts": {
     "sources": 5,
-    "source_records": 9,
-    "assertions": 25,
-    "ship_occurrences": 2,
-    "crew_occurrences": 4,
-    "ships": 2,
-    "entity_resolution_edges": 2,
-    "places": 5,
-    "routes": 2,
-    "events": 3,
+    "source_records": 44,
+    "assertions": 132,
+    "ship_occurrences": 15,
+    "crew_occurrences": 26,
+    "ships": 15,
+    "entity_resolution_edges": 15,
+    "places": 23,
+    "routes": 15,
+    "events": 16,
     "visuals": 1
   }
 }

@@ -194,6 +194,7 @@ export interface PublishedEvent {
   date: string;
   calendar_system?: string;
   place_id: string;
+  vessel_id?: string;
   kind: string;
   evidence_state: EvidenceState;
   summary: string;

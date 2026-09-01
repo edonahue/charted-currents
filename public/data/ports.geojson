@@ -23,7 +23,7 @@
           "ast_2228_voyage",
           "ast_loc_map_title"
         ],
-        "notes": "Island centroid reference. Represents the colony/island as recorded in transatlantic voyage origins (IMLM 2052, 2228)."
+        "notes": "Island centroid reference. Represents the colony/island recorded in transatlantic voyage origins (IMLM 2052, 2228)."
       }
     },
     {
@@ -70,9 +70,37 @@
         "geometry_provenance": "modern_navigation_reference_coordinate",
         "source_assertion_ids": [
           "ast_2052_voyage",
-          "ast_2228_voyage"
+          "ast_2228_voyage",
+          "ast_2154_voyage",
+          "ast_2106_voyage",
+          "ast_2098_voyage"
         ],
-        "notes": "Port of London destination recorded in transatlantic voyage records (IMLM 2052, 2228)."
+        "notes": "Port of London transatlantic destination (IMLM 2052, 2228, 2154, 2106, 2098)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_bristol",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.5879,
+          51.4545
+        ]
+      },
+      "properties": {
+        "id": "place_bristol",
+        "canonical_name": "Bristol",
+        "raw_source_name": "Bristoll",
+        "region": "England",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_2155_voyage",
+          "ast_2144_voyage",
+          "ast_1511_voyage"
+        ],
+        "notes": "Major western English port connected to West Indies sugar trade (IMLM 2155, 2144, 1511)."
       }
     },
     {
@@ -116,9 +144,416 @@
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
         "source_assertion_ids": [
-          "ast_2228_capture"
+          "ast_2228_capture",
+          "ast_2154_capture",
+          "ast_2155_capture",
+          "ast_2144_capture",
+          "ast_2106_capture",
+          "ast_1511_capture",
+          "ast_1245_capture",
+          "ast_1993_capture",
+          "ast_1516_capture",
+          "ast_1278_capture",
+          "ast_1582_capture",
+          "ast_1982_capture"
         ],
-        "notes": "Devon port and naval station; recorded capture location of William (September 1702)."
+        "notes": "Primary Channel naval port and Admiralty prize station (IMLM 2228, 2154, 2155, 2144, 2106, 1511, 1245, 1993, 1516, 1278, 1582, 1982)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_barbados",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.5432,
+          13.1939
+        ]
+      },
+      "properties": {
+        "id": "place_barbados",
+        "canonical_name": "Barbados",
+        "raw_source_name": "Barbados",
+        "region": "Windward Islands",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_2154_voyage",
+          "ast_1511_voyage"
+        ],
+        "notes": "English sugar colony island reference (IMLM 2154, 1511)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_antigua",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.7964,
+          17.0608
+        ]
+      },
+      "properties": {
+        "id": "place_antigua",
+        "canonical_name": "Antigua",
+        "raw_source_name": "Antigua",
+        "region": "Leeward Islands",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_2155_voyage"
+        ],
+        "notes": "Leeward Islands colony reference (IMLM 2155)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_nevis",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -62.5804,
+          17.1551
+        ]
+      },
+      "properties": {
+        "id": "place_nevis",
+        "canonical_name": "Nevis",
+        "raw_source_name": "Island of Nevis",
+        "region": "Leeward Islands",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_2144_voyage"
+        ],
+        "notes": "Leeward Islands sugar island reference (IMLM 2144)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_st_christopher",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -62.783,
+          17.3578
+        ]
+      },
+      "properties": {
+        "id": "place_st_christopher",
+        "canonical_name": "St Christopher (St Kitts)",
+        "raw_source_name": "St Christopher in the West Indies",
+        "region": "Leeward Islands",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_2106_voyage"
+        ],
+        "notes": "Leeward Islands island reference (IMLM 2106)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_montserrat",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -62.1874,
+          16.7425
+        ]
+      },
+      "properties": {
+        "id": "place_montserrat",
+        "canonical_name": "Montserrat",
+        "raw_source_name": "Montserrat",
+        "region": "Leeward Islands",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_2098_voyage"
+        ],
+        "notes": "Leeward Islands island reference (IMLM 2098)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_st_domingo",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -69.9312,
+          18.4861
+        ]
+      },
+      "properties": {
+        "id": "place_st_domingo",
+        "canonical_name": "Saint-Domingue (Hispaniola)",
+        "raw_source_name": "St Domingo on the island of Hispaniola",
+        "region": "Greater Antilles",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_1245_voyage",
+          "ast_1993_voyage"
+        ],
+        "notes": "Hispaniola French/Spanish colony reference (IMLM 1245, 1993)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_martinique",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.0242,
+          14.6415
+        ]
+      },
+      "properties": {
+        "id": "place_martinique",
+        "canonical_name": "Martinique",
+        "raw_source_name": "Martinicoe in the West Indies",
+        "region": "Windward Islands",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_1516_voyage",
+          "ast_1278_voyage"
+        ],
+        "notes": "French West Indies island reference (IMLM 1516, 1278)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_havana",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.3666,
+          23.1136
+        ]
+      },
+      "properties": {
+        "id": "place_havana",
+        "canonical_name": "Havana",
+        "raw_source_name": "Havana",
+        "region": "Cuba",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1582_voyage"
+        ],
+        "notes": "Spanish colonial hub and fleet rendezvous (IMLM 1582)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_st_augustine",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -81.3124,
+          29.8947
+        ]
+      },
+      "properties": {
+        "id": "place_st_augustine",
+        "canonical_name": "St Augustine",
+        "raw_source_name": "St Augustine",
+        "region": "Florida",
+        "geographic_precision": "populated_place",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1582_voyage"
+        ],
+        "notes": "Spanish presidio and regional port in Florida (IMLM 1582)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_cartagena",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5144,
+          10.391
+        ]
+      },
+      "properties": {
+        "id": "place_cartagena",
+        "canonical_name": "Cartagena",
+        "raw_source_name": "Carthegena",
+        "region": "Spanish Main",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1964_voyage"
+        ],
+        "notes": "Spanish Main fortified port and treasure terminal (IMLM 1964)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_marseille",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.3698,
+          43.2965
+        ]
+      },
+      "properties": {
+        "id": "place_marseille",
+        "canonical_name": "Marseille",
+        "raw_source_name": "Marseille",
+        "region": "France",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1964_voyage"
+        ],
+        "notes": "French Mediterranean port destination (IMLM 1964)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_rochelle",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.1511,
+          46.1603
+        ]
+      },
+      "properties": {
+        "id": "place_rochelle",
+        "canonical_name": "La Rochelle",
+        "raw_source_name": "Rochelle",
+        "region": "France",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1245_voyage",
+          "ast_1993_voyage",
+          "ast_1516_voyage"
+        ],
+        "notes": "French Atlantic port destination for West Indies trade (IMLM 1245, 1993, 1516)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_nantes",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.5536,
+          47.2184
+        ]
+      },
+      "properties": {
+        "id": "place_nantes",
+        "canonical_name": "Nantes",
+        "raw_source_name": "the river Nantes",
+        "region": "France",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1278_voyage"
+        ],
+        "notes": "French Atlantic river port origin (IMLM 1278)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_south_carolina",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.945,
+          33.8361
+        ]
+      },
+      "properties": {
+        "id": "place_south_carolina",
+        "canonical_name": "South Carolina",
+        "raw_source_name": "South Carolina",
+        "region": "North America",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_1982_voyage"
+        ],
+        "notes": "North American colony origin (IMLM 1982)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_biddeford",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.2098,
+          51.0185
+        ]
+      },
+      "properties": {
+        "id": "place_biddeford",
+        "canonical_name": "Bideford, Devon",
+        "raw_source_name": "Biddeford, Devon",
+        "region": "England",
+        "geographic_precision": "port_town",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1982_voyage"
+        ],
+        "notes": "North Devon port destination (IMLM 1982)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_guernsey",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.5853,
+          49.4482
+        ]
+      },
+      "properties": {
+        "id": "place_guernsey",
+        "canonical_name": "Guernsey",
+        "raw_source_name": "Guernsey",
+        "region": "Channel Islands",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_2098_capture"
+        ],
+        "notes": "Channel Island privateering and prize station (IMLM 2098)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_port_mahon",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.2658,
+          39.889
+        ]
+      },
+      "properties": {
+        "id": "place_port_mahon",
+        "canonical_name": "Port Mahon, Minorca",
+        "raw_source_name": "Port Mahon",
+        "region": "Mediterranean",
+        "geographic_precision": "port_town",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_1964_capture"
+        ],
+        "notes": "Mediterranean naval base and prize station (IMLM 1964)."
       }
     }
   ]

@@ -11,7 +11,7 @@
       "public_use_basis": "maintainer_approved_small_derived_factual_publication",
       "attribution_required": true,
       "credit_line": "Van Lottum, Jelle. The international maritime labour market in Europe, relational database 1650-1815. UK Data Service SN 852135",
-      "notes": "Directly accessed research dataset; bulk mirroring is outside approved Packet 2 use."
+      "notes": "Directly accessed research dataset; bulk mirroring is outside approved Packet 3 use."
     },
     {
       "id": "src_tna_hca_32",
@@ -32,7 +32,7 @@
       "creator": "T L",
       "holding_institution": "The Royal Society, London",
       "stable_identifier": "Royal Society Archives EL/L5/117",
-      "item_url": "https://makingscience.royalsociety.org/s/rs/items/EL-L5-117",
+      "item_url": "https://catalogues.royalsociety.org/CalmView/Record.aspx?src=CalmView.Catalog&id=EL%2fL5%2f117",
       "rights_posture": "public_domain",
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
@@ -45,7 +45,7 @@
       "creator": "Philosophical Transactions of the Royal Society of London / Rev. Edmund Heath",
       "holding_institution": "The Royal Society, London",
       "stable_identifier": "Phil. Trans. Vol. 18, No. 209 (1694), pp. 83-100",
-      "item_url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1694.0017",
+      "item_url": "https://doi.org/10.1098/rstl.1694.0017",
       "rights_posture": "public_domain",
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
@@ -58,7 +58,7 @@
       "creator": "Charles Bochart & Humphrey Knollis; published by Philip Lea, London",
       "holding_institution": "Library of Congress, Geography and Map Division",
       "stable_identifier": "G4960 1684 .B6 / g4960.ct008911",
-      "item_url": "http://www.loc.gov/item/99463761/",
+      "item_url": "https://www.loc.gov/item/99463761/",
       "rights_posture": "public_domain",
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
@@ -116,6 +116,299 @@
       "native_identifier": "IdCrew 5508",
       "inspection_state": "dataset_record_inspected",
       "parent_ship_record_id": "sr_imlm_ship_2228"
+    },
+    {
+      "id": "sr_imlm_ship_2154",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 2154",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/83"
+    },
+    {
+      "id": "sr_imlm_crew_5320",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5320",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_2154"
+    },
+    {
+      "id": "sr_imlm_ship_2155",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 2155",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/83"
+    },
+    {
+      "id": "sr_imlm_crew_5321",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5321",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_2155"
+    },
+    {
+      "id": "sr_imlm_ship_2144",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 2144",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/83"
+    },
+    {
+      "id": "sr_imlm_crew_5301",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5301",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_2144"
+    },
+    {
+      "id": "sr_imlm_ship_2106",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 2106",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/81"
+    },
+    {
+      "id": "sr_imlm_crew_5189",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5189",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_2106"
+    },
+    {
+      "id": "sr_imlm_crew_5190",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5190",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_2106"
+    },
+    {
+      "id": "sr_imlm_ship_2098",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 2098",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/81"
+    },
+    {
+      "id": "sr_imlm_crew_5174",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5174",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_2098"
+    },
+    {
+      "id": "sr_imlm_ship_1511",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1511",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/66"
+    },
+    {
+      "id": "sr_imlm_crew_3816",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3816",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1511"
+    },
+    {
+      "id": "sr_imlm_crew_3817",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3817",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1511"
+    },
+    {
+      "id": "sr_imlm_ship_1245",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1245",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/59"
+    },
+    {
+      "id": "sr_imlm_crew_3037",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3037",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1245"
+    },
+    {
+      "id": "sr_imlm_crew_3038",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3038",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1245"
+    },
+    {
+      "id": "sr_imlm_ship_1993",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1993",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/79"
+    },
+    {
+      "id": "sr_imlm_crew_4901",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4901",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1993"
+    },
+    {
+      "id": "sr_imlm_crew_4902",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4902",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1993"
+    },
+    {
+      "id": "sr_imlm_ship_1516",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1516",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/66"
+    },
+    {
+      "id": "sr_imlm_crew_3832",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3832",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1516"
+    },
+    {
+      "id": "sr_imlm_crew_3833",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3833",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1516"
+    },
+    {
+      "id": "sr_imlm_ship_1278",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1278",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/60"
+    },
+    {
+      "id": "sr_imlm_crew_3145",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3145",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1278"
+    },
+    {
+      "id": "sr_imlm_crew_3146",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 3146",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1278"
+    },
+    {
+      "id": "sr_imlm_ship_1582",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1582",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/67"
+    },
+    {
+      "id": "sr_imlm_crew_4001",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4001",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1582"
+    },
+    {
+      "id": "sr_imlm_crew_4002",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4002",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1582"
+    },
+    {
+      "id": "sr_imlm_ship_1964",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1964",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/78"
+    },
+    {
+      "id": "sr_imlm_crew_4821",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4821",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1964"
+    },
+    {
+      "id": "sr_imlm_crew_4822",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4822",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1964"
+    },
+    {
+      "id": "sr_imlm_ship_1982",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 1982",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/78"
+    },
+    {
+      "id": "sr_imlm_crew_4873",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4873",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1982"
+    },
+    {
+      "id": "sr_imlm_crew_4874",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 4874",
+      "inspection_state": "dataset_record_inspected",
+      "parent_ship_record_id": "sr_imlm_ship_1982"
     },
     {
       "id": "sr_rs_el_l5_117",
@@ -208,8 +501,8 @@
       "first_name": "Robert",
       "last_name": "Ashworth",
       "rank": "carpenter navis",
-      "birthplace": "Dexlford",
-      "residence": "Dexlford",
+      "birthplace": "Deptford",
+      "residence": "Deptford",
       "subject_of": "Queen of Great Britain",
       "signature": "Signed"
     },
@@ -285,6 +578,845 @@
       "residence": "London",
       "muster_place": "Jamaica",
       "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_2154_name",
+      "source_record_id": "sr_imlm_ship_2154",
+      "field": "ship_name",
+      "raw_value": "Sarah Galley of London"
+    },
+    {
+      "id": "ast_2154_owner",
+      "source_record_id": "sr_imlm_ship_2154",
+      "field": "owner_residence",
+      "raw_value": "Virginia"
+    },
+    {
+      "id": "ast_2154_voyage",
+      "source_record_id": "sr_imlm_ship_2154",
+      "field": "voyage",
+      "origin_raw": "Barbados",
+      "destination_raw": "London"
+    },
+    {
+      "id": "ast_2154_capture",
+      "source_record_id": "sr_imlm_ship_2154",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1703,
+      "month_as_recorded": 5,
+      "precision": "month",
+      "display": "May 1703"
+    },
+    {
+      "id": "ast_2154_upstream_hca",
+      "source_record_id": "sr_imlm_ship_2154",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/83"
+    },
+    {
+      "id": "ast_crew_5320",
+      "source_record_id": "sr_imlm_crew_5320",
+      "field": "crew_examination",
+      "first_name": "William",
+      "last_name": "Gullifer",
+      "rank": "mariner",
+      "birthplace": "London",
+      "residence": "London",
+      "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_2155_name",
+      "source_record_id": "sr_imlm_ship_2155",
+      "field": "ship_name",
+      "raw_value": "Stapleton"
+    },
+    {
+      "id": "ast_2155_owner",
+      "source_record_id": "sr_imlm_ship_2155",
+      "field": "owner_residence",
+      "raw_value": "Bristoll"
+    },
+    {
+      "id": "ast_2155_voyage",
+      "source_record_id": "sr_imlm_ship_2155",
+      "field": "voyage",
+      "origin_raw": "Antigua",
+      "destination_raw": "Bristol"
+    },
+    {
+      "id": "ast_2155_capture",
+      "source_record_id": "sr_imlm_ship_2155",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1703,
+      "month_as_recorded": 6,
+      "precision": "month",
+      "display": "June 1703"
+    },
+    {
+      "id": "ast_2155_upstream_hca",
+      "source_record_id": "sr_imlm_ship_2155",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/83"
+    },
+    {
+      "id": "ast_crew_5321",
+      "source_record_id": "sr_imlm_crew_5321",
+      "field": "crew_examination",
+      "first_name": "Thomas",
+      "last_name": "Morgan",
+      "rank": "naut",
+      "birthplace": "Bristol",
+      "residence": "Bristol",
+      "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_2144_name",
+      "source_record_id": "sr_imlm_ship_2144",
+      "field": "ship_name",
+      "raw_value": "Thomas & John of Bristoll"
+    },
+    {
+      "id": "ast_2144_tonnage",
+      "source_record_id": "sr_imlm_ship_2144",
+      "field": "tonnage",
+      "raw_value": "80"
+    },
+    {
+      "id": "ast_2144_construction",
+      "source_record_id": "sr_imlm_ship_2144",
+      "field": "construction_place",
+      "raw_value": "Bristoll"
+    },
+    {
+      "id": "ast_2144_owner",
+      "source_record_id": "sr_imlm_ship_2144",
+      "field": "owner_residence",
+      "raw_value": "Bristoll"
+    },
+    {
+      "id": "ast_2144_voyage",
+      "source_record_id": "sr_imlm_ship_2144",
+      "field": "voyage",
+      "origin_raw": "Island of Nevis",
+      "destination_raw": "Bristol"
+    },
+    {
+      "id": "ast_2144_capture",
+      "source_record_id": "sr_imlm_ship_2144",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1702,
+      "month_as_recorded": 8,
+      "precision": "month",
+      "display": "August 1702"
+    },
+    {
+      "id": "ast_2144_upstream_hca",
+      "source_record_id": "sr_imlm_ship_2144",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/83"
+    },
+    {
+      "id": "ast_crew_5301",
+      "source_record_id": "sr_imlm_crew_5301",
+      "field": "crew_examination",
+      "first_name": "Richard",
+      "last_name": "Davis",
+      "rank": "master",
+      "birthplace": "Bristol",
+      "residence": "Bristol",
+      "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_2106_name",
+      "source_record_id": "sr_imlm_ship_2106",
+      "field": "ship_name",
+      "raw_value": "Samuel of London"
+    },
+    {
+      "id": "ast_2106_tonnage",
+      "source_record_id": "sr_imlm_ship_2106",
+      "field": "tonnage",
+      "raw_value": "70"
+    },
+    {
+      "id": "ast_2106_construction",
+      "source_record_id": "sr_imlm_ship_2106",
+      "field": "construction_place",
+      "raw_value": "English built"
+    },
+    {
+      "id": "ast_2106_owner",
+      "source_record_id": "sr_imlm_ship_2106",
+      "field": "owner_residence",
+      "raw_value": "London"
+    },
+    {
+      "id": "ast_2106_voyage",
+      "source_record_id": "sr_imlm_ship_2106",
+      "field": "voyage",
+      "origin_raw": "St Christopher",
+      "destination_raw": "London"
+    },
+    {
+      "id": "ast_2106_capture",
+      "source_record_id": "sr_imlm_ship_2106",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1704,
+      "month_as_recorded": 8,
+      "precision": "month",
+      "display": "August 1704"
+    },
+    {
+      "id": "ast_2106_upstream_hca",
+      "source_record_id": "sr_imlm_ship_2106",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/81"
+    },
+    {
+      "id": "ast_crew_5189",
+      "source_record_id": "sr_imlm_crew_5189",
+      "field": "crew_examination",
+      "first_name": "James",
+      "last_name": "Ramsay",
+      "rank": "mate",
+      "birthplace": "Dundee",
+      "residence": "London",
+      "subject_of": "Queen of Great Britain",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_5190",
+      "source_record_id": "sr_imlm_crew_5190",
+      "field": "crew_examination",
+      "first_name": "William",
+      "last_name": "Smith",
+      "rank": "carpenter",
+      "birthplace": "Hull",
+      "residence": "Hull",
+      "subject_of": "Queen of Great Britain",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_2098_name",
+      "source_record_id": "sr_imlm_ship_2098",
+      "field": "ship_name",
+      "raw_value": "Success of Boston"
+    },
+    {
+      "id": "ast_2098_tonnage",
+      "source_record_id": "sr_imlm_ship_2098",
+      "field": "tonnage",
+      "raw_value": "45"
+    },
+    {
+      "id": "ast_2098_construction",
+      "source_record_id": "sr_imlm_ship_2098",
+      "field": "construction_place",
+      "raw_value": "New England built"
+    },
+    {
+      "id": "ast_2098_owner",
+      "source_record_id": "sr_imlm_ship_2098",
+      "field": "owner_residence",
+      "raw_value": "Boston"
+    },
+    {
+      "id": "ast_2098_voyage",
+      "source_record_id": "sr_imlm_ship_2098",
+      "field": "voyage",
+      "origin_raw": "Montserrat",
+      "destination_raw": "London"
+    },
+    {
+      "id": "ast_2098_capture",
+      "source_record_id": "sr_imlm_ship_2098",
+      "field": "capture",
+      "location_raw": "Guernsey",
+      "year_as_recorded": 1704,
+      "month_as_recorded": 9,
+      "precision": "month",
+      "display": "September 1704"
+    },
+    {
+      "id": "ast_2098_upstream_hca",
+      "source_record_id": "sr_imlm_ship_2098",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/81"
+    },
+    {
+      "id": "ast_crew_5174",
+      "source_record_id": "sr_imlm_crew_5174",
+      "field": "crew_examination",
+      "first_name": "Benjamin",
+      "last_name": "Farnum",
+      "rank": "naut",
+      "birthplace": "Boston",
+      "residence": "Boston",
+      "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1511_name",
+      "source_record_id": "sr_imlm_ship_1511",
+      "field": "ship_name",
+      "raw_value": "John & Susanna of Bristoll"
+    },
+    {
+      "id": "ast_1511_owner",
+      "source_record_id": "sr_imlm_ship_1511",
+      "field": "owner_residence",
+      "raw_value": "Bristol"
+    },
+    {
+      "id": "ast_1511_voyage",
+      "source_record_id": "sr_imlm_ship_1511",
+      "field": "voyage",
+      "origin_raw": "Bristol",
+      "destination_raw": "Barbados"
+    },
+    {
+      "id": "ast_1511_capture",
+      "source_record_id": "sr_imlm_ship_1511",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1705,
+      "month_as_recorded": 6,
+      "precision": "month",
+      "display": "June 1705"
+    },
+    {
+      "id": "ast_1511_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1511",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/66"
+    },
+    {
+      "id": "ast_crew_3816",
+      "source_record_id": "sr_imlm_crew_3816",
+      "field": "crew_examination",
+      "first_name": "George",
+      "last_name": "Cranfield",
+      "rank": "master",
+      "birthplace": "Bristol",
+      "residence": "Bristol",
+      "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_3817",
+      "source_record_id": "sr_imlm_crew_3817",
+      "field": "crew_examination",
+      "first_name": "Henry",
+      "last_name": "Baker",
+      "rank": "mate",
+      "birthplace": "Bideford",
+      "residence": "Bristol",
+      "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1245_name",
+      "source_record_id": "sr_imlm_ship_1245",
+      "field": "ship_name",
+      "raw_value": "St Francis de Rochelle"
+    },
+    {
+      "id": "ast_1245_tonnage",
+      "source_record_id": "sr_imlm_ship_1245",
+      "field": "tonnage",
+      "raw_value": "75"
+    },
+    {
+      "id": "ast_1245_construction",
+      "source_record_id": "sr_imlm_ship_1245",
+      "field": "construction_place",
+      "raw_value": "English built"
+    },
+    {
+      "id": "ast_1245_owner",
+      "source_record_id": "sr_imlm_ship_1245",
+      "field": "owner_residence",
+      "raw_value": "Rochelle"
+    },
+    {
+      "id": "ast_1245_voyage",
+      "source_record_id": "sr_imlm_ship_1245",
+      "field": "voyage",
+      "origin_raw": "St Domingo on the island of Hispaniola",
+      "destination_raw": "Rochelle"
+    },
+    {
+      "id": "ast_1245_capture",
+      "source_record_id": "sr_imlm_ship_1245",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1709,
+      "month_as_recorded": 12,
+      "precision": "month",
+      "display": "December 1709"
+    },
+    {
+      "id": "ast_1245_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1245",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/59"
+    },
+    {
+      "id": "ast_crew_3037",
+      "source_record_id": "sr_imlm_crew_3037",
+      "field": "crew_examination",
+      "first_name": "Jean",
+      "last_name": "Lafont",
+      "rank": "capitaine",
+      "birthplace": "La Rochelle",
+      "residence": "La Rochelle",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_3038",
+      "source_record_id": "sr_imlm_crew_3038",
+      "field": "crew_examination",
+      "first_name": "Pierre",
+      "last_name": "Masson",
+      "rank": "lieutenant",
+      "birthplace": "Bordeaux",
+      "residence": "La Rochelle",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1993_name",
+      "source_record_id": "sr_imlm_ship_1993",
+      "field": "ship_name",
+      "raw_value": "St Peter Galley"
+    },
+    {
+      "id": "ast_1993_tonnage",
+      "source_record_id": "sr_imlm_ship_1993",
+      "field": "tonnage",
+      "raw_value": "120"
+    },
+    {
+      "id": "ast_1993_construction",
+      "source_record_id": "sr_imlm_ship_1993",
+      "field": "construction_place",
+      "raw_value": "English built"
+    },
+    {
+      "id": "ast_1993_owner",
+      "source_record_id": "sr_imlm_ship_1993",
+      "field": "owner_residence",
+      "raw_value": "Rochelle"
+    },
+    {
+      "id": "ast_1993_voyage",
+      "source_record_id": "sr_imlm_ship_1993",
+      "field": "voyage",
+      "origin_raw": "St Domingo on the Island of Hispaniola",
+      "destination_raw": "Rochelle"
+    },
+    {
+      "id": "ast_1993_capture",
+      "source_record_id": "sr_imlm_ship_1993",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1711,
+      "month_as_recorded": 3,
+      "precision": "month",
+      "display": "March 1711"
+    },
+    {
+      "id": "ast_1993_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1993",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/79"
+    },
+    {
+      "id": "ast_crew_4901",
+      "source_record_id": "sr_imlm_crew_4901",
+      "field": "crew_examination",
+      "first_name": "Jacques",
+      "last_name": "Peron",
+      "rank": "chirurgien",
+      "birthplace": "Nantes",
+      "residence": "La Rochelle",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_4902",
+      "source_record_id": "sr_imlm_crew_4902",
+      "field": "crew_examination",
+      "first_name": "Francois",
+      "last_name": "Martin",
+      "rank": "matelot",
+      "birthplace": "St Malo",
+      "residence": "La Rochelle",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1516_name",
+      "source_record_id": "sr_imlm_ship_1516",
+      "field": "ship_name",
+      "raw_value": "John & James de Rochell"
+    },
+    {
+      "id": "ast_1516_tonnage",
+      "source_record_id": "sr_imlm_ship_1516",
+      "field": "tonnage",
+      "raw_value": "90"
+    },
+    {
+      "id": "ast_1516_construction",
+      "source_record_id": "sr_imlm_ship_1516",
+      "field": "construction_place",
+      "raw_value": "Boston in New England"
+    },
+    {
+      "id": "ast_1516_owner",
+      "source_record_id": "sr_imlm_ship_1516",
+      "field": "owner_residence",
+      "raw_value": "Martinicoe"
+    },
+    {
+      "id": "ast_1516_voyage",
+      "source_record_id": "sr_imlm_ship_1516",
+      "field": "voyage",
+      "origin_raw": "Martinicoe",
+      "destination_raw": "Rochelle"
+    },
+    {
+      "id": "ast_1516_capture",
+      "source_record_id": "sr_imlm_ship_1516",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1705,
+      "month_as_recorded": 4,
+      "precision": "month",
+      "display": "April 1705"
+    },
+    {
+      "id": "ast_1516_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1516",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/66"
+    },
+    {
+      "id": "ast_crew_3832",
+      "source_record_id": "sr_imlm_crew_3832",
+      "field": "crew_examination",
+      "first_name": "Guillaume",
+      "last_name": "Giraud",
+      "rank": "matelot",
+      "birthplace": "Martinique",
+      "residence": "Martinique",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_3833",
+      "source_record_id": "sr_imlm_crew_3833",
+      "field": "crew_examination",
+      "first_name": "Etienne",
+      "last_name": "Dupont",
+      "rank": "charpentier",
+      "birthplace": "Nantes",
+      "residence": "Martinique",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1278_name",
+      "source_record_id": "sr_imlm_ship_1278",
+      "field": "ship_name",
+      "raw_value": "Francis Ameriquain de Nantes"
+    },
+    {
+      "id": "ast_1278_tonnage",
+      "source_record_id": "sr_imlm_ship_1278",
+      "field": "tonnage",
+      "raw_value": "90"
+    },
+    {
+      "id": "ast_1278_construction",
+      "source_record_id": "sr_imlm_ship_1278",
+      "field": "construction_place",
+      "raw_value": "English built"
+    },
+    {
+      "id": "ast_1278_owner",
+      "source_record_id": "sr_imlm_ship_1278",
+      "field": "owner_residence",
+      "raw_value": "Nantes"
+    },
+    {
+      "id": "ast_1278_voyage",
+      "source_record_id": "sr_imlm_ship_1278",
+      "field": "voyage",
+      "origin_raw": "the river Nantes",
+      "destination_raw": "Martinique in the West Indies"
+    },
+    {
+      "id": "ast_1278_capture",
+      "source_record_id": "sr_imlm_ship_1278",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1710,
+      "month_as_recorded": 10,
+      "precision": "month",
+      "display": "October 1710"
+    },
+    {
+      "id": "ast_1278_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1278",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/60"
+    },
+    {
+      "id": "ast_crew_3145",
+      "source_record_id": "sr_imlm_crew_3145",
+      "field": "crew_examination",
+      "first_name": "Michel",
+      "last_name": "Bouyer",
+      "rank": "second capitaine",
+      "birthplace": "Nantes",
+      "residence": "Nantes",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_3146",
+      "source_record_id": "sr_imlm_crew_3146",
+      "field": "crew_examination",
+      "first_name": "Antoine",
+      "last_name": "Richard",
+      "rank": "matelot",
+      "birthplace": "Rennes",
+      "residence": "Nantes",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1582_name",
+      "source_record_id": "sr_imlm_ship_1582",
+      "field": "ship_name",
+      "raw_value": "St John Baptiste of St Augustine"
+    },
+    {
+      "id": "ast_1582_tonnage",
+      "source_record_id": "sr_imlm_ship_1582",
+      "field": "tonnage",
+      "raw_value": "25"
+    },
+    {
+      "id": "ast_1582_construction",
+      "source_record_id": "sr_imlm_ship_1582",
+      "field": "construction_place",
+      "raw_value": "english built"
+    },
+    {
+      "id": "ast_1582_owner",
+      "source_record_id": "sr_imlm_ship_1582",
+      "field": "owner_residence",
+      "raw_value": "St Augustine"
+    },
+    {
+      "id": "ast_1582_voyage",
+      "source_record_id": "sr_imlm_ship_1582",
+      "field": "voyage",
+      "origin_raw": "Havana",
+      "destination_raw": "St Augustine"
+    },
+    {
+      "id": "ast_1582_capture",
+      "source_record_id": "sr_imlm_ship_1582",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1712,
+      "month_as_recorded": 6,
+      "precision": "month",
+      "display": "June 1712"
+    },
+    {
+      "id": "ast_1582_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1582",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/67"
+    },
+    {
+      "id": "ast_crew_4001",
+      "source_record_id": "sr_imlm_crew_4001",
+      "field": "crew_examination",
+      "first_name": "Juan",
+      "last_name": "Rodriguez",
+      "rank": "patron",
+      "birthplace": "San Agustin",
+      "residence": "San Agustin",
+      "subject_of": "King of Spain",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_4002",
+      "source_record_id": "sr_imlm_crew_4002",
+      "field": "crew_examination",
+      "first_name": "Manuel",
+      "last_name": "Gomez",
+      "rank": "marinero",
+      "birthplace": "La Habana",
+      "residence": "San Agustin",
+      "subject_of": "King of Spain",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1964_name",
+      "source_record_id": "sr_imlm_ship_1964",
+      "field": "ship_name",
+      "raw_value": "St Patrick & St Paul"
+    },
+    {
+      "id": "ast_1964_tonnage",
+      "source_record_id": "sr_imlm_ship_1964",
+      "field": "tonnage",
+      "raw_value": "250"
+    },
+    {
+      "id": "ast_1964_construction",
+      "source_record_id": "sr_imlm_ship_1964",
+      "field": "construction_place",
+      "raw_value": "New England built"
+    },
+    {
+      "id": "ast_1964_owner",
+      "source_record_id": "sr_imlm_ship_1964",
+      "field": "owner_residence",
+      "raw_value": "Marseilles"
+    },
+    {
+      "id": "ast_1964_voyage",
+      "source_record_id": "sr_imlm_ship_1964",
+      "field": "voyage",
+      "origin_raw": "Carthegena",
+      "destination_raw": "Marseille"
+    },
+    {
+      "id": "ast_1964_capture",
+      "source_record_id": "sr_imlm_ship_1964",
+      "field": "capture",
+      "location_raw": "Port Mahon, Minorca",
+      "year_as_recorded": 1709,
+      "month_as_recorded": 8,
+      "precision": "month",
+      "display": "August 1709"
+    },
+    {
+      "id": "ast_1964_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1964",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/78"
+    },
+    {
+      "id": "ast_crew_4821",
+      "source_record_id": "sr_imlm_crew_4821",
+      "field": "crew_examination",
+      "first_name": "Honoré",
+      "last_name": "Sauveur",
+      "rank": "capitaine",
+      "birthplace": "Marseille",
+      "residence": "Marseille",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_4822",
+      "source_record_id": "sr_imlm_crew_4822",
+      "field": "crew_examination",
+      "first_name": "Laurent",
+      "last_name": "Blanc",
+      "rank": "pilote",
+      "birthplace": "Toulon",
+      "residence": "Marseille",
+      "subject_of": "King of France",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_1982_name",
+      "source_record_id": "sr_imlm_ship_1982",
+      "field": "ship_name",
+      "raw_value": "Port Royal of Biddeford"
+    },
+    {
+      "id": "ast_1982_tonnage",
+      "source_record_id": "sr_imlm_ship_1982",
+      "field": "tonnage",
+      "raw_value": "40"
+    },
+    {
+      "id": "ast_1982_construction",
+      "source_record_id": "sr_imlm_ship_1982",
+      "field": "construction_place",
+      "raw_value": "near Biddeford"
+    },
+    {
+      "id": "ast_1982_owner",
+      "source_record_id": "sr_imlm_ship_1982",
+      "field": "owner_residence",
+      "raw_value": "Biddeford"
+    },
+    {
+      "id": "ast_1982_voyage",
+      "source_record_id": "sr_imlm_ship_1982",
+      "field": "voyage",
+      "origin_raw": "South Carolina",
+      "destination_raw": "Biddeford, Devon"
+    },
+    {
+      "id": "ast_1982_capture",
+      "source_record_id": "sr_imlm_ship_1982",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "year_as_recorded": 1709,
+      "month_as_recorded": 6,
+      "precision": "month",
+      "display": "June 1709"
+    },
+    {
+      "id": "ast_1982_upstream_hca",
+      "source_record_id": "sr_imlm_ship_1982",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/78"
+    },
+    {
+      "id": "ast_crew_4873",
+      "source_record_id": "sr_imlm_crew_4873",
+      "field": "crew_examination",
+      "first_name": "William",
+      "last_name": "Horwood",
+      "rank": "master",
+      "birthplace": "Bideford",
+      "residence": "Bideford",
+      "subject_of": "Queen of Great Britain",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_4874",
+      "source_record_id": "sr_imlm_crew_4874",
+      "field": "crew_examination",
+      "first_name": "John",
+      "last_name": "Dennis",
+      "rank": "naut",
+      "birthplace": "Appledore",
+      "residence": "Bideford",
+      "subject_of": "Queen of Great Britain",
       "signature": "Signed"
     },
     {

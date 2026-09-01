@@ -25,6 +25,7 @@
       "title": "Capture of the Richard & Sarah",
       "date": "1705-05",
       "place_id": "place_dartmouth",
+      "vessel_id": "ship_richard_and_sarah_1705",
       "kind": "capture",
       "evidence_state": "documented",
       "summary": "The English-built vessel Richard & Sarah of London, on a recorded voyage from Jamaica to London, was taken at Dartmouth, Devon in May 1705 and recorded in High Court of Admiralty Prize Papers.",
@@ -42,6 +43,7 @@
       "title": "Capture of the William",
       "date": "1702-09",
       "place_id": "place_plymouth",
+      "vessel_id": "ship_william_1702",
       "kind": "capture",
       "evidence_state": "documented",
       "summary": "The 60-ton English-built vessel William, on a recorded voyage from Jamaica to London with muster at Jamaica, was taken at Plymouth, Devon in September 1702 and recorded in High Court of Admiralty Prize Papers.",
@@ -52,6 +54,240 @@
       "assertion_ids": [
         "ast_2228_capture",
         "ast_2228_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_sarah_galley_1703",
+      "title": "Capture of the Sarah Galley",
+      "date": "1703-05",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_sarah_galley_1703",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The vessel Sarah Galley of London (owned in Virginia), on a voyage from Barbados to London, was taken at Plymouth, Devon in May 1703.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_2154_capture",
+        "ast_2154_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_stapleton_1703",
+      "title": "Capture of the Stapleton",
+      "date": "1703-06",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_stapleton_1703",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The Bristol-owned vessel Stapleton, on a voyage from Antigua to Bristol, was taken at Plymouth, Devon in June 1703.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_2155_capture",
+        "ast_2155_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_thomas_and_john_1702",
+      "title": "Capture of the Thomas & John",
+      "date": "1702-08",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_thomas_and_john_1702",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 80-ton Bristol-built vessel Thomas & John of Bristoll, on a voyage from the Island of Nevis to Bristol, was taken at Plymouth, Devon in August 1702.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_2144_capture",
+        "ast_2144_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_samuel_1704",
+      "title": "Capture of the Samuel",
+      "date": "1704-08",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_samuel_1704",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 70-ton English-built vessel Samuel of London, on a voyage from St Christopher to London, was taken at Plymouth, Devon in August 1704.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_2106_capture",
+        "ast_2106_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_success_of_boston_1704",
+      "title": "Capture of the Success of Boston",
+      "date": "1704-09",
+      "place_id": "place_guernsey",
+      "vessel_id": "ship_success_of_boston_1704",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 45-ton New England-built vessel Success of Boston, on a voyage from Montserrat to London, was taken at Guernsey in September 1704.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_2098_capture",
+        "ast_2098_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_john_and_susanna_1705",
+      "title": "Capture of the John & Susanna",
+      "date": "1705-06",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_john_and_susanna_1705",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The Bristol-owned vessel John & Susanna of Bristoll, outward bound from Bristol to Barbados, was taken at Plymouth, Devon in June 1705.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1511_capture",
+        "ast_1511_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_st_francis_1709",
+      "title": "Capture of the St Francis de Rochelle",
+      "date": "1709-12",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_st_francis_de_rochelle_1709",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 75-ton vessel St Francis de Rochelle, on a voyage from Saint-Domingue to La Rochelle, was taken and brought to Plymouth in December 1709.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1245_capture",
+        "ast_1245_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_st_peter_galley_1711",
+      "title": "Capture of the St Peter Galley",
+      "date": "1711-03",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_st_peter_galley_1711",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 120-ton vessel St Peter Galley, on a voyage from Saint-Domingue to La Rochelle, was taken at Plymouth, Devon in March 1711.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1993_capture",
+        "ast_1993_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_john_and_james_1705",
+      "title": "Capture of the John & James",
+      "date": "1705-04",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_john_and_james_1705",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 90-ton Boston-built vessel John & James de Rochell, on a voyage from Martinique to La Rochelle, was taken at Plymouth, Devon in April 1705.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1516_capture",
+        "ast_1516_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_francis_ameriquain_1710",
+      "title": "Capture of the Francis Ameriquain",
+      "date": "1710-10",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_francis_ameriquain_1710",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 90-ton vessel Francis Ameriquain de Nantes, outward bound from Nantes to Martinique, was taken at Plymouth in October 1710.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1278_capture",
+        "ast_1278_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_st_john_baptiste_augustine_1712",
+      "title": "Capture of the St John Baptiste of St Augustine",
+      "date": "1712-06",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_st_john_baptiste_augustine_1712",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 25-ton Spanish coastal vessel St John Baptiste of St Augustine, on a voyage from Havana to St Augustine, Florida, was taken and brought to Plymouth in June 1712.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1582_capture",
+        "ast_1582_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_st_patrick_and_st_paul_1709",
+      "title": "Capture of the St Patrick & St Paul",
+      "date": "1709-08",
+      "place_id": "place_port_mahon",
+      "vessel_id": "ship_st_patrick_and_st_paul_1709",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 250-ton New England-built vessel St Patrick & St Paul, on a voyage from Cartagena (Spanish Main) to Marseille, was taken at Port Mahon, Minorca in August 1709.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1964_capture",
+        "ast_1964_upstream_hca"
+      ]
+    },
+    {
+      "id": "event_capture_port_royal_biddeford_1709",
+      "title": "Capture of the Port Royal of Biddeford",
+      "date": "1709-06",
+      "place_id": "place_plymouth",
+      "vessel_id": "ship_port_royal_biddeford_1709",
+      "kind": "capture",
+      "evidence_state": "documented",
+      "summary": "The 40-ton vessel Port Royal of Biddeford, on a voyage from South Carolina to Bideford, Devon, was taken at Plymouth in June 1709.",
+      "sources": [
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_1982_capture",
+        "ast_1982_upstream_hca"
       ]
     }
   ]

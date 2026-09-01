@@ -3,10 +3,12 @@
 Use this file to load **the minimum useful context for the task**. Do not read the entire documentation tree simply because a large context window is available.
 
 ## Current phase
-
-Packet 1 is complete, deployed, and hosted-verified. Packet 2 is the active work packet.
-
-For new implementation/research sessions, start with the current packet in `docs/FIRST_SESSIONS.md` plus the task-specific routes below. `docs/KICKOFF.md` remains the historical Packet 1 bootstrap record; do not rerun its Packet 1 initialization workflow.
+ 
+- Packet 1 is complete, deployed, and hosted-verified.
+- Packet 2 historical corpus, provenance hardening, and deterministic publication pipeline are complete and hosted-verified.
+- **Packet 3** (Public-beta quality and first meaningful corpus) is the **active work packet** on branch `packet3-public-beta`.
+ 
+For new implementation/research sessions, start with Packet 3 in `docs/FIRST_SESSIONS.md` plus the task-specific routes below.
 
 The repository already owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1 interaction/design architecture. Do not reinitialize or redesign that foundation when beginning Packet 2.
 
