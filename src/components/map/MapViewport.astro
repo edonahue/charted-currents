@@ -58,6 +58,7 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
 
 <script>
   import { Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
+  import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
   import type { Selection } from "../../lib/domain/types";
   import { applyBasemapVisualPolicy } from "../../lib/map/applyVisualPolicy";
   import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW, SELECTION_CAMERA } from "../../lib/map/config";
@@ -67,10 +68,9 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
   } from "../../lib/map/developmentAnchors";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
-  import { withBase } from "../../lib/paths";
   import { selectionStore } from "../../lib/state/selection";
 
-  setWorkerUrl(withBase("/maplibre/maplibre-gl-worker.mjs"));
+  setWorkerUrl(workerUrl);
 
   const container = document.getElementById("charted-currents-map");
   const status = document.querySelector<HTMLElement>("[data-map-status]");

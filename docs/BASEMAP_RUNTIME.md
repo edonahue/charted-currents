@@ -107,6 +107,27 @@ The public product must fail honestly if the external basemap is unavailable:
 - show a concise map-unavailable state if initial style loading fails materially;
 - historical/source data should remain conceptually separate from provider availability.
 
+## Web worker and tile-decoding architecture
+
+MapLibre GL JS 6 delegates vector tile decoding and geometry processing to a dedicated Web Worker module. By default, `maplibre-gl` attempts to resolve its worker via `new Worker(new URL("./maplibre-gl-worker.mjs", import.meta.url), { type: "module" })`.
+
+Because `maplibre-gl-worker.mjs` imports `maplibre-gl-shared.mjs`, bundling MapLibre in Vite/Astro applications requires routing the worker through Vite's worker pipeline rather than referencing an unbundled file.
+
+Charted Currents follows the official MapLibre v6 Vite packaging recommendation in `src/components/map/MapViewport.astro`:
+
+```typescript
+import { Map, setWorkerUrl } from "maplibre-gl";
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
+
+setWorkerUrl(workerUrl);
+```
+
+This pattern ensures that:
+- Vite automatically analyzes, bundles, and emits a self-contained worker chunk (e.g. `dist/_astro/maplibre-gl-worker-[hash].js`) that includes all necessary shared decoding dependencies;
+- No manual vendor file copying into `public/` is required;
+- The worker stays strictly synchronized with the pinned `maplibre-gl` version in `package.json`;
+- Headless WebGL renderers and production browsers instantiate the worker correctly without 404 tile-decoding failures.
+
 ## Later options
 
 A later measured need may justify:

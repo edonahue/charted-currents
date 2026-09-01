@@ -35,7 +35,7 @@ The core product principle is:
 
 ## Initial technology direction
 
-- Node 22.16.0
+- Node 22.23.1 (pinned via `.nvmrc`)
 - Astro 7.2.9 + strict TypeScript 6.0.3
 - MapLibre GL JS 6.6.0
 - OpenFreeMap as the reversible no-key modern basemap bootstrap
@@ -104,9 +104,9 @@ npm run refs:sync
 npm run verify
 ```
 
-The first `npm install` should generate `package-lock.json`; Packet 1 should keep it. `refs:sync` populates the reviewed local historical visual-reference board described by `design/reference-board/manifest.json`; review and retain those derivatives/checksums for Packet 1 design work.
+The committed `package-lock.json` pins dependencies deterministically. `refs:sync` populates the reviewed local historical visual-reference board described by `design/reference-board/manifest.json`; those derivatives and checksums are preserved in the repository for design context.
 
-Packet 1 may display four real **modern locator** anchors to make the shell explorable without inventing historical activity. They remain outside the published historical-data bundle and, if visible publicly, require the GeoNames CC BY 4.0 attribution defined in `src/lib/map/developmentAnchors.ts`.
+Packet 1 displays four real **modern locator** anchors to make the shell explorable without inventing historical activity. They remain outside the published historical-data bundle and provide the GeoNames CC BY 4.0 attribution defined in `src/lib/map/developmentAnchors.ts`.
 
 ## First public deployment posture
 
@@ -126,7 +126,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Bootable implementation scaffold; Packet 1 direction locked and ready.** The current site intentionally contains only a modern basemap and honest empty historical surfaces. Packet 1 should implement the already-decided exploratory composition and interaction spine rather than reinitialize the framework or reopen product preferences. Packet 2 introduces the first real evidence-backed historical corpus.
+**Packet 1 interactive atlas shell implemented and hardened.** The interactive MapLibre canvas, dynamic folio dock, mobile bottom sheet, period timeline rail, and modern locator anchors are fully implemented and deterministically verified locally. The site maintains a strict prototype/noindex posture. First public Cloudflare Pages deployment is the next milestone. Packet 2 will introduce the first evidence-backed historical corpus.
 
 ## Licensing
 

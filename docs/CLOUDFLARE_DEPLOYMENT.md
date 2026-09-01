@@ -13,8 +13,8 @@ For the first public deployment:
 - build command: `npm run build`;
 - output directory: `dist`;
 - repository root as build root;
-- Node: pinned by the repository `.nvmrc` (`22.16.0`);
-- dependency versions: pinned in `package.json`, with `package-lock.json` expected from the first `npm install`;
+- Node: pinned by the repository `.nvmrc` (`22.23.1`);
+- dependency versions: pinned in `package.json`, with `package-lock.json` committed;
 - no build secrets/environment variables required for the initial shell.
 
 The first durable target is the Pages-provided `*.pages.dev` hostname. Do not delay first deployment to solve the final canonical URL.

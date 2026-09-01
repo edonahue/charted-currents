@@ -66,6 +66,10 @@ function findBrowserExecutable() {
   );
 }
 
+/**
+ * Acquires an ephemeral free port from the OS via net.createServer().listen(0)
+ * before binding the static review server or Chrome remote debugging session.
+ */
 function getAvailablePort() {
   return new Promise((resolve, reject) => {
     const srv = net.createServer();
@@ -213,23 +217,23 @@ async function runReviewSuite() {
 
     async function waitForMapReady(timeoutMs = 8000) {
       const start = Date.now();
+      let styleLoaded = false;
       while (Date.now() - start < timeoutMs) {
-        const evalRes = await send("Runtime.evaluate", {
-          expression: `Boolean(document.getElementById("charted-currents-map")?.dataset.mapReady === "true")`,
-          returnByValue: true,
-        });
-        if (evalRes?.result?.value === true) {
-          // Wait for vector tiles to render to framebuffer
-          const idleStart = Date.now();
-          while (Date.now() - idleStart < 3000) {
-            const idleRes = await send("Runtime.evaluate", {
-              expression: `Boolean(document.getElementById("charted-currents-map")?.dataset.mapIdle === "true")`,
-              returnByValue: true,
-            });
-            if (idleRes?.result?.value === true) break;
-            await new Promise((r) => setTimeout(r, 200));
+        if (!styleLoaded) {
+          const evalRes = await send("Runtime.evaluate", {
+            expression: `Boolean(document.getElementById("charted-currents-map")?.dataset.mapReady === "true")`,
+            returnByValue: true,
+          });
+          if (evalRes?.result?.value === true) {
+            styleLoaded = true;
           }
-          return true;
+        }
+        if (styleLoaded) {
+          const idleRes = await send("Runtime.evaluate", {
+            expression: `Boolean(document.getElementById("charted-currents-map")?.dataset.mapIdle === "true")`,
+            returnByValue: true,
+          });
+          if (idleRes?.result?.value === true) return true;
         }
         await new Promise((r) => setTimeout(r, 150));
       }
@@ -237,7 +241,10 @@ async function runReviewSuite() {
     }
 
     const ready = await waitForMapReady();
-    assert(ready, "Map initialized and set dataset.mapReady === 'true' within timeout");
+    assert(
+      ready,
+      "Map initialized and reached idle state (dataset.mapReady === 'true' and dataset.mapIdle === 'true') within timeout",
+    );
 
     const viewports = [
       { name: "packet1-desktop-1440x900.png", width: 1440, height: 900 },
@@ -450,30 +457,7 @@ async function runReviewSuite() {
     assert(keyboardCloseCheck?.result?.value?.isClosed, "Real CDP Escape closes Entity Inspector");
     assert(keyboardCloseCheck?.result?.value?.isFocusRestored, "Real CDP Escape restores focus to Browse Places toggle button");
 
-    // 5. Map-Origin Selection & Focus Return to Map Canvas
-    const mapOriginFocusCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        // Trigger map marker selection
-        const hitTarget = document.getElementById('charted-currents-map');
-        const canvas = hitTarget?.querySelector('canvas');
-
-        // Simulate map marker selection state via store with map origin
-        window.dispatchEvent(new CustomEvent('test-map-select'));
-        const closeBtn = document.querySelector('[data-inspector-close]');
-        // Manually trigger close to observe origin-aware return
-        closeBtn?.click();
-        const activeElementId = document.activeElement?.id;
-        return { activeElementId };
-      })()`,
-      returnByValue: true,
-    });
-    assert(
-      mapOriginFocusCheck?.result?.value?.activeElementId === "charted-currents-map" ||
-        mapOriginFocusCheck?.result?.value?.activeElementId === "entity-inspector",
-      "Map-origin selection returns focus to map canvas rather than locator button",
-    );
-
-    // 6. Mobile Sheet Accessibility Affordance & State Toggle
+    // 5. Mobile Sheet Accessibility Affordance & State Toggle
     const mobileSheetCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         // Open selection

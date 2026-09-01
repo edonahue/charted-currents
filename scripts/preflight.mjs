@@ -41,8 +41,6 @@ const requiredFiles = [
   "src/lib/data/loadPublished.ts",
   "public/data/README.md",
   "public/robots.txt",
-  "public/maplibre/maplibre-gl-worker.mjs",
-  "public/maplibre/maplibre-gl-shared.mjs",
 ];
 
 const failures = [];
