@@ -1,0 +1,220 @@
+setup_doc: docs/DOCUMENTARY_SOURCE_ACCESS.md
+normalization_doc: docs/PRE_INGESTION_NORMALIZATION_POLICY.md
+
+sources:
+  - id: tna_discovery
+    name: The National Archives (UK) Discovery catalogue
+    priority: documentary_core_catalogue
+    url: https://discovery.nationalarchives.gov.uk/
+    account_required: false_for_public_catalogue
+    api_key_required: false_for_browser_catalogue
+    access: public web catalogue plus series/item hierarchy; original access may require Kew visit or copy order
+    use: resolve archival series/item references across CO, HCA, E, CUST, PC and related departments
+    automated_ingestion: targeted_browser_or_catalogue_research; do_not_request_discovery_api_by_default
+    preserve:
+      - exact archival reference
+      - series/item URL
+      - catalogue description
+      - access status
+      - retrieval date
+    caveat: catalogue metadata is an archival description, not the manuscript itself
+    last_verified: 2026-08-31
+
+  - id: csp_colonial
+    name: Calendar of State Papers Colonial, America and West Indies
+    priority: documentary_p0_discovery_context
+    period: 1574-1739
+    guide_url: https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/america-west-indies-calendar-state-papers-colonial-1573-1739/
+    access: online via Colonial State Papers / British History Online where available, plus printed volumes in specialist libraries/TNA
+    account_required: platform_dependent_for_some_online_access; no_charted_currents_key
+    api_key_required: false
+    source_role: archival_calendar_or_abstract
+    use: person/place/event/ship/government correspondence discovery and documentary context
+    preserve:
+      - calendar volume/year
+      - item/page
+      - calendar wording
+      - old archival reference where present
+      - converted modern CO reference only when authoritatively resolved
+    reference_rule:
+      pre_1700: old references require conversion
+      year_1700: use volume-specific key
+      from_1701: modern CO references generally supplied
+    automated_ingestion: targeted_search_and_manual_validation
+    caveat: calendar transcript/summary is not automatically exact manuscript wording
+    last_verified: 2026-08-31
+
+  - id: tna_colonial_office
+    name: Colonial Office and Board of Trade record series
+    priority: documentary_p0_primary
+    guide_url: https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/american-and-west-indian-colonies-before-1782/
+    series:
+      - CO 1
+      - CO 5
+      - CO 318
+      - CO 323
+      - CO 389
+      - CO 390
+      - CO 391
+    account_required: false_for_catalogue
+    api_key_required: false
+    access: Discovery catalogue; originals/digitization/copies vary by series and item
+    source_role: primary_original_or_archival_description
+    use: colonial correspondence, entry books, Board of Trade records/journal, administrative context
+    automated_ingestion: targeted_only
+    last_verified: 2026-08-31
+
+  - id: board_trade_journals
+    name: Journals of the Commissioners for Trade and Plantations / CO 391
+    priority: documentary_p1_administrative_context
+    period: 1704-1782 published journal run
+    guide_url: https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/american-and-west-indian-colonies-before-1782/
+    archival_series: CO 391
+    access: published journal volumes plus TNA archival series; online/public-domain scan availability varies
+    account_required: false_for_tna_catalogue
+    api_key_required: false
+    source_role: archival_journal_or_published_transcription
+    use: trace receipt/discussion/referral/order/recommendation around colonial correspondence
+    automated_ingestion: targeted
+    caveat: journal action/context is not the content of the underlying incoming letter
+    last_verified: 2026-08-31
+
+  - id: hca26_letters_marque
+    name: HCA 26 Letters of Marque registers
+    priority: documentary_p0_privateering
+    period: core overlap includes 1690s-early 1700s
+    catalogue_url: https://discovery.nationalarchives.gov.uk/browse/r/r/C9560479
+    archival_series: HCA 26
+    account_required: false
+    api_key_required: false
+    access: public Discovery series/item descriptions; original/copy access varies
+    source_role: primary_legal_record_or_archival_description
+    use: dated legal privateering commissions/declarations, ship, commander, burden, crew, officers, armament, owners
+    automated_ingestion: targeted_item_level
+    normalization_rule: privateer/commission status is time- and jurisdiction-bounded; never convert to permanent pirate/privateer identity
+    crosscheck_with:
+      - HCA 32
+      - CSP Colonial
+      - Prize Papers / Maritime Labour data
+      - customs/port records
+    last_verified: 2026-08-31
+
+  - id: hca32_prize_papers
+    name: HCA 32 Prize Court papers / direct Prize Papers archival route
+    priority: documentary_p0_prize
+    guide_url: https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/high-court-admiralty-records/
+    archival_series: HCA 32
+    period:
+      pre_1700: HCA 32/1-45
+      war_spanish_succession_1702_1733: HCA 32/46-93
+    account_required: false_for_catalogue
+    api_key_required: false
+    access: public Discovery catalogue; digitization/cataloguing depth varies; originals/copies may require TNA access
+    source_role: primary_original_or_archival_description
+    use: court papers, ships' papers, captured mail, voyage/capture evidence
+    automated_ingestion: targeted; use Prize Papers structured route only under documented terms
+    preserve:
+      - HCA reference
+      - Prize Papers project ID separately when present
+      - document component type
+    last_verified: 2026-08-31
+
+  - id: e190_port_books
+    name: TNA E 190 Port Books
+    priority: documentary_p1_customs_corroboration
+    period: 1565-1799
+    guide_url: https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/merchant-trade-records-port-books-1565-1799/
+    archival_series: E 190
+    account_required: false_for_catalogue
+    api_key_required: false
+    access: most records not viewable online; identify reference in Discovery then visit Kew/order copies or use published transcription/local archive copy
+    use: ships, masters, merchants, goods, customs transactions, ports
+    automated_ingestion: no_bulk; targeted_reference_first
+    caveats:
+      - recorded date may be duty-payment date, not arrival/unloading
+      - declared destination can be false
+      - incomplete because of loss/smuggling/evasion/fraud
+      - duplicate ship names common
+      - foreign names can be anglicized/misrecorded
+      - historical goods/units need explicit normalization
+    last_verified: 2026-08-31
+
+  - id: cust_import_export_1696
+    name: Board of Customs import/export registers from 1696
+    priority: documentary_p1_customs
+    period: 1696+
+    guide_url: https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/merchant-trade-records-port-books-1565-1799/
+    archival_series:
+      - CUST 2-17
+      - CUST 22-37
+    account_required: false_for_catalogue
+    api_key_required: false
+    access: TNA Discovery; catalogue searching primarily by year; original/digital access varies
+    use: customs/import-export context and corroboration
+    automated_ingestion: targeted
+    caveat: customs/accounting record semantics are not automatically exact voyage chronology
+    last_verified: 2026-08-31
+
+  - id: privy_council_pc
+    name: Privy Council records / colonial appeals
+    priority: documentary_p1_governance_legal
+    guide_url: https://www.nationalarchives.gov.uk/help-with-your-research/research-guides/privy-council-since-1386/
+    archival_series:
+      - PC 1
+      - PC 2
+      - PC 4
+    period: core overlap includes subject indexes 1660-1714 and colonial appeals 1680-1775
+    account_required: false_for_tna_catalogue
+    api_key_required: false
+    access: TNA Discovery/research guides; Ames Foundation online colonial-appeals resource as discovery/digitization aid
+    use: petitions, orders, appeals, government action, colonial/legal escalation
+    automated_ingestion: targeted; review Ames reuse terms before automation
+    preserve: underlying TNA PC reference separately from Ames/editorial identifier
+    last_verified: 2026-08-31
+
+  - id: jamaica_archives
+    name: Jamaica Archives and Records Department (JARD)
+    priority: documentary_p0_local_jamaica
+    holdings_url: https://www.jard.gov.jm/pages/holdings-archives
+    research_url: https://www.jard.gov.jm/pages/what-we-do-archives
+    contact_url: https://www.jard.gov.jm/contact
+    account_required: false_for_research_request
+    api_key_required: false
+    access: onsite reading-room research plus written/email/telephone research requests and paid duplication/digitization where available
+    use: locally generated Jamaica court, administrative, governmental, map/plan and potentially maritime context; critical counterweight to London records
+    first_request_scope: 1685-1720 Port Royal/Jamaica maritime, courts, merchants/mariners/privateering, administrative correspondence, customs/shipping, harbor/fortification/disaster maps/plans
+    automated_ingestion: no; human archival relationship / targeted finding-aid requests
+    preserve:
+      - JARD reference number
+      - fonds/supra-fonds/creating agency
+      - item description/date
+      - reproduction/publication conditions
+    last_verified: 2026-08-31
+
+  - id: nationaal_archief_curacao
+    name: Nationaal Archief Curaçao
+    priority: documentary_p0_local_curacao
+    url: https://nationaalarchief.cw/
+    contact_url: https://nationaalarchief.cw/contact/
+    early_curacao_papers_url: https://nationaalarchief.cw/curacao-papers-1640-1655-online/
+    account_required: no_for_general_research; onsite first visit requires visitor registration/valid ID
+    api_key_required: false
+    access: free archive consultation, selected digital resources, onsite reading rooms, staff-assisted research/copies for fees
+    use: WIC-era Curaçao administration, maritime/commercial relations, maps/drawings, local government/private archives
+    first_request_scope: 1650-1730 WIC administration, shipping/trade/customs, privateering/conflict, port/harbor, Curaçao-Caribbean/New Netherland links, maps/plans
+    automated_ingestion: no_general_api_assumed; targeted digital/manual research
+    preserve: archive reference and reproduction conditions
+    last_verified: 2026-08-31
+
+  - id: barbados_archives
+    name: Barbados Department of Archives
+    priority: documentary_p1_local_barbados
+    url: https://www.gov.bb/Departments/archives
+    account_required: false_assumed_for_initial_inquiry
+    api_key_required: false
+    access: government archive/reference service; contact current department for remote/onsite research and reproduction procedures
+    use: locally generated Barbados administration, courts/deeds/probate, merchants/shipmasters, harbor/maps, corroboration of Naval Office Shipping Lists
+    first_request_scope: 1678-1730 shipping/customs/port, merchants/shipmasters, colonial government, Bridgetown harbor/fortification/maps, relevant courts/probate/deeds
+    automated_ingestion: no; targeted human archival inquiry
+    preserve: archive reference, reproduction/publication terms, contact/research-request date
+    last_verified: 2026-08-31
