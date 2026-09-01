@@ -23,6 +23,20 @@
         "origin_place_id": "place_jamaica",
         "destination_place_id": "place_london",
         "date_display": "Associated with May 1705 capture record",
+        "associated_record_year": 1705,
+        "associated_record_month": 5,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_jamaica_place_london",
+        "constituent_vessel_ids": [
+          "ship_richard_and_sarah_1705",
+          "ship_william_1702"
+        ],
+        "constituent_route_ids": [
+          "route_richard_and_sarah_1705",
+          "route_william_1702"
+        ],
+        "record_count": 2,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -55,6 +69,20 @@
         "origin_place_id": "place_jamaica",
         "destination_place_id": "place_london",
         "date_display": "Associated with September 1702 capture record",
+        "associated_record_year": 1702,
+        "associated_record_month": 9,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_jamaica_place_london",
+        "constituent_vessel_ids": [
+          "ship_richard_and_sarah_1705",
+          "ship_william_1702"
+        ],
+        "constituent_route_ids": [
+          "route_richard_and_sarah_1705",
+          "route_william_1702"
+        ],
+        "record_count": 2,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -87,6 +115,18 @@
         "origin_place_id": "place_barbados",
         "destination_place_id": "place_london",
         "date_display": "Associated with May 1703 capture record",
+        "associated_record_year": 1703,
+        "associated_record_month": 5,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_barbados_place_london",
+        "constituent_vessel_ids": [
+          "ship_sarah_galley_1703"
+        ],
+        "constituent_route_ids": [
+          "route_sarah_galley_1703"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -119,6 +159,18 @@
         "origin_place_id": "place_antigua",
         "destination_place_id": "place_bristol",
         "date_display": "Associated with June 1703 capture record",
+        "associated_record_year": 1703,
+        "associated_record_month": 6,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_antigua_place_bristol",
+        "constituent_vessel_ids": [
+          "ship_stapleton_1703"
+        ],
+        "constituent_route_ids": [
+          "route_stapleton_1703"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -151,6 +203,18 @@
         "origin_place_id": "place_nevis",
         "destination_place_id": "place_bristol",
         "date_display": "Associated with August 1702 capture record",
+        "associated_record_year": 1702,
+        "associated_record_month": 8,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_nevis_place_bristol",
+        "constituent_vessel_ids": [
+          "ship_thomas_and_john_1702"
+        ],
+        "constituent_route_ids": [
+          "route_thomas_and_john_1702"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -183,6 +247,18 @@
         "origin_place_id": "place_st_christopher",
         "destination_place_id": "place_london",
         "date_display": "Associated with August 1704 capture record",
+        "associated_record_year": 1704,
+        "associated_record_month": 8,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_st_christopher_place_london",
+        "constituent_vessel_ids": [
+          "ship_samuel_1704"
+        ],
+        "constituent_route_ids": [
+          "route_samuel_1704"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -215,6 +291,18 @@
         "origin_place_id": "place_montserrat",
         "destination_place_id": "place_london",
         "date_display": "Associated with September 1704 capture record",
+        "associated_record_year": 1704,
+        "associated_record_month": 9,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_montserrat_place_london",
+        "constituent_vessel_ids": [
+          "ship_success_of_boston_1704"
+        ],
+        "constituent_route_ids": [
+          "route_success_of_boston_1704"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -247,6 +335,18 @@
         "origin_place_id": "place_bristol",
         "destination_place_id": "place_barbados",
         "date_display": "Associated with June 1705 capture record",
+        "associated_record_year": 1705,
+        "associated_record_month": 6,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_bristol_place_barbados",
+        "constituent_vessel_ids": [
+          "ship_john_and_susanna_1705"
+        ],
+        "constituent_route_ids": [
+          "route_john_and_susanna_1705"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -279,6 +379,20 @@
         "origin_place_id": "place_st_domingo",
         "destination_place_id": "place_rochelle",
         "date_display": "Associated with December 1709 capture record",
+        "associated_record_year": 1709,
+        "associated_record_month": 12,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_st_domingo_place_rochelle",
+        "constituent_vessel_ids": [
+          "ship_st_francis_de_rochelle_1709",
+          "ship_st_peter_galley_1711"
+        ],
+        "constituent_route_ids": [
+          "route_st_francis_de_rochelle_1709",
+          "route_st_peter_galley_1711"
+        ],
+        "record_count": 2,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -311,6 +425,20 @@
         "origin_place_id": "place_st_domingo",
         "destination_place_id": "place_rochelle",
         "date_display": "Associated with March 1711 capture record",
+        "associated_record_year": 1711,
+        "associated_record_month": 3,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_st_domingo_place_rochelle",
+        "constituent_vessel_ids": [
+          "ship_st_francis_de_rochelle_1709",
+          "ship_st_peter_galley_1711"
+        ],
+        "constituent_route_ids": [
+          "route_st_francis_de_rochelle_1709",
+          "route_st_peter_galley_1711"
+        ],
+        "record_count": 2,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -343,6 +471,18 @@
         "origin_place_id": "place_martinique",
         "destination_place_id": "place_rochelle",
         "date_display": "Associated with April 1705 capture record",
+        "associated_record_year": 1705,
+        "associated_record_month": 4,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_martinique_place_rochelle",
+        "constituent_vessel_ids": [
+          "ship_john_and_james_1705"
+        ],
+        "constituent_route_ids": [
+          "route_john_and_james_1705"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -375,6 +515,18 @@
         "origin_place_id": "place_nantes",
         "destination_place_id": "place_martinique",
         "date_display": "Associated with October 1710 capture record",
+        "associated_record_year": 1710,
+        "associated_record_month": 10,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_nantes_place_martinique",
+        "constituent_vessel_ids": [
+          "ship_francis_ameriquain_1710"
+        ],
+        "constituent_route_ids": [
+          "route_francis_ameriquain_1710"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -407,6 +559,18 @@
         "origin_place_id": "place_havana",
         "destination_place_id": "place_st_augustine",
         "date_display": "Associated with June 1712 capture record",
+        "associated_record_year": 1712,
+        "associated_record_month": 6,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_havana_place_st_augustine",
+        "constituent_vessel_ids": [
+          "ship_st_john_baptiste_augustine_1712"
+        ],
+        "constituent_route_ids": [
+          "route_st_john_baptiste_augustine_1712"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -439,6 +603,18 @@
         "origin_place_id": "place_cartagena",
         "destination_place_id": "place_marseille",
         "date_display": "Associated with August 1709 capture record",
+        "associated_record_year": 1709,
+        "associated_record_month": 8,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_cartagena_place_marseille",
+        "constituent_vessel_ids": [
+          "ship_st_patrick_and_st_paul_1709"
+        ],
+        "constituent_route_ids": [
+          "route_st_patrick_and_st_paul_1709"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
@@ -471,6 +647,18 @@
         "origin_place_id": "place_south_carolina",
         "destination_place_id": "place_biddeford",
         "date_display": "Associated with June 1709 capture record",
+        "associated_record_year": 1709,
+        "associated_record_month": 6,
+        "temporal_basis": "capture_record",
+        "date_precision": "year_month",
+        "route_group_id": "route_group_place_south_carolina_place_biddeford",
+        "constituent_vessel_ids": [
+          "ship_port_royal_biddeford_1709"
+        ],
+        "constituent_route_ids": [
+          "route_port_royal_biddeford_1709"
+        ],
+        "record_count": 1,
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,

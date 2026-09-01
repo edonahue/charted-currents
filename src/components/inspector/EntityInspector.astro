@@ -4,7 +4,7 @@
  *
  * Sourced Entity Inspector for Charted Currents.
  * Renders verified historical metadata, crew demographics, evidence badges,
- * contemporary cartographic visuals, and network connections.
+ * contemporary cartographic visuals, network connections, and aggregated route views.
  */
 ---
 
@@ -52,6 +52,12 @@
   </header>
 
   <div id="inspector-content" class="inspector-content">
+    <!-- Out-of-period focus notice banner -->
+    <div class="inspector-period-notice" data-period-notice hidden aria-live="polite">
+      <span class="inspector-period-notice__icon" aria-hidden="true">⏱</span>
+      <span class="inspector-period-notice__text" data-period-notice-text>Outside current period focus</span>
+    </div>
+
     <div class="inspector-title-group">
       <h2 id="inspector-heading" class="inspector-title" data-inspector-title tabindex="-1"></h2>
       <p class="inspector-subtitle" data-inspector-subtitle></p>
@@ -225,6 +231,35 @@
           </button>
         </section>
       </div>
+
+      <!-- VOYAGE / ROUTE GROUP VIEW -->
+      <div data-view-voyage hidden>
+        <section class="inspector-section" aria-label="Documented route connection">
+          <p class="panel-kicker">Route Segment</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Origin Place</dt>
+              <dd data-voyage-origin></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Destination Place</dt>
+              <dd data-voyage-destination></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Documented Voyages</dt>
+              <dd data-voyage-count class="inspector-mono"></dd>
+            </div>
+          </dl>
+          <p class="inspector-note">
+            Dashed line connects documented endpoint places. Constituent vessels represent distinct archival records sharing this directional trajectory.
+          </p>
+        </section>
+
+        <section class="inspector-section" aria-label="Constituent vessel records">
+          <p class="panel-kicker">Documented Vessel Voyages</p>
+          <div class="inspector-connections-list" data-voyage-vessels-list></div>
+        </section>
+      </div>
     </div>
   </div>
 </aside>
@@ -232,8 +267,10 @@
 <script>
   import type { PublishedEntities, PublishedEvent, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
+  import { formatCoordinates } from "../../lib/geo/format";
   import { consumeSelectionTrigger, recordSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
+  import { timeFilterStore } from "../../lib/state/timeFilter";
 
   const inspector = document.getElementById("entity-inspector");
   const closeBtn = document.querySelector<HTMLButtonElement>("[data-inspector-close]");
@@ -243,6 +280,8 @@
   const badgeEl = document.querySelector<HTMLElement>("[data-inspector-badge]");
   const titleEl = document.querySelector<HTMLElement>("[data-inspector-title]");
   const subtitleEl = document.querySelector<HTMLElement>("[data-inspector-subtitle]");
+  const periodNotice = document.querySelector<HTMLElement>("[data-period-notice]");
+  const periodNoticeText = document.querySelector<HTMLElement>("[data-period-notice-text]");
 
   const viewPlace = document.querySelector<HTMLElement>("[data-view-place]");
   const placeRawName = document.querySelector<HTMLElement>("[data-place-raw-name]");
@@ -279,10 +318,17 @@
   const eventConnectionsList = document.querySelector<HTMLElement>("[data-event-connections-list]");
   const eventEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-event-evidence-btn]");
 
+  const viewVoyage = document.querySelector<HTMLElement>("[data-view-voyage]");
+  const voyageOrigin = document.querySelector<HTMLElement>("[data-voyage-origin]");
+  const voyageDest = document.querySelector<HTMLElement>("[data-voyage-destination]");
+  const voyageCount = document.querySelector<HTMLElement>("[data-voyage-count]");
+  const voyageVesselsList = document.querySelector<HTMLElement>("[data-voyage-vessels-list]");
+
   let entitiesCache: PublishedEntities | null = null;
   let routesCache: PublishedRouteFeatureCollection | null = null;
   let eventsCache: PublishedEvent[] | null = null;
   let currentReturnTarget: HTMLElement | null = null;
+  let activeTimeFilter = timeFilterStore.get();
 
   async function loadData() {
     try {
@@ -297,6 +343,8 @@
         const evData = await evRes.json();
         eventsCache = Array.isArray(evData) ? evData : evData.events || [];
       }
+      const curr = selectionStore.get();
+      if (curr) syncInspector(curr);
     } catch (e) {
       console.error("Failed to load inspector data:", e);
     }
@@ -341,11 +389,26 @@
     return out;
   }
 
-  function createConnectionButton(label: string, kind: "port" | "ship" | "event", id: string): HTMLElement {
+  function createConnectionButton(
+    category: "VESSEL" | "EVENT" | "LOCATION" | "ROUTE",
+    title: string,
+    kind: "port" | "ship" | "event" | "voyage",
+    id: string
+  ): HTMLElement {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "inspector-conn-btn";
-    btn.textContent = label;
+
+    const badge = document.createElement("span");
+    badge.className = "inspector-conn-badge";
+    badge.textContent = category;
+
+    const label = document.createElement("span");
+    label.className = "inspector-conn-label";
+    label.textContent = title;
+
+    btn.append(badge, label);
+
     btn.addEventListener("click", () => {
       recordSelectionTrigger({
         modality: "pointer",
@@ -357,10 +420,24 @@
     return btn;
   }
 
+  function checkPeriodFocus(year?: number | null) {
+    if (!periodNotice || !periodNoticeText) return;
+    if (year && activeTimeFilter.id !== "all") {
+      if (year < activeTimeFilter.startYear || year > activeTimeFilter.endYear) {
+        periodNotice.hidden = false;
+        periodNoticeText.textContent = `Outside current period focus (${activeTimeFilter.label})`;
+        return;
+      }
+    }
+    periodNotice.hidden = true;
+  }
+
   function renderPlace(placeId: string) {
     if (!entitiesCache) return;
     const place = entitiesCache.places.find((p) => p.id === placeId);
     if (!place) return;
+
+    checkPeriodFocus(null);
 
     if (kickerEl) kickerEl.textContent = "Geographic Place";
     if (badgeWrap && badgeEl) {
@@ -373,11 +450,11 @@
 
     if (placeRawName) placeRawName.textContent = place.raw_source_name;
     if (placePrecision) placePrecision.textContent = humanizePrecision(place.geographic_precision);
-    if (placeCoords) placeCoords.textContent = `${place.coordinates[1].toFixed(4)}° N, ${place.coordinates[0].toFixed(4)}° E`;
+    if (placeCoords) placeCoords.textContent = formatCoordinates(place.coordinates[0], place.coordinates[1]);
     if (placeGeomProv) placeGeomProv.textContent = humanizePrecision(place.geometry_provenance);
     if (placeNote) placeNote.textContent = place.notes || "";
 
-    // Show visual card for Jamaica and Port Royal
+    // Show visual card exclusively for Jamaica and Port Royal
     if (placeVisualWrap) {
       if (place.id === "place_jamaica" || place.id === "place_port_royal") {
         placeVisualWrap.hidden = false;
@@ -406,13 +483,15 @@
         for (const r of connectedRoutes) {
           const ship = entitiesCache.ships.find((s) => s.id === r.properties.vessel_id);
           const shipName = ship ? ship.canonical_name : r.properties.vessel_id;
-          const label = `🚢 ${shipName} (${r.properties.date_display})`;
-          placeConnectionsList.appendChild(createConnectionButton(label, "ship", r.properties.vessel_id));
+          placeConnectionsList.appendChild(
+            createConnectionButton("VESSEL", `${shipName} (${r.properties.date_display})`, "ship", r.properties.vessel_id)
+          );
         }
 
         for (const ev of connectedEvents) {
-          const label = `📌 ${ev.title} (${ev.date})`;
-          placeConnectionsList.appendChild(createConnectionButton(label, "event", ev.id));
+          placeConnectionsList.appendChild(
+            createConnectionButton("EVENT", `${ev.title} (${ev.date})`, "event", ev.id)
+          );
         }
       } else {
         placeConnectionsWrap.hidden = true;
@@ -435,12 +514,21 @@
     viewPlace?.removeAttribute("hidden");
     viewShip?.setAttribute("hidden", "");
     viewEvent?.setAttribute("hidden", "");
+    viewVoyage?.setAttribute("hidden", "");
   }
 
   function renderShip(shipId: string) {
     if (!entitiesCache) return;
     const ship = entitiesCache.ships.find((s) => s.id === shipId);
     if (!ship) return;
+
+    const occId = ship.occurrence_ids[0];
+    const shipOcc = entitiesCache.ship_occurrences.find((o) => o.id === occId);
+    const crewOccs = entitiesCache.crew_occurrences.filter((c) => c.ship_occurrence_id === occId);
+
+    const capYearMatch = shipOcc?.recorded_capture_date?.match(/^(\d{4})/);
+    const capYear = capYearMatch ? parseInt(capYearMatch[1], 10) : null;
+    checkPeriodFocus(capYear);
 
     if (kickerEl) kickerEl.textContent = "Documented Vessel";
     if (badgeWrap && badgeEl) {
@@ -450,11 +538,6 @@
     }
     if (titleEl) titleEl.textContent = ship.canonical_name;
     if (subtitleEl) subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
-
-    // Find ship occurrence and crew occurrences
-    const occId = ship.occurrence_ids[0];
-    const shipOcc = entitiesCache.ship_occurrences.find((o) => o.id === occId);
-    const crewOccs = entitiesCache.crew_occurrences.filter((c) => c.ship_occurrence_id === occId);
 
     if (shipRawName) shipRawName.textContent = shipOcc ? shipOcc.raw_name : ship.canonical_name;
     if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
@@ -507,19 +590,19 @@
           const destPlace = entitiesCache.places.find((p) => p.id === route.properties.destination_place_id);
           if (originPlace) {
             shipConnectionsList.appendChild(
-              createConnectionButton(`Origin: ${originPlace.canonical_name}`, "port", originPlace.id)
+              createConnectionButton("LOCATION", `Origin: ${originPlace.canonical_name}`, "port", originPlace.id)
             );
           }
           if (destPlace) {
             shipConnectionsList.appendChild(
-              createConnectionButton(`Destination: ${destPlace.canonical_name}`, "port", destPlace.id)
+              createConnectionButton("LOCATION", `Destination: ${destPlace.canonical_name}`, "port", destPlace.id)
             );
           }
         }
 
         for (const ev of connectedEvents) {
           shipConnectionsList.appendChild(
-            createConnectionButton(`📌 ${ev.title} (${ev.date})`, "event", ev.id)
+            createConnectionButton("EVENT", `${ev.title} (${ev.date})`, "event", ev.id)
           );
         }
       } else {
@@ -548,12 +631,17 @@
     viewShip?.removeAttribute("hidden");
     viewPlace?.setAttribute("hidden", "");
     viewEvent?.setAttribute("hidden", "");
+    viewVoyage?.setAttribute("hidden", "");
   }
 
   function renderEvent(eventId: string) {
     if (!eventsCache || !entitiesCache) return;
     const ev = eventsCache.find((e) => e.id === eventId);
     if (!ev) return;
+
+    const evYearMatch = ev.date?.match(/^(\d{4})/);
+    const evYear = evYearMatch ? parseInt(evYearMatch[1], 10) : null;
+    checkPeriodFocus(evYear);
 
     if (kickerEl) kickerEl.textContent = "Historical Event";
     if (badgeWrap && badgeEl) {
@@ -578,7 +666,7 @@
 
       if (place) {
         eventConnectionsList.appendChild(
-          createConnectionButton(`📍 Location: ${place.canonical_name}`, "port", place.id)
+          createConnectionButton("LOCATION", `Location: ${place.canonical_name}`, "port", place.id)
         );
         hasConnections = true;
       }
@@ -587,7 +675,7 @@
         const ship = entitiesCache.ships.find((s) => s.id === ev.vessel_id);
         const shipName = ship ? ship.canonical_name : ev.vessel_id;
         eventConnectionsList.appendChild(
-          createConnectionButton(`🚢 Vessel: ${shipName}`, "ship", ev.vessel_id)
+          createConnectionButton("VESSEL", `Vessel: ${shipName}`, "ship", ev.vessel_id)
         );
         hasConnections = true;
       }
@@ -612,6 +700,56 @@
     viewEvent?.removeAttribute("hidden");
     viewPlace?.setAttribute("hidden", "");
     viewShip?.setAttribute("hidden", "");
+    viewVoyage?.setAttribute("hidden", "");
+  }
+
+  function renderVoyage(routeGroupId: string) {
+    if (!routesCache || !entitiesCache) return;
+
+    // Find all route features matching this route group or endpoint pair
+    const matchingRoutes = routesCache.features.filter(
+      (r) => r.properties.route_group_id === routeGroupId || r.properties.id === routeGroupId
+    );
+    if (matchingRoutes.length === 0) return;
+
+    const firstRoute = matchingRoutes[0];
+    const origin = entitiesCache.places.find((p) => p.id === firstRoute.properties.origin_place_id);
+    const dest = entitiesCache.places.find((p) => p.id === firstRoute.properties.destination_place_id);
+
+    checkPeriodFocus(null);
+
+    if (kickerEl) kickerEl.textContent = "Route Connection";
+    if (badgeWrap && badgeEl) {
+      badgeWrap.hidden = false;
+      badgeEl.textContent = "Documented";
+      badgeEl.setAttribute("data-evidence-state", "documented");
+    }
+
+    const originName = origin?.canonical_name || firstRoute.properties.origin_place_id;
+    const destName = dest?.canonical_name || firstRoute.properties.destination_place_id;
+
+    if (titleEl) titleEl.textContent = `${originName} → ${destName}`;
+    if (subtitleEl) subtitleEl.textContent = `${matchingRoutes.length} documented vessel voyage${matchingRoutes.length > 1 ? "s" : ""} in current corpus`;
+
+    if (voyageOrigin) voyageOrigin.textContent = originName;
+    if (voyageDest) voyageDest.textContent = destName;
+    if (voyageCount) voyageCount.textContent = `${matchingRoutes.length} vessel records`;
+
+    if (voyageVesselsList) {
+      voyageVesselsList.replaceChildren();
+      for (const r of matchingRoutes) {
+        const ship = entitiesCache.ships.find((s) => s.id === r.properties.vessel_id);
+        const shipName = ship ? ship.canonical_name : r.properties.vessel_id;
+        voyageVesselsList.appendChild(
+          createConnectionButton("VESSEL", `${shipName} (${r.properties.date_display})`, "ship", r.properties.vessel_id)
+        );
+      }
+    }
+
+    viewVoyage?.removeAttribute("hidden");
+    viewPlace?.setAttribute("hidden", "");
+    viewShip?.setAttribute("hidden", "");
+    viewEvent?.setAttribute("hidden", "");
   }
 
   function syncInspector(selection: Selection) {
@@ -641,6 +779,8 @@
       renderShip(selection.id);
     } else if (selection.kind === "event") {
       renderEvent(selection.id);
+    } else if (selection.kind === "voyage") {
+      renderVoyage(selection.id);
     }
 
     if (trigger.modality === "keyboard") {
@@ -649,6 +789,18 @@
   }
 
   selectionStore.subscribe(syncInspector);
+
+  timeFilterStore.subscribe((filter) => {
+    activeTimeFilter = filter;
+    const currentSelection = selectionStore.get();
+    if (currentSelection) {
+      if (currentSelection.kind === "ship") {
+        renderShip(currentSelection.id);
+      } else if (currentSelection.kind === "event") {
+        renderEvent(currentSelection.id);
+      }
+    }
+  });
 
   closeBtn?.addEventListener("click", () => {
     selectionStore.set(null);
@@ -700,7 +852,7 @@
   }
 
   .inspector-shell[hidden] {
-    display: none;
+    display: none !important;
   }
 
   .inspector-sheet__handle-wrap {
@@ -750,6 +902,22 @@
     gap: 1.25rem;
   }
 
+  .inspector-period-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.65rem;
+    background: color-mix(in srgb, var(--cc-sand) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cc-sand) 40%, transparent);
+    border-radius: var(--cc-radius-xs);
+    font-size: 0.72rem;
+    color: var(--cc-ink-muted);
+  }
+
+  .inspector-period-notice[hidden] {
+    display: none !important;
+  }
+
   .inspector-title {
     font-family: var(--cc-font-serif);
     font-size: var(--cc-text-lg);
@@ -776,6 +944,10 @@
     gap: 0.5rem;
   }
 
+  .inspector-section[hidden] {
+    display: none !important;
+  }
+
   .inspector-note {
     font-size: var(--cc-text-xs);
     line-height: 1.5;
@@ -795,6 +967,9 @@
     border: 1px solid var(--cc-line);
     border-radius: var(--cc-radius-xs);
     padding: 0.45rem 0.65rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
     font-family: var(--cc-font-sans);
     font-size: var(--cc-text-xs);
     color: var(--cc-ink);
@@ -807,6 +982,19 @@
     background: color-mix(in srgb, var(--cc-paper-raised) 80%, transparent);
     border-color: var(--cc-sand);
     outline: none;
+  }
+
+  .inspector-conn-badge {
+    font-family: var(--cc-font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--cc-sand);
+    flex-shrink: 0;
+  }
+
+  .inspector-conn-label {
+    flex-grow: 1;
   }
 
   .inspector-evidence-btn {

@@ -110,11 +110,17 @@ Packet 1 displays four real **modern locator** anchors to make the shell explora
 
 ## Public deployment
 
-**Status**: Packet 2 historical corpus and evidence hardening complete; Packet 3 public-beta quality and meaningful corpus expansion active on `packet3-public-beta`.
+**Status**: Packet 3 Public Beta Complete.
 **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
-**Active Corpus**: Greater Caribbean & Transatlantic sample (1684–1712), including Port Royal context, Bochart & Knollis cartography, and TNA HCA 32 Prize Paper records (via UK Data Service SN 852135).
-- **Indexing posture**: Strict `noindex` and `robots.txt` crawling block active during prototype development.
-- **Hosted verification**: Verified on edge with Vite-bundled MapLibre worker, OpenFreeMap vector tiles, modern locator anchors, and zero runtime errors. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
+**Active Corpus**: Greater Caribbean & Transatlantic network (1684–1712), featuring:
+- **15 verified canonical vessels** across 15 transatlantic and regional route segments;
+- **26 examined crew depositions** with raw preserved source spellings;
+- **23 resolved geographic places** with evidence-bounded notes and navigation coordinates;
+- **16 dated historical events** spanning wartime prize captures and the 1692 Port Royal earthquake;
+- Contemporary 1684 Bochart & Knollis cartographic reference visual (Library of Congress);
+- Attributed multi-source archival provenance linking UK Data Service SN 852135 (IMLM) and upstream High Court of Admiralty Prize Papers (TNA HCA 32).
+- **Indexing posture**: Public (`<meta name="robots" content="index,follow" />`, `robots.txt` `Allow: /`).
+- **Hosted verification**: Verified on edge with Vite-bundled MapLibre worker, OpenFreeMap vector tiles, and zero runtime exceptions. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
 
 ## Design references
 
@@ -128,7 +134,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Packet 1 interactive atlas shell implemented and hardened.** The interactive MapLibre canvas, dynamic folio dock, mobile bottom sheet, period timeline rail, and modern locator anchors are fully implemented and deterministically verified locally. The site maintains a strict prototype/noindex posture. First public Cloudflare Pages deployment is the next milestone. Packet 2 will introduce the first evidence-backed historical corpus.
+**Packet 3 Public Beta Complete.** The interactive atlas, 15-vessel provenance-backed maritime network, multi-source archival inspector, responsive timeline rail with reactive period filtering, and route aggregation are fully implemented, deterministically tested, and deployed to production on Cloudflare Pages. Subsequent milestones proceed from [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 2.
 
 ## Licensing
 

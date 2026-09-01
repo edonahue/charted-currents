@@ -439,8 +439,8 @@ assertions:
     first_name: "Robert"
     last_name: "Ashworth"
     rank: "carpenter navis"
-    birthplace: "Deptford"
-    residence: "Deptford"
+    birthplace: "Dexlford"
+    residence: "Dexlford"
     subject_of: "Queen of Great Britain"
     signature: "Signed"
   - id: "ast_crew_5037"
@@ -1225,7 +1225,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-0.1278, 51.5074]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Port of London transatlantic destination (IMLM 2052, 2228, 2154, 2106, 2098)."
+    notes: "Port of London destination recorded across 5 transatlantic voyage records (IMLM 2052, 2228, 2154, 2106, 2098)."
     source_assertion_ids: ["ast_2052_voyage", "ast_2228_voyage", "ast_2154_voyage", "ast_2106_voyage", "ast_2098_voyage"]
 
   - id: "place_bristol"
@@ -1235,7 +1235,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-2.5879, 51.4545]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Major western English port connected to West Indies sugar trade (IMLM 2155, 2144, 1511)."
+    notes: "English port recorded as voyage destination and vessel homeport in IMLM 2155, 2144, and 1511."
     source_assertion_ids: ["ast_2155_voyage", "ast_2144_voyage", "ast_1511_voyage"]
 
   - id: "place_dartmouth"
@@ -1245,7 +1245,7 @@ places:
     geographic_precision: "port_town"
     coordinates: [-3.5786, 50.3517]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Devon port roadstead; recorded capture location of Richard & Sarah (May 1705)."
+    notes: "Devon port roadstead recorded as the capture location of Richard & Sarah (May 1705)."
     source_assertion_ids: ["ast_2052_capture"]
 
   - id: "place_plymouth"
@@ -1255,7 +1255,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-4.1427, 50.3755]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Primary Channel naval port and Admiralty prize station (IMLM 2228, 2154, 2155, 2144, 2106, 1511, 1245, 1993, 1516, 1278, 1582, 1982)."
+    notes: "Devon port roadstead recorded as the capture and adjudication location across 12 prize records in the corpus."
     source_assertion_ids: ["ast_2228_capture", "ast_2154_capture", "ast_2155_capture", "ast_2144_capture", "ast_2106_capture", "ast_1511_capture", "ast_1245_capture", "ast_1993_capture", "ast_1516_capture", "ast_1278_capture", "ast_1582_capture", "ast_1982_capture"]
 
   - id: "place_barbados"
@@ -1265,7 +1265,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-59.5432, 13.1939]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "English sugar colony island reference (IMLM 2154, 1511)."
+    notes: "Island and colonial reference recorded in voyage records for IMLM Ship 2154 and 1511."
     source_assertion_ids: ["ast_2154_voyage", "ast_1511_voyage"]
 
   - id: "place_antigua"
@@ -1275,7 +1275,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-61.7964, 17.0608]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "Leeward Islands colony reference (IMLM 2155)."
+    notes: "Leeward Islands colonial reference recorded as voyage origin for IMLM Ship 2155."
     source_assertion_ids: ["ast_2155_voyage"]
 
   - id: "place_nevis"
@@ -1285,7 +1285,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-62.5804, 17.1551]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "Leeward Islands sugar island reference (IMLM 2144)."
+    notes: "Leeward Islands reference recorded as voyage origin for IMLM Ship 2144."
     source_assertion_ids: ["ast_2144_voyage"]
 
   - id: "place_st_christopher"
@@ -1295,7 +1295,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-62.7830, 17.3578]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "Leeward Islands island reference (IMLM 2106)."
+    notes: "Leeward Islands reference recorded as voyage origin for IMLM Ship 2106."
     source_assertion_ids: ["ast_2106_voyage"]
 
   - id: "place_montserrat"
@@ -1305,7 +1305,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-62.1874, 16.7425]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "Leeward Islands island reference (IMLM 2098)."
+    notes: "Leeward Islands reference recorded as voyage origin for IMLM Ship 2098."
     source_assertion_ids: ["ast_2098_voyage"]
 
   - id: "place_st_domingo"
@@ -1315,7 +1315,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-69.9312, 18.4861]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "Hispaniola French/Spanish colony reference (IMLM 1245, 1993)."
+    notes: "Caribbean colonial reference recorded as voyage origin for IMLM Ship 1245 and 1993."
     source_assertion_ids: ["ast_1245_voyage", "ast_1993_voyage"]
 
   - id: "place_martinique"
@@ -1325,7 +1325,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-61.0242, 14.6415]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "French West Indies island reference (IMLM 1516, 1278)."
+    notes: "French West Indies island reference recorded in voyage records for IMLM Ship 1516 and 1278."
     source_assertion_ids: ["ast_1516_voyage", "ast_1278_voyage"]
 
   - id: "place_havana"
@@ -1335,7 +1335,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-82.3666, 23.1136]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Spanish colonial hub and fleet rendezvous (IMLM 1582)."
+    notes: "Recorded as the voyage origin for IMLM Ship 1582 in Prize Court examinations."
     source_assertion_ids: ["ast_1582_voyage"]
 
   - id: "place_st_augustine"
@@ -1345,7 +1345,7 @@ places:
     geographic_precision: "populated_place"
     coordinates: [-81.3124, 29.8947]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Spanish presidio and regional port in Florida (IMLM 1582)."
+    notes: "Recorded as the voyage destination for IMLM Ship 1582 in Prize Court examinations."
     source_assertion_ids: ["ast_1582_voyage"]
 
   - id: "place_cartagena"
@@ -1355,7 +1355,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-75.5144, 10.3910]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Spanish Main fortified port and treasure terminal (IMLM 1964)."
+    notes: "Recorded as the voyage origin for IMLM Ship 1964 in Prize Court examinations."
     source_assertion_ids: ["ast_1964_voyage"]
 
   - id: "place_marseille"
@@ -1365,7 +1365,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [5.3698, 43.2965]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "French Mediterranean port destination (IMLM 1964)."
+    notes: "French Mediterranean port destination recorded for IMLM Ship 1964."
     source_assertion_ids: ["ast_1964_voyage"]
 
   - id: "place_rochelle"
@@ -1375,7 +1375,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-1.1511, 46.1603]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "French Atlantic port destination for West Indies trade (IMLM 1245, 1993, 1516)."
+    notes: "French Atlantic port recorded as voyage destination for IMLM 1245, 1993, and 1516."
     source_assertion_ids: ["ast_1245_voyage", "ast_1993_voyage", "ast_1516_voyage"]
 
   - id: "place_nantes"
@@ -1385,7 +1385,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-1.5536, 47.2184]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "French Atlantic river port origin (IMLM 1278)."
+    notes: "French Atlantic river port recorded as voyage origin for IMLM Ship 1278."
     source_assertion_ids: ["ast_1278_voyage"]
 
   - id: "place_south_carolina"
@@ -1395,7 +1395,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-80.9450, 33.8361]
     geometry_provenance: "modern_generalized_navigation_reference"
-    notes: "North American colony origin (IMLM 1982)."
+    notes: "North American colony reference recorded as voyage origin for IMLM Ship 1982."
     source_assertion_ids: ["ast_1982_voyage"]
 
   - id: "place_biddeford"
@@ -1405,7 +1405,7 @@ places:
     geographic_precision: "port_town"
     coordinates: [-4.2098, 51.0185]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "North Devon port destination (IMLM 1982)."
+    notes: "North Devon port recorded as voyage destination for IMLM Ship 1982."
     source_assertion_ids: ["ast_1982_voyage"]
 
   - id: "place_guernsey"
@@ -1415,7 +1415,7 @@ places:
     geographic_precision: "colony_or_island"
     coordinates: [-2.5853, 49.4482]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Channel Island privateering and prize station (IMLM 2098)."
+    notes: "Channel Island recorded as the capture location for IMLM Ship 2098."
     source_assertion_ids: ["ast_2098_capture"]
 
   - id: "place_port_mahon"
@@ -1425,7 +1425,7 @@ places:
     geographic_precision: "port_town"
     coordinates: [4.2658, 39.8890]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Mediterranean naval base and prize station (IMLM 1964)."
+    notes: "Minorca port recorded as the capture location for IMLM Ship 1964."
     source_assertion_ids: ["ast_1964_capture"]
 
 ship_occurrences:
@@ -1729,8 +1729,8 @@ crew_occurrences:
     first_name: "Robert"
     last_name: "Ashworth"
     rank_as_recorded: "carpenter navis"
-    birthplace_as_recorded: "Deptford"
-    residence_as_recorded: "Deptford"
+    birthplace_as_recorded: "Dexlford"
+    residence_as_recorded: "Dexlford"
     subject_of_as_recorded: "Queen of Great Britain"
     signature_recorded: "Signed"
     assertion_ids: ["ast_crew_5036"]

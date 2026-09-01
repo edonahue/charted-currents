@@ -75,7 +75,7 @@
           "ast_2106_voyage",
           "ast_2098_voyage"
         ],
-        "notes": "Port of London transatlantic destination (IMLM 2052, 2228, 2154, 2106, 2098)."
+        "notes": "Port of London destination recorded across 5 transatlantic voyage records (IMLM 2052, 2228, 2154, 2106, 2098)."
       }
     },
     {
@@ -100,7 +100,7 @@
           "ast_2144_voyage",
           "ast_1511_voyage"
         ],
-        "notes": "Major western English port connected to West Indies sugar trade (IMLM 2155, 2144, 1511)."
+        "notes": "English port recorded as voyage destination and vessel homeport in IMLM 2155, 2144, and 1511."
       }
     },
     {
@@ -123,7 +123,7 @@
         "source_assertion_ids": [
           "ast_2052_capture"
         ],
-        "notes": "Devon port roadstead; recorded capture location of Richard & Sarah (May 1705)."
+        "notes": "Devon port roadstead recorded as the capture location of Richard & Sarah (May 1705)."
       }
     },
     {
@@ -157,7 +157,7 @@
           "ast_1582_capture",
           "ast_1982_capture"
         ],
-        "notes": "Primary Channel naval port and Admiralty prize station (IMLM 2228, 2154, 2155, 2144, 2106, 1511, 1245, 1993, 1516, 1278, 1582, 1982)."
+        "notes": "Devon port roadstead recorded as the capture and adjudication location across 12 prize records in the corpus."
       }
     },
     {
@@ -181,7 +181,7 @@
           "ast_2154_voyage",
           "ast_1511_voyage"
         ],
-        "notes": "English sugar colony island reference (IMLM 2154, 1511)."
+        "notes": "Island and colonial reference recorded in voyage records for IMLM Ship 2154 and 1511."
       }
     },
     {
@@ -204,7 +204,7 @@
         "source_assertion_ids": [
           "ast_2155_voyage"
         ],
-        "notes": "Leeward Islands colony reference (IMLM 2155)."
+        "notes": "Leeward Islands colonial reference recorded as voyage origin for IMLM Ship 2155."
       }
     },
     {
@@ -227,7 +227,7 @@
         "source_assertion_ids": [
           "ast_2144_voyage"
         ],
-        "notes": "Leeward Islands sugar island reference (IMLM 2144)."
+        "notes": "Leeward Islands reference recorded as voyage origin for IMLM Ship 2144."
       }
     },
     {
@@ -250,7 +250,7 @@
         "source_assertion_ids": [
           "ast_2106_voyage"
         ],
-        "notes": "Leeward Islands island reference (IMLM 2106)."
+        "notes": "Leeward Islands reference recorded as voyage origin for IMLM Ship 2106."
       }
     },
     {
@@ -273,7 +273,7 @@
         "source_assertion_ids": [
           "ast_2098_voyage"
         ],
-        "notes": "Leeward Islands island reference (IMLM 2098)."
+        "notes": "Leeward Islands reference recorded as voyage origin for IMLM Ship 2098."
       }
     },
     {
@@ -297,7 +297,7 @@
           "ast_1245_voyage",
           "ast_1993_voyage"
         ],
-        "notes": "Hispaniola French/Spanish colony reference (IMLM 1245, 1993)."
+        "notes": "Caribbean colonial reference recorded as voyage origin for IMLM Ship 1245 and 1993."
       }
     },
     {
@@ -321,7 +321,7 @@
           "ast_1516_voyage",
           "ast_1278_voyage"
         ],
-        "notes": "French West Indies island reference (IMLM 1516, 1278)."
+        "notes": "French West Indies island reference recorded in voyage records for IMLM Ship 1516 and 1278."
       }
     },
     {
@@ -344,7 +344,7 @@
         "source_assertion_ids": [
           "ast_1582_voyage"
         ],
-        "notes": "Spanish colonial hub and fleet rendezvous (IMLM 1582)."
+        "notes": "Recorded as the voyage origin for IMLM Ship 1582 in Prize Court examinations."
       }
     },
     {
@@ -367,7 +367,7 @@
         "source_assertion_ids": [
           "ast_1582_voyage"
         ],
-        "notes": "Spanish presidio and regional port in Florida (IMLM 1582)."
+        "notes": "Recorded as the voyage destination for IMLM Ship 1582 in Prize Court examinations."
       }
     },
     {
@@ -390,7 +390,7 @@
         "source_assertion_ids": [
           "ast_1964_voyage"
         ],
-        "notes": "Spanish Main fortified port and treasure terminal (IMLM 1964)."
+        "notes": "Recorded as the voyage origin for IMLM Ship 1964 in Prize Court examinations."
       }
     },
     {
@@ -413,7 +413,7 @@
         "source_assertion_ids": [
           "ast_1964_voyage"
         ],
-        "notes": "French Mediterranean port destination (IMLM 1964)."
+        "notes": "French Mediterranean port destination recorded for IMLM Ship 1964."
       }
     },
     {
@@ -438,7 +438,7 @@
           "ast_1993_voyage",
           "ast_1516_voyage"
         ],
-        "notes": "French Atlantic port destination for West Indies trade (IMLM 1245, 1993, 1516)."
+        "notes": "French Atlantic port recorded as voyage destination for IMLM 1245, 1993, and 1516."
       }
     },
     {
@@ -461,7 +461,7 @@
         "source_assertion_ids": [
           "ast_1278_voyage"
         ],
-        "notes": "French Atlantic river port origin (IMLM 1278)."
+        "notes": "French Atlantic river port recorded as voyage origin for IMLM Ship 1278."
       }
     },
     {
@@ -484,7 +484,7 @@
         "source_assertion_ids": [
           "ast_1982_voyage"
         ],
-        "notes": "North American colony origin (IMLM 1982)."
+        "notes": "North American colony reference recorded as voyage origin for IMLM Ship 1982."
       }
     },
     {
@@ -507,7 +507,7 @@
         "source_assertion_ids": [
           "ast_1982_voyage"
         ],
-        "notes": "North Devon port destination (IMLM 1982)."
+        "notes": "North Devon port recorded as voyage destination for IMLM Ship 1982."
       }
     },
     {
@@ -530,7 +530,7 @@
         "source_assertion_ids": [
           "ast_2098_capture"
         ],
-        "notes": "Channel Island privateering and prize station (IMLM 2098)."
+        "notes": "Channel Island recorded as the capture location for IMLM Ship 2098."
       }
     },
     {
@@ -553,7 +553,7 @@
         "source_assertion_ids": [
           "ast_1964_capture"
         ],
-        "notes": "Mediterranean naval base and prize station (IMLM 1964)."
+        "notes": "Minorca port recorded as the capture location for IMLM Ship 1964."
       }
     }
   ]

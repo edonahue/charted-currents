@@ -2,9 +2,9 @@
 /**
  * src/components/timeline/TimelineRail.astro
  *
- * Sourced Timeline Rail for Charted Currents Packet 3.
- * Renders data-driven dual lanes (Contextual vs Captures), source coverage bands,
- * collision-free hover/focus tooltips, and a minimal 3-way temporal filter.
+ * Sourced Timeline Rail for Charted Currents.
+ * Renders data-driven dual lanes (Contextual vs Prize Captures), sample coverage shading,
+ * collision-free hover/focus tooltips, and a reactive 3-way temporal period focus store.
  */
 import eventsData from "../../../public/data/events.json";
 import { TIMELINE_RANGE } from "../../lib/time/config";
@@ -25,24 +25,22 @@ const rawEvents = (eventsData.events || eventsData || []) as Array<{
 const formattedEvents = rawEvents.map((ev) => {
   const yearMatch = ev.date.match(/^(\d{4})/);
   const year = yearMatch ? parseInt(yearMatch[1], 10) : 1700;
-  const isContext = ev.kind === "environmental";
+  const isContext = ev.kind === "environmental" || !ev.vessel_id;
   return {
     id: ev.id,
     year,
     title: ev.title,
     date: ev.date,
-    kind: isContext ? "event" : (ev.vessel_id ? "ship" : "event"),
-    selectionId: isContext ? ev.id : (ev.vessel_id || ev.id),
+    kind: "event" as const,
+    selectionId: ev.id,
     state: ev.evidence_state,
     isContext,
   };
 });
 
-// Source coverage bands (expressed as percentages of total timeline span)
+// Sourced continuous coverage band: structured IMLM Prize Papers sample (1702–1712)
 const COVERAGE_BANDS = [
-  { label: "1684 Map", start: 1683, end: 1685 },
-  { label: "1692 Earthquake", start: 1692, end: 1694 },
-  { label: "1702–1712 Prize Papers", start: 1702, end: 1712 },
+  { label: "1702–1712 IMLM Prize Papers Sample", start: 1702, end: 1712 },
 ];
 ---
 
@@ -57,8 +55,8 @@ const COVERAGE_BANDS = [
       <p class="panel-kicker">Period Focus</p>
       <div class="timeline-filters" role="group" aria-label="Temporal period filter">
         <button type="button" class="timeline-filter-btn is-active" data-time-filter="all">All (1650–1730)</button>
-        <button type="button" class="timeline-filter-btn" data-time-filter="1680-1695">1680–1695 (Early / Disaster)</button>
-        <button type="button" class="timeline-filter-btn" data-time-filter="1700-1715">1700–1715 (Prize Captures)</button>
+        <button type="button" class="timeline-filter-btn" data-time-filter="1684-1695">1684–1695 (Early / Disaster Context)</button>
+        <button type="button" class="timeline-filter-btn" data-time-filter="1702-1712">1702–1712 (Prize Papers Sample)</button>
       </div>
     </div>
   </div>
@@ -73,7 +71,7 @@ const COVERAGE_BANDS = [
           <div
             class="timeline-coverage-band"
             style={`left: ${left}%; width: ${Math.max(width, 1.8)}%;`}
-            title={`Source coverage: ${band.label}`}
+            title={`Documentary sample coverage: ${band.label}`}
           >
             <span class="timeline-coverage-label">{band.label}</span>
           </div>
@@ -111,7 +109,7 @@ const COVERAGE_BANDS = [
             class={`timeline-event-marker ${laneClass}`}
             data-timeline-event
             data-event-year={evt.year}
-            data-event-kind={evt.kind}
+            data-event-kind="event"
             data-selection-id={evt.selectionId}
             data-evidence-state={evt.state}
             style={`left: ${position}%`}
@@ -127,7 +125,7 @@ const COVERAGE_BANDS = [
 
   <footer class="timeline-shell__footer">
     <span class="timeline-shell__note">
-      Shaded intervals indicate source coverage in current corpus; unshaded intervals reflect documentary gaps, not absence of historical activity.
+      Shaded interval indicates structured IMLM dataset coverage (1702–1712); discrete markers indicate contemporary cartographic and manuscript accounts. Unshaded intervals reflect documentary sample boundaries, not historical inactivity.
     </span>
   </footer>
 </section>
@@ -136,211 +134,223 @@ const COVERAGE_BANDS = [
   import type { Selection } from "../../lib/domain/types";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
+  import { timeFilterStore } from "../../lib/state/timeFilter";
 
   const markers = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-timeline-event]"));
   const filterBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-time-filter]"));
 
-  markers.forEach((btn) => {
-    let keydownTriggered = false;
+  let lastModality: "pointer" | "keyboard" = "pointer";
 
-    btn.addEventListener("keydown", (e) => {
+  window.addEventListener(
+    "keydown",
+    (e) => {
       if (e.key === "Enter" || e.key === " ") {
-        keydownTriggered = true;
-        e.preventDefault();
-        const kind = btn.dataset.eventKind as "event" | "ship" | "port";
-        const id = btn.dataset.selectionId;
-        if (kind && id) {
-          recordSelectionTrigger({
-            modality: "keyboard",
-            origin: "timeline",
-            returnTarget: btn,
-          });
-          selectionStore.set({ kind, id });
+        lastModality = "keyboard";
+        const active = document.activeElement;
+        if (active && active.hasAttribute("data-timeline-event")) {
+          (active as HTMLButtonElement).click();
         }
       }
-    });
+    },
+    { capture: true }
+  );
 
+  window.addEventListener(
+    "mousedown",
+    () => {
+      lastModality = "pointer";
+    },
+    { capture: true }
+  );
+
+  markers.forEach((btn) => {
     btn.addEventListener("click", () => {
-      if (keydownTriggered) {
-        keydownTriggered = false;
-        return;
-      }
-      const kind = btn.dataset.eventKind as "event" | "ship" | "port";
-      const id = btn.dataset.selectionId;
-      if (kind && id) {
-        recordSelectionTrigger({
-          modality: "pointer",
-          origin: "timeline",
-          returnTarget: btn,
-        });
-        selectionStore.set({ kind, id });
-      }
+      const selectionId = btn.getAttribute("data-selection-id");
+      if (!selectionId) return;
+
+      recordSelectionTrigger({
+        modality: lastModality,
+        origin: "timeline",
+        returnTarget: btn,
+      });
+
+      lastModality = "pointer";
+      selectionStore.set({ kind: "event", id: selectionId });
     });
   });
 
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      filterBtns.forEach((b) => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
-
-      const filterType = btn.dataset.timeFilter;
-      let startYear = 1650;
-      let endYear = 1730;
-
-      if (filterType === "1680-1695") {
-        startYear = 1680;
-        endYear = 1695;
-      } else if (filterType === "1700-1715") {
-        startYear = 1700;
-        endYear = 1715;
+      const filterKey = btn.getAttribute("data-time-filter") as "all" | "1684-1695" | "1702-1712";
+      if (filterKey) {
+        timeFilterStore.set(filterKey);
       }
-
-      markers.forEach((m) => {
-        const y = parseInt(m.dataset.eventYear || "0", 10);
-        if (filterType === "all" || (y >= startYear && y <= endYear)) {
-          m.style.opacity = "1";
-          m.style.pointerEvents = "auto";
-        } else {
-          m.style.opacity = "0.15";
-          m.style.pointerEvents = "none";
-        }
-      });
-
-      window.dispatchEvent(
-        new CustomEvent("cc:filter-time", {
-          detail: { startYear, endYear, filterType },
-        })
-      );
     });
   });
 
-  function syncTimelineSelection(selection: Selection) {
-    markers.forEach((btn) => {
-      const isSelected = selection && btn.dataset.selectionId === selection.id;
-      btn.classList.toggle("is-selected", Boolean(isSelected));
-      btn.setAttribute("aria-pressed", String(Boolean(isSelected)));
+  timeFilterStore.subscribe((filter) => {
+    filterBtns.forEach((btn) => {
+      const key = btn.getAttribute("data-time-filter");
+      if (key === filter.id) {
+        btn.classList.add("is-active");
+        btn.setAttribute("aria-pressed", "true");
+      } else {
+        btn.classList.remove("is-active");
+        btn.setAttribute("aria-pressed", "false");
+      }
     });
-  }
 
-  selectionStore.subscribe(syncTimelineSelection);
+    markers.forEach((btn) => {
+      const yearAttr = btn.getAttribute("data-event-year");
+      const year = yearAttr ? parseInt(yearAttr, 10) : 1700;
+      if (filter.id === "all") {
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+      } else if (year >= filter.startYear && year <= filter.endYear) {
+        btn.style.opacity = "1";
+        btn.style.pointerEvents = "auto";
+      } else {
+        btn.style.opacity = "0.15";
+        btn.style.pointerEvents = "none";
+      }
+    });
+  });
+
+  selectionStore.subscribe((selection: Selection) => {
+    markers.forEach((btn) => {
+      const sid = btn.getAttribute("data-selection-id");
+      if (selection && sid === selection.id) {
+        btn.classList.add("is-selected");
+      } else {
+        btn.classList.remove("is-selected");
+      }
+    });
+  });
 </script>
 
 <style>
   .timeline-shell {
     position: relative;
-    background: var(--cc-paper);
-    border-top: 1px solid var(--cc-line);
-    padding: 0.75rem 1.5rem 0.65rem;
+    z-index: 10;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    z-index: 50;
+    gap: var(--cc-space-2);
+    padding: var(--cc-space-3) var(--cc-space-5);
+    background: var(--cc-paper-raised);
+    border-top: var(--cc-rule-thin) solid var(--cc-line-strong);
+    box-shadow: 0 -2px 10px rgb(20 29 33 / 6%);
+    font-family: var(--cc-font-sans);
   }
 
   .timeline-shell__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--cc-space-3);
   }
 
   .timeline-shell__heading {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--cc-space-3);
+    flex-wrap: wrap;
   }
 
   .timeline-filters {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: var(--cc-space-1);
+    flex-wrap: wrap;
   }
 
   .timeline-filter-btn {
-    background: transparent;
-    border: 1px solid var(--cc-line);
+    appearance: none;
+    background: var(--cc-paper);
+    border: var(--cc-rule-thin) solid var(--cc-line);
     border-radius: var(--cc-radius-xs);
-    padding: 0.2rem 0.5rem;
-    font-family: var(--cc-font-mono);
-    font-size: 0.68rem;
+    padding: 0.2rem 0.55rem;
+    font-family: var(--cc-font-sans);
+    font-size: 0.6875rem;
     color: var(--cc-ink-muted);
     cursor: pointer;
-    transition: all 120ms ease;
+    transition: all var(--cc-duration-fast) var(--cc-ease-standard);
   }
 
   .timeline-filter-btn:hover {
     color: var(--cc-ink);
-    border-color: var(--cc-sand);
+    border-color: var(--cc-line-strong);
   }
 
   .timeline-filter-btn.is-active {
-    background: var(--cc-paper-raised);
-    color: var(--cc-ink);
-    border-color: var(--cc-sand);
-    font-weight: 600;
-  }
-
-  .timeline-filter-btn:focus-visible {
-    outline: 2px solid var(--cc-atlantic);
-    outline-offset: 1px;
+    background: var(--cc-ink);
+    color: var(--cc-paper);
+    border-color: var(--cc-ink);
+    font-weight: 500;
   }
 
   .timeline-shell__rail {
     position: relative;
-    height: 48px;
+    height: 3.5rem;
     margin: 0.25rem 0;
   }
 
   .timeline-coverage-layer {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
   }
 
   .timeline-coverage-band {
     position: absolute;
-    top: 4px;
-    bottom: 4px;
-    background: color-mix(in srgb, var(--cc-sand) 16%, transparent);
-    border-left: 1px dashed color-mix(in srgb, var(--cc-sand) 60%, transparent);
-    border-right: 1px dashed color-mix(in srgb, var(--cc-sand) 60%, transparent);
-    border-radius: 2px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 2px;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    background: color-mix(in srgb, var(--cc-sand) 12%, transparent);
+    border-left: 1px dashed color-mix(in srgb, var(--cc-sand) 50%, transparent);
+    border-right: 1px dashed color-mix(in srgb, var(--cc-sand) 50%, transparent);
+    border-radius: var(--cc-radius-xs);
   }
 
   .timeline-coverage-label {
+    position: absolute;
+    top: -0.85rem;
+    left: 0.2rem;
     font-family: var(--cc-font-mono);
     font-size: 0.6rem;
-    color: var(--cc-ink-muted);
-    opacity: 0.8;
+    color: var(--cc-sand);
     white-space: nowrap;
+    opacity: 0.85;
   }
 
   .timeline-shell__rule {
     position: absolute;
-    top: 24px;
+    top: 50%;
     left: 0;
     right: 0;
     height: 1px;
     background: var(--cc-line);
+    transform: translateY(-50%);
   }
 
   .timeline-shell__ticks {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
   }
 
   .timeline-shell__tick {
     position: absolute;
     left: var(--tick-position);
-    top: 20px;
+    top: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform: translateX(-50%);
   }
 
   .timeline-shell__tick-mark {
@@ -349,15 +359,19 @@ const COVERAGE_BANDS = [
   }
 
   .timeline-shell__tick-label {
-    margin-top: 0.4rem;
+    position: absolute;
+    top: 0.85rem;
     font-family: var(--cc-font-mono);
-    font-size: 0.65rem;
+    font-size: 0.625rem;
     color: var(--cc-ink-muted);
   }
 
   .timeline-shell__events {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   .timeline-event-marker {
@@ -365,101 +379,82 @@ const COVERAGE_BANDS = [
     transform: translate(-50%, -50%);
     background: transparent;
     border: none;
-    padding: 6px;
+    padding: 0.25rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: opacity 150ms ease;
+    z-index: 2;
+    transition: transform var(--cc-duration-fast) var(--cc-ease-standard), opacity var(--cc-duration-fast) var(--cc-ease-standard);
   }
 
+  /* Top lane for Contextual events */
   .timeline-event-marker--context {
-    top: 14px;
+    top: 25%;
   }
 
+  /* Bottom lane for Prize Captures */
   .timeline-event-marker--capture {
-    top: 34px;
+    top: 75%;
   }
 
   .timeline-event-dot {
     display: block;
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--cc-sand);
-    border: 1.5px solid var(--cc-paper);
-    box-shadow: 0 0 0 1px var(--cc-ink);
-    transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+    border: 1.5px solid var(--cc-paper-raised);
+    box-shadow: 0 0 0 1px var(--cc-line-strong);
+    transition: all var(--cc-duration-fast) var(--cc-ease-standard);
   }
 
-  .timeline-event-marker[data-event-kind="event"] .timeline-event-dot {
-    background: var(--cc-terracotta);
-    border-radius: 1px;
-    transform: rotate(45deg);
+  .timeline-event-marker--context .timeline-event-dot {
+    background: #8b3a2b;
   }
 
   .timeline-event-marker:hover .timeline-event-dot,
-  .timeline-event-marker:focus-visible .timeline-event-dot,
-  .timeline-event-marker.is-selected .timeline-event-dot {
+  .timeline-event-marker:focus-visible .timeline-event-dot {
     transform: scale(1.4);
-    box-shadow: 0 0 0 2px var(--cc-atlantic);
+    background: var(--cc-ink);
   }
 
-  .timeline-event-marker[data-event-kind="event"]:hover .timeline-event-dot,
-  .timeline-event-marker[data-event-kind="event"]:focus-visible .timeline-event-dot,
-  .timeline-event-marker[data-event-kind="event"].is-selected .timeline-event-dot {
-    transform: rotate(45deg) scale(1.4);
+  .timeline-event-marker.is-selected .timeline-event-dot {
+    transform: scale(1.5);
+    background: var(--cc-ink);
+    box-shadow: 0 0 0 2px var(--cc-sand);
   }
 
   .timeline-event-tooltip {
     position: absolute;
-    bottom: 100%;
+    bottom: calc(100% + 4px);
     left: 50%;
-    transform: translateX(-50%) translateY(-4px);
+    transform: translateX(-50%);
+    padding: 0.25rem 0.5rem;
     background: var(--cc-ink);
     color: var(--cc-paper);
-    font-family: var(--cc-font-sans);
-    font-size: 0.68rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--cc-radius-xs);
+    font-size: 0.625rem;
     white-space: nowrap;
-    opacity: 0;
+    border-radius: var(--cc-radius-xs);
     pointer-events: none;
-    transition: opacity 150ms ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    z-index: 20;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--cc-duration-fast) var(--cc-ease-standard);
+    z-index: 10;
   }
 
   .timeline-event-marker:hover .timeline-event-tooltip,
-  .timeline-event-marker:focus-visible .timeline-event-tooltip,
-  .timeline-event-marker.is-selected .timeline-event-tooltip {
+  .timeline-event-marker:focus-visible .timeline-event-tooltip {
     opacity: 1;
+    visibility: visible;
   }
 
   .timeline-shell__footer {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.6875rem;
+    color: var(--cc-ink-muted);
   }
 
   .timeline-shell__note {
-    font-family: var(--cc-font-sans);
-    font-size: 0.65rem;
-    color: var(--cc-ink-muted);
-    line-height: 1.3;
-  }
-
-  @media (max-width: 767px) {
-    .timeline-shell {
-      padding: 0.5rem 0.75rem 0.5rem;
-    }
-    .timeline-shell__heading {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.3rem;
-    }
-    .timeline-coverage-label {
-      display: none;
-    }
+    font-style: italic;
   }
 </style>

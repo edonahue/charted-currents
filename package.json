@@ -14,6 +14,7 @@
     "verify": "npm run check && npm run build",
     "data:build": "python3 data/pipeline/build_corpus.py",
     "data:validate": "node scripts/validate-published-data.mjs",
+    "data:summary": "node scripts/data-summary.mjs",
     "data:test": "python3 -m unittest tests/test_historical_invariants.py",
     "data:test-negative": "node tests/test_validator_negative.mjs",
     "research:check-access": "node scripts/check-research-access.mjs",

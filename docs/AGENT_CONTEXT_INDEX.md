@@ -6,18 +6,18 @@ Use this file to load **the minimum useful context for the task**. Do not read t
  
 - Packet 1 is complete, deployed, and hosted-verified.
 - Packet 2 historical corpus, provenance hardening, and deterministic publication pipeline are complete and hosted-verified.
-- **Packet 3** (Public-beta quality and first meaningful corpus) is the **active work packet** on branch `packet3-public-beta`.
+- Packet 3 public-beta quality, 15-vessel corpus expansion, period filtering, route aggregation, and open search indexing are **complete** and deployed on `main`.
  
-For new implementation/research sessions, start with Packet 3 in `docs/FIRST_SESSIONS.md` plus the task-specific routes below.
+For subsequent implementation sessions, consult `docs/ROADMAP.md` (Phase 2: Source Adapters, Entity Resolution Workbench, and Deeper Port Royal Connections).
 
-The repository already owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1 interaction/design architecture. Do not reinitialize or redesign that foundation when beginning Packet 2.
+The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–3 interaction and provenance architecture.
 
 ## Always for substantial implementation
 
 1. `GEMINI.md` — project constitution for the Antigravity/Gemini workflow.
 2. `docs/MAINTAINER_EXPECTATIONS.md` — bounded work, review, verification, polish, and handoff expectations.
 3. `docs/IMPLEMENTATION_CONTRACT.md` — locked v0.1 engineering defaults and bootstrap state.
-4. Current unfinished **work packet** in `docs/FIRST_SESSIONS.md` — immediate objective and acceptance criteria.
+4. Next roadmap packet in `docs/ROADMAP.md` — immediate objective and acceptance criteria.
 5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
 
 Packet 1's settled product/visual contracts remain constraints when Packet 2 adds real historical content. Read `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, and `docs/VISUAL_ASSET_STRATEGY.md` only when the Packet 2 work affects the existing UI, map composition, or historical visual surfaces; do not reopen the completed Packet 1 direction.
