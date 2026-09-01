@@ -16,8 +16,9 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     <button
       type="button"
       class="inspector-sheet__handle"
-      aria-label="Toggle inspector height"
+      aria-label="Expand place details"
       aria-expanded="false"
+      aria-controls="entity-inspector"
       data-sheet-handle
     >
       <span class="inspector-sheet__handle-bar" aria-hidden="true"></span>
@@ -26,7 +27,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
 
   <header class="inspector-header">
     <div class="inspector-header__kicker-wrap">
-      <p class="panel-kicker" data-inspector-kicker>Modern Locator</p>
+      <p class="panel-kicker" data-inspector-kicker>Modern Reference</p>
       <span class="inspector-status-indicator" aria-hidden="true"></span>
     </div>
     <button
@@ -58,7 +59,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
           </div>
           <div class="inspector-meta__row">
             <dt>Locator Type</dt>
-            <dd>Modern populated-place anchor</dd>
+            <dd>Modern populated place</dd>
           </div>
           <div class="inspector-meta__row">
             <dt>Locator Source</dt>
@@ -77,16 +78,15 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
         </dl>
       </section>
 
-      <section class="inspector-section" aria-label="Development note">
-        <p class="panel-kicker">Development Note</p>
+      <section class="inspector-section" aria-label="Reference note">
+        <p class="panel-kicker">Reference Note</p>
         <p class="inspector-note" data-inspector-note></p>
       </section>
 
       <section class="inspector-section inspector-disclaimer" aria-label="Historical prototype scope">
-        <p class="panel-kicker">Prototype Status</p>
+        <p class="panel-kicker">Prototype Scope</p>
         <p>
-          Modern populated-place locator used for interface development. Historical port extents, period coordinates,
-          vessels, voyages, and archival evidence records are not yet loaded.
+          Modern location reference only. Historical geography, vessels, and routes appear only where supported by archival evidence.
         </p>
       </section>
     </div>
@@ -120,11 +120,16 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
 
     // Restore focus if triggered by keyboard without stale global leakage
     const triggerEl = popLastKeyboardTrigger();
-    if (triggerEl instanceof HTMLElement && document.contains(triggerEl)) {
+    if (triggerEl instanceof HTMLElement && document.contains(triggerEl) && !triggerEl.closest("[hidden]")) {
       triggerEl.focus();
     } else {
-      const mapCanvas = document.getElementById("charted-currents-map");
-      mapCanvas?.focus();
+      const toggle = document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
+      if (toggle && document.contains(toggle)) {
+        toggle.focus();
+      } else {
+        const mapCanvas = document.getElementById("charted-currents-map");
+        mapCanvas?.focus();
+      }
     }
   }
 
@@ -136,6 +141,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
       inspector.setAttribute("data-state", "closed");
       inspector.setAttribute("data-sheet-state", "closed");
       sheetHandle?.setAttribute("aria-expanded", "false");
+      sheetHandle?.setAttribute("aria-label", "Expand place details");
       appShell?.setAttribute("data-inspector-open", "false");
       return;
     }
@@ -146,13 +152,14 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
       inspector.setAttribute("data-state", "closed");
       inspector.setAttribute("data-sheet-state", "closed");
       sheetHandle?.setAttribute("aria-expanded", "false");
+      sheetHandle?.setAttribute("aria-label", "Expand place details");
       appShell?.setAttribute("data-inspector-open", "false");
       return;
     }
 
     // Populate locator content
     if (titleEl) titleEl.textContent = anchor.label;
-    if (subtitleEl) subtitleEl.textContent = `${anchor.region} · Modern Geographic Locator`;
+    if (subtitleEl) subtitleEl.textContent = `${anchor.region} · Modern Geographic Reference`;
     if (coordsEl) coordsEl.textContent = formatCoordinates(anchor.coordinates[0], anchor.coordinates[1]);
     if (noteEl) noteEl.textContent = anchor.note;
     if (sourceLink) sourceLink.href = anchor.locatorSource.url;
@@ -162,6 +169,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     inspector.setAttribute("data-state", "open");
     inspector.setAttribute("data-sheet-state", "partial");
     sheetHandle?.setAttribute("aria-expanded", "false");
+    sheetHandle?.setAttribute("aria-label", "Expand place details");
     appShell?.setAttribute("data-inspector-open", "true");
 
     // Input-aware focus transfer
@@ -176,9 +184,9 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     closeInspector();
   });
 
-  // Handle escape key
+  // Handle escape key defensively
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && selectionStore.get() !== null) {
+    if (e.key === "Escape" && !e.defaultPrevented && selectionStore.get() !== null) {
       e.preventDefault();
       closeInspector();
     }
@@ -191,6 +199,10 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     const nextState = currentState === "expanded" ? "partial" : "expanded";
     inspector.setAttribute("data-sheet-state", nextState);
     sheetHandle.setAttribute("aria-expanded", nextState === "expanded" ? "true" : "false");
+    sheetHandle.setAttribute(
+      "aria-label",
+      nextState === "expanded" ? "Collapse place details" : "Expand place details",
+    );
   });
 
   selectionStore.subscribe((selection) => {

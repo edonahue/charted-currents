@@ -27,12 +27,12 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
     <nav
       id="map-locator-menu"
       class="map-locator-browser__menu"
-      aria-label="Development locator anchors"
+      aria-label="Reference place locators"
       data-locator-menu
       hidden
     >
       <div class="map-locator-browser__header">
-        <p class="panel-kicker">Development Locators</p>
+        <p class="panel-kicker">Reference Places</p>
         <span class="map-locator-browser__caption">GeoNames CC BY 4.0</span>
       </div>
       <ul class="map-locator-browser__list">
@@ -53,9 +53,7 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
     </nav>
   </div>
 
-  <p class="map-viewport__status sr-only" data-map-status role="status" aria-live="polite">
-    Modern basemap ready.
-  </p>
+  <p class="map-viewport__status sr-only" data-map-status role="status" aria-live="polite"></p>
 </section>
 
 <script>
@@ -76,7 +74,7 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
   const locatorBrowser = document.querySelector<HTMLElement>("[data-locator-browser]");
   const locatorToggle = document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
   const locatorMenu = document.querySelector<HTMLElement>("[data-locator-menu]");
-  const locatorItems = document.querySelectorAll<HTMLButtonElement>(".map-locator-browser__item");
+  const locatorItems = Array.from(document.querySelectorAll<HTMLButtonElement>(".map-locator-browser__item"));
 
   let map: Map | null = null;
   let previousSelectedFeatureId: string | null = null;
@@ -258,6 +256,23 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
     });
   }
 
+  function onMapReady(): void {
+    if (!map || !container || container.dataset.mapReady === "true") return;
+    applyBasemapVisualPolicy(map);
+    ensureProjectLayers(map);
+    container.dataset.mapReady = "true";
+    if (status) {
+      status.textContent = "Modern basemap ready.";
+      status.classList.add("sr-only");
+      status.classList.remove("map-viewport__status--error");
+    }
+    syncMapToSelection(selectionStore.get());
+
+    map.once("idle", () => {
+      container.dataset.mapIdle = "true";
+    });
+  }
+
   if (container instanceof HTMLElement) {
     try {
       map = new Map({
@@ -293,22 +308,13 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
         { capture: true },
       );
 
-      map.once("load", () => {
-        if (!map) return;
-        applyBasemapVisualPolicy(map);
-        ensureProjectLayers(map);
-        container.dataset.mapReady = "true";
-        if (status) {
-          status.textContent = "Modern basemap ready.";
-          status.classList.add("sr-only");
-          status.classList.remove("map-viewport__status--error");
-        }
-        syncMapToSelection(selectionStore.get());
-
-        map.once("idle", () => {
-          container.dataset.mapIdle = "true";
-        });
-      });
+      // Listen for style readiness and load events
+      if (map.isStyleLoaded()) {
+        onMapReady();
+      } else {
+        map.once("style.load", onMapReady);
+        map.once("load", onMapReady);
+      }
 
       map.on("error", () => {
         if (container.dataset.mapReady !== "true" && status) {
@@ -334,22 +340,24 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
 
   // Locator Browser Controls (Dropdown disclosure)
   if (locatorToggle && locatorMenu) {
-    const toggleMenu = (open?: boolean) => {
+    const toggleMenu = (open?: boolean, focusFirstItem: boolean = false) => {
       const willOpen = open ?? locatorMenu.hidden;
       locatorMenu.hidden = !willOpen;
       locatorToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
-      if (willOpen) {
-        const firstItem = locatorItems[0];
-        firstItem?.focus();
+      if (willOpen && focusFirstItem) {
+        locatorItems[0]?.focus();
       }
     };
 
-    locatorToggle.addEventListener("click", () => toggleMenu());
+    locatorToggle.addEventListener("click", (e) => {
+      // If activated via keyboard on the toggle, focus first item; if via pointer, keep focus on toggle
+      toggleMenu(undefined, e.detail === 0);
+    });
 
     locatorToggle.addEventListener("keydown", (e) => {
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        toggleMenu(true);
+        toggleMenu(true, true);
       }
     });
 
@@ -359,6 +367,24 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
         e.stopPropagation();
         toggleMenu(false);
         locatorToggle.focus();
+        return;
+      }
+
+      const activeIdx = locatorItems.indexOf(document.activeElement as HTMLButtonElement);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const nextIdx = (activeIdx + 1) % locatorItems.length;
+        locatorItems[nextIdx]?.focus();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prevIdx = (activeIdx - 1 + locatorItems.length) % locatorItems.length;
+        locatorItems[prevIdx]?.focus();
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        locatorItems[0]?.focus();
+      } else if (e.key === "End") {
+        e.preventDefault();
+        locatorItems[locatorItems.length - 1]?.focus();
       }
     });
 
@@ -375,12 +401,14 @@ import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
       btn.addEventListener("click", (e) => {
         const selectionId = btn.dataset.selectionId;
         if (selectionId) {
-          // Standard browser behavior: e.detail is 0 for keyboard activation (Enter/Space)
-          // and >= 1 for pointer click
           const isKeyboard = e.detail === 0;
           recordSelectionTrigger(isKeyboard ? "keyboard" : "pointer", btn);
           selectionStore.set({ kind: "port", id: selectionId });
           toggleMenu(false);
+          // For pointer selection, return focus to toggle so active focus is not orphaned on document.body
+          if (!isKeyboard) {
+            locatorToggle.focus();
+          }
         }
       });
     });

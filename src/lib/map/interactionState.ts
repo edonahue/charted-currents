@@ -20,5 +20,11 @@ export function getLastSelectionTrigger(): "pointer" | "keyboard" {
 export function popLastKeyboardTrigger(): HTMLElement | null {
   const el = lastKeyboardTrigger;
   lastKeyboardTrigger = null;
+  lastTriggerType = "pointer";
   return el;
+}
+
+export function clearSelectionTrigger(): void {
+  lastKeyboardTrigger = null;
+  lastTriggerType = "pointer";
 }
