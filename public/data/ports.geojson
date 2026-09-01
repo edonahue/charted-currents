@@ -18,7 +18,11 @@
         "region": "Greater Antilles",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
-        "notes": "Island centroid / navigation anchorage reference. Represents the colony/island as recorded in transatlantic voyage origins."
+        "source_assertion_ids": [
+          "ast_2052_voyage",
+          "ast_2228_voyage"
+        ],
+        "notes": "Island centroid reference. Represents the colony/island as recorded in transatlantic voyage origins (IMLM 2052, 2228)."
       }
     },
     {
@@ -38,7 +42,11 @@
         "region": "Jamaica",
         "geographic_precision": "populated_place",
         "geometry_provenance": "modern_navigation_reference_coordinate",
-        "notes": "Harbor spit settlement. Sourced directly from 1684 Bochart & Knollis chart and 1692 earthquake records."
+        "source_assertion_ids": [
+          "ast_eq_location",
+          "ast_loc_map_title"
+        ],
+        "notes": "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart and 1692 earthquake correspondence."
       }
     },
     {
@@ -58,7 +66,11 @@
         "region": "England",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
-        "notes": "Port of London / Thames destination for transatlantic colonial merchantmen."
+        "source_assertion_ids": [
+          "ast_2052_voyage",
+          "ast_2228_voyage"
+        ],
+        "notes": "Port of London destination recorded in transatlantic voyage records (IMLM 2052, 2228)."
       }
     },
     {
@@ -78,6 +90,9 @@
         "region": "England",
         "geographic_precision": "port_town",
         "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_2052_capture"
+        ],
         "notes": "Devon port roadstead; recorded capture location of Richard & Sarah (May 1705)."
       }
     },
@@ -98,6 +113,9 @@
         "region": "England",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_2228_capture"
+        ],
         "notes": "Devon port and naval station; recorded capture location of William (September 1702)."
       }
     }

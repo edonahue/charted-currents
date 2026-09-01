@@ -22,12 +22,15 @@
         "vessel_id": "ship_richard_and_sarah_1705",
         "origin_place_id": "place_jamaica",
         "destination_place_id": "place_london",
-        "date_display": "May 1705",
+        "date_display": "Associated with May 1705 capture record",
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
         "geometry_provenance": "project visualization between resolved endpoint references",
-        "notes": "Documented transatlantic voyage relationship; rendered geometry is an endpoints-only schematic connector."
+        "source_assertion_ids": [
+          "ast_2052_voyage"
+        ],
+        "notes": "Documented Jamaica → London voyage relationship from IMLM 2052; rendered line is schematic."
       }
     },
     {
@@ -51,12 +54,15 @@
         "vessel_id": "ship_william_1702",
         "origin_place_id": "place_jamaica",
         "destination_place_id": "place_london",
-        "date_display": "September 1702",
+        "date_display": "Associated with September 1702 capture record",
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
         "geometry_provenance": "project visualization between resolved endpoint references",
-        "notes": "Documented transatlantic voyage relationship; rendered geometry is an endpoints-only schematic connector."
+        "source_assertion_ids": [
+          "ast_2228_voyage"
+        ],
+        "notes": "Documented Jamaica → London voyage relationship from IMLM 2228; rendered line is schematic."
       }
     }
   ]

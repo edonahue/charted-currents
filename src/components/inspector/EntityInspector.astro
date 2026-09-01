@@ -168,7 +168,7 @@
             class="inspector-action-btn"
             data-open-ship-source
           >
-            Inspect Archival Provenance (TNA HCA 32) ↗
+            Inspect Archival Provenance (IMLM / TNA HCA 32) ↗
           </button>
         </section>
       </div>
@@ -206,9 +206,9 @@
 </aside>
 
 <script>
-  import type { PublishedEntities, PublishedEvents, Selection } from "../../lib/domain/types";
+  import type { PublishedEntities, PublishedEvents, PublishedSources, Selection } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
-  import { consumeSelectionTrigger } from "../../lib/map/interactionState";
+  import { consumeSelectionTrigger, getSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
 
   const inspector = document.getElementById("entity-inspector");
@@ -254,7 +254,9 @@
 
   let entitiesCache: PublishedEntities | null = null;
   let eventsCache: PublishedEvents | null = null;
+  let sourcesCache: PublishedSources | null = null;
   let activeSourceId: string | null = null;
+  let activeUpstreamRef: string | null = null;
 
   async function loadData() {
     if (!entitiesCache) {
@@ -265,9 +267,12 @@
       const res = await fetch(publishedDataUrl("events"));
       if (res.ok) eventsCache = await res.json();
     }
+    if (!sourcesCache) {
+      const res = await fetch(publishedDataUrl("sources"));
+      if (res.ok) sourcesCache = await res.json();
+    }
   }
 
-  // Preload data immediately on script load
   loadData();
 
   function formatCoordinates(lng: number, lat: number): string {
@@ -312,6 +317,8 @@
     if (viewShip) viewShip.hidden = true;
     if (viewEvent) viewEvent.hidden = true;
 
+    activeUpstreamRef = null;
+
     if (selection.kind === "port") {
       const place = entitiesCache.places.find((p) => p.id === selection.id);
       if (!place) return;
@@ -327,17 +334,26 @@
       if (placeGeomProv) placeGeomProv.textContent = place.geometry_provenance.replace(/_/g, " ");
       if (placeNote) placeNote.textContent = place.notes || "Historical place reference verified by Charted Currents.";
 
-      // Show visual card for Port Royal / Jamaica
+      // Show visual card exclusively for Jamaica (place_jamaica)
       if (placeVisualWrap) {
-        const hasVisual = place.id === "place_port_royal" || place.id === "place_jamaica";
+        const hasVisual = place.id === "place_jamaica";
         placeVisualWrap.hidden = !hasVisual;
       }
 
-      activeSourceId = "src_loc_g4960_1684";
+      if (place.id === "place_jamaica") {
+        activeSourceId = "src_loc_g4960_1684";
+      } else if (place.id === "place_port_royal") {
+        activeSourceId = "src_royal_society_el_l5_117";
+      } else {
+        activeSourceId = "src_imlm_ukda_852135";
+      }
       if (viewPlace) viewPlace.hidden = false;
     } else if (selection.kind === "ship") {
       const ship = entitiesCache.ships.find((s) => s.id === selection.id);
       if (!ship) return;
+
+      const occ = entitiesCache.ship_occurrences.find((o) => ship.occurrence_ids.includes(o.id));
+      if (!occ) return;
 
       if (kickerEl) kickerEl.textContent = "Documented Vessel";
       if (badgeWrap) badgeWrap.hidden = false;
@@ -346,37 +362,54 @@
         badgeEl.setAttribute("data-evidence-state", "documented");
       }
       if (titleEl) titleEl.textContent = ship.canonical_name;
-      if (subtitleEl) subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.raw_construction_place}`;
+      if (subtitleEl) subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
 
-      if (shipRawName) shipRawName.textContent = ship.raw_name;
+      if (shipRawName) shipRawName.textContent = occ.raw_name;
       if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
-      if (shipConstruction) shipConstruction.textContent = `${ship.raw_construction_place} ${ship.reported_age_years ? `(~${ship.reported_age_years} yrs old in ${ship.capture_date.slice(0,4)})` : ""}`;
-      if (shipOwner) shipOwner.textContent = ship.reported_owner_residence;
-      if (shipVoyage) shipVoyage.textContent = `${ship.recorded_voyage_origin} → ${ship.recorded_voyage_destination}`;
-      if (shipCapture) shipCapture.textContent = `${ship.capture_location_place_id.replace("place_", "").replace(/_/g, ", ")} (${ship.capture_date})`;
+      if (shipConstruction) shipConstruction.textContent = `${occ.raw_construction_place} ${occ.reported_age_years ? `(~${occ.reported_age_years} yrs old in ${occ.recorded_capture_date.slice(0,4)})` : ""}`;
+      if (shipOwner) shipOwner.textContent = occ.reported_owner_residence;
+      if (shipVoyage) shipVoyage.textContent = `${occ.recorded_voyage_origin} → ${occ.recorded_voyage_destination}`;
+      if (shipCapture) shipCapture.textContent = `${occ.recorded_capture_location} (${occ.recorded_capture_date})`;
 
+      // Safely render crew roster using standard DOM element construction (no innerHTML)
       if (shipCrewSection && shipCrewTbody) {
-        const crew = ship.crew_occurrences || [];
+        const crew = entitiesCache.crew_occurrences.filter((c) => c.ship_occurrence_id === occ.id);
         if (crew.length > 0) {
           shipCrewSection.hidden = false;
-          shipCrewTbody.innerHTML = crew
-            .map(
-              (c) => `
-              <tr>
-                <td><strong>${c.first_name} ${c.last_name}</strong>${c.literacy === "Signed" ? " ✍" : ""}</td>
-                <td>${c.rank}</td>
-                <td>${c.place_birth || c.place_residence || "Unrecorded"}</td>
-                <td>${c.subject_of || "Unrecorded"}</td>
-              </tr>
-            `,
-            )
-            .join("");
+          shipCrewTbody.replaceChildren();
+          for (const c of crew) {
+            const tr = document.createElement("tr");
+
+            const tdName = document.createElement("td");
+            const strong = document.createElement("strong");
+            strong.textContent = `${c.first_name} ${c.last_name}`;
+            tdName.appendChild(strong);
+            if (c.signature_recorded === "Signed") {
+              tdName.append(" ✍");
+            }
+
+            const tdRank = document.createElement("td");
+            tdRank.textContent = c.rank_as_recorded;
+
+            const tdOrigin = document.createElement("td");
+            tdOrigin.textContent = c.birthplace_as_recorded || c.residence_as_recorded || "Unrecorded";
+
+            const tdSovereign = document.createElement("td");
+            tdSovereign.textContent = c.subject_of_as_recorded || "Unrecorded";
+
+            tr.append(tdName, tdRank, tdOrigin, tdSovereign);
+            shipCrewTbody.appendChild(tr);
+          }
         } else {
           shipCrewSection.hidden = true;
         }
       }
 
-      activeSourceId = ship.primary_source_id;
+      // Find upstream HCA reference
+      const sr = sourcesCache?.source_records.find((r) => r.id === occ.source_record_id);
+      activeSourceId = sr?.source_id || "src_imlm_ukda_852135";
+      activeUpstreamRef = sr?.upstream_archive_reference || null;
+
       if (viewShip) viewShip.hidden = false;
     } else if (selection.kind === "event") {
       const event = eventsCache.events.find((e) => e.id === selection.id);
@@ -404,21 +437,26 @@
     inspector.setAttribute("data-sheet-state", "open");
     sheetHandle?.setAttribute("aria-expanded", "true");
     appShell?.setAttribute("data-inspector-open", "true");
-    titleEl?.focus();
+
+    // Only move focus to inspector heading if selection was activated by keyboard
+    const trigger = getSelectionTrigger();
+    if (trigger.modality === "keyboard") {
+      titleEl?.focus();
+    }
   }
 
   // Open Source Drawer triggers
-  function triggerOpenSource(sourceId: string | null, targetBtn: HTMLElement | null) {
+  function triggerOpenSource(sourceId: string | null, targetBtn: HTMLElement | null, upstreamRef?: string | null) {
     if (!sourceId) return;
     window.dispatchEvent(
       new CustomEvent("cc:open-source", {
-        detail: { sourceId, triggerEl: targetBtn },
+        detail: { sourceId, triggerEl: targetBtn, upstreamRef: upstreamRef || activeUpstreamRef },
       }),
     );
   }
 
   openVisualBtn?.addEventListener("click", () => triggerOpenSource("src_loc_g4960_1684", openVisualBtn));
-  openShipSourceBtn?.addEventListener("click", () => triggerOpenSource(activeSourceId, openShipSourceBtn));
+  openShipSourceBtn?.addEventListener("click", () => triggerOpenSource(activeSourceId, openShipSourceBtn, activeUpstreamRef));
   openEventSourceBtn?.addEventListener("click", () => triggerOpenSource(activeSourceId, openEventSourceBtn));
 
   closeButton?.addEventListener("click", closeInspector);
@@ -432,6 +470,11 @@
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && inspector && !inspector.hidden) {
+      // If SourceDrawer is currently open, SourceDrawer handles Escape; do not dismiss EntityInspector
+      const drawer = document.getElementById("source-drawer");
+      if (drawer && !drawer.hidden && drawer.getAttribute("data-state") === "open") {
+        return;
+      }
       event.preventDefault();
       closeInspector();
     }

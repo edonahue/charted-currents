@@ -1,8 +1,11 @@
 [project]
 name = "charted-currents-etl"
-version = "0.0.0"
-description = "Pre-build ETL stub for Charted Currents"
+version = "0.2.0"
+description = "Deterministic publication pipeline and test suites for Charted Currents"
 requires-python = ">=3.12"
+dependencies = [
+  "pyyaml>=6.0.1",
+]
 
 [tool.ruff]
 line-length = 100

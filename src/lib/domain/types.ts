@@ -40,6 +40,7 @@ export interface PublishedPlace {
   geographic_precision: GeographicPrecision;
   coordinates: [number, number];
   geometry_provenance: string;
+  source_assertion_ids?: string[];
   notes?: string;
 }
 
@@ -57,6 +58,7 @@ export interface PublishedPortFeature {
     region: string;
     geographic_precision: GeographicPrecision;
     geometry_provenance: string;
+    source_assertion_ids?: string[];
     notes?: string;
   };
 }
@@ -83,6 +85,7 @@ export interface PublishedRouteFeature {
     evidence_state: EvidenceState;
     is_track_observed: boolean;
     geometry_provenance: string;
+    source_assertion_ids?: string[];
     notes?: string;
   };
 }
@@ -90,52 +93,6 @@ export interface PublishedRouteFeature {
 export interface PublishedRouteFeatureCollection {
   type: "FeatureCollection";
   features: PublishedRouteFeature[];
-}
-
-export interface PublishedCrewMember {
-  id: string;
-  first_name: string;
-  last_name: string;
-  age?: number;
-  rank: string;
-  place_birth?: string;
-  place_residence?: string;
-  place_muster?: string;
-  subject_of?: string;
-  literacy?: string;
-}
-
-export interface PublishedShip {
-  id: string;
-  canonical_name: string;
-  raw_name: string;
-  source_record_id: string;
-  primary_source_id: string;
-  dataset_source_id: string;
-  raw_tonnage: string;
-  reported_burden_display: string;
-  raw_construction_place: string;
-  reported_age_years?: number;
-  reported_owner_residence: string;
-  recorded_voyage_origin: string;
-  recorded_muster_place?: string;
-  recorded_voyage_destination: string;
-  capture_location_place_id: string;
-  capture_date: string;
-  evidence_state: EvidenceState;
-  crew_occurrences?: PublishedCrewMember[];
-}
-
-export interface PublishedEvent {
-  id: string;
-  title: string;
-  date: string;
-  calendar_system?: string;
-  place_id: string;
-  kind: string;
-  evidence_state: EvidenceState;
-  summary: string;
-  sources: string[];
 }
 
 export interface PublishedSource {
@@ -149,7 +106,91 @@ export interface PublishedSource {
   public_use_basis: string;
   attribution_required: boolean;
   credit_line: string;
+  directly_inspected: boolean;
   notes?: string;
+}
+
+export interface PublishedSourceRecord {
+  id: string;
+  source_id: string;
+  record_type: string;
+  native_identifier: string;
+  upstream_archive_source_id?: string;
+  upstream_archive_reference?: string;
+  parent_ship_record_id?: string;
+}
+
+export interface PublishedAssertion {
+  id: string;
+  source_record_id: string;
+  field: string;
+  raw_value?: string;
+  [key: string]: unknown;
+}
+
+export interface PublishedShipOccurrence {
+  id: string;
+  source_record_id: string;
+  raw_name: string;
+  raw_tonnage: string;
+  raw_construction_place: string;
+  reported_age_years?: number;
+  reported_owner_residence: string;
+  recorded_voyage_origin: string;
+  recorded_muster_place?: string;
+  recorded_voyage_destination: string;
+  recorded_capture_location: string;
+  recorded_capture_date: string;
+  assertion_ids: string[];
+}
+
+export interface PublishedCrewOccurrence {
+  id: string;
+  source_record_id: string;
+  ship_occurrence_id: string;
+  first_name: string;
+  last_name: string;
+  age_as_recorded?: number;
+  rank_as_recorded: string;
+  birthplace_as_recorded?: string;
+  residence_as_recorded?: string;
+  muster_place_as_recorded?: string;
+  subject_of_as_recorded?: string;
+  signature_recorded?: string;
+  assertion_ids: string[];
+}
+
+export interface PublishedShip {
+  id: string;
+  canonical_name: string;
+  evidence_state: EvidenceState;
+  occurrence_ids: string[];
+  reported_burden_display: string;
+  construction_display: string;
+  owner_display: string;
+  voyage_display: string;
+  capture_display: string;
+}
+
+export interface PublishedEntityResolutionEdge {
+  occurrence_id: string;
+  target_entity_id: string;
+  resolution_state: string;
+  resolver: string;
+  evidence_assertions: string[];
+}
+
+export interface PublishedEvent {
+  id: string;
+  title: string;
+  date: string;
+  calendar_system?: string;
+  place_id: string;
+  kind: string;
+  evidence_state: EvidenceState;
+  summary: string;
+  sources: string[];
+  assertion_ids: string[];
 }
 
 export interface PublishedVisual {
@@ -157,8 +198,7 @@ export interface PublishedVisual {
   title: string;
   creators: string[];
   date_display: string;
-  date_start: number;
-  date_end: number;
+  year_recorded?: number;
   is_uncertain: boolean;
   source_id: string;
   holding_institution: string;
@@ -168,10 +208,14 @@ export interface PublishedVisual {
   rights_state: string;
   credit_line: string;
   asset_path: string;
+  assertion_ids: string[];
 }
 
 export interface PublishedEntities {
+  ship_occurrences: PublishedShipOccurrence[];
+  crew_occurrences: PublishedCrewOccurrence[];
   ships: PublishedShip[];
+  entity_resolution_edges: PublishedEntityResolutionEdge[];
   places: PublishedPlace[];
   visuals: PublishedVisual[];
 }
@@ -182,21 +226,15 @@ export interface PublishedEvents {
 
 export interface PublishedSources {
   sources: PublishedSource[];
+  source_records: PublishedSourceRecord[];
+  assertions: PublishedAssertion[];
 }
 
 export interface PublishedManifest {
   version: string;
   corpusId: string;
   corpusTitle: string;
-  generatedAt: string;
-  reviewedAt: string;
+  publishedAt: string;
   reviewStatus: string;
-  counts: {
-    ships: number;
-    places: number;
-    routes: number;
-    events: number;
-    sources: number;
-    visuals: number;
-  };
+  counts: Record<string, number>;
 }

@@ -8,35 +8,49 @@
       "place_id": "place_port_royal",
       "kind": "environmental",
       "evidence_state": "contextual",
-      "summary": "On 7 June 1692 (Julian / Old Style), a catastrophic earthquake and submarine landslide struck Port Royal, Jamaica, destroying and submerging approximately two-thirds of the town and reshaping the harbor.",
+      "summary": "On 7 June 1692 (Julian / Old Style), an earthquake struck Port Royal, Jamaica, as recorded in eyewitness accounts transmitted to the Royal Society (Archives EL/L5/117; Phil. Trans. 1694).",
       "sources": [
-        "src_royal_society_1692"
+        "src_royal_society_el_l5_117",
+        "src_royal_society_phil_trans_1694"
+      ],
+      "assertion_ids": [
+        "ast_eq_date",
+        "ast_eq_location",
+        "ast_eq_account"
       ]
     },
     {
       "id": "event_capture_richard_and_sarah_1705",
-      "title": "Wartime Interception of the Richard & Sarah",
+      "title": "Capture of the Richard & Sarah",
       "date": "1705-05",
       "place_id": "place_dartmouth",
       "kind": "capture",
       "evidence_state": "documented",
-      "summary": "The English-built merchantman Richard & Sarah of London, homeward bound from Jamaica with colonial goods, was intercepted off Dartmouth, Devon in May 1705 during the War of the Spanish Succession and brought before the High Court of Admiralty.",
+      "summary": "The English-built vessel Richard & Sarah of London, on a recorded voyage from Jamaica to London, was taken at Dartmouth, Devon in May 1705 and recorded in High Court of Admiralty Prize Papers.",
       "sources": [
-        "src_tna_hca_32_80",
-        "src_imlm_ukda_852135"
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_2052_capture",
+        "ast_2052_upstream_hca"
       ]
     },
     {
       "id": "event_capture_william_1702",
-      "title": "Wartime Interception of the William",
+      "title": "Capture of the William",
       "date": "1702-09",
       "place_id": "place_plymouth",
       "kind": "capture",
       "evidence_state": "documented",
-      "summary": "The 60-ton merchantman William, mustered in Jamaica for London, was intercepted off Plymouth, Devon in September 1702 following England's entry into the War of the Spanish Succession.",
+      "summary": "The 60-ton English-built vessel William, on a recorded voyage from Jamaica to London with muster at Jamaica, was taken at Plymouth, Devon in September 1702 and recorded in High Court of Admiralty Prize Papers.",
       "sources": [
-        "src_tna_hca_32_86",
-        "src_imlm_ukda_852135"
+        "src_imlm_ukda_852135",
+        "src_tna_hca_32"
+      ],
+      "assertion_ids": [
+        "ast_2228_capture",
+        "ast_2228_upstream_hca"
       ]
     }
   ]

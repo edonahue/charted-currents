@@ -15,7 +15,9 @@
     "data:build": "python3 data/pipeline/build_corpus.py",
     "data:validate": "node scripts/validate-published-data.mjs",
     "data:test": "python3 -m unittest tests/test_historical_invariants.py",
+    "data:test-negative": "node tests/test_validator_negative.mjs",
     "research:check-access": "node scripts/check-research-access.mjs",
+    "research:test-diagnostic": "node tests/test_research_access_diagnostic.mjs",
     "refs:sync": "node scripts/sync-visual-references.mjs",
     "review:capture": "node scripts/capture-reviews.mjs"
   },

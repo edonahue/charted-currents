@@ -255,8 +255,8 @@ async function runReviewSuite() {
       }
     }
 
-    // Active selection capture on desktop (1440x900) - Select Port Royal
-    console.log("[CAPTURE] desktop selected state (Port Royal)...");
+    // Active selection capture on desktop (1440x900) - Select Jamaica
+    console.log("[CAPTURE] desktop selected state (Jamaica)...");
     await send("Emulation.setDeviceMetricsOverride", {
       width: 1440,
       height: 900,
@@ -269,8 +269,8 @@ async function runReviewSuite() {
       expression: `(() => {
         const toggle = document.querySelector('[data-locator-toggle]');
         toggle?.click();
-        const portRoyalBtn = document.querySelector('[data-place-id="place_port_royal"]');
-        portRoyalBtn?.click();
+        const jamaicaBtn = document.querySelector('[data-place-id="place_jamaica"]');
+        jamaicaBtn?.click();
       })()`,
     });
     await new Promise((r) => setTimeout(r, 800));
@@ -377,8 +377,9 @@ async function runReviewSuite() {
         const rawName = document.querySelector('[data-ship-raw-name]')?.textContent;
         const tonnage = document.querySelector('[data-ship-tonnage]')?.textContent;
         const crewRows = document.querySelectorAll('[data-ship-crew-tbody] tr').length;
+        const isHeadingFocused = document.activeElement?.id === 'inspector-heading';
 
-        return { isOpen, title, rawName, tonnage, crewRows };
+        return { isOpen, title, rawName, tonnage, crewRows, isHeadingFocused };
       })()`,
       returnByValue: true,
     });
@@ -387,8 +388,9 @@ async function runReviewSuite() {
     assert(vesselCheck?.result?.value?.rawName === "Richard & Sarah of London", "Raw vessel name preserved faithfully");
     assert(vesselCheck?.result?.value?.tonnage === "300 tons reported burden", "Reported burden displays '300 tons reported burden'");
     assert(vesselCheck?.result?.value?.crewRows === 3, "All 3 documented crew members rendered in table");
+    assert(!vesselCheck?.result?.value?.isHeadingFocused, "Pointer selection on timeline does NOT steal keyboard focus to inspector heading");
 
-    // 3. Source Drawer Opening for Archival Call Number (TNA HCA 32/80)
+    // 3. Layered Source Drawer Opening & Escape Key Isolation
     console.log("Testing Source Drawer opening for archival record...");
     await send("Runtime.evaluate", {
       expression: `(() => {
@@ -404,21 +406,43 @@ async function runReviewSuite() {
         const isOpen = drawer?.getAttribute('data-state') === 'open';
         const ref = document.querySelector('[data-source-ref]')?.textContent;
         const inst = document.querySelector('[data-source-institution]')?.textContent;
+        const upstreamRef = document.querySelector('[data-source-upstream-ref]')?.textContent;
         const citation = document.querySelector('[data-source-citation]')?.textContent;
 
-        return { isOpen, ref, inst, citation };
+        return { isOpen, ref, inst, upstreamRef, citation };
       })()`,
       returnByValue: true,
     });
     assert(sourceDrawerCheck?.result?.value?.isOpen, "Clicking 'Inspect Archival Provenance' opens Source Drawer");
-    assert(sourceDrawerCheck?.result?.value?.ref === "TNA HCA 32/80", "Source Drawer displays stable archival ref 'TNA HCA 32/80'");
-    assert(sourceDrawerCheck?.result?.value?.inst === "The National Archives, Kew", "Holding institution displays 'The National Archives, Kew'");
-    assert(sourceDrawerCheck?.result?.value?.citation?.includes("UK Data Service SN 852135"), "Dataset citation includes 'UK Data Service SN 852135'");
+    assert(sourceDrawerCheck?.result?.value?.ref === "SN 852135", "Directly observed source displays dataset identifier 'SN 852135'");
+    assert(sourceDrawerCheck?.result?.value?.inst === "UK Data Archive / ReShare", "Holding institution displays 'UK Data Archive / ReShare'");
+    assert(sourceDrawerCheck?.result?.value?.upstreamRef === "TNA HCA 32/80", "Upstream archival reference displays cited 'TNA HCA 32/80'");
 
-    // Close Source Drawer
+    // Test Escape isolation: Escape must close SourceDrawer, keep Inspector open, and return focus
+    console.log("Testing Escape key isolation in Source Drawer...");
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 200));
+
+    const escapeDrawerCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById('source-drawer');
+        const inspector = document.getElementById('entity-inspector');
+        const drawerClosed = drawer?.getAttribute('data-state') === 'closed';
+        const inspectorOpen = inspector?.getAttribute('data-state') === 'open';
+        const focusRestored = document.activeElement?.hasAttribute('data-open-ship-source');
+
+        return { drawerClosed, inspectorOpen, focusRestored };
+      })()`,
+      returnByValue: true,
+    });
+    assert(escapeDrawerCheck?.result?.value?.drawerClosed, "Pressing Escape in SourceDrawer closes the drawer");
+    assert(escapeDrawerCheck?.result?.value?.inspectorOpen, "Escape in SourceDrawer does NOT close the underlying Entity Inspector");
+    assert(escapeDrawerCheck?.result?.value?.focusRestored, "Closing SourceDrawer restores focus to the trigger button");
+
+    // Close Inspector
     await send("Runtime.evaluate", {
       expression: `(() => {
-        const closeBtn = document.querySelector('[data-source-drawer-close]');
+        const closeBtn = document.querySelector('[data-inspector-close]');
         closeBtn?.click();
       })()`,
     });
@@ -451,19 +475,19 @@ async function runReviewSuite() {
     assert(eventCheck?.result?.value?.date?.includes("1692-06-07"), "Event date includes '1692-06-07'");
     assert(eventCheck?.result?.value?.badgeState === "contextual", "Evidence badge correctly marks event as 'contextual'");
 
-    // 5. Historical Chart View for Port Royal
-    console.log("Testing historical visual chart display for Port Royal...");
+    // 5. Historical Chart View for Jamaica (and Exclusion for Other Places)
+    console.log("Testing historical visual chart display exclusively for Jamaica...");
     await send("Runtime.evaluate", {
       expression: `(() => {
         const toggle = document.querySelector('[data-locator-toggle]');
         toggle?.click();
-        const portRoyalBtn = document.querySelector('[data-place-id="place_port_royal"]');
-        portRoyalBtn?.click();
+        const jamaicaBtn = document.querySelector('[data-place-id="place_jamaica"]');
+        jamaicaBtn?.click();
       })()`,
     });
     await new Promise((r) => setTimeout(r, 300));
 
-    const visualCheck = await send("Runtime.evaluate", {
+    const jamaicaVisualCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const visualWrap = document.querySelector('[data-place-visual-wrap]');
         const isVisualVisible = visualWrap && !visualWrap.hidden;
@@ -474,8 +498,48 @@ async function runReviewSuite() {
       })()`,
       returnByValue: true,
     });
-    assert(visualCheck?.result?.value?.isVisualVisible, "Selecting Port Royal exposes the 1684 cartographic reference visual card");
-    assert(visualCheck?.result?.value?.hasImgSrc, "1684 Bochart & Knollis chart image loaded correctly");
+    assert(jamaicaVisualCheck?.result?.value?.isVisualVisible, "Selecting Jamaica exposes the 1684 cartographic reference visual card");
+    assert(jamaicaVisualCheck?.result?.value?.hasImgSrc, "1684 Bochart & Knollis chart image loaded correctly for Jamaica");
+
+    // Select Port Royal and assert visual card is hidden
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector('[data-locator-toggle]');
+        toggle?.click();
+        const portRoyalBtn = document.querySelector('[data-place-id="place_port_royal"]');
+        portRoyalBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const portRoyalVisualCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const visualWrap = document.querySelector('[data-place-visual-wrap]');
+        return visualWrap?.hidden === true;
+      })()`,
+      returnByValue: true,
+    });
+    assert(portRoyalVisualCheck?.result?.value, "Selecting Port Royal hides the 1684 Jamaica chart visual card");
+
+    // Select London and assert visual card is hidden
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector('[data-locator-toggle]');
+        toggle?.click();
+        const londonBtn = document.querySelector('[data-place-id="place_london"]');
+        londonBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const londonVisualCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const visualWrap = document.querySelector('[data-place-visual-wrap]');
+        return visualWrap?.hidden === true;
+      })()`,
+      returnByValue: true,
+    });
+    assert(londonVisualCheck?.result?.value, "Selecting London hides the 1684 Jamaica chart visual card");
 
     // 6. Real CDP Keyboard Navigation & Activation Flow
     console.log("Testing native CDP keyboard navigation...");

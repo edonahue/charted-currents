@@ -1,85 +1,163 @@
 {
-  "ships": [
+  "ship_occurrences": [
     {
-      "id": "ship_richard_and_sarah_1705",
-      "canonical_name": "Richard & Sarah of London",
+      "id": "occ_ship_imlm_2052",
+      "source_record_id": "sr_imlm_ship_2052",
       "raw_name": "Richard & Sarah of London",
-      "source_record_id": "imlm_ship_2052",
-      "primary_source_id": "src_tna_hca_32_80",
-      "dataset_source_id": "src_imlm_ukda_852135",
       "raw_tonnage": "300",
-      "reported_burden_display": "300 tons reported burden",
       "raw_construction_place": "English built",
       "reported_age_years": 20,
       "reported_owner_residence": "London",
       "recorded_voyage_origin": "Jamaica",
       "recorded_voyage_destination": "London",
-      "capture_location_place_id": "place_dartmouth",
-      "capture_date": "1705-05",
-      "evidence_state": "documented",
-      "crew_occurrences": [
-        {
-          "id": "crew_5035",
-          "first_name": "John",
-          "last_name": "Bull",
-          "rank": "mate navis",
-          "place_birth": "North Bergen in Norway",
-          "place_residence": "Bergen",
-          "subject_of": "king of Denmark",
-          "literacy": "Signed"
-        },
-        {
-          "id": "crew_5036",
-          "first_name": "Robert",
-          "last_name": "Ashworth",
-          "rank": "carpenter navis",
-          "place_birth": "Dexlford",
-          "place_residence": "Dexlford",
-          "subject_of": "Queen of Great Britain",
-          "literacy": "Signed"
-        },
-        {
-          "id": "crew_5037",
-          "first_name": "John",
-          "last_name": "Dunbar",
-          "rank": "gunner",
-          "place_birth": "London",
-          "place_residence": "London",
-          "subject_of": "Queen of Great Britain",
-          "literacy": "Signed"
-        }
+      "recorded_capture_location": "Dartmouth, Devon",
+      "recorded_capture_date": "1705-05",
+      "assertion_ids": [
+        "ast_2052_name",
+        "ast_2052_tonnage",
+        "ast_2052_construction",
+        "ast_2052_owner",
+        "ast_2052_voyage",
+        "ast_2052_capture",
+        "ast_2052_upstream_hca"
       ]
     },
     {
-      "id": "ship_william_1702",
-      "canonical_name": "William",
+      "id": "occ_ship_imlm_2228",
+      "source_record_id": "sr_imlm_ship_2228",
       "raw_name": "William",
-      "source_record_id": "imlm_ship_2228",
-      "primary_source_id": "src_tna_hca_32_86",
-      "dataset_source_id": "src_imlm_ukda_852135",
       "raw_tonnage": "60",
-      "reported_burden_display": "60 tons reported burden",
       "raw_construction_place": "english built",
       "reported_owner_residence": "London",
       "recorded_voyage_origin": "Jamaica",
       "recorded_muster_place": "Jamaica",
       "recorded_voyage_destination": "London",
-      "capture_location_place_id": "place_plymouth",
-      "capture_date": "1702-09",
+      "recorded_capture_location": "Plymouth, Devon",
+      "recorded_capture_date": "1702-09",
+      "assertion_ids": [
+        "ast_2228_name",
+        "ast_2228_tonnage",
+        "ast_2228_construction",
+        "ast_2228_owner",
+        "ast_2228_voyage",
+        "ast_2228_capture",
+        "ast_2228_upstream_hca"
+      ]
+    }
+  ],
+  "crew_occurrences": [
+    {
+      "id": "occ_crew_5035",
+      "source_record_id": "sr_imlm_crew_5035",
+      "ship_occurrence_id": "occ_ship_imlm_2052",
+      "first_name": "John",
+      "last_name": "Bull",
+      "rank_as_recorded": "mate navis",
+      "birthplace_as_recorded": "North Bergen in Norway",
+      "residence_as_recorded": "Bergen",
+      "subject_of_as_recorded": "king of Denmark",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5035"
+      ]
+    },
+    {
+      "id": "occ_crew_5036",
+      "source_record_id": "sr_imlm_crew_5036",
+      "ship_occurrence_id": "occ_ship_imlm_2052",
+      "first_name": "Robert",
+      "last_name": "Ashworth",
+      "rank_as_recorded": "carpenter navis",
+      "birthplace_as_recorded": "Dexlford",
+      "residence_as_recorded": "Dexlford",
+      "subject_of_as_recorded": "Queen of Great Britain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5036"
+      ]
+    },
+    {
+      "id": "occ_crew_5037",
+      "source_record_id": "sr_imlm_crew_5037",
+      "ship_occurrence_id": "occ_ship_imlm_2052",
+      "first_name": "John",
+      "last_name": "Dunbar",
+      "rank_as_recorded": "gunner",
+      "birthplace_as_recorded": "London",
+      "residence_as_recorded": "London",
+      "subject_of_as_recorded": "Queen of Great Britain",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5037"
+      ]
+    },
+    {
+      "id": "occ_crew_5508",
+      "source_record_id": "sr_imlm_crew_5508",
+      "ship_occurrence_id": "occ_ship_imlm_2228",
+      "first_name": "Edward",
+      "last_name": "de Essex",
+      "age_as_recorded": 29,
+      "rank_as_recorded": "naut",
+      "birthplace_as_recorded": "London",
+      "residence_as_recorded": "London",
+      "muster_place_as_recorded": "Jamaica",
+      "subject_of_as_recorded": "Queen of England",
+      "signature_recorded": "Signed",
+      "assertion_ids": [
+        "ast_crew_5508"
+      ]
+    }
+  ],
+  "ships": [
+    {
+      "id": "ship_richard_and_sarah_1705",
+      "canonical_name": "Richard & Sarah of London",
       "evidence_state": "documented",
-      "crew_occurrences": [
-        {
-          "id": "crew_5508",
-          "first_name": "Edward",
-          "last_name": "de Essex",
-          "age": 29,
-          "rank": "naut",
-          "place_birth": "London",
-          "place_residence": "London",
-          "place_muster": "Jamaica",
-          "subject_of": "Queen of England",
-          "literacy": "Signed"
-        }
+      "occurrence_ids": [
+        "occ_ship_imlm_2052"
+      ],
+      "reported_burden_display": "300 tons reported burden",
+      "construction_display": "English built (~1685)",
+      "owner_display": "London",
+      "voyage_display": "Jamaica → London",
+      "capture_display": "Dartmouth, Devon (May 1705)"
+    },
+    {
+      "id": "ship_william_1702",
+      "canonical_name": "William",
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_ship_imlm_2228"
+      ],
+      "reported_burden_display": "60 tons reported burden",
+      "construction_display": "English built",
+      "owner_display": "London",
+      "voyage_display": "Jamaica → London",
+      "capture_display": "Plymouth, Devon (September 1702)"
+    }
+  ],
+  "entity_resolution_edges": [
+    {
+      "occurrence_id": "occ_ship_imlm_2052",
+      "target_entity_id": "ship_richard_and_sarah_1705",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_2052_name",
+        "ast_2052_tonnage",
+        "ast_2052_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_imlm_2228",
+      "target_entity_id": "ship_william_1702",
+      "resolution_state": "documented_identity",
+      "resolver": "curated_single_occurrence_fixture",
+      "evidence_assertions": [
+        "ast_2228_name",
+        "ast_2228_tonnage",
+        "ast_2228_voyage"
       ]
     }
   ],
@@ -95,7 +173,11 @@
         18.1096
       ],
       "geometry_provenance": "modern_generalized_navigation_reference",
-      "notes": "Island centroid / navigation anchorage reference. Represents the colony/island as recorded in transatlantic voyage origins."
+      "notes": "Island centroid reference. Represents the colony/island as recorded in transatlantic voyage origins (IMLM 2052, 2228).",
+      "source_assertion_ids": [
+        "ast_2052_voyage",
+        "ast_2228_voyage"
+      ]
     },
     {
       "id": "place_port_royal",
@@ -108,7 +190,11 @@
         17.93738
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Harbor spit settlement. Sourced directly from 1684 Bochart & Knollis chart and 1692 earthquake records."
+      "notes": "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart and 1692 earthquake correspondence.",
+      "source_assertion_ids": [
+        "ast_eq_location",
+        "ast_loc_map_title"
+      ]
     },
     {
       "id": "place_london",
@@ -121,7 +207,11 @@
         51.5074
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Port of London / Thames destination for transatlantic colonial merchantmen."
+      "notes": "Port of London destination recorded in transatlantic voyage records (IMLM 2052, 2228).",
+      "source_assertion_ids": [
+        "ast_2052_voyage",
+        "ast_2228_voyage"
+      ]
     },
     {
       "id": "place_dartmouth",
@@ -134,7 +224,10 @@
         50.3517
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Devon port roadstead; recorded capture location of Richard & Sarah (May 1705)."
+      "notes": "Devon port roadstead; recorded capture location of Richard & Sarah (May 1705).",
+      "source_assertion_ids": [
+        "ast_2052_capture"
+      ]
     },
     {
       "id": "place_plymouth",
@@ -147,7 +240,10 @@
         50.3755
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Devon port and naval station; recorded capture location of William (September 1702)."
+      "notes": "Devon port and naval station; recorded capture location of William (September 1702).",
+      "source_assertion_ids": [
+        "ast_2228_capture"
+      ]
     }
   ],
   "visuals": [
@@ -160,8 +256,7 @@
         "Philip Lea (Publisher)"
       ],
       "date_display": "[1684?]",
-      "date_start": 1684,
-      "date_end": 1690,
+      "year_recorded": 1684,
       "is_uncertain": true,
       "source_id": "src_loc_g4960_1684",
       "holding_institution": "Library of Congress Geography and Map Division",
@@ -170,7 +265,11 @@
       "item_url": "http://www.loc.gov/item/99463761/",
       "rights_state": "open_public_domain",
       "credit_line": "Library of Congress, Geography and Map Division",
-      "asset_path": "assets/visuals/bochart-knollis-jamaica-1684.jpg"
+      "asset_path": "assets/visuals/bochart-knollis-jamaica-1684.jpg",
+      "assertion_ids": [
+        "ast_loc_map_title",
+        "ast_loc_map_date"
+      ]
     }
   ]
 }

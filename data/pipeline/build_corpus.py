@@ -3,8 +3,14 @@
 data/pipeline/build_corpus.py
 
 Deterministic compiler for Charted Currents Packet 2 published data.
-Reads the committed, human-reviewed data/reviewed_corpus.yml and compiles
-the right-safe, validated static JSON/GeoJSON artifacts under public/data/.
+Reads the committed data/reviewed_corpus.yml and compiles the right-safe,
+relational evidence graph under public/data/.
+
+Invariants:
+- Deterministic: identical input produces byte-identical output.
+- No dynamic runtime timestamps.
+- Explicit schema structures for sources, source_records, assertions,
+  occurrences, canonical entities, and resolution edges.
 
 Usage: python3 data/pipeline/build_corpus.py
 """
@@ -13,7 +19,6 @@ import json
 import os
 import sys
 import yaml
-from datetime import datetime, timezone
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -30,8 +35,13 @@ def main():
 
     meta = data.get("metadata", {})
     sources = data.get("sources", [])
+    source_records = data.get("source_records", [])
+    assertions = data.get("assertions", [])
     places = data.get("places", [])
+    ship_occurrences = data.get("ship_occurrences", [])
+    crew_occurrences = data.get("crew_occurrences", [])
     ships = data.get("ships", [])
+    entity_resolution_edges = data.get("entity_resolution_edges", [])
     routes = data.get("routes", [])
     events = data.get("events", [])
     visuals = data.get("visuals", [])
@@ -59,6 +69,7 @@ def main():
                     "region": p.get("region", ""),
                     "geographic_precision": p.get("geographic_precision", "populated_place"),
                     "geometry_provenance": p.get("geometry_provenance", "modern_navigation_reference_coordinate"),
+                    "source_assertion_ids": p.get("source_assertion_ids", []),
                     "notes": p.get("notes", "")
                 }
             }
@@ -90,6 +101,7 @@ def main():
                     "evidence_state": r.get("evidence_state", "documented"),
                     "is_track_observed": False,
                     "geometry_provenance": r.get("geometry_provenance", "project visualization between resolved endpoint references"),
+                    "source_assertion_ids": r.get("source_assertion_ids", []),
                     "notes": r.get("notes", "")
                 }
             }
@@ -99,7 +111,10 @@ def main():
 
     # 3. entities.json
     entities_json = {
+        "ship_occurrences": ship_occurrences,
+        "crew_occurrences": crew_occurrences,
         "ships": ships,
+        "entity_resolution_edges": entity_resolution_edges,
         "places": places,
         "visuals": visuals
     }
@@ -111,23 +126,29 @@ def main():
 
     # 5. sources.json
     sources_json = {
-        "sources": sources
+        "sources": sources,
+        "source_records": source_records,
+        "assertions": assertions
     }
 
-    # 6. manifest.json
+    # 6. manifest.json (Deterministic: uses reviewed_at as publishedAt)
     manifest_json = {
         "version": meta.get("version", "0.2.0"),
         "corpusId": meta.get("corpus_id", "greater_caribbean_port_royal_sample"),
         "corpusTitle": meta.get("corpus_title", ""),
-        "generatedAt": datetime.now(timezone.utc).isoformat(),
-        "reviewedAt": meta.get("reviewed_at", ""),
-        "reviewStatus": meta.get("review_status", ""),
+        "publishedAt": meta.get("reviewed_at", "2026-09-01"),
+        "reviewStatus": meta.get("review_status", "reviewed_for_publication"),
         "counts": {
+            "sources": len(sources),
+            "source_records": len(source_records),
+            "assertions": len(assertions),
+            "ship_occurrences": len(ship_occurrences),
+            "crew_occurrences": len(crew_occurrences),
             "ships": len(ships),
+            "entity_resolution_edges": len(entity_resolution_edges),
             "places": len(places),
             "routes": len(routes),
             "events": len(events),
-            "sources": len(sources),
             "visuals": len(visuals)
         }
     }

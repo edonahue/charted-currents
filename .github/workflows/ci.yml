@@ -19,11 +19,37 @@ jobs:
           node-version-file: ".nvmrc"
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Install Node dependencies
         run: npm ci
 
       - name: Preflight check
         run: npm run preflight
+
+      - name: Build published data
+        run: npm run data:build
+
+      - name: Verify zero git diff on generated public data
+        run: git diff --exit-code public/data/
+
+      - name: Run historical invariant unit tests
+        run: npm run data:test
+
+      - name: Run published data schema validation
+        run: npm run data:validate
+
+      - name: Run validator negative test suite
+        run: npm run data:test-negative
+
+      - name: Run research access diagnostic unit tests
+        run: npm run research:test-diagnostic
 
       - name: Astro check and build
         run: npm run verify

@@ -2,7 +2,7 @@
 """
 tests/test_historical_invariants.py
 
-Automated invariant tests for Charted Currents Packet 2 published historical corpus.
+Automated relational invariant and provenance integrity tests for Charted Currents Packet 2.
 Enforces constitutional rules around historical assertions, provenance, rights, and geometry.
 """
 
@@ -36,6 +36,47 @@ class TestHistoricalInvariants(unittest.TestCase):
         with open(os.path.join(cls.public_data_dir, "sources.json"), "r", encoding="utf-8") as f:
             cls.sources = json.load(f)
 
+    def test_referential_integrity_sources_and_records(self):
+        """Every source_record must point to an existing source in sources[]."""
+        source_ids = {s["id"] for s in self.sources["sources"]}
+        for sr in self.sources["source_records"]:
+            self.assertIn(sr["source_id"], source_ids, f"Source record {sr['id']} points to nonexistent source {sr['source_id']}")
+
+    def test_referential_integrity_records_and_assertions(self):
+        """Every assertion must point to an existing source_record."""
+        record_ids = {sr["id"] for sr in self.sources["source_records"]}
+        for ast in self.sources["assertions"]:
+            self.assertIn(ast["source_record_id"], record_ids, f"Assertion {ast['id']} points to nonexistent record {ast['source_record_id']}")
+
+    def test_referential_integrity_occurrences_and_assertions(self):
+        """Every occurrence must reference valid assertions."""
+        assertion_ids = {ast["id"] for ast in self.sources["assertions"]}
+        for occ in self.entities["ship_occurrences"]:
+            for ast_id in occ["assertion_ids"]:
+                self.assertIn(ast_id, assertion_ids, f"Occurrence {occ['id']} references nonexistent assertion {ast_id}")
+
+    def test_explicit_entity_resolution_edges(self):
+        """Every canonical ship entity must be linked via an explicit resolution edge."""
+        ship_occ_ids = {occ["id"] for occ in self.entities["ship_occurrences"]}
+        canonical_ship_ids = {s["id"] for s in self.entities["ships"]}
+        edge_occurrences = set()
+
+        for edge in self.entities["entity_resolution_edges"]:
+            self.assertIn(edge["occurrence_id"], ship_occ_ids)
+            self.assertIn(edge["target_entity_id"], canonical_ship_ids)
+            self.assertEqual(edge["resolution_state"], "documented_identity")
+            edge_occurrences.add(edge["occurrence_id"])
+
+        for occ_id in ship_occ_ids:
+            self.assertIn(occ_id, edge_occurrences, f"Occurrence {occ_id} lacks an explicit resolution edge")
+
+    def test_no_direct_inspection_claim_on_upstream_tna(self):
+        """TNA HCA 32 upstream archive collection cited by IMLM must have directly_inspected == False."""
+        sources_by_id = {s["id"]: s for s in self.sources["sources"]}
+        self.assertIn("src_tna_hca_32", sources_by_id)
+        tna_src = sources_by_id["src_tna_hca_32"]
+        self.assertFalse(tna_src["directly_inspected"], "Upstream archive reference TNA HCA 32 must have directly_inspected: false")
+
     def test_no_jamaica_to_port_royal_conflation(self):
         """Jamaica (island/colony) must never be silently converted into Port Royal."""
         places_by_id = {p["id"]: p for p in self.entities["places"]}
@@ -60,6 +101,15 @@ class TestHistoricalInvariants(unittest.TestCase):
             coords = feature["geometry"]["coordinates"]
             self.assertEqual(len(coords), 2, "Endpoints-only line must contain exactly 2 coordinate points")
 
+    def test_routes_reference_relationship_assertions(self):
+        """Every route feature must link to supporting relationship assertion IDs."""
+        assertion_ids = {ast["id"] for ast in self.sources["assertions"]}
+        for feature in self.routes_geojson["features"]:
+            ast_ids = feature["properties"].get("source_assertion_ids", [])
+            self.assertTrue(len(ast_ids) > 0, f"Route {feature['id']} missing source_assertion_ids")
+            for ast_id in ast_ids:
+                self.assertIn(ast_id, assertion_ids)
+
     def test_capture_locations_decoupled_from_voyage_routes(self):
         """Capture roadsteads (Dartmouth, Plymouth) must not be inserted into transatlantic route lines."""
         places_by_id = {p["id"]: p for p in self.entities["places"]}
@@ -73,19 +123,20 @@ class TestHistoricalInvariants(unittest.TestCase):
 
     def test_tonnage_values_preserved_accurately(self):
         """Raw tonnage numbers must match source documentation faithfully."""
-        ships_by_id = {s["id"]: s for s in self.entities["ships"]}
-        self.assertEqual(ships_by_id["ship_richard_and_sarah_1705"]["raw_tonnage"], "300")
-        self.assertEqual(ships_by_id["ship_william_1702"]["raw_tonnage"], "60")
+        ship_occs = {occ["id"]: occ for occ in self.entities["ship_occurrences"]}
+        self.assertEqual(ship_occs["occ_ship_imlm_2052"]["raw_tonnage"], "300")
+        self.assertEqual(ship_occs["occ_ship_imlm_2228"]["raw_tonnage"], "60")
 
-    def test_earthquake_event_provenance_and_date(self):
-        """1692 Port Royal Earthquake must have exact date, calendar, and Royal Society source."""
+    def test_earthquake_provenance_split(self):
+        """1692 Port Royal Earthquake must reference split Royal Society source records."""
         events_by_id = {e["id"]: e for e in self.events["events"]}
         self.assertIn("event_port_royal_earthquake_1692", events_by_id)
         eq = events_by_id["event_port_royal_earthquake_1692"]
         self.assertEqual(eq["date"], "1692-06-07")
         self.assertEqual(eq["calendar_system"], "Julian (Old Style)")
         self.assertEqual(eq["evidence_state"], "contextual")
-        self.assertIn("src_royal_society_1692", eq["sources"])
+        self.assertIn("src_royal_society_el_l5_117", eq["sources"])
+        self.assertIn("src_royal_society_phil_trans_1694", eq["sources"])
 
     def test_visual_asset_uncertainty_and_loc_source(self):
         """The Bochart & Knollis chart must preserve date uncertainty [1684?] and LOC attribution."""
@@ -97,16 +148,6 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertTrue(vis["is_uncertain"])
         self.assertEqual(vis["rights_state"], "open_public_domain")
         self.assertIn("Library of Congress", vis["holding_institution"])
-
-    def test_every_entity_points_to_valid_source(self):
-        """All published ships and events must reference source IDs present in sources.json."""
-        source_ids = {s["id"] for s in self.sources["sources"]}
-        for ship in self.entities["ships"]:
-            self.assertIn(ship["primary_source_id"], source_ids)
-            self.assertIn(ship["dataset_source_id"], source_ids)
-        for event in self.events["events"]:
-            for src_id in event["sources"]:
-                self.assertIn(src_id, source_ids)
 
     def test_zero_unknown_rights(self):
         """No published source record may be classified as unknown_review_required."""

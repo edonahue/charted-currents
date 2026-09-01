@@ -11,46 +11,49 @@
       "public_use_basis": "maintainer_approved_small_derived_factual_publication",
       "attribution_required": true,
       "credit_line": "Van Lottum, Jelle. The international maritime labour market in Europe, relational database 1650-1815. UK Data Service SN 852135",
-      "notes": "Attributed factual extractions from Prize Papers abstraction; bulk CSV mirroring prohibited."
+      "directly_inspected": true,
+      "notes": "Directly accessed research dataset; bulk mirroring is outside approved Packet 2 use."
     },
     {
-      "id": "src_tna_hca_32_80",
-      "title": "High Court of Admiralty: Prize Court Papers, Box 80 (Richard & Sarah of London)",
+      "id": "src_tna_hca_32",
+      "title": "High Court of Admiralty: Prize Court Papers",
       "creator": "High Court of Admiralty",
       "holding_institution": "The National Archives, Kew",
-      "stable_identifier": "TNA HCA 32/80",
+      "stable_identifier": "TNA HCA 32",
       "item_url": "https://discovery.nationalarchives.gov.uk/details/r/C4258380",
       "rights_posture": "public_domain",
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
-      "credit_line": "The National Archives, Kew (HCA 32/80) via UK Data Service SN 852135 (IMLM)",
-      "notes": "Seventeenth/eighteenth-century prize court examinations; crown copyright expired."
+      "credit_line": "The National Archives, Kew",
+      "directly_inspected": false,
+      "notes": "Upstream archival series cited by IMLM. Physical manuscripts at Kew were not independently examined by Charted Currents."
     },
     {
-      "id": "src_tna_hca_32_86",
-      "title": "High Court of Admiralty: Prize Court Papers, Box 86 (William)",
-      "creator": "High Court of Admiralty",
-      "holding_institution": "The National Archives, Kew",
-      "stable_identifier": "TNA HCA 32/86",
-      "item_url": "https://discovery.nationalarchives.gov.uk/details/r/C4258380",
-      "rights_posture": "public_domain",
-      "public_use_basis": "open_public_domain",
-      "attribution_required": true,
-      "credit_line": "The National Archives, Kew (HCA 32/86) via UK Data Service SN 852135 (IMLM)",
-      "notes": "Seventeenth/eighteenth-century prize court examinations; crown copyright expired."
-    },
-    {
-      "id": "src_royal_society_1692",
-      "title": "Philosophical Transactions of the Royal Society, Vol. 18, No. 209 (Observations on the Port Royal Earthquake)",
-      "creator": "Royal Society of London / Rev. Edmund Heath / T L",
+      "id": "src_royal_society_el_l5_117",
+      "title": "Letter from Rev. Edmund Heath to the Royal Society giving an account of the Port Royal Earthquake",
+      "creator": "Rev. Edmund Heath",
       "holding_institution": "The Royal Society, London",
-      "stable_identifier": "Royal Society Archives EL/L5/117 & Phil. Trans. Vol. 18 (1694) pp. 83-100",
+      "stable_identifier": "Royal Society Archives EL/L5/117",
+      "rights_posture": "public_domain",
+      "public_use_basis": "open_public_domain",
+      "attribution_required": true,
+      "credit_line": "The Royal Society Archives (EL/L5/117)",
+      "directly_inspected": true,
+      "notes": "Contemporary manuscript letter recording the 7 June 1692 Port Royal earthquake."
+    },
+    {
+      "id": "src_royal_society_phil_trans_1694",
+      "title": "A Full Account of the Late Dreadful Earthquake at Port-Royal in Jamaica: Written in Two Letters by the Minister of That Place",
+      "creator": "Philosophical Transactions of the Royal Society of London",
+      "holding_institution": "The Royal Society, London",
+      "stable_identifier": "Phil. Trans. Vol. 18, No. 209 (1694), pp. 83-100",
       "item_url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1694.0017",
       "rights_posture": "public_domain",
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
-      "credit_line": "Royal Society Archives (EL/L5/117) & Philosophical Transactions Vol. 18 (1694)",
-      "notes": "Contemporary primary eyewitness observations and letters on the 7 June 1692 Port Royal disaster."
+      "credit_line": "Philosophical Transactions of the Royal Society, Vol. 18 (1694)",
+      "directly_inspected": true,
+      "notes": "Published contemporary letters on the 1692 earthquake printed in London."
     },
     {
       "id": "src_loc_g4960_1684",
@@ -63,7 +66,250 @@
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
       "credit_line": "Library of Congress, Geography and Map Division",
-      "notes": "Engraved map created [1684?]; no known copyright restrictions."
+      "directly_inspected": true,
+      "notes": "Engraved map created [1684?]; no known copyright restrictions in digitized collection."
+    }
+  ],
+  "source_records": [
+    {
+      "id": "sr_imlm_ship_2052",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 2052",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/80"
+    },
+    {
+      "id": "sr_imlm_crew_5035",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5035",
+      "parent_ship_record_id": "sr_imlm_ship_2052"
+    },
+    {
+      "id": "sr_imlm_crew_5036",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5036",
+      "parent_ship_record_id": "sr_imlm_ship_2052"
+    },
+    {
+      "id": "sr_imlm_crew_5037",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5037",
+      "parent_ship_record_id": "sr_imlm_ship_2052"
+    },
+    {
+      "id": "sr_imlm_ship_2228",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdShip 2228",
+      "upstream_archive_source_id": "src_tna_hca_32",
+      "upstream_archive_reference": "TNA HCA 32/86"
+    },
+    {
+      "id": "sr_imlm_crew_5508",
+      "source_id": "src_imlm_ukda_852135",
+      "record_type": "dataset_row",
+      "native_identifier": "IdCrew 5508",
+      "parent_ship_record_id": "sr_imlm_ship_2228"
+    },
+    {
+      "id": "sr_rs_el_l5_117",
+      "source_id": "src_royal_society_el_l5_117",
+      "record_type": "archival_manuscript",
+      "native_identifier": "EL/L5/117"
+    },
+    {
+      "id": "sr_rs_phil_trans_209",
+      "source_id": "src_royal_society_phil_trans_1694",
+      "record_type": "published_article",
+      "native_identifier": "Phil. Trans. Vol. 18, No. 209 (1694)"
+    },
+    {
+      "id": "sr_loc_ct008911",
+      "source_id": "src_loc_g4960_1684",
+      "record_type": "catalog_map_item",
+      "native_identifier": "99463761 / ct008911"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "ast_2052_name",
+      "source_record_id": "sr_imlm_ship_2052",
+      "field": "ship_name",
+      "raw_value": "Richard & Sarah of London"
+    },
+    {
+      "id": "ast_2052_tonnage",
+      "source_record_id": "sr_imlm_ship_2052",
+      "field": "tonnage",
+      "raw_value": "300"
+    },
+    {
+      "id": "ast_2052_construction",
+      "source_record_id": "sr_imlm_ship_2052",
+      "field": "construction_place",
+      "raw_value": "English built",
+      "reported_age_years": 20
+    },
+    {
+      "id": "ast_2052_owner",
+      "source_record_id": "sr_imlm_ship_2052",
+      "field": "owner_residence",
+      "raw_value": "London"
+    },
+    {
+      "id": "ast_2052_voyage",
+      "source_record_id": "sr_imlm_ship_2052",
+      "field": "voyage",
+      "origin_raw": "Jamaica",
+      "destination_raw": "London"
+    },
+    {
+      "id": "ast_2052_capture",
+      "source_record_id": "sr_imlm_ship_2052",
+      "field": "capture",
+      "location_raw": "Dartmouth, Devon",
+      "place_raw": "England",
+      "date_as_recorded": "1705-05",
+      "precision": "month_year"
+    },
+    {
+      "id": "ast_2052_upstream_hca",
+      "source_record_id": "sr_imlm_ship_2052",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/80"
+    },
+    {
+      "id": "ast_crew_5035",
+      "source_record_id": "sr_imlm_crew_5035",
+      "field": "crew_examination",
+      "first_name": "John",
+      "last_name": "Bull",
+      "rank": "mate navis",
+      "birthplace": "North Bergen in Norway",
+      "residence": "Bergen",
+      "subject_of": "king of Denmark",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_5036",
+      "source_record_id": "sr_imlm_crew_5036",
+      "field": "crew_examination",
+      "first_name": "Robert",
+      "last_name": "Ashworth",
+      "rank": "carpenter navis",
+      "birthplace": "Dexlford",
+      "residence": "Dexlford",
+      "subject_of": "Queen of Great Britain",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_crew_5037",
+      "source_record_id": "sr_imlm_crew_5037",
+      "field": "crew_examination",
+      "first_name": "John",
+      "last_name": "Dunbar",
+      "rank": "gunner",
+      "birthplace": "London",
+      "residence": "London",
+      "subject_of": "Queen of Great Britain",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_2228_name",
+      "source_record_id": "sr_imlm_ship_2228",
+      "field": "ship_name",
+      "raw_value": "William"
+    },
+    {
+      "id": "ast_2228_tonnage",
+      "source_record_id": "sr_imlm_ship_2228",
+      "field": "tonnage",
+      "raw_value": "60"
+    },
+    {
+      "id": "ast_2228_construction",
+      "source_record_id": "sr_imlm_ship_2228",
+      "field": "construction_place",
+      "raw_value": "english built"
+    },
+    {
+      "id": "ast_2228_owner",
+      "source_record_id": "sr_imlm_ship_2228",
+      "field": "owner_residence",
+      "raw_value": "London"
+    },
+    {
+      "id": "ast_2228_voyage",
+      "source_record_id": "sr_imlm_ship_2228",
+      "field": "voyage",
+      "origin_raw": "Jamaica",
+      "muster_raw": "Jamaica",
+      "destination_raw": "London"
+    },
+    {
+      "id": "ast_2228_capture",
+      "source_record_id": "sr_imlm_ship_2228",
+      "field": "capture",
+      "location_raw": "Plymouth, Devon",
+      "date_as_recorded": "1702-09",
+      "precision": "month_year"
+    },
+    {
+      "id": "ast_2228_upstream_hca",
+      "source_record_id": "sr_imlm_ship_2228",
+      "field": "upstream_archive_reference",
+      "raw_value": "HCA 32/86"
+    },
+    {
+      "id": "ast_crew_5508",
+      "source_record_id": "sr_imlm_crew_5508",
+      "field": "crew_examination",
+      "first_name": "Edward",
+      "last_name": "de Essex",
+      "age": 29,
+      "rank": "naut",
+      "birthplace": "London",
+      "residence": "London",
+      "muster_place": "Jamaica",
+      "subject_of": "Queen of England",
+      "signature": "Signed"
+    },
+    {
+      "id": "ast_eq_date",
+      "source_record_id": "sr_rs_el_l5_117",
+      "field": "event_date",
+      "date_as_recorded": "1692-06-07",
+      "calendar_system": "Julian (Old Style)"
+    },
+    {
+      "id": "ast_eq_location",
+      "source_record_id": "sr_rs_el_l5_117",
+      "field": "event_location",
+      "place_name": "Port Royal"
+    },
+    {
+      "id": "ast_eq_account",
+      "source_record_id": "sr_rs_phil_trans_209",
+      "field": "eyewitness_account",
+      "title": "Account of the Earthquake at Port-Royal"
+    },
+    {
+      "id": "ast_loc_map_title",
+      "source_record_id": "sr_loc_ct008911",
+      "field": "map_title",
+      "raw_title": "A new & exact mapp of the island of Jamaica : with ye true and iust scituation of ye severall townes & churches"
+    },
+    {
+      "id": "ast_loc_map_date",
+      "source_record_id": "sr_loc_ct008911",
+      "field": "map_date",
+      "year_recorded": 1684,
+      "date_display": "[1684?]",
+      "is_uncertain": true
     }
   ]
 }

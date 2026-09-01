@@ -2,8 +2,8 @@
 /**
  * src/components/evidence/SourceDrawer.astro
  *
- * Sourced archival provenance drawer. Displays primary archival call numbers,
- * repository details, dataset citations, and rights metadata.
+ * Sourced archival provenance drawer. Displays layered provenance:
+ * directly inspected research datasets vs upstream cited archival collections.
  */
 ---
 
@@ -42,14 +42,14 @@
 
       <div class="source-drawer-body">
         <section class="inspector-section" aria-label="Archive details">
-          <p class="panel-kicker">Holding Repository & Reference</p>
+          <p class="panel-kicker">Directly Observed Source</p>
           <dl class="inspector-meta">
             <div class="inspector-meta__row">
-              <dt>Repository</dt>
+              <dt>Repository / Host</dt>
               <dd data-source-institution></dd>
             </div>
             <div class="inspector-meta__row">
-              <dt>Archival Reference</dt>
+              <dt>Identifier / Ref</dt>
               <dd data-source-ref class="inspector-mono"></dd>
             </div>
             <div class="inspector-meta__row">
@@ -61,7 +61,7 @@
               <dd data-source-rights class="inspector-mono"></dd>
             </div>
             <div class="inspector-meta__row" data-source-link-row>
-              <dt>Repository Link</dt>
+              <dt>Direct Source Link</dt>
               <dd>
                 <a
                   href="#"
@@ -70,11 +70,33 @@
                   data-source-permalink
                   class="inspector-link"
                 >
-                  View Archive Record ↗
+                  View Source Record ↗
                 </a>
               </dd>
             </div>
           </dl>
+        </section>
+
+        <!-- Upstream Archival Reference Section (when cited via dataset) -->
+        <section class="inspector-section" data-source-upstream-section hidden aria-label="Upstream archival reference">
+          <p class="panel-kicker">Upstream Archival Reference (Cited by Source)</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Archival Collection</dt>
+              <dd data-source-upstream-repo>The National Archives, Kew</dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Archival Reference</dt>
+              <dd data-source-upstream-ref class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Inspection State</dt>
+              <dd class="inspector-mono">Cited via dataset (not independently examined)</dd>
+            </div>
+          </dl>
+          <p class="inspector-note" data-source-upstream-note>
+            Seventeenth/eighteenth-century High Court of Admiralty prize court papers cited in IMLM dataset. The physical manuscript at Kew was not independently examined by Charted Currents.
+          </p>
         </section>
 
         <section class="inspector-section" aria-label="Scholarly attribution">
@@ -108,6 +130,8 @@
   const notesEl = document.querySelector<HTMLElement>("[data-source-notes]");
   const linkRow = document.querySelector<HTMLElement>("[data-source-link-row]");
   const permalink = document.querySelector<HTMLAnchorElement>("[data-source-permalink]");
+  const upstreamSection = document.querySelector<HTMLElement>("[data-source-upstream-section]");
+  const upstreamRef = document.querySelector<HTMLElement>("[data-source-upstream-ref]");
 
   let sourcesCache: PublishedSources | null = null;
   let returnElement: HTMLElement | null = null;
@@ -124,10 +148,9 @@
     }
   }
 
-  // Preload sources on script load
   loadSources();
 
-  export async function openSourceDrawer(sourceId: string, triggerEl?: HTMLElement | null): Promise<void> {
+  export async function openSourceDrawer(sourceId: string, triggerEl?: HTMLElement | null, upstreamReference?: string | null): Promise<void> {
     if (!drawer) return;
     returnElement = triggerEl || (document.activeElement as HTMLElement);
 
@@ -155,6 +178,15 @@
       }
     }
 
+    if (upstreamSection && upstreamRef) {
+      if (upstreamReference) {
+        upstreamRef.textContent = upstreamReference;
+        upstreamSection.hidden = false;
+      } else {
+        upstreamSection.hidden = true;
+      }
+    }
+
     drawer.hidden = false;
     drawer.setAttribute("data-state", "open");
     titleEl?.focus();
@@ -170,17 +202,22 @@
   closeBtn?.addEventListener("click", closeSourceDrawer);
   backdrop?.addEventListener("click", closeSourceDrawer);
 
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && drawer && !drawer.hidden) {
-      e.preventDefault();
-      closeSourceDrawer();
-    }
-  });
+  window.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Escape" && drawer && !drawer.hidden && drawer.getAttribute("data-state") === "open") {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        closeSourceDrawer();
+      }
+    },
+    { capture: true },
+  );
 
-  // Global custom event listener
-  window.addEventListener("cc:open-source", ((e: CustomEvent<{ sourceId: string; triggerEl?: HTMLElement }>) => {
+  window.addEventListener("cc:open-source", ((e: CustomEvent<{ sourceId: string; triggerEl?: HTMLElement; upstreamRef?: string }>) => {
     if (e.detail?.sourceId) {
-      openSourceDrawer(e.detail.sourceId, e.detail.triggerEl);
+      openSourceDrawer(e.detail.sourceId, e.detail.triggerEl, e.detail.upstreamRef);
     }
   }) as EventListener);
 </script>
@@ -202,7 +239,6 @@
     position: absolute;
     inset: 0;
     background: rgba(18, 26, 30, 0.45);
-    backdrop-filter: blur(2px);
     transition: opacity 180ms ease;
   }
 
