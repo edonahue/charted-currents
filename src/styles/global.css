@@ -22,6 +22,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Accessibility utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 button,
 a,
 [tabindex]:not([tabindex="-1"]) {
@@ -132,11 +145,16 @@ a {
   border: var(--cc-rule-thin) solid var(--cc-line-strong);
   border-radius: var(--cc-radius-xs);
   color: var(--cc-ink-soft);
-  background: var(--cc-paper-translucent);
-  box-shadow: 0 0.25rem 0.9rem rgb(20 29 33 / 7%);
+  background: var(--cc-paper-raised);
+  box-shadow: 0 0.15rem 0.6rem rgb(20 29 33 / 6%);
   font-size: var(--cc-text-xs);
   line-height: 1.4;
-  backdrop-filter: blur(4px);
+}
+
+.map-viewport__status--error {
+  border-color: var(--cc-redwood, #8d4f43);
+  color: var(--cc-ink);
+  background: var(--cc-paper-raised);
 }
 
 /* Perceivable locator browser */
@@ -155,19 +173,18 @@ a {
   border: var(--cc-rule-thin) solid var(--cc-line-strong);
   border-radius: var(--cc-radius-xs);
   color: var(--cc-ink);
-  background: var(--cc-paper-translucent);
+  background: var(--cc-paper-raised);
   font-family: var(--cc-font-sans);
   font-size: var(--cc-text-sm);
   font-weight: 500;
   cursor: pointer;
   box-shadow: 0 0.15rem 0.6rem rgb(20 29 33 / 6%);
-  backdrop-filter: blur(4px);
   transition: background-color var(--cc-duration-fast) var(--cc-ease-standard),
               border-color var(--cc-duration-fast) var(--cc-ease-standard);
 }
 
 .map-locator-browser__toggle:hover {
-  background: var(--cc-paper-raised);
+  background: var(--cc-paper-deep);
   border-color: var(--cc-ink-soft);
 }
 
@@ -193,7 +210,6 @@ a {
   border-radius: var(--cc-radius-xs);
   background: var(--cc-paper-raised);
   box-shadow: 0 0.5rem 1.5rem rgb(20 29 33 / 14%);
-  backdrop-filter: blur(8px);
 }
 
 .map-locator-browser__header {
@@ -255,9 +271,8 @@ a {
   overflow: hidden;
   border: var(--cc-rule-thin) solid var(--cc-line-strong) !important;
   border-radius: var(--cc-radius-xs) !important;
-  background: var(--cc-paper-translucent) !important;
+  background: var(--cc-paper-raised) !important;
   box-shadow: 0 0.15rem 0.5rem rgb(20 29 33 / 6%) !important;
-  backdrop-filter: blur(4px) !important;
 }
 
 .maplibregl-ctrl-group button + button {
@@ -359,12 +374,18 @@ a {
   letter-spacing: -0.015em;
   color: var(--cc-ink);
   outline: none;
+  display: inline-block;
 }
 
-.inspector-title:focus {
+.inspector-title:focus:not(:focus-visible) {
   outline: none;
 }
 
+/* Subtle editorial brass focus indicator for keyboard navigation */
+.inspector-title:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px 0 var(--cc-brass);
+}
 
 .inspector-subtitle {
   margin: 0;

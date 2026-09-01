@@ -17,6 +17,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
       type="button"
       class="inspector-sheet__handle"
       aria-label="Toggle inspector height"
+      aria-expanded="false"
       data-sheet-handle
     >
       <span class="inspector-sheet__handle-bar" aria-hidden="true"></span>
@@ -84,8 +85,8 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
       <section class="inspector-section inspector-disclaimer" aria-label="Historical prototype scope">
         <p class="panel-kicker">Prototype Status</p>
         <p>
-          This locator exercises Packet 1 map selection. Historical port boundaries, period coordinates, vessels,
-          voyages, and archival evidence records are not loaded in this shell and begin in Packet 2.
+          Modern populated-place locator used for interface development. Historical port extents, period coordinates,
+          vessels, voyages, and archival evidence records are not yet loaded.
         </p>
       </section>
     </div>
@@ -95,6 +96,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
 <script>
   import type { Selection } from "../../lib/domain/types";
   import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
+  import { getLastSelectionTrigger, popLastKeyboardTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
 
   const inspector = document.getElementById("entity-inspector");
@@ -116,16 +118,14 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
   function closeInspector(): void {
     selectionStore.clear();
 
-    // Restore focus if triggered by keyboard
-    const win = window as unknown as Record<string, unknown>;
-    if (win.__lastKeyboardTrigger instanceof HTMLElement && document.contains(win.__lastKeyboardTrigger)) {
-      win.__lastKeyboardTrigger.focus();
+    // Restore focus if triggered by keyboard without stale global leakage
+    const triggerEl = popLastKeyboardTrigger();
+    if (triggerEl instanceof HTMLElement && document.contains(triggerEl)) {
+      triggerEl.focus();
     } else {
       const mapCanvas = document.getElementById("charted-currents-map");
       mapCanvas?.focus();
     }
-    win.__lastSelectionTrigger = undefined;
-    win.__lastKeyboardTrigger = undefined;
   }
 
   function updateInspector(selection: Selection): void {
@@ -135,6 +135,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
       inspector.hidden = true;
       inspector.setAttribute("data-state", "closed");
       inspector.setAttribute("data-sheet-state", "closed");
+      sheetHandle?.setAttribute("aria-expanded", "false");
       appShell?.setAttribute("data-inspector-open", "false");
       return;
     }
@@ -144,6 +145,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
       inspector.hidden = true;
       inspector.setAttribute("data-state", "closed");
       inspector.setAttribute("data-sheet-state", "closed");
+      sheetHandle?.setAttribute("aria-expanded", "false");
       appShell?.setAttribute("data-inspector-open", "false");
       return;
     }
@@ -159,12 +161,11 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     inspector.hidden = false;
     inspector.setAttribute("data-state", "open");
     inspector.setAttribute("data-sheet-state", "partial");
+    sheetHandle?.setAttribute("aria-expanded", "false");
     appShell?.setAttribute("data-inspector-open", "true");
 
     // Input-aware focus transfer
-    const win = window as unknown as Record<string, unknown>;
-    if (win.__lastSelectionTrigger === "keyboard" && titleEl) {
-      // Small timeout to allow transition/DOM update
+    if (getLastSelectionTrigger() === "keyboard" && titleEl) {
       requestAnimationFrame(() => {
         titleEl.focus();
       });
@@ -189,6 +190,7 @@ import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors
     const currentState = inspector.getAttribute("data-sheet-state");
     const nextState = currentState === "expanded" ? "partial" : "expanded";
     inspector.setAttribute("data-sheet-state", nextState);
+    sheetHandle.setAttribute("aria-expanded", nextState === "expanded" ? "true" : "false");
   });
 
   selectionStore.subscribe((selection) => {
