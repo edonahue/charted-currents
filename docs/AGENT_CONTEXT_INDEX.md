@@ -85,7 +85,14 @@ Credential rules:
 
 For **weather, winds, tides, water levels, currents, bathymetry, or other physical-ocean/environmental history**, also read `docs/OCEAN_WEATHER_SOURCE_SETUP.md` and `research/environmental_sources.yml`. Preserve the distinction between period observations, reconstructed/hydrographic conditions, and modern contextual/reanalysis data; never silently substitute one evidence class for another.
 
-For images/maps/material culture, also use `docs/ART_AND_MAP_SOURCES.md`, `docs/VISUAL_ASSET_STRATEGY.md`, and `research/art_sources.yml`.
+For **historical images, maps, manuscript/document scans, prints, material culture, design references, IIIF acquisition, crops/derivatives, or georeferencing**, read:
+
+- `docs/ART_AND_MAP_SOURCES.md` — strategic source dossier;
+- **`docs/VISUAL_SOURCE_ACCESS.md`** — canonical acquisition, rights, IIIF, derivative, credit, and publication workflow;
+- `docs/VISUAL_ASSET_STRATEGY.md` — product/design use of historical visual material;
+- **`research/art_sources.yml`** — machine-readable per-source access and rights posture.
+
+Institution-first is the default. Aggregators and Wikimedia Commons may aid discovery, but do not erase the holding institution or substitute an aggregator license for item/media rights. Do not download anonymous web images, bypass watermarks/restrictions, or treat IIIF availability as a reuse license.
 
 For shipwreck/museum enrichment, use `docs/SHIPWRECKS_AND_MUSEUMS.md`, `docs/SHIPWRECK_MUSEUM_SOURCE_SETUP.md`, and `research/shipwreck_museum_sources.yml`.
 
