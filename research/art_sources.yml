@@ -1,13 +1,28 @@
+setup_doc: docs/VISUAL_SOURCE_ACCESS.md
+
+visual_policy:
+  institution_first: true
+  prefer_iiif_when_available: true
+  aggregator_is_not_rights_holder: true
+  no_anonymous_web_images: true
+  no_generated_historical_evidence: true
+  raw_or_master_downloads_not_public_by_default: true
+  public_asset_requires_item_level_rights_review: true
+
 art_sources:
   - id: loc
     name: Library of Congress
     priority: p0_visual
     url: https://www.loc.gov/
-    machine_access: JSON/YAML API; image services; no key
+    api_docs: https://www.loc.gov/apis/json-and-yaml/
+    iiif_docs: https://www.loc.gov/apis/micro-services/image-services/
+    machine_access: public JSON/YAML API plus IIIF Image services; many item pages expose IIIF Presentation manifests
     account_required: false
-    rights: item_level
-    preferred_use: Period maps, charts, prints, manuscripts
-    action: Build targeted Caribbean map discovery adapter
+    api_key_required: false
+    rights: item_level; Geography and Map Division digitized collections are free to reuse unless an item Rights Advisory says otherwise
+    preferred_use: Period maps, charts, port plans, printed books/manuscripts and primary-source imagery
+    acquisition: resolve canonical LOC item -> inspect Rights & Access -> preserve item ID/call number/division/credit -> use IIIF or institutional download
+    action: Build targeted Caribbean map discovery adapter and curate rights-cleared item set
     last_verified: 2026-08-31
 
   - id: greater_caribbean_mapping
@@ -17,19 +32,23 @@ art_sources:
     data_url: https://greatercaribbeanmaps.org/overview/data-download/
     machine_access: weekly refreshed full CSV
     account_required: false
+    api_key_required: false
     rights: catalog_for_discovery_resolve_media_at_holder
     preferred_use: Cross-institution historical map discovery
-    action: Ingest catalog metadata after terms review
+    acquisition: GCM record -> holding institution -> canonical holding item -> item-level rights -> approved institutional image/IIIF
+    action: Ingest catalog metadata after terms review; never treat linked images as rights-cleared by GCM
     last_verified: 2026-08-31
 
   - id: nationaal_archief
     name: Nationaal Archief
     priority: p0_visual_and_primary
     url: https://www.nationaalarchief.nl/
-    machine_access: OAI-PMH EAD/XML plus METS/file endpoints
+    machine_access: OAI-PMH EAD/XML plus METS/file endpoints and institutional downloads
     account_required: false
-    rights: Public Domain or CC0 only where explicitly open/downloadable
-    preferred_use: Dutch maps, charts, archival scans, Sailing Letters
+    api_key_required: false
+    rights: Public Domain or CC0 only where explicitly open/downloadable; download-button state is a practical reuse gate
+    preferred_use: Dutch maps, charts, archival scans, Sailing Letters and WIC material
+    acquisition: resolve catalogue/inventory -> confirm download + PD/CC0 state -> download from institution -> preserve catalogue identifiers/credit
     action: Build rights-aware EAD/METS prototype
     last_verified: 2026-08-31
 
@@ -37,31 +56,53 @@ art_sources:
     name: PARES / Spanish State Archives
     priority: p0_primary
     url: https://pares.cultura.gob.es/pares/en/inicio.html
+    machine_access: public portal, descriptive/authority search, digitized image viewer; targeted archive reproduction request for undigitized/high-quality copies
     account_required: false
-    rights: public-domain items reusable with required source citation; other items case-by-case
-    preferred_use: Spanish maps/plans, registers, manuscripts
-    action: Curate first AGI item set manually
+    api_key_required: false
+    rights: public-domain State Archive descriptions/images accessible through PARES reusable without prior permission with mandatory Ministry/archive/reference citation; other items case-by-case
+    preferred_use: Spanish maps/plans, registers, manuscripts, correspondence
+    acquisition: resolve State Archive + signatura -> inspect digitized item -> establish public-domain status -> use proper institutional reproduction/publication route
+    action: Curate first AGI item set manually and record citation/reproduction requirements
     last_verified: 2026-08-31
 
-  - id: rijksmuseum
-    name: Rijksmuseum Data Services
-    priority: p1_visual
-    url: https://data.rijksmuseum.nl/
-    machine_access: Search API; OAI-PMH; Linked Data; no key
+  - id: anom
+    name: Archives nationales d’outre-mer (ANOM)
+    priority: p0_p1_primary_visual
+    url: https://archives-nationales-outre-mer.culture.gouv.fr/
+    reuse_url: https://archives-nationales-outre-mer.culture.gouv.fr/faire-une-recherche/la-reutilisation-des-archives
+    reproduction_url: https://archives-nationales-outre-mer.culture.gouv.fr/infos-pratiques/obtenir-une-reproduction
     account_required: false
-    rights: item_level_public_domain_cc0_ccby_or_restricted
-    preferred_use: Maritime art, model ships, ports, navigational objects
-    action: Create maritime discovery queries
+    api_key_required: false
+    rights: broad public-information reuse where applicable with exact origin/holding citation; third-party copyright and unknown-author visual works require separate review
+    preferred_use: French Antilles maps, plans, fortifications, administrative manuscripts and historical imagery
+    acquisition: online inventory/cartotheque -> exact FR ANOM reference -> rights assessment -> institutional digital image or photographic reproduction request
+    action: Curate Martinique/Guadeloupe/Lesser Antilles benchmark items; avoid unknown-author copyrighted photography as public assets
     last_verified: 2026-08-31
 
   - id: jcb
     name: John Carter Brown Library / Americana
     priority: p1_visual_primary
-    url: https://jcblibrary.org/
+    url: https://americana.jcblibrary.org/
     account_required: false
-    rights: current open-access messaging with credit; verify item, especially legacy Brown CDS/LUNA records
-    preferred_use: Early Americas maps, books, prints, voyage material
+    api_key_required: false
+    rights: current JCB digital-collection items are CC BY 4.0; requested credit Courtesy of the John Carter Brown Library
+    preferred_use: Early Americas maps, books, prints, voyage narratives, city/port views
+    acquisition: prefer current Americana item -> preserve bibliographic/holding identity -> use JCB digital item -> retain CC BY attribution and transformation note
     action: Curate current-Americana benchmark assets
+    last_verified: 2026-08-31
+
+  - id: harvard_library
+    name: Harvard Library / Harvard Map Collection
+    priority: p1_visual_primary
+    url: https://library.harvard.edu/
+    iiif_docs: https://library.harvard.edu/services-tools/iiif-manifests-digital-objects
+    map_collection: https://library.harvard.edu/collections/geospatial-and-mapping-data
+    account_required: false_for_public_iiif_and_open_items
+    api_key_required: false_for_recommended_visual_workflow
+    rights: openly available digital reproductions of public-domain Harvard Library works may be freely reused subject to item/non-copyright restrictions and source citation
+    preferred_use: IIIF-enabled maps/books/manuscripts, scanned historical maps and georeferenced map experiments
+    acquisition: HOLLIS/Viewer item -> confirm openly available + public domain -> copy IIIF manifest -> preserve repository/item identity and rights -> use institutional image or GeoTIFF with metadata
+    action: Add Harvard Map Collection to cross-institution map discovery shortlist
     last_verified: 2026-08-31
 
   - id: bne
@@ -69,9 +110,53 @@ art_sources:
     priority: p1_visual_primary
     url: https://www.bne.es/
     account_required: false
-    rights: public-domain digital images reusable, generally CC BY 4.0/equivalent with BNE credit
-    preferred_use: Spanish maps, atlases, engravings, nautical books
+    api_key_required: false
+    rights: public-domain BNE Digital/BDH images reusable without prior permission under CC BY 4.0 or equivalent with required BNE source credit
+    preferred_use: Spanish maps, atlases, engravings, nautical books and port imagery
+    acquisition: resolve catalog + digital item -> confirm public-domain lane -> institutional download -> preserve BNE identifier/permalink and credit
     action: Curate Caribbean/West Indies benchmark set
+    last_verified: 2026-08-31
+
+  - id: bnf_gallica
+    name: Bibliothèque nationale de France / Gallica
+    priority: p1_visual_primary
+    url: https://gallica.bnf.fr/
+    iiif_docs: https://api.bnf.fr/fr/api-iiif-de-recuperation-des-images-de-gallica
+    document_api: https://api.bnf.fr/fr/api-document-de-gallica
+    machine_access: public IIIF Image/Presentation, document/OCR and other Gallica APIs; no project key
+    account_required: false
+    api_key_required: false
+    rights: BnF public-domain reproductions generally free for non-commercial reuse with source credit; commercial reuse has separate licensing and partner items may have separate terms
+    preferred_use: French Antilles maps/atlases, printed works, manuscripts, port and fortification imagery
+    acquisition: resolve Gallica ARK -> inspect source/partner and reuse terms -> use manifest/IIIF image for deterministic page/crop -> preserve ARK and Source gallica.bnf.fr / BnF credit where applicable
+    action: Curate contemporary French counterpart maps and manuscript/printed-source benchmarks
+    last_verified: 2026-08-31
+
+  - id: rijksmuseum
+    name: Rijksmuseum Data Services
+    priority: p1_visual_material_culture
+    url: https://data.rijksmuseum.nl/
+    machine_access: no-key Search API, OAI-PMH/dumps, Linked Data, IIIF Image/Presentation/Change Discovery
+    account_required: false
+    api_key_required: false
+    rights: item_level_public_domain_cc0_ccby_or_restricted
+    preferred_use: Maritime art, model ships, ports, navigational objects, Dutch Atlantic material culture
+    acquisition: Search API discovery -> persistent object record -> item rights -> IIIF/institutional image -> preserve object number and image/rights identifiers
+    action: Create maritime discovery queries; use OAI/dumps rather than search API for large synchronization
+    last_verified: 2026-08-31
+
+  - id: royal_museums_greenwich
+    name: Royal Museums Greenwich / National Maritime Museum
+    priority: p1_p2_maritime_visual
+    url: https://collections.rmg.co.uk/
+    terms_url: https://www.rmg.co.uk/policies/terms-conditions
+    machine_access: collections API; current terms guide <=3000 calls/day and <=1 request/second
+    account_required: false_for_current_api; registration may be required for some image-download/licensing surfaces
+    api_key_required: false_currently
+    rights: where indicated, collection records/images may be available for non-commercial reuse under CC BY-NC-ND; images require National Maritime Museum, Greenwich, London credit/link and item-specific restrictions can be stricter
+    preferred_use: Ship portraits/models/plans, navigational instruments, maritime art and archival material
+    acquisition: collections record/API -> item licence -> use permitted low-resolution image or pursue RMG Images/licensing for other uses -> preserve original record and credit
+    action: Use selectively because no-derivatives/noncommercial constraints can conflict with crops/design transformations; prefer unrestricted sources when equivalent
     last_verified: 2026-08-31
 
   - id: smithsonian
@@ -81,20 +166,23 @@ art_sources:
     machine_access: weekly GitHub bulk data; api.data.gov API
     account_required: optional
     credential_env: SMITHSONIAN_API_KEY
-    rights: Open Access assets CC0 where supplied
-    preferred_use: Navigation instruments, ship models, material culture
+    rights: Open Access assets CC0 where supplied; restricted objects may expose metadata without media
+    preferred_use: Navigation instruments, ship models, maritime/material culture
+    acquisition: open bulk/API record -> confirm Open Access media -> preserve Smithsonian record/credit -> use supplied CC0 asset
     action: API key optional; bulk data is nonblocking
     last_verified: 2026-08-31
 
   - id: europeana
     name: Europeana
     priority: p2_discovery
-    url: https://api.europeana.eu/en
+    url: https://www.europeana.eu/en/apis
+    machine_access: Search/Record/IIIF APIs
     account_required: true
     credential_env: EUROPEANA_API_KEY
-    rights: provider_and_item_level
-    preferred_use: European institutional discovery
-    action: Create free account and personal API key
+    rights: provider_and_item_level; preserve standardized Europeana rights URI and follow through to provider record
+    preferred_use: Cross-European institutional discovery and IIIF discovery
+    acquisition: Europeana search -> detailed record -> rights URI -> provider/holding item -> provider rights/IIIF/publication route
+    action: Create free account/personal key; request project key only if operational production usage later warrants it
     last_verified: 2026-08-31
 
   - id: dpla
@@ -105,7 +193,48 @@ art_sources:
     credential_env: DPLA_API_KEY
     rights: metadata_discovery; provider/item media rights
     preferred_use: US archive/library discovery
+    acquisition: API discovery -> provider/source record -> provider media rights -> approved institutional asset
     action: Request free API key by documented POST
+    last_verified: 2026-08-31
+
+  - id: dloc
+    name: Digital Library of the Caribbean
+    priority: p2_caribbean_discovery
+    url: https://dloc.com/
+    machine_access: public item pages; many items expose METS/MODS and MARC XML; geographic search available
+    account_required: false
+    api_key_required: false
+    rights: post-custodial partner_and_item_specific
+    preferred_use: Caribbean partner collections, maps, newspapers, books and archival discovery
+    acquisition: dLOC item -> preserve item ID/source institution/holding location -> read Rights Management -> use METS/MODS metadata -> resolve provider restrictions before media reuse
+    action: Build targeted shortlist; never assume collection-wide media rights
+    last_verified: 2026-08-31
+
+  - id: wikimedia_commons
+    name: Wikimedia Commons
+    priority: p2_reference_and_discovery
+    url: https://commons.wikimedia.org/
+    machine_access: public MediaWiki APIs and derivative files
+    account_required: false_for_reading
+    api_key_required: false
+    rights: per-file free-license/public-domain assertion; Wikimedia advises independent verification and canonical-source follow-through
+    preferred_use: Deterministic design-reference board, derivative discovery, source-link discovery
+    acquisition: file page/API -> inspect author/license/source -> resolve underlying institution/item when available -> download reviewed derivative rather than hotlinking
+    automation_policy: meaningful User-Agent, serialized/polite requests, caching
+    action: Keep as reference convenience; do not substitute Commons for holding-institution provenance
+    last_verified: 2026-08-31
+
+  - id: allmaps
+    name: Allmaps Editor / Viewer
+    priority: tool_georeference
+    url: https://allmaps.org/
+    account_required: false
+    api_key_required: false
+    rights: public Allmaps Editor georeference annotations are published as CC0 open data; source-map rights remain separate
+    preferred_use: Georeferencing already rights-cleared IIIF historical maps for research/overlay prototypes
+    acquisition: rights-clear source map -> IIIF manifest/image -> Allmaps Editor -> save project copy of annotation -> validate in QGIS/MapLibre
+    caution: do not submit private/restricted/sensitive material to public Editor; public annotations can be edited and are open data
+    action: Use only after a real map earns overlay work; store annotation independently with source/version/reviewer
     last_verified: 2026-08-31
 
   - id: nypl
@@ -115,16 +244,7 @@ art_sources:
     account_required: false
     machine_access: Repo API retired 2026-08-01; no replacement planned
     rights: explicit public-domain/no-known-US-copyright items reusable without permission
-    preferred_use: Manual discovery of maps, books, prints
-    action: Do not create API credentials
-    last_verified: 2026-08-31
-
-  - id: dloc
-    name: Digital Library of the Caribbean
-    priority: p2_caribbean_discovery
-    url: https://dloc.com/
-    account_required: false
-    rights: partner_and_item_specific
-    preferred_use: Caribbean partner collections, maps, newspapers, books
-    action: Use item-level rights review; do not assume collection-wide media rights
+    preferred_use: Manual discovery of maps, books and prints
+    acquisition: manual item -> public-domain/rights statement -> high-resolution institutional download -> preserve permalink/rights
+    action: Do not create API credentials or new automated dependency
     last_verified: 2026-08-31
