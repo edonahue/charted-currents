@@ -74,6 +74,7 @@ const mimeTypes = {
   ".html": "text/html",
   ".css": "text/css",
   ".js": "application/javascript",
+  ".mjs": "application/javascript",
   ".json": "application/json",
   ".png": "image/png",
   ".jpg": "image/jpeg",
@@ -182,14 +183,26 @@ server.listen(0, "127.0.0.1", async () => {
     // Navigate to application
     await send("Page.navigate", { url: baseUrl });
 
-    async function waitForMapReady(timeoutMs = 6000) {
+    async function waitForMapReady(timeoutMs = 8000) {
       const start = Date.now();
       while (Date.now() - start < timeoutMs) {
         const evalRes = await send("Runtime.evaluate", {
           expression: `Boolean(document.getElementById("charted-currents-map")?.dataset.mapReady === "true")`,
           returnByValue: true,
         });
-        if (evalRes?.result?.value === true) return true;
+        if (evalRes?.result?.value === true) {
+          // Wait for tiles to settle
+          const idleStart = Date.now();
+          while (Date.now() - idleStart < 3000) {
+            const idleRes = await send("Runtime.evaluate", {
+              expression: `Boolean(document.getElementById("charted-currents-map")?.dataset.mapIdle === "true")`,
+              returnByValue: true,
+            });
+            if (idleRes?.result?.value === true) break;
+            await new Promise((r) => setTimeout(r, 200));
+          }
+          return true;
+        }
         await new Promise((r) => setTimeout(r, 150));
       }
       return false;
@@ -215,7 +228,7 @@ server.listen(0, "127.0.0.1", async () => {
         deviceScaleFactor: 1,
         mobile: vp.width < 500,
       });
-      await new Promise((r) => setTimeout(r, 600));
+      await new Promise((r) => setTimeout(r, 1200));
 
       const screenshot = await send("Page.captureScreenshot", { format: "png" });
       if (screenshot?.data) {
