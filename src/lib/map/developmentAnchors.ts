@@ -1,4 +1,4 @@
-import type { EntitySelection } from "../domain/types";
+import type { EntitySelection, Selection } from "../domain/types";
 
 export interface DevelopmentAnchor {
   id: string;
@@ -85,4 +85,55 @@ export const DEVELOPMENT_ANCHORS: readonly DevelopmentAnchor[] = [
     },
     note: "Modern city locator only; not a historical fortification, harbor boundary, or period coordinate.",
   },
-] as const;
+];
+
+export function getDevelopmentAnchor(id: string): DevelopmentAnchor | undefined {
+  return DEVELOPMENT_ANCHORS.find((a) => a.id === id);
+}
+
+export function getDevelopmentAnchorBySelection(selection: Selection): DevelopmentAnchor | undefined {
+  if (!selection || selection.kind !== "port") return undefined;
+  return DEVELOPMENT_ANCHORS.find((a) => a.selection.id === selection.id);
+}
+
+export interface DevelopmentAnchorGeoJsonProperties {
+  id: string;
+  selectionId: string;
+  kind: "port";
+  label: string;
+  region: string;
+}
+
+export interface DevelopmentAnchorFeatureCollection {
+  type: "FeatureCollection";
+  features: Array<{
+    type: "Feature";
+    id: string;
+    geometry: {
+      type: "Point";
+      coordinates: [number, number];
+    };
+    properties: DevelopmentAnchorGeoJsonProperties;
+  }>;
+}
+
+export function getDevelopmentAnchorsGeoJson(): DevelopmentAnchorFeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: DEVELOPMENT_ANCHORS.map((anchor) => ({
+      type: "Feature",
+      id: anchor.id,
+      geometry: {
+        type: "Point",
+        coordinates: anchor.coordinates,
+      },
+      properties: {
+        id: anchor.id,
+        selectionId: anchor.selection.id,
+        kind: "port",
+        label: anchor.label,
+        region: anchor.region,
+      },
+    })),
+  };
+}

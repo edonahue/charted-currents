@@ -1,24 +1,237 @@
 ---
 import "maplibre-gl/dist/maplibre-gl.css";
+import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
 ---
 
 <section class="map-viewport" aria-label="Greater Caribbean map" data-component="map-viewport">
-  <div id="charted-currents-map" class="map-viewport__canvas"></div>
+  <div id="charted-currents-map" class="map-viewport__canvas" tabindex="0" aria-label="Interactive map canvas. Use arrow keys to pan, plus and minus to zoom."></div>
+
+  <!-- Perceivable locator browser for keyboard, screen-reader, and quick place navigation -->
+  <div class="map-locator-browser" data-locator-browser>
+    <button
+      type="button"
+      class="map-locator-browser__toggle"
+      aria-expanded="false"
+      aria-controls="map-locator-menu"
+      data-locator-toggle
+    >
+      <span class="map-locator-browser__icon" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="7" cy="7" r="5.5" />
+          <circle cx="7" cy="7" r="2" fill="currentColor" />
+        </svg>
+      </span>
+      <span>Browse places</span>
+      <span class="map-locator-browser__count" aria-hidden="true">({DEVELOPMENT_ANCHORS.length})</span>
+    </button>
+    <nav
+      id="map-locator-menu"
+      class="map-locator-browser__menu"
+      aria-label="Development locator anchors"
+      data-locator-menu
+      hidden
+    >
+      <div class="map-locator-browser__header">
+        <p class="panel-kicker">Development Locators</p>
+        <span class="map-locator-browser__caption">GeoNames CC BY 4.0</span>
+      </div>
+      <ul class="map-locator-browser__list">
+        {DEVELOPMENT_ANCHORS.map((anchor) => (
+          <li>
+            <button
+              type="button"
+              class="map-locator-browser__item"
+              data-anchor-id={anchor.id}
+              data-selection-id={anchor.selection.id}
+            >
+              <span class="map-locator-browser__item-label">{anchor.label}</span>
+              <span class="map-locator-browser__item-region">{anchor.region}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
   <p class="map-viewport__status" data-map-status role="status" aria-live="polite">
-    Modern basemap only. Historical records and routes are not loaded in this bootstrap shell.
+    Modern basemap ready. Select a place on the map or via Browse Places to inspect locator details.
   </p>
 </section>
 
 <script>
   import { Map, NavigationControl } from "maplibre-gl";
+  import type { Selection } from "../../lib/domain/types";
   import { applyBasemapVisualPolicy } from "../../lib/map/applyVisualPolicy";
-  import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW } from "../../lib/map/config";
+  import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW, SELECTION_CAMERA } from "../../lib/map/config";
+  import {
+    DEVELOPMENT_ANCHORS,
+    getDevelopmentAnchorsGeoJson,
+  } from "../../lib/map/developmentAnchors";
+  import { PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
+  import { selectionStore } from "../../lib/state/selection";
 
   const container = document.getElementById("charted-currents-map");
   const status = document.querySelector<HTMLElement>("[data-map-status]");
+  const locatorBrowser = document.querySelector<HTMLElement>("[data-locator-browser]");
+  const locatorToggle = document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
+  const locatorMenu = document.querySelector<HTMLElement>("[data-locator-menu]");
+  const locatorItems = document.querySelectorAll<HTMLButtonElement>(".map-locator-browser__item");
+
+  let map: Map | null = null;
+  let previousSelectedFeatureId: string | null = null;
+
+  function ensureProjectLayers(m: Map): void {
+    if (m.getSource("dev-anchors")) return;
+
+    m.addSource("dev-anchors", {
+      type: "geojson",
+      data: getDevelopmentAnchorsGeoJson() as never,
+    });
+
+    // Concentric outer ring layer
+    m.addLayer({
+      id: "dev-anchors-outer-ring",
+      type: "circle",
+      source: "dev-anchors",
+      paint: {
+        "circle-radius": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          PROJECT_MARKER_VISUAL_POLICY.selectedOuterRingRadiusPx,
+          PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx,
+        ],
+        "circle-color": "transparent",
+        "circle-stroke-color": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          PROJECT_MARKER_VISUAL_POLICY.colors.ringSelected,
+          PROJECT_MARKER_VISUAL_POLICY.colors.ring,
+        ],
+        "circle-stroke-width": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          PROJECT_MARKER_VISUAL_POLICY.selectedStrokeWidthPx,
+          PROJECT_MARKER_VISUAL_POLICY.strokeWidthPx,
+        ],
+        "circle-stroke-opacity": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          1,
+          0.75,
+        ],
+      },
+    });
+
+    // Solid core dot layer
+    m.addLayer({
+      id: "dev-anchors-core",
+      type: "circle",
+      source: "dev-anchors",
+      paint: {
+        "circle-radius": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          PROJECT_MARKER_VISUAL_POLICY.selectedRadiusPx,
+          PROJECT_MARKER_VISUAL_POLICY.radiusPx,
+        ],
+        "circle-color": [
+          "case",
+          ["boolean", ["feature-state", "selected"], false],
+          PROJECT_MARKER_VISUAL_POLICY.colors.coreSelected,
+          PROJECT_MARKER_VISUAL_POLICY.colors.core,
+        ],
+        "circle-stroke-color": PROJECT_MARKER_VISUAL_POLICY.colors.halo,
+        "circle-stroke-width": 1.5,
+      },
+    });
+
+    // Clean label layer
+    m.addLayer({
+      id: "dev-anchors-label",
+      type: "symbol",
+      source: "dev-anchors",
+      layout: {
+        "text-field": ["get", "label"],
+        "text-variable-anchor": ["top", "bottom", "right", "left"],
+        "text-radial-offset": 0.9,
+        "text-justify": "auto",
+        "text-size": 12,
+        "text-optional": true,
+      },
+      paint: {
+        "text-color": PROJECT_MARKER_VISUAL_POLICY.colors.labelText,
+        "text-halo-color": PROJECT_MARKER_VISUAL_POLICY.colors.labelHalo,
+        "text-halo-width": 1.5,
+        "text-opacity": 0.92,
+      },
+    });
+
+    // Pointer hover & click events on project layers
+    const targetLayers = ["dev-anchors-core", "dev-anchors-outer-ring", "dev-anchors-label"];
+    for (const layerId of targetLayers) {
+      m.on("mouseenter", layerId, () => {
+        m.getCanvas().style.cursor = "pointer";
+      });
+      m.on("mouseleave", layerId, () => {
+        m.getCanvas().style.cursor = "";
+      });
+      m.on("click", layerId, (e) => {
+        const feature = e.features?.[0];
+        if (feature && feature.properties?.selectionId) {
+          (window as unknown as Record<string, unknown>).__lastSelectionTrigger = "pointer";
+          selectionStore.set({ kind: "port", id: String(feature.properties.selectionId) });
+        }
+      });
+    }
+  }
+
+  function syncMapToSelection(selection: Selection): void {
+    if (!map || !map.getSource("dev-anchors")) return;
+
+    if (previousSelectedFeatureId) {
+      map.setFeatureState(
+        { source: "dev-anchors", id: previousSelectedFeatureId },
+        { selected: false },
+      );
+      previousSelectedFeatureId = null;
+    }
+
+    if (selection && selection.kind === "port") {
+      const anchor = DEVELOPMENT_ANCHORS.find((a) => a.selection.id === selection.id);
+      if (anchor) {
+        previousSelectedFeatureId = anchor.id;
+        map.setFeatureState(
+          { source: "dev-anchors", id: anchor.id },
+          { selected: true },
+        );
+
+        const isDesktop = window.innerWidth >= 768;
+        const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const padding = isDesktop
+          ? { right: 380, top: 40, bottom: 40, left: 40 }
+          : { bottom: 260, top: 40, left: 20, right: 20 };
+
+        if (isReducedMotion) {
+          map.jumpTo({ center: anchor.coordinates, padding });
+        } else {
+          map.easeTo({
+            center: anchor.coordinates,
+            padding,
+            duration: SELECTION_CAMERA.durationMs,
+          });
+        }
+      }
+    }
+
+    // Synchronize active state in locator menu
+    locatorItems.forEach((btn) => {
+      const isSelected = btn.dataset.selectionId === selection?.id;
+      btn.setAttribute("aria-current", isSelected ? "true" : "false");
+    });
+  }
 
   if (container instanceof HTMLElement) {
-    const map = new Map({
+    map = new Map({
       container,
       style: INITIAL_MAP_STYLE_URL,
       center: INITIAL_MAP_VIEW.center,
@@ -53,19 +266,84 @@ import "maplibre-gl/dist/maplibre-gl.css";
     );
 
     map.once("load", () => {
+      if (!map) return;
+      (window as unknown as Record<string, unknown>).__map = map;
       applyBasemapVisualPolicy(map);
+      ensureProjectLayers(map);
       container.dataset.mapReady = "true";
       if (status) {
         status.textContent =
-          "Modern basemap ready. Historical records and routes are intentionally not loaded yet.";
+          "Modern basemap ready. Select a place on the map or via Browse Places to inspect locator details.";
       }
+      syncMapToSelection(selectionStore.get());
+
+      map.once("idle", () => {
+        container.dataset.mapIdle = "true";
+      });
     });
 
     map.on("error", () => {
       if (container.dataset.mapReady !== "true" && status) {
         status.textContent =
-          "The modern basemap is temporarily unavailable. Historical data has not been substituted or invented.";
+          "The modern basemap is temporarily unavailable. Place locators remain browsable via Browse Places.";
       }
+    });
+
+    selectionStore.subscribe((selection) => {
+      syncMapToSelection(selection);
+    });
+  }
+
+  // Locator Browser Controls (Dropdown disclosure)
+  if (locatorToggle && locatorMenu) {
+    const toggleMenu = (open?: boolean) => {
+      const willOpen = open ?? locatorMenu.hidden;
+      locatorMenu.hidden = !willOpen;
+      locatorToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      if (willOpen) {
+        const firstItem = locatorItems[0];
+        firstItem?.focus();
+      }
+    };
+
+    locatorToggle.addEventListener("click", () => toggleMenu());
+
+    locatorToggle.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        toggleMenu(true);
+      }
+    });
+
+    locatorMenu.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        toggleMenu(false);
+        locatorToggle.focus();
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!locatorBrowser?.contains(e.target as Node)) {
+        if (!locatorMenu.hidden) {
+          toggleMenu(false);
+        }
+      }
+    });
+
+    locatorItems.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const selectionId = btn.dataset.selectionId;
+        if (selectionId) {
+          // Track input origin for focus management
+          const isKeyboard = (document.activeElement === btn);
+          (window as unknown as Record<string, unknown>).__lastSelectionTrigger = isKeyboard ? "keyboard" : "pointer";
+          (window as unknown as Record<string, unknown>).__lastKeyboardTrigger = btn;
+          selectionStore.set({ kind: "port", id: selectionId });
+          toggleMenu(false);
+        }
+      });
     });
   }
 </script>

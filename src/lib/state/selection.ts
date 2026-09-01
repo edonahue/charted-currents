@@ -46,3 +46,8 @@ export function createSelectionStore(initial: Selection = null): SelectionStore 
 }
 
 export const selectionStore = createSelectionStore();
+
+export function isSelected(store: SelectionStore, kind: string, id: string): boolean {
+  const current = store.get();
+  return current !== null && current.kind === kind && current.id === id;
+}

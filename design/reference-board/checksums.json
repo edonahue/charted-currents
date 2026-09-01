@@ -1,0 +1,33 @@
+{
+  "generated_from": "manifest.json",
+  "references": {
+    "moll_west_indies_1715": {
+      "local_file": "assets/moll-west-indies-1715.jpg",
+      "sha256": "04c5b6c0599cb2940c425c8139f3c09f7bd5c5cc96becae244e669d127cb7882",
+      "bytes": 496184,
+      "content_type": "image/jpeg",
+      "commons_file": "A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning (sic) what belongs to Spain, England, France, Holland, etc. also ye trade winds, and ye LOC gm71005442.jpg"
+    },
+    "delisle_antilles_1718": {
+      "local_file": "assets/delisle-antilles-1718.jpg",
+      "sha256": "f923faa2a9768eb6051cf7335b33290cd48aee78df6b7152f234a8c7e3d7084d",
+      "bytes": 520064,
+      "content_type": "image/jpeg",
+      "commons_file": "Carte des Antilles françoises et des isles voisines. Dressée sur les memoires manuscrits de Mr. Petit ingenieur du Roy, et sur quelques observations. LOC gm71005440.tif"
+    },
+    "le_rouge_port_royal_1755": {
+      "local_file": "assets/le-rouge-port-royal-1755.jpg",
+      "sha256": "1d56dbc560ec073a6238382a28611e2b56d55f3d5469c2bf6f891a0d9d9279b0",
+      "bytes": 610226,
+      "content_type": "image/jpeg",
+      "commons_file": "Port-Royal de Jamaique. LOC 73691840.jpg"
+    },
+    "browne_jamaica_port_royal_1755": {
+      "local_file": "assets/browne-jamaica-port-royal-1755.jpg",
+      "sha256": "04e3d9ea1211201ebacc57619785eb51895a53a1f371c5313bdce366279716f5",
+      "bytes": 376474,
+      "content_type": "image/jpeg",
+      "commons_file": "A new map of Jamaica; in which the several towns, forts, and settlements, are accurately laid down as well as ye situations & depts. of ye most noted harbours & anchoring places ... LOC 73691842.jpg"
+    }
+  }
+}

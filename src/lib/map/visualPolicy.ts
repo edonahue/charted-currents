@@ -49,14 +49,19 @@ export const BASEMAP_VISUAL_POLICY = {
  */
 export const PROJECT_MARKER_VISUAL_POLICY = {
   radiusPx: 4,
-  outerRingRadiusPx: 8,
-  strokeWidthPx: 1,
+  selectedRadiusPx: 5.5,
+  outerRingRadiusPx: 9,
+  selectedOuterRingRadiusPx: 13,
+  strokeWidthPx: 1.25,
   selectedStrokeWidthPx: 2,
   colors: {
     core: "#243f48",
+    coreSelected: "#6c3634",
     ring: "#92743d",
-    selected: "#6c3634",
+    ringSelected: "#92743d",
     halo: "#f8f3e9",
+    labelText: "#172126",
+    labelHalo: "#f8f3e9",
   },
 } as const;
 

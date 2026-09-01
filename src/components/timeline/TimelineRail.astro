@@ -1,7 +1,10 @@
 ---
 import { TIMELINE_PACKET1_INTERACTIVE, TIMELINE_RANGE } from "../../lib/time/config";
 
-const tickYears = [1650, 1670, 1690, 1710, 1730] as const;
+// Major labelled ticks every 20 years; minor ticks every 10 years
+const majorYears = [1650, 1670, 1690, 1710, 1730] as const;
+const allDecades = [1650, 1660, 1670, 1680, 1690, 1700, 1710, 1720, 1730] as const;
+const totalSpan = TIMELINE_RANGE.endYear - TIMELINE_RANGE.startYear;
 ---
 
 <section
@@ -18,14 +21,21 @@ const tickYears = [1650, 1670, 1690, 1710, 1730] as const;
   <div class="timeline-shell__rail" aria-label="1650 to 1730 period rail">
     <div class="timeline-shell__rule" aria-hidden="true"></div>
     <div class="timeline-shell__ticks" aria-hidden="true">
-      {tickYears.map((year, index) => (
-        <span class="timeline-shell__tick" style={`--tick-position: ${(index / (tickYears.length - 1)) * 100}%`}>
-          <span class="timeline-shell__tick-mark"></span>
-          <span class="timeline-shell__tick-label">{year}</span>
-        </span>
-      ))}
+      {allDecades.map((year) => {
+        const isMajor = (majorYears as readonly number[]).includes(year);
+        const position = ((year - TIMELINE_RANGE.startYear) / totalSpan) * 100;
+        return (
+          <span
+            class={`timeline-shell__tick ${isMajor ? "timeline-shell__tick--major" : "timeline-shell__tick--minor"}`}
+            style={`--tick-position: ${position}%`}
+          >
+            <span class="timeline-shell__tick-mark" style={isMajor ? "height: 0.75rem;" : "height: 0.4rem; opacity: 0.5;"}></span>
+            {isMajor && <span class="timeline-shell__tick-label">{year}</span>}
+          </span>
+        );
+      })}
     </div>
   </div>
 
-  <span class="timeline-shell__note">Historical filtering begins with evidence-backed temporal data.</span>
+  <span class="timeline-shell__note">1650–1730 period rail · Historical filtering begins with evidence-backed temporal data in Packet 2.</span>
 </section>

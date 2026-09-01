@@ -1,8 +1,197 @@
-<aside class="inspector-shell" aria-label="Entity inspector" data-component="entity-inspector">
-  <p class="panel-kicker">Inspector</p>
-  <h2>No historical entity selected</h2>
-  <p>
-    Packet 1 will connect map selection to this surface. The bootstrap intentionally contains no invented
-    vessel, voyage, person, or event record.
-  </p>
+---
+import { DEVELOPMENT_ANCHOR_ATTRIBUTION } from "../../lib/map/developmentAnchors";
+---
+
+<aside
+  id="entity-inspector"
+  class="inspector-shell"
+  aria-label="Entity inspector"
+  data-component="entity-inspector"
+  data-state="closed"
+  data-sheet-state="closed"
+  hidden
+>
+  <!-- Mobile bottom sheet handle affordance -->
+  <div class="inspector-sheet__handle-wrap">
+    <button
+      type="button"
+      class="inspector-sheet__handle"
+      aria-label="Toggle inspector height"
+      data-sheet-handle
+    >
+      <span class="inspector-sheet__handle-bar" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <header class="inspector-header">
+    <div class="inspector-header__kicker-wrap">
+      <p class="panel-kicker" data-inspector-kicker>Modern Locator</p>
+      <span class="inspector-status-indicator" aria-hidden="true"></span>
+    </div>
+    <button
+      type="button"
+      class="inspector-close"
+      aria-label="Close inspector"
+      title="Close inspector (Esc)"
+      data-inspector-close
+    >
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M1 1l12 12M13 1L1 13" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="inspector-content">
+    <div class="inspector-title-group">
+      <h2 id="inspector-heading" class="inspector-title" data-inspector-title tabindex="-1"></h2>
+      <p class="inspector-subtitle" data-inspector-subtitle></p>
+    </div>
+
+    <div class="inspector-body">
+      <section class="inspector-section" aria-label="Location metadata">
+        <p class="panel-kicker">Geographic Reference</p>
+        <dl class="inspector-meta">
+          <div class="inspector-meta__row">
+            <dt>Coordinates</dt>
+            <dd data-inspector-coords class="inspector-mono"></dd>
+          </div>
+          <div class="inspector-meta__row">
+            <dt>Locator Type</dt>
+            <dd>Modern populated-place anchor</dd>
+          </div>
+          <div class="inspector-meta__row">
+            <dt>Locator Source</dt>
+            <dd>
+              <a
+                href={DEVELOPMENT_ANCHOR_ATTRIBUTION.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-inspector-source-link
+                class="inspector-link"
+              >
+                GeoNames ({DEVELOPMENT_ANCHOR_ATTRIBUTION.license})
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="inspector-section" aria-label="Development note">
+        <p class="panel-kicker">Development Note</p>
+        <p class="inspector-note" data-inspector-note></p>
+      </section>
+
+      <section class="inspector-section inspector-disclaimer" aria-label="Historical prototype scope">
+        <p class="panel-kicker">Prototype Status</p>
+        <p>
+          This locator exercises Packet 1 map selection. Historical port boundaries, period coordinates, vessels,
+          voyages, and archival evidence records are not loaded in this shell and begin in Packet 2.
+        </p>
+      </section>
+    </div>
+  </div>
 </aside>
+
+<script>
+  import type { Selection } from "../../lib/domain/types";
+  import { DEVELOPMENT_ANCHORS } from "../../lib/map/developmentAnchors";
+  import { selectionStore } from "../../lib/state/selection";
+
+  const inspector = document.getElementById("entity-inspector");
+  const appShell = document.querySelector<HTMLElement>(".app-shell");
+  const closeButton = document.querySelector<HTMLButtonElement>("[data-inspector-close]");
+  const sheetHandle = document.querySelector<HTMLButtonElement>("[data-sheet-handle]");
+  const titleEl = document.querySelector<HTMLElement>("[data-inspector-title]");
+  const subtitleEl = document.querySelector<HTMLElement>("[data-inspector-subtitle]");
+  const coordsEl = document.querySelector<HTMLElement>("[data-inspector-coords]");
+  const noteEl = document.querySelector<HTMLElement>("[data-inspector-note]");
+  const sourceLink = document.querySelector<HTMLAnchorElement>("[data-inspector-source-link]");
+
+  function formatCoordinates(lng: number, lat: number): string {
+    const latDir = lat >= 0 ? "N" : "S";
+    const lngDir = lng >= 0 ? "E" : "W";
+    return `${Math.abs(lat).toFixed(5)}° ${latDir}, ${Math.abs(lng).toFixed(5)}° ${lngDir}`;
+  }
+
+  function closeInspector(): void {
+    selectionStore.clear();
+
+    // Restore focus if triggered by keyboard
+    const win = window as unknown as Record<string, unknown>;
+    if (win.__lastKeyboardTrigger instanceof HTMLElement && document.contains(win.__lastKeyboardTrigger)) {
+      win.__lastKeyboardTrigger.focus();
+    } else {
+      const mapCanvas = document.getElementById("charted-currents-map");
+      mapCanvas?.focus();
+    }
+    win.__lastSelectionTrigger = undefined;
+    win.__lastKeyboardTrigger = undefined;
+  }
+
+  function updateInspector(selection: Selection): void {
+    if (!inspector) return;
+
+    if (!selection || selection.kind !== "port") {
+      inspector.hidden = true;
+      inspector.setAttribute("data-state", "closed");
+      inspector.setAttribute("data-sheet-state", "closed");
+      appShell?.setAttribute("data-inspector-open", "false");
+      return;
+    }
+
+    const anchor = DEVELOPMENT_ANCHORS.find((a) => a.selection.id === selection.id);
+    if (!anchor) {
+      inspector.hidden = true;
+      inspector.setAttribute("data-state", "closed");
+      inspector.setAttribute("data-sheet-state", "closed");
+      appShell?.setAttribute("data-inspector-open", "false");
+      return;
+    }
+
+    // Populate locator content
+    if (titleEl) titleEl.textContent = anchor.label;
+    if (subtitleEl) subtitleEl.textContent = `${anchor.region} · Modern Geographic Locator`;
+    if (coordsEl) coordsEl.textContent = formatCoordinates(anchor.coordinates[0], anchor.coordinates[1]);
+    if (noteEl) noteEl.textContent = anchor.note;
+    if (sourceLink) sourceLink.href = anchor.locatorSource.url;
+
+    // Show inspector and set active state
+    inspector.hidden = false;
+    inspector.setAttribute("data-state", "open");
+    inspector.setAttribute("data-sheet-state", "partial");
+    appShell?.setAttribute("data-inspector-open", "true");
+
+    // Input-aware focus transfer
+    const win = window as unknown as Record<string, unknown>;
+    if (win.__lastSelectionTrigger === "keyboard" && titleEl) {
+      // Small timeout to allow transition/DOM update
+      requestAnimationFrame(() => {
+        titleEl.focus();
+      });
+    }
+  }
+
+  closeButton?.addEventListener("click", () => {
+    closeInspector();
+  });
+
+  // Handle escape key
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && selectionStore.get() !== null) {
+      e.preventDefault();
+      closeInspector();
+    }
+  });
+
+  // Mobile bottom sheet state toggle
+  sheetHandle?.addEventListener("click", () => {
+    if (!inspector) return;
+    const currentState = inspector.getAttribute("data-sheet-state");
+    const nextState = currentState === "expanded" ? "partial" : "expanded";
+    inspector.setAttribute("data-sheet-state", nextState);
+  });
+
+  selectionStore.subscribe((selection) => {
+    updateInspector(selection);
+  });
+</script>
