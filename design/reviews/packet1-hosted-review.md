@@ -2,7 +2,7 @@
 
 **Date**: 2026-09-01
 **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
-**Current Repository HEAD**: `82de458`
+**Repository HEAD at time of hosted verification**: `82de458`
 **Application Implementation Revision**: `ce44c66`
 **Deployment Platform**: Cloudflare Pages (Git integration from branch `main`, static `dist/` output)
 
@@ -48,7 +48,7 @@ A clean representative screenshot captured directly from the live Cloudflare Pag
 ## 4. Verification Boundaries & Notes
 
 - **Basemap Glyph Fallback**: MapLibre requested a fallback font glyph from OpenFreeMap's public glyph endpoint (`404` for missing glyph range), which MapLibre handled silently without console errors or visual corruption.
-- **Modern Locators**: The four visible markers (Port Royal, Nassau, St. Ann's Bay, Santiago de Cuba) are modern developmental locators with explicit GeoNames CC BY 4.0 attribution, not historical geometries.
+- **Modern Locators**: The four visible markers (Port Royal, Havana, Curaçao / Willemstad, Cartagena de Indias) are modern developmental locators with explicit GeoNames CC BY 4.0 attribution, not historical geometries.
 - **Corpus Posture**: Historical surfaces intentionally display honest prototype empty states. No synthetic voyages or invented records are published.
 
 ---
