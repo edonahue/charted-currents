@@ -104,11 +104,17 @@ class TestHistoricalInvariants(unittest.TestCase):
             self.assertEqual(len(coords), 2, "Endpoints-only line must contain exactly 2 coordinate points")
 
     def test_routes_reference_relationship_assertions(self):
-        """Every route feature must link to supporting relationship assertion IDs."""
+        """Every display edge and archival route must link to supporting relationship assertion IDs."""
         assertion_ids = {ast["id"] for ast in self.sources["assertions"]}
         for feature in self.routes_geojson["features"]:
-            ast_ids = feature["properties"].get("source_assertion_ids", [])
-            self.assertTrue(len(ast_ids) > 0, f"Route {feature['id']} missing source_assertion_ids")
+            ast_ids = feature["properties"].get("constituent_assertion_ids", [])
+            self.assertTrue(len(ast_ids) > 0, f"Display edge {feature['id']} missing constituent_assertion_ids")
+            for ast_id in ast_ids:
+                self.assertIn(ast_id, assertion_ids)
+
+        for route in self.entities.get("routes", []):
+            ast_ids = route.get("source_assertion_ids", [])
+            self.assertTrue(len(ast_ids) > 0, f"Archival route {route['id']} missing source_assertion_ids")
             for ast_id in ast_ids:
                 self.assertIn(ast_id, assertion_ids)
 
@@ -171,11 +177,13 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertIn("Library of Congress", vis["holding_institution"])
 
     def test_fifteen_vessels_in_public_corpus(self):
-        """Packet 3 corpus must contain exactly 15 verified vessels."""
+        """Packet 3 corpus must contain exactly 15 verified vessels and 15 archival routes across 13 display edges."""
         ships = self.entities["ships"]
         self.assertEqual(len(ships), 15, f"Expected 15 vessels, found {len(ships)}")
-        routes = self.routes_geojson["features"]
-        self.assertEqual(len(routes), 15, f"Expected 15 routes, found {len(routes)}")
+        archival_routes = self.entities.get("routes", [])
+        self.assertEqual(len(archival_routes), 15, f"Expected 15 archival routes, found {len(archival_routes)}")
+        display_edges = self.routes_geojson["features"]
+        self.assertEqual(len(display_edges), 13, f"Expected 13 display edges, found {len(display_edges)}")
 
     def test_vessel_events_bidirectional_link(self):
         """Capture events must declare valid vessel_id linking to ships[]."""
@@ -199,31 +207,31 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(assertions_by_id["ast_crew_5036"]["residence"], "Dexlford")
 
     def test_routes_have_machine_readable_temporal_metadata(self):
-        """Every route feature must include integer associated_record_year and temporal_basis."""
+        """Every display edge feature must include integer associated_record_year and temporal_extent."""
         for feature in self.routes_geojson["features"]:
             props = feature["properties"]
             self.assertIn("associated_record_year", props)
             self.assertIsInstance(props["associated_record_year"], int)
             self.assertTrue(1700 <= props["associated_record_year"] <= 1715)
-            self.assertEqual(props["temporal_basis"], "capture_record")
+            self.assertEqual(props["temporal_extent"]["temporal_basis"], "capture_record")
             self.assertIn("record_count", props)
             self.assertIsInstance(props["record_count"], int)
             self.assertTrue(props["record_count"] >= 1)
 
     def test_route_aggregation_metadata(self):
-        """Jamaica -> London and Hispaniola -> La Rochelle routes must declare aggregate count of 2."""
-        routes_by_pair = {}
-        for feature in self.routes_geojson["features"]:
-            props = feature["properties"]
-            pair = f"{props['origin_place_id']}->{props['destination_place_id']}"
-            if pair not in routes_by_pair:
-                routes_by_pair[pair] = []
-            routes_by_pair[pair].append(props)
+        """Jamaica -> London and Hispaniola -> La Rochelle display edges must declare aggregate count of 2."""
+        edges_by_id = {f["id"]: f["properties"] for f in self.routes_geojson["features"]}
+        self.assertIn("display_edge_place_jamaica_place_london", edges_by_id)
+        jl = edges_by_id["display_edge_place_jamaica_place_london"]
+        self.assertEqual(jl["record_count"], 2)
+        self.assertEqual(len(jl["constituent_vessel_ids"]), 2)
+        self.assertEqual(len(jl["constituent_route_ids"]), 2)
 
-        self.assertEqual(len(routes_by_pair["place_jamaica->place_london"]), 2)
-        for r in routes_by_pair["place_jamaica->place_london"]:
-            self.assertEqual(r["record_count"], 2)
-            self.assertEqual(len(r["constituent_vessel_ids"]), 2)
+        self.assertIn("display_edge_place_st_domingo_place_rochelle", edges_by_id)
+        sr = edges_by_id["display_edge_place_st_domingo_place_rochelle"]
+        self.assertEqual(sr["record_count"], 2)
+        self.assertEqual(len(sr["constituent_vessel_ids"]), 2)
+        self.assertEqual(len(sr["constituent_route_ids"]), 2)
 
 if __name__ == "__main__":
     unittest.main()

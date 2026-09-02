@@ -1215,7 +1215,7 @@ places:
     geographic_precision: "populated_place"
     coordinates: [-76.84062, 17.93738]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart ('Port Royall') and 1692 earthquake correspondence."
+    notes: "Harbor settlement recorded on the 1684 Bochart & Knollis chart ('Port Royall') and in 1692 earthquake correspondence."
     source_assertion_ids: ["ast_loc_map_port_royal", "ast_eq_location", "ast_eq_letter_tl"]
 
   - id: "place_london"
@@ -1245,7 +1245,7 @@ places:
     geographic_precision: "port_town"
     coordinates: [-3.5786, 50.3517]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Devon port roadstead recorded as the capture location of Richard & Sarah (May 1705)."
+    notes: "Devon port recorded as the capture location of Richard & Sarah (May 1705)."
     source_assertion_ids: ["ast_2052_capture"]
 
   - id: "place_plymouth"
@@ -1255,7 +1255,7 @@ places:
     geographic_precision: "port_city"
     coordinates: [-4.1427, 50.3755]
     geometry_provenance: "modern_navigation_reference_coordinate"
-    notes: "Devon port roadstead recorded as the capture and adjudication location across 12 prize records in the corpus."
+    notes: "Devon port recorded as capture/arrival location across 12 prize records in the corpus."
     source_assertion_ids: ["ast_2228_capture", "ast_2154_capture", "ast_2155_capture", "ast_2144_capture", "ast_2106_capture", "ast_1511_capture", "ast_1245_capture", "ast_1993_capture", "ast_1516_capture", "ast_1278_capture", "ast_1582_capture", "ast_1982_capture"]
 
   - id: "place_barbados"

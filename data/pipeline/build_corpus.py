@@ -77,6 +77,9 @@ def main():
         ]
     }
 
+    # Place names lookup
+    place_names = {p["id"]: p.get("canonical_name", p["id"]) for p in places}
+
     # Map ships to capture dates for machine-readable route temporal metadata
     ship_to_capture_date = {}
     for ship in ships:
@@ -87,16 +90,8 @@ def main():
                     ship_to_capture_date[ship["id"]] = occ.get("recorded_capture_date", "")
                     break
 
-    # Group routes by directional endpoint pair for aggregation
-    pair_groups = {}
-    for r in routes:
-        pair_key = f"{r['origin_place_id']}->{r['destination_place_id']}"
-        if pair_key not in pair_groups:
-            pair_groups[pair_key] = []
-        pair_groups[pair_key].append(r)
-
-    # 2. routes.geojson
-    route_features = []
+    # Build individual archival route records
+    archival_routes = []
     for r in routes:
         cap_date = ship_to_capture_date.get(r["vessel_id"], "")
         year = None
@@ -108,49 +103,94 @@ def main():
             if len(parts) > 1 and parts[1].isdigit():
                 month = int(parts[1])
 
-        pair_key = f"{r['origin_place_id']}->{r['destination_place_id']}"
-        group = pair_groups[pair_key]
-        constituent_vessels = [it["vessel_id"] for it in group]
-        constituent_routes = [it["id"] for it in group]
-        rec_count = len(group)
-        route_group_id = f"route_group_{r['origin_place_id']}_{r['destination_place_id']}"
-
-        route_features.append({
-            "type": "Feature",
+        archival_routes.append({
             "id": r["id"],
+            "vessel_id": r["vessel_id"],
+            "origin_place_id": r["origin_place_id"],
+            "destination_place_id": r["destination_place_id"],
+            "date_display": r.get("date_display", ""),
+            "associated_record_year": year,
+            "associated_record_month": month,
+            "temporal_basis": "capture_record",
+            "date_precision": "year_month" if month else "year",
+            "geometry_kind": r.get("geometry_kind", "endpoints_only"),
+            "evidence_state": r.get("evidence_state", "documented"),
+            "is_track_observed": False,
+            "geometry_provenance": r.get("geometry_provenance", "project visualization between resolved endpoint references"),
+            "source_assertion_ids": r.get("source_assertion_ids", []),
+            "notes": r.get("notes", "")
+        })
+
+    # Group routes by directional endpoint pair for distinct display edges
+    pair_groups = {}
+    for r in archival_routes:
+        pair_key = (r["origin_place_id"], r["destination_place_id"])
+        if pair_key not in pair_groups:
+            pair_groups[pair_key] = []
+        pair_groups[pair_key].append(r)
+
+    # Compile deterministic display edge features (one per directional pair)
+    display_edge_features = []
+    for (orig_id, dest_id), group in sorted(pair_groups.items(), key=lambda x: (x[0][0], x[0][1])):
+        constituent_vessels = [r["vessel_id"] for r in group]
+        constituent_routes = [r["id"] for r in group]
+        all_ast_ids = []
+        for r in group:
+            for aid in r.get("source_assertion_ids", []):
+                if aid not in all_ast_ids:
+                    all_ast_ids.append(aid)
+
+        years = sorted([r["associated_record_year"] for r in group if r.get("associated_record_year") is not None])
+        primary_year = years[0] if years else 1700
+        min_year = min(years) if years else None
+        max_year = max(years) if years else None
+
+        orig_name = place_names.get(orig_id, orig_id)
+        dest_name = place_names.get(dest_id, dest_id)
+        edge_id = f"display_edge_{orig_id}_{dest_id}"
+        route_group_id = f"route_group_{orig_id}_{dest_id}"
+        rec_count = len(group)
+
+        display_edge_features.append({
+            "type": "Feature",
+            "id": edge_id,
             "geometry": {
                 "type": "LineString",
                 "coordinates": [
-                    place_coords[r["origin_place_id"]],
-                    place_coords[r["destination_place_id"]]
+                    place_coords[orig_id],
+                    place_coords[dest_id]
                 ]
             },
             "properties": {
-                "id": r["id"],
-                "vessel_id": r["vessel_id"],
-                "origin_place_id": r["origin_place_id"],
-                "destination_place_id": r["destination_place_id"],
-                "date_display": r.get("date_display", ""),
-                "associated_record_year": year,
-                "associated_record_month": month,
-                "temporal_basis": "capture_record",
-                "date_precision": "year_month" if month else "year",
+                "id": edge_id,
+                "origin_place_id": orig_id,
+                "destination_place_id": dest_id,
+                "origin_name": orig_name,
+                "destination_name": dest_name,
                 "route_group_id": route_group_id,
                 "constituent_vessel_ids": constituent_vessels,
                 "constituent_route_ids": constituent_routes,
+                "constituent_assertion_ids": all_ast_ids,
                 "record_count": rec_count,
-                "geometry_kind": r.get("geometry_kind", "endpoints_only"),
-                "evidence_state": r.get("evidence_state", "documented"),
+                "member_years": years,
+                "associated_record_year": primary_year,
+                "temporal_extent": {
+                    "start_year": min_year,
+                    "end_year": max_year,
+                    "temporal_basis": "capture_record"
+                },
+                "geometry_kind": "endpoints_only",
+                "evidence_state": "documented",
                 "is_track_observed": False,
-                "geometry_provenance": r.get("geometry_provenance", "project visualization between resolved endpoint references"),
-                "source_assertion_ids": r.get("source_assertion_ids", []),
-                "notes": r.get("notes", "")
+                "geometry_provenance": "project visualization between resolved endpoint references",
+                "notes": f"Aggregated display edge for {rec_count} documented transatlantic vessel voyage{'s' if rec_count > 1 else ''} between {orig_name} and {dest_name}."
             }
         })
 
     routes_geojson = {
         "type": "FeatureCollection",
-        "features": route_features
+        "features": display_edge_features,
+        "archival_routes": archival_routes
     }
 
     # 3. entities.json
@@ -160,6 +200,7 @@ def main():
         "ships": ships,
         "entity_resolution_edges": entity_resolution_edges,
         "places": places,
+        "routes": archival_routes,
         "visuals": visuals
     }
 
@@ -191,7 +232,8 @@ def main():
             "ships": len(ships),
             "entity_resolution_edges": len(entity_resolution_edges),
             "places": len(places),
-            "routes": len(routes),
+            "routes": len(archival_routes),
+            "display_edges": len(display_edge_features),
             "events": len(events),
             "visuals": len(visuals)
         }

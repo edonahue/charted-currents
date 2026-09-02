@@ -481,14 +481,15 @@ a {
 /* Timeline */
 .timeline-shell {
   grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: auto minmax(14rem, 1fr) minmax(14rem, auto);
-  align-items: center;
-  gap: var(--cc-space-5);
-  min-height: var(--cc-timeline-height);
-  padding: 0.65rem var(--cc-space-6) 0.75rem;
   border-top: var(--cc-rule-thin) solid var(--cc-line-strong);
   background: var(--cc-paper-raised);
+  transition: padding-right var(--cc-duration-standard) var(--cc-ease-standard);
+}
+
+@media (min-width: 768px) {
+  .app-shell[data-inspector-open="true"] .timeline-shell {
+    padding-right: calc(var(--cc-space-6) + 400px);
+  }
 }
 
 .timeline-shell__heading {

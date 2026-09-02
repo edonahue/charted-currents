@@ -401,26 +401,36 @@ const PLACES = (entitiesData.places || []).map((p) => ({
 
       map.setPaintProperty("historical-routes-line", "line-opacity", [
         "case",
-        isConnectedToPort,
+        ["all", isConnectedToPort, inTimeCondition],
         0.95,
+        isConnectedToPort,
+        0.16, // Connected but out-of-period remains visibly dimmed
         inTimeCondition,
         0.12,
         0.02,
       ]);
       map.setPaintProperty("historical-routes-line", "line-width", [
         "case",
-        isConnectedToPort,
+        ["all", isConnectedToPort, inTimeCondition],
         2.4,
+        isConnectedToPort,
+        1.6,
         1.4,
       ]);
       map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
     } else if (selection && selection.kind === "ship") {
-      const isSelectedShip: any = ["==", ["get", "vessel_id"], selection.id];
+      const isSelectedShip: any = [
+        "in",
+        selection.id,
+        ["get", "constituent_vessel_ids"],
+      ];
 
       map.setPaintProperty("historical-routes-line", "line-opacity", [
         "case",
-        isSelectedShip,
+        ["all", isSelectedShip, inTimeCondition],
         1.0,
+        isSelectedShip,
+        0.25, // Selected ship but out-of-period
         inTimeCondition,
         0.12,
         0.02,
@@ -446,8 +456,10 @@ const PLACES = (entitiesData.places || []).map((p) => ({
 
       map.setPaintProperty("historical-routes-line", "line-opacity", [
         "case",
-        isSelectedGroup,
+        ["all", isSelectedGroup, inTimeCondition],
         1.0,
+        isSelectedGroup,
+        0.25,
         inTimeCondition,
         0.12,
         0.02,
@@ -476,7 +488,7 @@ const PLACES = (entitiesData.places || []).map((p) => ({
         "case",
         inTimeCondition,
         1.8,
-        1.0,
+        1.2,
       ]);
       map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
     }
@@ -520,7 +532,7 @@ const PLACES = (entitiesData.places || []).map((p) => ({
         }
       }
     } else if (selection && selection.kind === "ship") {
-      const routeFeature = routesData?.features.find((f) => f.properties.vessel_id === selection.id);
+      const routeFeature = routesData?.features.find((f) => f.properties.constituent_vessel_ids.includes(selection.id));
       if (routeFeature && routeFeature.geometry.coordinates.length >= 2) {
         const bounds = new LngLatBounds();
         for (const coord of routeFeature.geometry.coordinates) {

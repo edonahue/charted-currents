@@ -227,11 +227,14 @@ async function runReviewSuite() {
       "Historical map initialized and reached idle state within timeout",
     );
 
+    const packetArg = process.argv.find((a) => a.startsWith("--packet="));
+    const packetPrefix = packetArg ? packetArg.split("=")[1] + "-" : "packet3-";
+
     const viewports = [
-      { name: "packet2-desktop-1440x900.png", width: 1440, height: 900 },
-      { name: "packet2-ultrawide-3440x1440.png", width: 3440, height: 1440 },
-      { name: "packet2-phone-390x844.png", width: 390, height: 844 },
-      { name: "packet2-phone-430x932.png", width: 430, height: 932 },
+      { name: `${packetPrefix}desktop-1440x900.png`, width: 1440, height: 900 },
+      { name: `${packetPrefix}ultrawide-3440x1440.png`, width: 3440, height: 1440 },
+      { name: `${packetPrefix}phone-390x844.png`, width: 390, height: 844 },
+      { name: `${packetPrefix}phone-430x932.png`, width: 430, height: 932 },
     ];
 
     fs.mkdirSync("design/reviews", { recursive: true });
@@ -280,11 +283,22 @@ async function runReviewSuite() {
     const selectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
     assert(Boolean(selectedScreenshot?.data), "Screenshot capture returned valid image data for desktop selected state");
     if (selectedScreenshot?.data) {
-      const selectedOutPath = path.resolve("design/reviews/packet2-desktop-selected-1440x900.png");
+      const selectedOutPath = path.resolve(`design/reviews/${packetPrefix}desktop-selected-1440x900.png`);
       fs.writeFileSync(selectedOutPath, Buffer.from(selectedScreenshot.data, "base64"));
       const size = fs.statSync(selectedOutPath).size;
-      console.log(`[SAVED] packet2-desktop-selected-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot packet2-desktop-selected-1440x900.png generated with valid raster size (${size} bytes)`);
+      console.log(`[SAVED] ${packetPrefix}desktop-selected-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}desktop-selected-1440x900.png generated with valid raster size (${size} bytes)`);
+    }
+
+    // Capture inspector-open timeline state (verifying zero overlap with Period Focus)
+    console.log("[CAPTURE] inspector-open timeline state (1440x900)...");
+    const inspectorOpenScreenshot = await send("Page.captureScreenshot", { format: "png" });
+    if (inspectorOpenScreenshot?.data) {
+      const inspectorOpenOutPath = path.resolve(`design/reviews/${packetPrefix}inspector-open-timeline-1440x900.png`);
+      fs.writeFileSync(inspectorOpenOutPath, Buffer.from(inspectorOpenScreenshot.data, "base64"));
+      const size = fs.statSync(inspectorOpenOutPath).size;
+      console.log(`[SAVED] ${packetPrefix}inspector-open-timeline-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}inspector-open-timeline-1440x900.png generated with valid raster size (${size} bytes)`);
     }
 
     // Active Source Drawer capture on desktop (1440x900)
@@ -300,11 +314,11 @@ async function runReviewSuite() {
     const drawerScreenshot = await send("Page.captureScreenshot", { format: "png" });
     assert(Boolean(drawerScreenshot?.data), "Screenshot capture returned valid image data for source drawer state");
     if (drawerScreenshot?.data) {
-      const drawerOutPath = path.resolve("design/reviews/packet2-source-drawer-1440x900.png");
+      const drawerOutPath = path.resolve(`design/reviews/${packetPrefix}source-drawer-1440x900.png`);
       fs.writeFileSync(drawerOutPath, Buffer.from(drawerScreenshot.data, "base64"));
       const size = fs.statSync(drawerOutPath).size;
-      console.log(`[SAVED] packet2-source-drawer-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot packet2-source-drawer-1440x900.png generated with valid raster size (${size} bytes)`);
+      console.log(`[SAVED] ${packetPrefix}source-drawer-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}source-drawer-1440x900.png generated with valid raster size (${size} bytes)`);
     }
 
     // Close source drawer
@@ -329,11 +343,11 @@ async function runReviewSuite() {
     const mobileSelectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
     assert(Boolean(mobileSelectedScreenshot?.data), "Screenshot capture returned valid image data for mobile selected state");
     if (mobileSelectedScreenshot?.data) {
-      const mobileSelectedOutPath = path.resolve("design/reviews/packet2-phone-selected-390x844.png");
+      const mobileSelectedOutPath = path.resolve(`design/reviews/${packetPrefix}phone-selected-390x844.png`);
       fs.writeFileSync(mobileSelectedOutPath, Buffer.from(mobileSelectedScreenshot.data, "base64"));
       const size = fs.statSync(mobileSelectedOutPath).size;
-      console.log(`[SAVED] packet2-phone-selected-390x844.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot packet2-phone-selected-390x844.png generated with valid raster size (${size} bytes)`);
+      console.log(`[SAVED] ${packetPrefix}phone-selected-390x844.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}phone-selected-390x844.png generated with valid raster size (${size} bytes)`);
     }
 
     // Reset viewport to desktop for behavioral tests
@@ -343,6 +357,42 @@ async function runReviewSuite() {
       deviceScaleFactor: 1,
       mobile: false,
     });
+
+    // Capture temporal precedence state (1684-1695 filter + Havana selected)
+    console.log("[CAPTURE] temporal precedence state (1684-1695 filter + Havana selected)...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const filter1684 = document.querySelector('[data-time-filter="1684-1695"]');
+        filter1684?.click();
+        const toggle = document.querySelector('[data-locator-toggle]');
+        if (!document.querySelector('.locator-drawer[data-state="open"]')) {
+          toggle?.click();
+        }
+        const havanaBtn = document.querySelector('[data-place-id="place_havana"]');
+        havanaBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 800));
+
+    const tempPrecedenceScreenshot = await send("Page.captureScreenshot", { format: "png" });
+    if (tempPrecedenceScreenshot?.data) {
+      const tempPrecedenceOutPath = path.resolve(`design/reviews/${packetPrefix}temporal-precedence-1440x900.png`);
+      fs.writeFileSync(tempPrecedenceOutPath, Buffer.from(tempPrecedenceScreenshot.data, "base64"));
+      const size = fs.statSync(tempPrecedenceOutPath).size;
+      console.log(`[SAVED] ${packetPrefix}temporal-precedence-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}temporal-precedence-1440x900.png generated with valid raster size (${size} bytes)`);
+    }
+
+    // Reset filter to All and close locator drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const filterAll = document.querySelector('[data-time-filter="all"]');
+        filterAll?.click();
+        const closeBtn = document.querySelector('[data-inspector-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
 
     // ==========================================
     // DETERMINISTIC BEHAVIORAL ASSERTION SUITE
@@ -361,8 +411,29 @@ async function runReviewSuite() {
     assert(attributionCheck?.result?.value?.hasMapLibre, "MapLibre / OpenStreetMap attribution control present in DOM");
     assert(attributionCheck?.result?.value?.hasWHG, "WHG authority attribution link present in DOM");
 
-    // 2. Historical Vessel Selection & Construction Display (No ~1685)
-    console.log("Testing vessel selection & construction display...");
+    // 2. Timeline Precision & Sub-Lane Stacking
+    console.log("Testing timeline fractional precision & sub-lane stacking...");
+    const timelineCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const markers = Array.from(document.querySelectorAll('[data-timeline-event]'));
+        const hasFractionalPositions = markers.some(m => {
+          const style = m.getAttribute('style') || '';
+          const match = style.match(/left:\\s*([0-9.]+)%/);
+          if (!match) return false;
+          const num = parseFloat(match[1]);
+          return (num % 1) !== 0; // has decimal fractional part
+        });
+        const hasStackClasses = markers.some(m => m.className.includes('timeline-event-marker--stack-'));
+        return { markerCount: markers.length, hasFractionalPositions, hasStackClasses };
+      })()`,
+      returnByValue: true,
+    });
+    assert(timelineCheck?.result?.value?.markerCount === 16, "Timeline contains all 16 historical event markers");
+    assert(timelineCheck?.result?.value?.hasFractionalPositions, "Timeline markers positioned using precise fractional date calculations");
+    assert(timelineCheck?.result?.value?.hasStackClasses, "Timeline markers staggered in vertical sub-lanes to prevent overlapping");
+
+    // 3. Inspector-Open Timeline Layout Non-Occlusion
+    console.log("Testing inspector-open timeline layout clearance...");
     await send("Runtime.evaluate", {
       expression: `(() => {
         const marker = document.querySelector('[data-selection-id="event_capture_richard_and_sarah_1705"]');
@@ -371,11 +442,30 @@ async function runReviewSuite() {
     });
     await new Promise((r) => setTimeout(r, 400));
 
+    const inspectorOpenTimelineCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const appShell = document.querySelector('.app-shell');
+        const isInspectorOpen = appShell?.getAttribute('data-inspector-open') === 'true';
+        const timelineShell = document.querySelector('.timeline-shell');
+        const filterBtns = Array.from(document.querySelectorAll('.timeline-filter-btn'));
+        const allFiltersVisible = filterBtns.every(b => {
+          const rect = b.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0 && rect.right < (window.innerWidth - 360);
+        });
+        return { isInspectorOpen, allFiltersVisible };
+      })()`,
+      returnByValue: true,
+    });
+    assert(inspectorOpenTimelineCheck?.result?.value?.isInspectorOpen, "Selecting event sets data-inspector-open='true'");
+    assert(inspectorOpenTimelineCheck?.result?.value?.allFiltersVisible, "All Period Focus controls remain fully visible and non-occluded when inspector is open on desktop");
+
+    // 4. Historical Vessel Selection & Construction Display (No ~1685)
+    console.log("Testing vessel selection & construction display...");
     await send("Runtime.evaluate", {
       expression: `(() => {
-        const buttons = Array.from(document.querySelectorAll('.inspector-conn-btn'));
-        const vesselBtn = buttons.find(b => b.textContent?.includes('Richard & Sarah'));
-        vesselBtn?.click();
+        const rows = Array.from(document.querySelectorAll('.inspector-rel-row'));
+        const vesselRow = rows.find(r => r.textContent?.includes('Richard & Sarah'));
+        vesselRow?.click();
       })()`,
     });
     await new Promise((r) => setTimeout(r, 400));
@@ -597,7 +687,7 @@ async function runReviewSuite() {
         const isOpen = inspector?.getAttribute('data-state') === 'open';
         const isHeadingFocused = document.activeElement?.id === 'inspector-heading';
         const title = document.querySelector('[data-inspector-title]')?.textContent;
-        const hasVesselConn = Boolean(document.querySelector('[data-event-connections-list] .inspector-conn-btn'));
+        const hasVesselConn = Boolean(document.querySelector('[data-event-connections-list] .inspector-rel-row'));
 
         return { isOpen, isHeadingFocused, title, hasVesselConn };
       })()`,
@@ -780,16 +870,71 @@ async function runReviewSuite() {
     assert(filter1702Check?.result?.value?.activeBtn, "1702–1712 filter button marked active");
     assert(filter1702Check?.result?.value?.markerActive, "1702 prize capture marker active during 1702–1712 filter");
 
+    // 10. Test Temporal Selection Precedence (1684-1695 filter + Havana -> St Augustine 1712 connection)
+    console.log("Testing temporal selection precedence under period filter...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        // Apply 1684-1695 filter
+        const filterBtn = document.querySelector('[data-time-filter="1684-1695"]');
+        filterBtn?.click();
+        // Select Havana
+        const toggle = document.querySelector('[data-locator-toggle]');
+        if (!document.querySelector('.locator-drawer[data-state="open"]')) {
+          toggle?.click();
+        }
+        const havanaBtn = document.querySelector('[data-place-id="place_havana"]');
+        havanaBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const temporalPrecedenceCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const inspector = document.getElementById('entity-inspector');
+        const isOpen = inspector?.getAttribute('data-state') === 'open';
+        const rows = Array.from(document.querySelectorAll('.inspector-rel-row'));
+        const hasRelTypes = rows.every(r => Boolean(r.querySelector('.inspector-rel-type')));
+        const hasRelRoles = rows.every(r => Boolean(r.querySelector('.inspector-rel-role')));
+        const hasRelLabels = rows.every(r => Boolean(r.querySelector('.inspector-rel-label')));
+        
+        // Select the connected vessel (St John Baptiste, captured 1712)
+        const stJohnRow = rows.find(r => r.textContent?.includes('St John Baptiste'));
+        stJohnRow?.click();
+
+        return { isOpen, hasRelTypes, hasRelRoles, hasRelLabels };
+      })()`,
+      returnByValue: true,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    const outOfPeriodNoticeCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const notice = document.querySelector('[data-inspector-period-notice]');
+        const isNoticeVisible = notice && !notice.hidden && getComputedStyle(notice).display !== 'none';
+        const noticeText = notice?.textContent || '';
+        return { isNoticeVisible, noticeText };
+      })()`,
+      returnByValue: true,
+    });
+
+    assert(temporalPrecedenceCheck?.result?.value?.isOpen, "Havana selected and inspector open");
+    assert(temporalPrecedenceCheck?.result?.value?.hasRelTypes, "Relationship rows contain semantic uppercase TYPE badges");
+    assert(temporalPrecedenceCheck?.result?.value?.hasRelRoles, "Relationship rows contain editorial role descriptions");
+    assert(temporalPrecedenceCheck?.result?.value?.hasRelLabels, "Relationship rows contain clear entity labels");
+    assert(outOfPeriodNoticeCheck?.result?.value?.isNoticeVisible, "Inspecting 1712 vessel during 1684–1695 filter displays 'Outside current period focus' banner");
+
     // Reset to All
     await send("Runtime.evaluate", {
       expression: `(() => {
         const filterBtn = document.querySelector('[data-time-filter="all"]');
         filterBtn?.click();
+        const closeBtn = document.querySelector('[data-inspector-close]');
+        closeBtn?.click();
       })()`,
     });
     await new Promise((r) => setTimeout(r, 300));
 
-    // 10. Runtime Exceptions check
+    // 11. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

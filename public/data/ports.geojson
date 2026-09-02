@@ -48,7 +48,7 @@
           "ast_eq_location",
           "ast_eq_letter_tl"
         ],
-        "notes": "Harbor spit settlement. Sourced from 1684 Bochart & Knollis chart ('Port Royall') and 1692 earthquake correspondence."
+        "notes": "Harbor settlement recorded on the 1684 Bochart & Knollis chart ('Port Royall') and in 1692 earthquake correspondence."
       }
     },
     {
@@ -123,7 +123,7 @@
         "source_assertion_ids": [
           "ast_2052_capture"
         ],
-        "notes": "Devon port roadstead recorded as the capture location of Richard & Sarah (May 1705)."
+        "notes": "Devon port recorded as the capture location of Richard & Sarah (May 1705)."
       }
     },
     {
@@ -157,7 +157,7 @@
           "ast_1582_capture",
           "ast_1982_capture"
         ],
-        "notes": "Devon port roadstead recorded as the capture and adjudication location across 12 prize records in the corpus."
+        "notes": "Devon port recorded as capture/arrival location across 12 prize records in the corpus."
       }
     },
     {

@@ -120,7 +120,7 @@ Read:
 - `docs/IMPLEMENTATION_CONTRACT.md`
 - `design/reviews/packet1-hosted-review.md` when production-history context matters.
 
-The root Cloudflare Pages deployment already exists at the recorded production URL. Packet 2 should preserve the noindex prototype posture unless a later explicit indexing decision changes it. Do not solve the eventual `/labs/...` URL shape during historical-data work.
+The root Cloudflare Pages deployment is live at the recorded production URL (`https://charted-currents.pages.dev/`) under the intentional public indexing posture (`index,follow` with `robots.txt Allow: /`). Do not solve the eventual `/labs/...` URL shape during historical-data work.
 
 ## Benchmark, environment, data-export, screenshot, or config work
 

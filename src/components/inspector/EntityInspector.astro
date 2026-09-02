@@ -53,7 +53,7 @@
 
   <div id="inspector-content" class="inspector-content">
     <!-- Out-of-period focus notice banner -->
-    <div class="inspector-period-notice" data-period-notice hidden aria-live="polite">
+    <div class="inspector-period-notice" data-period-notice data-inspector-period-notice hidden aria-live="polite">
       <span class="inspector-period-notice__icon" aria-hidden="true">⏱</span>
       <span class="inspector-period-notice__text" data-period-notice-text>Outside current period focus</span>
     </div>
@@ -389,25 +389,40 @@
     return out;
   }
 
-  function createConnectionButton(
-    category: "VESSEL" | "EVENT" | "LOCATION" | "ROUTE",
-    title: string,
+  function createRelationshipRow(
+    type: "LOCATION" | "VESSEL" | "EVENT" | "ROUTE",
+    role: string,
+    label: string,
     kind: "port" | "ship" | "event" | "voyage",
     id: string
   ): HTMLElement {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "inspector-conn-btn";
+    btn.className = "inspector-rel-row";
+    btn.setAttribute("data-selection-kind", kind);
+    btn.setAttribute("data-selection-id", id);
 
-    const badge = document.createElement("span");
-    badge.className = "inspector-conn-badge";
-    badge.textContent = category;
+    const typeSpan = document.createElement("span");
+    typeSpan.className = "inspector-rel-type";
+    typeSpan.textContent = type;
 
-    const label = document.createElement("span");
-    label.className = "inspector-conn-label";
-    label.textContent = title;
+    const contentSpan = document.createElement("span");
+    contentSpan.className = "inspector-rel-content";
 
-    btn.append(badge, label);
+    const roleSpan = document.createElement("span");
+    roleSpan.className = "inspector-rel-role";
+    roleSpan.textContent = role;
+
+    const sepSpan = document.createElement("span");
+    sepSpan.className = "inspector-rel-sep";
+    sepSpan.textContent = " · ";
+
+    const labelSpan = document.createElement("span");
+    labelSpan.className = "inspector-rel-label";
+    labelSpan.textContent = label;
+
+    contentSpan.append(roleSpan, sepSpan, labelSpan);
+    btn.append(typeSpan, contentSpan);
 
     btn.addEventListener("click", () => {
       recordSelectionTrigger({
@@ -481,16 +496,22 @@
         placeConnectionsWrap.hidden = false;
 
         for (const r of connectedRoutes) {
-          const ship = entitiesCache.ships.find((s) => s.id === r.properties.vessel_id);
-          const shipName = ship ? ship.canonical_name : r.properties.vessel_id;
-          placeConnectionsList.appendChild(
-            createConnectionButton("VESSEL", `${shipName} (${r.properties.date_display})`, "ship", r.properties.vessel_id)
-          );
+          const isOrigin = r.properties.origin_place_id === place.id;
+          const otherPlace = entitiesCache.places.find((p) => p.id === (isOrigin ? r.properties.destination_place_id : r.properties.origin_place_id));
+          const role = isOrigin ? `Voyage to ${otherPlace?.canonical_name || "Destination"}` : `Voyage from ${otherPlace?.canonical_name || "Origin"}`;
+          for (const vid of r.properties.constituent_vessel_ids) {
+            const ship = entitiesCache.ships.find((s) => s.id === vid);
+            const shipName = ship ? ship.canonical_name : vid;
+            placeConnectionsList.appendChild(
+              createRelationshipRow("VESSEL", role, `${shipName} (${r.properties.associated_record_year})`, "ship", vid)
+            );
+          }
         }
 
         for (const ev of connectedEvents) {
+          const role = ev.kind.replace(/_/g, " ");
           placeConnectionsList.appendChild(
-            createConnectionButton("EVENT", `${ev.title} (${ev.date})`, "event", ev.id)
+            createRelationshipRow("EVENT", role, `${ev.title} (${ev.date})`, "event", ev.id)
           );
         }
       } else {
@@ -521,7 +542,6 @@
     if (!entitiesCache) return;
     const ship = entitiesCache.ships.find((s) => s.id === shipId);
     if (!ship) return;
-
     const occId = ship.occurrence_ids[0];
     const shipOcc = entitiesCache.ship_occurrences.find((o) => o.id === occId);
     const crewOccs = entitiesCache.crew_occurrences.filter((c) => c.ship_occurrence_id === occId);
@@ -576,33 +596,35 @@
       shipUpstreamRef.textContent = `Upstream Archive: TNA High Court of Admiralty Prize Papers`;
     }
 
-    // Render Ship Connections
     if (shipConnectionsWrap && shipConnectionsList) {
       shipConnectionsList.replaceChildren();
-      const route = routesCache?.features.find((r) => r.properties.vessel_id === ship.id);
+      const connectedEdges = routesCache?.features.filter((r) =>
+        r.properties.constituent_vessel_ids.includes(ship.id)
+      ) || [];
       const connectedEvents = eventsCache?.filter((ev) => ev.vessel_id === ship.id) || [];
 
-      if (route || connectedEvents.length > 0) {
+      if (connectedEdges.length > 0 || connectedEvents.length > 0) {
         shipConnectionsWrap.hidden = false;
 
-        if (route) {
-          const originPlace = entitiesCache.places.find((p) => p.id === route.properties.origin_place_id);
-          const destPlace = entitiesCache.places.find((p) => p.id === route.properties.destination_place_id);
+        for (const edge of connectedEdges) {
+          const originPlace = entitiesCache.places.find((p) => p.id === edge.properties.origin_place_id);
+          const destPlace = entitiesCache.places.find((p) => p.id === edge.properties.destination_place_id);
           if (originPlace) {
             shipConnectionsList.appendChild(
-              createConnectionButton("LOCATION", `Origin: ${originPlace.canonical_name}`, "port", originPlace.id)
+              createRelationshipRow("LOCATION", "Voyage Origin", originPlace.canonical_name, "port", originPlace.id)
             );
           }
           if (destPlace) {
             shipConnectionsList.appendChild(
-              createConnectionButton("LOCATION", `Destination: ${destPlace.canonical_name}`, "port", destPlace.id)
+              createRelationshipRow("LOCATION", "Voyage Destination", destPlace.canonical_name, "port", destPlace.id)
             );
           }
         }
 
         for (const ev of connectedEvents) {
+          const role = ev.kind.replace(/_/g, " ");
           shipConnectionsList.appendChild(
-            createConnectionButton("EVENT", `${ev.title} (${ev.date})`, "event", ev.id)
+            createRelationshipRow("EVENT", role, `${ev.title} (${ev.date})`, "event", ev.id)
           );
         }
       } else {
@@ -659,14 +681,13 @@
     if (eventPlace) eventPlace.textContent = place ? place.canonical_name : ev.place_id;
     if (eventSummary) eventSummary.textContent = ev.summary;
 
-    // Render Event Connections
     if (eventConnectionsWrap && eventConnectionsList) {
       eventConnectionsList.replaceChildren();
       let hasConnections = false;
 
       if (place) {
         eventConnectionsList.appendChild(
-          createConnectionButton("LOCATION", `Location: ${place.canonical_name}`, "port", place.id)
+          createRelationshipRow("LOCATION", "Event Location", place.canonical_name, "port", place.id)
         );
         hasConnections = true;
       }
@@ -675,7 +696,7 @@
         const ship = entitiesCache.ships.find((s) => s.id === ev.vessel_id);
         const shipName = ship ? ship.canonical_name : ev.vessel_id;
         eventConnectionsList.appendChild(
-          createConnectionButton("VESSEL", `Vessel: ${shipName}`, "ship", ev.vessel_id)
+          createRelationshipRow("VESSEL", "Documented Vessel", shipName, "ship", ev.vessel_id)
         );
         hasConnections = true;
       }
@@ -706,7 +727,6 @@
   function renderVoyage(routeGroupId: string) {
     if (!routesCache || !entitiesCache) return;
 
-    // Find all route features matching this route group or endpoint pair
     const matchingRoutes = routesCache.features.filter(
       (r) => r.properties.route_group_id === routeGroupId || r.properties.id === routeGroupId
     );
@@ -716,7 +736,7 @@
     const origin = entitiesCache.places.find((p) => p.id === firstRoute.properties.origin_place_id);
     const dest = entitiesCache.places.find((p) => p.id === firstRoute.properties.destination_place_id);
 
-    checkPeriodFocus(null);
+    checkPeriodFocus(firstRoute.properties.associated_record_year);
 
     if (kickerEl) kickerEl.textContent = "Route Connection";
     if (badgeWrap && badgeEl) {
@@ -729,19 +749,19 @@
     const destName = dest?.canonical_name || firstRoute.properties.destination_place_id;
 
     if (titleEl) titleEl.textContent = `${originName} → ${destName}`;
-    if (subtitleEl) subtitleEl.textContent = `${matchingRoutes.length} documented vessel voyage${matchingRoutes.length > 1 ? "s" : ""} in current corpus`;
+    if (subtitleEl) subtitleEl.textContent = `${firstRoute.properties.record_count} documented vessel voyage${firstRoute.properties.record_count > 1 ? "s" : ""} in current corpus`;
 
     if (voyageOrigin) voyageOrigin.textContent = originName;
     if (voyageDest) voyageDest.textContent = destName;
-    if (voyageCount) voyageCount.textContent = `${matchingRoutes.length} vessel records`;
+    if (voyageCount) voyageCount.textContent = `${firstRoute.properties.record_count} vessel records`;
 
     if (voyageVesselsList) {
       voyageVesselsList.replaceChildren();
-      for (const r of matchingRoutes) {
-        const ship = entitiesCache.ships.find((s) => s.id === r.properties.vessel_id);
-        const shipName = ship ? ship.canonical_name : r.properties.vessel_id;
+      for (const vid of firstRoute.properties.constituent_vessel_ids) {
+        const ship = entitiesCache.ships.find((s) => s.id === vid);
+        const shipName = ship ? ship.canonical_name : vid;
         voyageVesselsList.appendChild(
-          createConnectionButton("VESSEL", `${shipName} (${r.properties.date_display})`, "ship", r.properties.vessel_id)
+          createRelationshipRow("VESSEL", "Documented Voyage", `${shipName} (${firstRoute.properties.associated_record_year})`, "ship", vid)
         );
       }
     }
@@ -755,10 +775,13 @@
   function syncInspector(selection: Selection) {
     if (!inspector) return;
 
+    const appShell = document.querySelector(".app-shell");
+
     if (!selection) {
       inspector.hidden = true;
       inspector.setAttribute("data-state", "closed");
       inspector.setAttribute("data-sheet-state", "closed");
+      if (appShell) appShell.setAttribute("data-inspector-open", "false");
       if (currentReturnTarget) {
         currentReturnTarget.focus();
         currentReturnTarget = null;
@@ -772,6 +795,7 @@
     inspector.hidden = false;
     inspector.setAttribute("data-state", "open");
     inspector.setAttribute("data-sheet-state", "open");
+    if (appShell) appShell.setAttribute("data-inspector-open", "true");
 
     if (selection.kind === "port") {
       renderPlace(selection.id);
@@ -958,10 +982,10 @@
   .inspector-connections-list {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
-  .inspector-conn-btn {
+  .inspector-rel-row {
     text-align: left;
     background: var(--cc-paper);
     border: 1px solid var(--cc-line);
@@ -969,32 +993,51 @@
     padding: 0.45rem 0.65rem;
     display: flex;
     align-items: baseline;
-    gap: 0.5rem;
+    gap: 0.6rem;
     font-family: var(--cc-font-sans);
-    font-size: var(--cc-text-xs);
-    color: var(--cc-ink);
     cursor: pointer;
     transition: background 120ms ease, border-color 120ms ease;
+    width: 100%;
   }
 
-  .inspector-conn-btn:hover,
-  .inspector-conn-btn:focus-visible {
+  .inspector-rel-row:hover,
+  .inspector-rel-row:focus-visible {
     background: color-mix(in srgb, var(--cc-paper-raised) 80%, transparent);
     border-color: var(--cc-sand);
     outline: none;
   }
 
-  .inspector-conn-badge {
+  .inspector-rel-type {
     font-family: var(--cc-font-mono);
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--cc-sand);
     flex-shrink: 0;
+    min-width: 4.2rem;
   }
 
-  .inspector-conn-label {
+  .inspector-rel-content {
     flex-grow: 1;
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink);
+    line-height: 1.35;
+  }
+
+  .inspector-rel-role {
+    font-size: 0.72rem;
+    color: var(--cc-ink-muted);
+  }
+
+  .inspector-rel-sep {
+    color: var(--cc-line-strong);
+    padding: 0 0.15rem;
+  }
+
+  .inspector-rel-label {
+    font-weight: 500;
+    color: var(--cc-ink);
   }
 
   .inspector-evidence-btn {

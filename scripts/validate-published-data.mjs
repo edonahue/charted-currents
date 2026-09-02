@@ -198,18 +198,36 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   assert(Array.isArray(routes.features) && routes.features.length > 0, "routes.geojson has no features");
 
   for (const f of routes.features || []) {
-    assert(f.type === "Feature", `Route ${f.id} is not a Feature`);
-    assert(f.geometry && f.geometry.type === "LineString", `Route ${f.id} geometry must be LineString`);
-    assert(f.geometry.coordinates.length === 2, `Route ${f.id} endpoints_only LineString must contain exactly 2 coordinates`);
-    assert(f.properties.geometry_kind === "endpoints_only", `Route ${f.id} geometry_kind must be 'endpoints_only'`);
-    assert(f.properties.evidence_state === "documented", `Route ${f.id} evidence_state must be 'documented'`);
-    assert(f.properties.is_track_observed === false, `Route ${f.id} is_track_observed must be false`);
-    assert(shipIds.has(f.properties.vessel_id), `Route ${f.id} references nonexistent vessel_id ${f.properties.vessel_id}`);
-    assert(placeIds.has(f.properties.origin_place_id), `Route ${f.id} references nonexistent origin_place_id ${f.properties.origin_place_id}`);
-    assert(placeIds.has(f.properties.destination_place_id), `Route ${f.id} references nonexistent destination_place_id ${f.properties.destination_place_id}`);
-    assert(Array.isArray(f.properties.source_assertion_ids) && f.properties.source_assertion_ids.length > 0, `Route ${f.id} missing source_assertion_ids`);
-    for (const astId of f.properties.source_assertion_ids || []) {
-      assert(assertionIds.has(astId), `Route ${f.id} references nonexistent assertion ${astId}`);
+    assert(f.type === "Feature", `Display edge ${f.id} is not a Feature`);
+    assert(f.geometry && f.geometry.type === "LineString", `Display edge ${f.id} geometry must be LineString`);
+    assert(f.geometry.coordinates.length === 2, `Display edge ${f.id} endpoints_only LineString must contain exactly 2 coordinates`);
+    assert(f.properties.geometry_kind === "endpoints_only", `Display edge ${f.id} geometry_kind must be 'endpoints_only'`);
+    assert(f.properties.evidence_state === "documented", `Display edge ${f.id} evidence_state must be 'documented'`);
+    assert(f.properties.is_track_observed === false, `Display edge ${f.id} is_track_observed must be false`);
+    assert(placeIds.has(f.properties.origin_place_id), `Display edge ${f.id} references nonexistent origin_place_id ${f.properties.origin_place_id}`);
+    assert(placeIds.has(f.properties.destination_place_id), `Display edge ${f.id} references nonexistent destination_place_id ${f.properties.destination_place_id}`);
+    assert(Array.isArray(f.properties.constituent_vessel_ids) && f.properties.constituent_vessel_ids.length > 0, `Display edge ${f.id} missing constituent_vessel_ids`);
+    for (const vid of f.properties.constituent_vessel_ids || []) {
+      assert(shipIds.has(vid), `Display edge ${f.id} references nonexistent vessel_id ${vid}`);
+    }
+    assert(Array.isArray(f.properties.constituent_assertion_ids) && f.properties.constituent_assertion_ids.length > 0, `Display edge ${f.id} missing constituent_assertion_ids`);
+    for (const astId of f.properties.constituent_assertion_ids || []) {
+      assert(assertionIds.has(astId), `Display edge ${f.id} references nonexistent assertion ${astId}`);
+    }
+    assert(f.properties.record_count === f.properties.constituent_route_ids.length, `Display edge ${f.id} record_count mismatch`);
+  }
+
+  // Archival routes validation (in entities.json or routes.geojson)
+  const archivalRoutes = entities.routes || routes.archival_routes || [];
+  assert(Array.isArray(archivalRoutes) && archivalRoutes.length > 0, "Missing archival routes collection");
+  for (const ar of archivalRoutes) {
+    assert(typeof ar.id === "string", "Archival route missing id");
+    assert(shipIds.has(ar.vessel_id), `Archival route ${ar.id} references nonexistent vessel_id ${ar.vessel_id}`);
+    assert(placeIds.has(ar.origin_place_id), `Archival route ${ar.id} references nonexistent origin_place_id ${ar.origin_place_id}`);
+    assert(placeIds.has(ar.destination_place_id), `Archival route ${ar.id} references nonexistent destination_place_id ${ar.destination_place_id}`);
+    assert(Array.isArray(ar.source_assertion_ids) && ar.source_assertion_ids.length > 0, `Archival route ${ar.id} missing source_assertion_ids`);
+    for (const astId of ar.source_assertion_ids || []) {
+      assert(assertionIds.has(astId), `Archival route ${ar.id} references nonexistent assertion ${astId}`);
     }
   }
 
@@ -242,8 +260,8 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   assert(manifest.counts.source_records === sourcesData.source_records.length, "Manifest source_records count mismatch");
   assert(manifest.counts.assertions === sourcesData.assertions.length, "Manifest assertions count mismatch");
   assert(manifest.counts.ships === entities.ships.length, "Manifest ships count mismatch");
-  assert(manifest.counts.places === entities.places.length, "Manifest places count mismatch");
-  assert(manifest.counts.routes === routes.features.length, "Manifest routes count mismatch");
+  assert(manifest.counts.routes === archivalRoutes.length, "Manifest routes count mismatch");
+  assert(manifest.counts.display_edges === routes.features.length, "Manifest display_edges count mismatch");
   assert(manifest.counts.events === events.events.length, "Manifest events count mismatch");
 
   if (errorCount > 0) {

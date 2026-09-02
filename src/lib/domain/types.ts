@@ -76,7 +76,7 @@ export interface PublishedPortFeatureCollection {
   features: PublishedPortFeature[];
 }
 
-export interface PublishedRouteFeature {
+export interface PublishedDisplayEdgeFeature {
   type: "Feature";
   id: string;
   geometry: {
@@ -85,30 +85,54 @@ export interface PublishedRouteFeature {
   };
   properties: {
     id: string;
-    vessel_id: string;
     origin_place_id: string;
     destination_place_id: string;
-    date_display: string;
-    associated_record_year?: number | null;
-    associated_record_month?: number | null;
-    temporal_basis?: string;
-    date_precision?: string;
-    route_group_id?: string;
-    constituent_vessel_ids?: string[];
-    constituent_route_ids?: string[];
-    record_count?: number;
+    origin_name: string;
+    destination_name: string;
+    route_group_id: string;
+    constituent_vessel_ids: string[];
+    constituent_route_ids: string[];
+    constituent_assertion_ids: string[];
+    record_count: number;
+    member_years: number[];
+    associated_record_year: number;
+    temporal_extent: {
+      start_year: number | null;
+      end_year: number | null;
+      temporal_basis: string;
+    };
     geometry_kind: GeometryKind;
     evidence_state: EvidenceState;
     is_track_observed: boolean;
     geometry_provenance: string;
-    source_assertion_ids?: string[];
     notes?: string;
   };
 }
 
+export interface PublishedArchivalRoute {
+  id: string;
+  vessel_id: string;
+  origin_place_id: string;
+  destination_place_id: string;
+  date_display: string;
+  associated_record_year?: number | null;
+  associated_record_month?: number | null;
+  temporal_basis?: string;
+  date_precision?: string;
+  geometry_kind: GeometryKind;
+  evidence_state: EvidenceState;
+  is_track_observed: boolean;
+  geometry_provenance: string;
+  source_assertion_ids: string[];
+  notes?: string;
+}
+
+export type PublishedRouteFeature = PublishedDisplayEdgeFeature;
+
 export interface PublishedRouteFeatureCollection {
   type: "FeatureCollection";
-  features: PublishedRouteFeature[];
+  features: PublishedDisplayEdgeFeature[];
+  archival_routes?: PublishedArchivalRoute[];
 }
 
 export interface PublishedSource {
