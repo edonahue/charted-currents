@@ -2,15 +2,15 @@
 """
 data/pipeline/build_corpus.py
 
-Deterministic compiler for Charted Currents Packet 2 published data.
-Reads the committed data/reviewed_corpus.yml and compiles the right-safe,
+Deterministic compiler for Charted Currents Packet 4 published data.
+Reads the committed data/reviewed_corpus.yml and compiles the rights-safe,
 relational evidence graph under public/data/.
 
 Invariants:
 - Deterministic: identical input produces byte-identical output.
 - No dynamic runtime timestamps.
 - Explicit schema structures for sources, source_records, assertions,
-  occurrences, canonical entities, and resolution edges.
+  occurrences, canonical entities, resolution edges, and coverage.
 
 Usage: python3 data/pipeline/build_corpus.py
 """
@@ -35,6 +35,7 @@ def main():
 
     meta = data.get("metadata", {})
     sources = data.get("sources", [])
+    source_coverages = data.get("source_coverages", [])
     source_records = data.get("source_records", [])
     assertions = data.get("assertions", [])
     places = data.get("places", [])
@@ -50,6 +51,7 @@ def main():
 
     # Build places lookup for coordinates
     place_coords = {p["id"]: p["coordinates"] for p in places}
+    place_names = {p["id"]: p.get("canonical_name", p["id"]) for p in places}
 
     # 1. ports.geojson
     ports_geojson = {
@@ -66,6 +68,8 @@ def main():
                     "id": p["id"],
                     "canonical_name": p["canonical_name"],
                     "raw_source_name": p.get("raw_source_name", p["canonical_name"]),
+                    "endonym": p.get("endonym"),
+                    "attestations": p.get("attestations", []),
                     "region": p.get("region", ""),
                     "geographic_precision": p.get("geographic_precision", "populated_place"),
                     "geometry_provenance": p.get("geometry_provenance", "modern_navigation_reference_coordinate"),
@@ -77,31 +81,50 @@ def main():
         ]
     }
 
-    # Place names lookup
-    place_names = {p["id"]: p.get("canonical_name", p["id"]) for p in places}
+    # Source record to source ID mapping
+    sr_to_source = {sr["id"]: sr["source_id"] for sr in source_records}
+    # Assertion to source ID mapping
+    ast_to_source = {}
+    for ast in assertions:
+        sr_id = ast.get("source_record_id")
+        if sr_id in sr_to_source:
+            ast_to_source[ast["id"]] = sr_to_source[sr_id]
 
-    # Map ships to capture dates for machine-readable route temporal metadata
+    # Map ships to capture dates and primary source IDs
     ship_to_capture_date = {}
+    ship_to_source_id = {}
     for ship in ships:
         occ_ids = ship.get("occurrence_ids", [])
         if occ_ids:
             for occ in ship_occurrences:
                 if occ["id"] == occ_ids[0]:
                     ship_to_capture_date[ship["id"]] = occ.get("recorded_capture_date", "")
+                    sr_id = occ.get("source_record_id")
+                    if sr_id in sr_to_source:
+                        ship_to_source_id[ship["id"]] = sr_to_source[sr_id]
                     break
 
     # Build individual archival route records
     archival_routes = []
     for r in routes:
+        explicit_year = r.get("year")
         cap_date = ship_to_capture_date.get(r["vessel_id"], "")
-        year = None
-        month = None
-        if cap_date:
+        year = explicit_year
+        month = r.get("month")
+
+        if year is None and cap_date:
             parts = cap_date.split("-")
             if parts[0].isdigit():
                 year = int(parts[0])
             if len(parts) > 1 and parts[1].isdigit():
                 month = int(parts[1])
+
+        route_src_ids = []
+        for aid in r.get("source_assertion_ids", []):
+            if aid in ast_to_source and ast_to_source[aid] not in route_src_ids:
+                route_src_ids.append(ast_to_source[aid])
+        if not route_src_ids and r["vessel_id"] in ship_to_source_id:
+            route_src_ids.append(ship_to_source_id[r["vessel_id"]])
 
         archival_routes.append({
             "id": r["id"],
@@ -111,13 +134,14 @@ def main():
             "date_display": r.get("date_display", ""),
             "associated_record_year": year,
             "associated_record_month": month,
-            "temporal_basis": "capture_record",
+            "temporal_basis": r.get("temporal_basis", "capture_record" if cap_date else "register_record"),
             "date_precision": "year_month" if month else "year",
             "geometry_kind": r.get("geometry_kind", "endpoints_only"),
             "evidence_state": r.get("evidence_state", "documented"),
             "is_track_observed": False,
             "geometry_provenance": r.get("geometry_provenance", "project visualization between resolved endpoint references"),
             "source_assertion_ids": r.get("source_assertion_ids", []),
+            "source_ids": route_src_ids,
             "notes": r.get("notes", "")
         })
 
@@ -135,10 +159,14 @@ def main():
         constituent_vessels = [r["vessel_id"] for r in group]
         constituent_routes = [r["id"] for r in group]
         all_ast_ids = []
+        all_src_ids = []
         for r in group:
             for aid in r.get("source_assertion_ids", []):
                 if aid not in all_ast_ids:
                     all_ast_ids.append(aid)
+            for sid in r.get("source_ids", []):
+                if sid not in all_src_ids:
+                    all_src_ids.append(sid)
 
         years = sorted([r["associated_record_year"] for r in group if r.get("associated_record_year") is not None])
         primary_year = years[0] if years else 1700
@@ -171,13 +199,14 @@ def main():
                 "constituent_vessel_ids": constituent_vessels,
                 "constituent_route_ids": constituent_routes,
                 "constituent_assertion_ids": all_ast_ids,
+                "constituent_source_ids": all_src_ids,
                 "record_count": rec_count,
                 "member_years": years,
                 "associated_record_year": primary_year,
                 "temporal_extent": {
                     "start_year": min_year,
                     "end_year": max_year,
-                    "temporal_basis": "capture_record"
+                    "temporal_basis": "historical_record"
                 },
                 "geometry_kind": "endpoints_only",
                 "evidence_state": "documented",
@@ -201,7 +230,8 @@ def main():
         "entity_resolution_edges": entity_resolution_edges,
         "places": places,
         "routes": archival_routes,
-        "visuals": visuals
+        "visuals": visuals,
+        "source_coverages": source_coverages
     }
 
     # 4. events.json
@@ -216,10 +246,13 @@ def main():
         "assertions": assertions
     }
 
-    # 6. manifest.json (Deterministic: uses reviewed_at as publishedAt)
+    # 6. coverage.json
+    coverage_json = source_coverages
+
+    # 7. manifest.json (Deterministic: uses reviewed_at as publishedAt)
     manifest_json = {
-        "version": meta.get("version", "0.2.0"),
-        "corpusId": meta.get("corpus_id", "greater_caribbean_port_royal_sample"),
+        "version": meta.get("version", "0.4.0"),
+        "corpusId": meta.get("corpus_id", "greater_caribbean_public_beta"),
         "corpusTitle": meta.get("corpus_title", ""),
         "publishedAt": meta.get("reviewed_at", "2026-09-01"),
         "reviewStatus": meta.get("review_status", "reviewed_for_publication"),
@@ -235,7 +268,8 @@ def main():
             "routes": len(archival_routes),
             "display_edges": len(display_edge_features),
             "events": len(events),
-            "visuals": len(visuals)
+            "visuals": len(visuals),
+            "source_coverages": len(source_coverages)
         }
     }
 
@@ -246,6 +280,7 @@ def main():
         "entities.json": entities_json,
         "events.json": events_json,
         "sources.json": sources_json,
+        "coverage.json": coverage_json
     }
 
     for filename, content in artifacts.items():

@@ -1,21 +1,22 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "corpusId": "greater_caribbean_public_beta",
   "corpusTitle": "The Greater Caribbean & Transatlantic Maritime Commerce (1684–1712)",
   "publishedAt": "2026-09-01",
   "reviewStatus": "reviewed_for_publication",
   "counts": {
-    "sources": 5,
-    "source_records": 44,
-    "assertions": 132,
-    "ship_occurrences": 15,
+    "sources": 7,
+    "source_records": 47,
+    "assertions": 153,
+    "ship_occurrences": 18,
     "crew_occurrences": 26,
-    "ships": 15,
-    "entity_resolution_edges": 15,
-    "places": 23,
-    "routes": 15,
-    "display_edges": 13,
+    "ships": 18,
+    "entity_resolution_edges": 18,
+    "places": 24,
+    "routes": 18,
+    "display_edges": 14,
     "events": 16,
-    "visuals": 1
+    "visuals": 1,
+    "source_coverages": 2
   }
 }

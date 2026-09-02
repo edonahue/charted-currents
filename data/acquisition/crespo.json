@@ -1,0 +1,18 @@
+{
+  "source_id": "crespo_dyncoopnet",
+  "source_title": "CrespoDynCoopNet DATA Collections / CrespoDATABASEAtlanticTrade",
+  "official_catalog_url": "https://datos.gob.es/en/catalogo/ea0041268-crespodyncoopnet-data-collections",
+  "download_url": "https://digital.csic.es/bitstream/10261/28394/1/CrespoDynCoopNetDATASETS.mdb",
+  "doi": "10.20350/digitalCSIC/212",
+  "license": "Open Data Commons Database Contents License 1.0",
+  "license_url": "http://opendatacommons.org/licenses/dbcl/1.0/",
+  "retrieval_date": "2026-08-31",
+  "files": [
+    {
+      "filename": "CrespoDynCoopNetDATASETS.mdb",
+      "size_bytes": 25829376,
+      "sha256": "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5"
+    }
+  ],
+  "adapter_version": "1.0.0"
+}

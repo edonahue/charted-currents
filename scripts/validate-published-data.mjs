@@ -21,6 +21,7 @@ const REQUIRED_FILES = [
   "entities.json",
   "events.json",
   "sources.json",
+  "coverage.json",
 ];
 
 const VALID_INSPECTION_STATES = new Set([
@@ -250,7 +251,18 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     }
   }
 
-  // 6. Manifest
+  // 6. Coverage JSON
+  const coverage = JSON.parse(fs.readFileSync(path.join(dataDir, "coverage.json"), "utf8"));
+  assert(Array.isArray(coverage) && coverage.length > 0, "coverage.json must be a non-empty array");
+  for (const cov of coverage) {
+    assert(typeof cov.source_id === "string", "Coverage entry missing source_id");
+    assert(sourceIds.has(cov.source_id), `Coverage entry references nonexistent source_id ${cov.source_id}`);
+    assert(typeof cov.short_label === "string", `Coverage ${cov.source_id} missing short_label`);
+    assert(cov.source_declared_scope && typeof cov.source_declared_scope.start_year === "number", `Coverage ${cov.source_id} missing source_declared_scope`);
+    assert(cov.project_reviewed_sample && typeof cov.project_reviewed_sample.start_year === "number", `Coverage ${cov.source_id} missing project_reviewed_sample`);
+  }
+
+  // 7. Manifest
   const manifest = JSON.parse(fs.readFileSync(path.join(dataDir, "manifest.json"), "utf8"));
   assert(typeof manifest.version === "string", "manifest.json missing version string");
   assert(typeof manifest.corpusId === "string", "manifest.json missing corpusId");

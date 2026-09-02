@@ -33,6 +33,9 @@
         "constituent_assertion_ids": [
           "ast_2155_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1703
@@ -41,7 +44,7 @@
         "temporal_extent": {
           "start_year": 1703,
           "end_year": 1703,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -82,6 +85,9 @@
         "constituent_assertion_ids": [
           "ast_2154_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1703
@@ -90,7 +96,7 @@
         "temporal_extent": {
           "start_year": 1703,
           "end_year": 1703,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -131,6 +137,9 @@
         "constituent_assertion_ids": [
           "ast_1511_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1705
@@ -139,13 +148,79 @@
         "temporal_extent": {
           "start_year": 1705,
           "end_year": 1705,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
         "is_track_observed": false,
         "geometry_provenance": "project visualization between resolved endpoint references",
         "notes": "Aggregated display edge for 1 documented transatlantic vessel voyage between Bristol and Barbados."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "display_edge_place_cadiz_place_havana",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -6.2886,
+            36.5298
+          ],
+          [
+            -82.3666,
+            23.1136
+          ]
+        ]
+      },
+      "properties": {
+        "id": "display_edge_place_cadiz_place_havana",
+        "origin_place_id": "place_cadiz",
+        "destination_place_id": "place_havana",
+        "origin_name": "Cádiz",
+        "destination_name": "Havana",
+        "route_group_id": "route_group_place_cadiz_place_havana",
+        "constituent_vessel_ids": [
+          "ship_nuestra_senora_de_la_estrella_1684",
+          "ship_remedios_y_animas_1695",
+          "ship_jesus_nazareno_guadalupe_1706"
+        ],
+        "constituent_route_ids": [
+          "route_crespo_6156_cadiz_havana",
+          "route_crespo_6587_cadiz_havana",
+          "route_crespo_6627_cadiz_havana"
+        ],
+        "constituent_assertion_ids": [
+          "ast_crespo_6156_dep",
+          "ast_crespo_6156_arr",
+          "ast_crespo_6156_fuente",
+          "ast_crespo_6587_dep",
+          "ast_crespo_6587_arr",
+          "ast_crespo_6587_fuente",
+          "ast_crespo_6627_dep",
+          "ast_crespo_6627_arr",
+          "ast_crespo_6627_fuente"
+        ],
+        "constituent_source_ids": [
+          "src_crespo_dyncoopnet"
+        ],
+        "record_count": 3,
+        "member_years": [
+          1684,
+          1695,
+          1706
+        ],
+        "associated_record_year": 1684,
+        "temporal_extent": {
+          "start_year": 1684,
+          "end_year": 1706,
+          "temporal_basis": "historical_record"
+        },
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "notes": "Aggregated display edge for 3 documented transatlantic vessel voyages between Cádiz and Havana."
       }
     },
     {
@@ -180,6 +255,9 @@
         "constituent_assertion_ids": [
           "ast_1964_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1709
@@ -188,7 +266,7 @@
         "temporal_extent": {
           "start_year": 1709,
           "end_year": 1709,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -229,6 +307,9 @@
         "constituent_assertion_ids": [
           "ast_1582_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1712
@@ -237,7 +318,7 @@
         "temporal_extent": {
           "start_year": 1712,
           "end_year": 1712,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -281,6 +362,9 @@
           "ast_2052_voyage",
           "ast_2228_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 2,
         "member_years": [
           1702,
@@ -290,7 +374,7 @@
         "temporal_extent": {
           "start_year": 1702,
           "end_year": 1705,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -331,6 +415,9 @@
         "constituent_assertion_ids": [
           "ast_1516_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1705
@@ -339,7 +426,7 @@
         "temporal_extent": {
           "start_year": 1705,
           "end_year": 1705,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -380,6 +467,9 @@
         "constituent_assertion_ids": [
           "ast_2098_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1704
@@ -388,7 +478,7 @@
         "temporal_extent": {
           "start_year": 1704,
           "end_year": 1704,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -429,6 +519,9 @@
         "constituent_assertion_ids": [
           "ast_1278_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1710
@@ -437,7 +530,7 @@
         "temporal_extent": {
           "start_year": 1710,
           "end_year": 1710,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -478,6 +571,9 @@
         "constituent_assertion_ids": [
           "ast_2144_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1702
@@ -486,7 +582,7 @@
         "temporal_extent": {
           "start_year": 1702,
           "end_year": 1702,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -527,6 +623,9 @@
         "constituent_assertion_ids": [
           "ast_1982_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1709
@@ -535,7 +634,7 @@
         "temporal_extent": {
           "start_year": 1709,
           "end_year": 1709,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -576,6 +675,9 @@
         "constituent_assertion_ids": [
           "ast_2106_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 1,
         "member_years": [
           1704
@@ -584,7 +686,7 @@
         "temporal_extent": {
           "start_year": 1704,
           "end_year": 1704,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -628,6 +730,9 @@
           "ast_1245_voyage",
           "ast_1993_voyage"
         ],
+        "constituent_source_ids": [
+          "src_imlm_ukda_852135"
+        ],
         "record_count": 2,
         "member_years": [
           1709,
@@ -637,7 +742,7 @@
         "temporal_extent": {
           "start_year": 1709,
           "end_year": 1711,
-          "temporal_basis": "capture_record"
+          "temporal_basis": "historical_record"
         },
         "geometry_kind": "endpoints_only",
         "evidence_state": "documented",
@@ -665,6 +770,9 @@
       "source_assertion_ids": [
         "ast_2052_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Jamaica → London voyage relationship from IMLM 2052; rendered line is schematic."
     },
     {
@@ -683,6 +791,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_2228_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Jamaica → London voyage relationship from IMLM 2228; rendered line is schematic."
     },
@@ -703,6 +814,9 @@
       "source_assertion_ids": [
         "ast_2154_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Barbados → London voyage relationship from IMLM 2154; rendered line is schematic."
     },
     {
@@ -721,6 +835,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_2155_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Antigua → Bristol voyage relationship from IMLM 2155; rendered line is schematic."
     },
@@ -741,6 +858,9 @@
       "source_assertion_ids": [
         "ast_2144_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Nevis → Bristol voyage relationship from IMLM 2144; rendered line is schematic."
     },
     {
@@ -759,6 +879,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_2106_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented St Christopher → London voyage relationship from IMLM 2106; rendered line is schematic."
     },
@@ -779,6 +902,9 @@
       "source_assertion_ids": [
         "ast_2098_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Montserrat → London voyage relationship from IMLM 2098; rendered line is schematic."
     },
     {
@@ -797,6 +923,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1511_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Bristol → Barbados outward voyage relationship from IMLM 1511; rendered line is schematic."
     },
@@ -817,6 +946,9 @@
       "source_assertion_ids": [
         "ast_1245_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Saint-Domingue → La Rochelle voyage relationship from IMLM 1245; rendered line is schematic."
     },
     {
@@ -835,6 +967,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1993_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Saint-Domingue → La Rochelle voyage relationship from IMLM 1993; rendered line is schematic."
     },
@@ -855,6 +990,9 @@
       "source_assertion_ids": [
         "ast_1516_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Martinique → La Rochelle voyage relationship from IMLM 1516; rendered line is schematic."
     },
     {
@@ -873,6 +1011,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1278_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Nantes → Martinique outward voyage relationship from IMLM 1278; rendered line is schematic."
     },
@@ -893,6 +1034,9 @@
       "source_assertion_ids": [
         "ast_1582_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Havana → St Augustine regional voyage relationship from IMLM 1582; rendered line is schematic."
     },
     {
@@ -911,6 +1055,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1964_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Cartagena → Marseille voyage relationship from IMLM 1964; rendered line is schematic."
     },
@@ -931,7 +1078,82 @@
       "source_assertion_ids": [
         "ast_1982_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented South Carolina → Bideford voyage relationship from IMLM 1982; rendered line is schematic."
+    },
+    {
+      "id": "route_crespo_6156_cadiz_havana",
+      "vessel_id": "ship_nuestra_senora_de_la_estrella_1684",
+      "origin_place_id": "place_cadiz",
+      "destination_place_id": "place_havana",
+      "date_display": "1684 Carrera de Indias register (Cádiz → La Habana)",
+      "associated_record_year": 1684,
+      "associated_record_month": null,
+      "temporal_basis": "capture_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_6156_dep",
+        "ast_crespo_6156_arr",
+        "ast_crespo_6156_fuente"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": "Documented Cádiz → La Habana voyage register from AGI Contratación 1240, N.6 in Crespo 6156."
+    },
+    {
+      "id": "route_crespo_6587_cadiz_havana",
+      "vessel_id": "ship_remedios_y_animas_1695",
+      "origin_place_id": "place_cadiz",
+      "destination_place_id": "place_havana",
+      "date_display": "1695 Carrera de Indias register (Cádiz → La Habana)",
+      "associated_record_year": 1695,
+      "associated_record_month": null,
+      "temporal_basis": "capture_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_6587_dep",
+        "ast_crespo_6587_arr",
+        "ast_crespo_6587_fuente"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": "Documented Cádiz → La Habana voyage register from AGI Contratación 1255, N.7 in Crespo 6587."
+    },
+    {
+      "id": "route_crespo_6627_cadiz_havana",
+      "vessel_id": "ship_jesus_nazareno_guadalupe_1706",
+      "origin_place_id": "place_cadiz",
+      "destination_place_id": "place_havana",
+      "date_display": "1706 Carrera de Indias register (Cádiz → La Habana)",
+      "associated_record_year": 1706,
+      "associated_record_month": null,
+      "temporal_basis": "capture_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_6627_dep",
+        "ast_crespo_6627_arr",
+        "ast_crespo_6627_fuente"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": "Documented Cádiz → La Habana voyage register from AGI Contratación 1266, N.5 in Crespo 6627."
     }
   ]
 }

@@ -934,7 +934,133 @@ async function runReviewSuite() {
     });
     await new Promise((r) => setTimeout(r, 300));
 
-    // 11. Runtime Exceptions check
+    // 11. Test Packet 4 Spanish Atlantic Vessel Selection & Upstream AGI/PARES Provenance
+    console.log("Testing Packet 4 Spanish Atlantic vessel selection & AGI/PARES provenance...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_nuestra_senora_de_la_estrella_1684" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const estrellaCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const tonnage = document.querySelector('[data-ship-tonnage]')?.textContent || '';
+        const upstream = document.querySelector('[data-ship-upstream-ref]')?.textContent || '';
+        return { title, tonnage, upstream };
+      })()`,
+      returnByValue: true,
+    });
+    assert(estrellaCheck?.result?.value?.title === "Nuestra Señora de la Estrella (1684)", "Estrella 1684 vessel selected in inspector");
+    assert(estrellaCheck?.result?.value?.tonnage === "Recorded tonnage: 278", "Estrella 1684 burden formatted with conservative recorded tonnage");
+    assert(estrellaCheck?.result?.value?.upstream.includes("Archivo General de Indias"), "Estrella 1684 displays Archivo General de Indias upstream archive series");
+
+    // Capture Spanish Atlantic vessel inspector screenshot
+    const estrellaScreenshot = await send("Page.captureScreenshot", { format: "png" });
+    if (estrellaScreenshot?.data) {
+      const estrellaOutPath = path.resolve(`design/reviews/${packetPrefix}crespo-pares-vessel-1440x900.png`);
+      fs.writeFileSync(estrellaOutPath, Buffer.from(estrellaScreenshot.data, "base64"));
+      const size = fs.statSync(estrellaOutPath).size;
+      console.log(`[SAVED] ${packetPrefix}crespo-pares-vessel-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}crespo-pares-vessel-1440x900.png generated with valid raster size (${size} bytes)`);
+    }
+
+    // Open Source Drawer for Estrella
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const evidenceBtn = document.querySelector('[data-ship-evidence-btn]');
+        evidenceBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const paresDrawerCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById('source-drawer');
+        const isOpen = drawer && !drawer.hidden && drawer.getAttribute('data-state') === 'open';
+        const cardText = document.querySelector('[data-source-cards-container]')?.textContent || '';
+        const hasParesCitation = cardText.includes('Crespo Solana') || cardText.includes('Archivo General de Indias') || cardText.includes('PARES');
+        return { isOpen, hasParesCitation };
+      })()`,
+      returnByValue: true,
+    });
+    assert(paresDrawerCheck?.result?.value?.isOpen, "Source drawer opened for Spanish Atlantic vessel");
+    assert(paresDrawerCheck?.result?.value?.hasParesCitation, "Source drawer contains Crespo / AGI / PARES citation");
+
+    // Close Source Drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const closeBtn = document.querySelector('[data-source-drawer-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    // 12. Test Packet 4 Multi-Period Aggregate Display Edge (Cádiz -> Havana)
+    console.log("Testing Packet 4 Cádiz -> Havana multi-period aggregate route...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "voyage", id: "display_edge_place_cadiz_place_havana" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const cadizHavanaCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
+        const rows = Array.from(document.querySelectorAll('[data-voyage-vessels-list] .inspector-rel-row'));
+        return { title, subtitle, rowCount: rows.length };
+      })()`,
+      returnByValue: true,
+    });
+    assert(cadizHavanaCheck?.result?.value?.title === "Cádiz → Havana", "Cádiz → Havana route selected in inspector");
+    assert(cadizHavanaCheck?.result?.value?.subtitle?.includes("3 documented vessel voyages"), "Cádiz → Havana route subtitle indicates 3 documented vessel voyages in corpus");
+    assert(cadizHavanaCheck?.result?.value?.rowCount === 3, "Cádiz → Havana route lists all 3 constituent voyages (1684, 1695, 1706)");
+
+    // Test dynamic filter subtitle update on multi-period edge
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const filterBtn = document.querySelector('[data-time-filter="1684-1695"]');
+        filterBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const cadizFilteredCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
+        const hasOutOfPeriodBadge = Array.from(document.querySelectorAll('[data-voyage-vessels-list] .inspector-rel-label')).some(l => l.textContent?.includes('Outside Focus'));
+        return { subtitle, hasOutOfPeriodBadge };
+      })()`,
+      returnByValue: true,
+    });
+    assert(cadizFilteredCheck?.result?.value?.subtitle?.includes("2 of 3 documented voyages in current period focus"), "Cádiz → Havana subtitle dynamically evaluates active constituent count (2 of 3) under 1684–1695 period focus");
+    assert(cadizFilteredCheck?.result?.value?.hasOutOfPeriodBadge, "1706 voyage correctly displays 'Outside Focus' badge under 1684–1695 period focus");
+
+    // Capture Cádiz -> Havana route screenshot
+    const cadizScreenshot = await send("Page.captureScreenshot", { format: "png" });
+    if (cadizScreenshot?.data) {
+      const cadizOutPath = path.resolve(`design/reviews/${packetPrefix}cadiz-havana-route-1440x900.png`);
+      fs.writeFileSync(cadizOutPath, Buffer.from(cadizScreenshot.data, "base64"));
+      const size = fs.statSync(cadizOutPath).size;
+      console.log(`[SAVED] ${packetPrefix}cadiz-havana-route-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}cadiz-havana-route-1440x900.png generated with valid raster size (${size} bytes)`);
+    }
+
+    // Reset filter
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const filterBtn = document.querySelector('[data-time-filter="all"]');
+        filterBtn?.click();
+        const closeBtn = document.querySelector('[data-inspector-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    // 13. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

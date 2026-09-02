@@ -33,6 +33,54 @@ export const INSPECTION_STATES = [
 ] as const;
 export type InspectionState = (typeof INSPECTION_STATES)[number];
 
+export type EvidenceLayer =
+  | "historical_document_text"
+  | "archival_catalogue_metadata"
+  | "scholarly_dataset_value"
+  | "historical_map_label"
+  | "modern_authority_label"
+  | "project_editorial_label";
+
+export type AttestationLanguage = "es" | "en" | "fr" | "nl" | "und";
+
+export type AttestationRelationship =
+  | "source_transcription"
+  | "historical_spelling_variant"
+  | "editorial_normalization"
+  | "modern_preferred_label";
+
+export interface NameAttestation {
+  raw_name: string;
+  evidence_layer: EvidenceLayer;
+  language: AttestationLanguage;
+  attestation_relationship: AttestationRelationship;
+  source_record_id: string;
+  normalized_search_key?: string;
+}
+
+export interface PublishedSourceCoverage {
+  source_id: string;
+  short_label: string;
+  source_declared_scope: {
+    start_year: number;
+    end_year: number;
+    description: string;
+  };
+  local_database_scope?: {
+    start_year: number;
+    end_year: number;
+    record_count: number;
+    description: string;
+  };
+  project_reviewed_sample: {
+    start_year: number;
+    end_year: number;
+    sample_type: string;
+    record_count: number;
+    caveat: string;
+  };
+}
+
 export interface EntitySelection {
   kind: EntityKind;
   id: string;
@@ -44,6 +92,8 @@ export interface PublishedPlace {
   id: string;
   canonical_name: string;
   raw_source_name: string;
+  endonym?: string;
+  attestations?: NameAttestation[];
   region: string;
   geographic_precision: GeographicPrecision;
   coordinates: [number, number];
@@ -93,6 +143,7 @@ export interface PublishedDisplayEdgeFeature {
     constituent_vessel_ids: string[];
     constituent_route_ids: string[];
     constituent_assertion_ids: string[];
+    constituent_source_ids?: string[];
     record_count: number;
     member_years: number[];
     associated_record_year: number;
@@ -172,6 +223,7 @@ export interface PublishedShipOccurrence {
   id: string;
   source_record_id: string;
   raw_name: string;
+  attestations?: NameAttestation[];
   raw_tonnage: string;
   raw_construction_place: string;
   reported_age_years?: number;
@@ -203,6 +255,7 @@ export interface PublishedCrewOccurrence {
 export interface PublishedShip {
   id: string;
   canonical_name: string;
+  attestations?: NameAttestation[];
   evidence_state: EvidenceState;
   occurrence_ids: string[];
   reported_burden_display: string;
@@ -258,7 +311,9 @@ export interface PublishedEntities {
   ships: PublishedShip[];
   entity_resolution_edges: PublishedEntityResolutionEdge[];
   places: PublishedPlace[];
+  routes?: PublishedArchivalRoute[];
   visuals: PublishedVisual[];
+  source_coverages?: PublishedSourceCoverage[];
 }
 
 export interface PublishedEvents {

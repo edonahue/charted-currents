@@ -176,14 +176,14 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(vis["rights_state"], "open_public_domain")
         self.assertIn("Library of Congress", vis["holding_institution"])
 
-    def test_fifteen_vessels_in_public_corpus(self):
-        """Packet 3 corpus must contain exactly 15 verified vessels and 15 archival routes across 13 display edges."""
+    def test_eighteen_vessels_in_public_corpus(self):
+        """Packet 4 corpus must contain exactly 18 verified vessels and 18 archival routes across 14 display edges."""
         ships = self.entities["ships"]
-        self.assertEqual(len(ships), 15, f"Expected 15 vessels, found {len(ships)}")
+        self.assertEqual(len(ships), 18, f"Expected 18 vessels, found {len(ships)}")
         archival_routes = self.entities.get("routes", [])
-        self.assertEqual(len(archival_routes), 15, f"Expected 15 archival routes, found {len(archival_routes)}")
+        self.assertEqual(len(archival_routes), 18, f"Expected 18 archival routes, found {len(archival_routes)}")
         display_edges = self.routes_geojson["features"]
-        self.assertEqual(len(display_edges), 13, f"Expected 13 display edges, found {len(display_edges)}")
+        self.assertEqual(len(display_edges), 14, f"Expected 14 display edges, found {len(display_edges)}")
 
     def test_vessel_events_bidirectional_link(self):
         """Capture events must declare valid vessel_id linking to ships[]."""
@@ -212,14 +212,14 @@ class TestHistoricalInvariants(unittest.TestCase):
             props = feature["properties"]
             self.assertIn("associated_record_year", props)
             self.assertIsInstance(props["associated_record_year"], int)
-            self.assertTrue(1700 <= props["associated_record_year"] <= 1715)
-            self.assertEqual(props["temporal_extent"]["temporal_basis"], "capture_record")
+            self.assertTrue(1680 <= props["associated_record_year"] <= 1715)
+            self.assertIn(props["temporal_extent"]["temporal_basis"], ["capture_record", "historical_record"])
             self.assertIn("record_count", props)
             self.assertIsInstance(props["record_count"], int)
             self.assertTrue(props["record_count"] >= 1)
 
     def test_route_aggregation_metadata(self):
-        """Jamaica -> London and Hispaniola -> La Rochelle display edges must declare aggregate count of 2."""
+        """Jamaica -> London, Hispaniola -> La Rochelle, and Cádiz -> Havana display edges must declare aggregate counts."""
         edges_by_id = {f["id"]: f["properties"] for f in self.routes_geojson["features"]}
         self.assertIn("display_edge_place_jamaica_place_london", edges_by_id)
         jl = edges_by_id["display_edge_place_jamaica_place_london"]
@@ -232,6 +232,13 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(sr["record_count"], 2)
         self.assertEqual(len(sr["constituent_vessel_ids"]), 2)
         self.assertEqual(len(sr["constituent_route_ids"]), 2)
+
+        self.assertIn("display_edge_place_cadiz_place_havana", edges_by_id)
+        ch = edges_by_id["display_edge_place_cadiz_place_havana"]
+        self.assertEqual(ch["record_count"], 3)
+        self.assertEqual(len(ch["constituent_vessel_ids"]), 3)
+        self.assertEqual(len(ch["constituent_route_ids"]), 3)
+        self.assertEqual(ch["member_years"], [1684, 1695, 1706])
 
 if __name__ == "__main__":
     unittest.main()

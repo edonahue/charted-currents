@@ -64,6 +64,32 @@
       "attribution_required": true,
       "credit_line": "Library of Congress, Geography and Map Division",
       "notes": "Engraved map created [1684?]; no known copyright restrictions in digitized collection."
+    },
+    {
+      "id": "src_crespo_dyncoopnet",
+      "title": "CrespoDynCoopNet DATA Collections / CrespoDATABASEAtlanticTrade",
+      "creator": "Crespo Solana, Ana (CSIC)",
+      "holding_institution": "Digital.CSIC / datos.gob.es",
+      "stable_identifier": "10.20350/digitalCSIC/212",
+      "item_url": "https://datos.gob.es/en/catalogo/ea0041268-crespodyncoopnet-data-collections",
+      "rights_posture": "open_data_commons_dbcl",
+      "public_use_basis": "maintainer_approved_small_derived_factual_publication",
+      "attribution_required": true,
+      "credit_line": "Crespo Solana, Ana. CrespoDynCoopNet DATA Collections. Digital.CSIC, doi:10.20350/digitalCSIC/212 (ODC-DbCL)",
+      "notes": "Directly accessed research database on Spanish Atlantic trade networks. Upstream archival citations reference the Archivo General de Indias."
+    },
+    {
+      "id": "src_pares_agi",
+      "title": "Archivo General de Indias (Sevilla) — Registros de Ida de Navíos",
+      "creator": "Casa de la Contratación de las Indias",
+      "holding_institution": "Archivo General de Indias / Ministerio de Cultura (España)",
+      "stable_identifier": "AGI CONTRATACION",
+      "item_url": "https://pares.cultura.gob.es/pares/",
+      "rights_posture": "public_domain",
+      "public_use_basis": "open_public_domain_spanish_state_archives",
+      "attribution_required": true,
+      "credit_line": "Ministerio de Cultura / Archivo General de Indias / Portal de Archivos Españoles (PARES)",
+      "notes": "Upstream Spanish archival holding preserving Casa de la Contratación fleet registers and dispatch records."
     }
   ],
   "source_records": [
@@ -430,6 +456,33 @@
       "record_type": "catalog_map_item",
       "native_identifier": "99463761 / ct008911",
       "inspection_state": "digital_content_inspected"
+    },
+    {
+      "id": "sr_crespo_navio_6156",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "database_voyage_record",
+      "native_identifier": "6156",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "CONTRATACION, 1240, N.6"
+    },
+    {
+      "id": "sr_crespo_navio_6587",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "database_voyage_record",
+      "native_identifier": "6587",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "CONTRATACION, 1255, N.7"
+    },
+    {
+      "id": "sr_crespo_navio_6627",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "database_voyage_record",
+      "native_identifier": "6627",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "CONTRATACION, 1266, N.5"
     }
   ],
   "assertions": [
@@ -1471,6 +1524,132 @@
       "field": "cartographic_place_label",
       "raw_value": "Port Royall",
       "notes": "Port Royal depicted and labeled on the 1684 Bochart & Knollis map of Jamaica (ct008911)."
+    },
+    {
+      "id": "ast_crespo_6156_name",
+      "source_record_id": "sr_crespo_navio_6156",
+      "field": "vessel_name",
+      "raw_value": "Nuestra Señora de la Estrella"
+    },
+    {
+      "id": "ast_crespo_6156_ton",
+      "source_record_id": "sr_crespo_navio_6156",
+      "field": "tonnage",
+      "raw_value": "278"
+    },
+    {
+      "id": "ast_crespo_6156_year",
+      "source_record_id": "sr_crespo_navio_6156",
+      "field": "year",
+      "raw_value": "1684"
+    },
+    {
+      "id": "ast_crespo_6156_master",
+      "source_record_id": "sr_crespo_navio_6156",
+      "field": "master",
+      "raw_value": "Juan Bernardo de Heredia"
+    },
+    {
+      "id": "ast_crespo_6156_dep",
+      "source_record_id": "sr_crespo_navio_6156",
+      "field": "departure_port",
+      "raw_value": "Cádiz"
+    },
+    {
+      "id": "ast_crespo_6156_arr",
+      "source_record_id": "sr_crespo_navio_6156",
+      "field": "arrival_port",
+      "raw_value": "La Habana"
+    },
+    {
+      "id": "ast_crespo_6156_fuente",
+      "source_record_id": "sr_crespo_navio_6156",
+      "field": "fuente",
+      "raw_value": "A.G.I.: CONTRATACION, 1240, N.6"
+    },
+    {
+      "id": "ast_crespo_6587_name",
+      "source_record_id": "sr_crespo_navio_6587",
+      "field": "vessel_name",
+      "raw_value": "Nuestra Señora de los Remedios y las Animas"
+    },
+    {
+      "id": "ast_crespo_6587_ton",
+      "source_record_id": "sr_crespo_navio_6587",
+      "field": "tonnage",
+      "raw_value": "318"
+    },
+    {
+      "id": "ast_crespo_6587_year",
+      "source_record_id": "sr_crespo_navio_6587",
+      "field": "year",
+      "raw_value": "1695"
+    },
+    {
+      "id": "ast_crespo_6587_master",
+      "source_record_id": "sr_crespo_navio_6587",
+      "field": "master",
+      "raw_value": "Diego Dazá"
+    },
+    {
+      "id": "ast_crespo_6587_dep",
+      "source_record_id": "sr_crespo_navio_6587",
+      "field": "departure_port",
+      "raw_value": "Cádiz"
+    },
+    {
+      "id": "ast_crespo_6587_arr",
+      "source_record_id": "sr_crespo_navio_6587",
+      "field": "arrival_port",
+      "raw_value": "La Habana"
+    },
+    {
+      "id": "ast_crespo_6587_fuente",
+      "source_record_id": "sr_crespo_navio_6587",
+      "field": "fuente",
+      "raw_value": "A.G.I.: CONTRATACION, 1255, N.7"
+    },
+    {
+      "id": "ast_crespo_6627_name",
+      "source_record_id": "sr_crespo_navio_6627",
+      "field": "vessel_name",
+      "raw_value": "Jesús, Nazareno y Nuestra Señora de Guadalupe"
+    },
+    {
+      "id": "ast_crespo_6627_ton",
+      "source_record_id": "sr_crespo_navio_6627",
+      "field": "tonnage",
+      "raw_value": "112"
+    },
+    {
+      "id": "ast_crespo_6627_year",
+      "source_record_id": "sr_crespo_navio_6627",
+      "field": "year",
+      "raw_value": "1706"
+    },
+    {
+      "id": "ast_crespo_6627_master",
+      "source_record_id": "sr_crespo_navio_6627",
+      "field": "master",
+      "raw_value": "Bartolomé Antonio Garrote"
+    },
+    {
+      "id": "ast_crespo_6627_dep",
+      "source_record_id": "sr_crespo_navio_6627",
+      "field": "departure_port",
+      "raw_value": "Cádiz"
+    },
+    {
+      "id": "ast_crespo_6627_arr",
+      "source_record_id": "sr_crespo_navio_6627",
+      "field": "arrival_port",
+      "raw_value": "La Habana"
+    },
+    {
+      "id": "ast_crespo_6627_fuente",
+      "source_record_id": "sr_crespo_navio_6627",
+      "field": "fuente",
+      "raw_value": "A.G.I.: CONTRATACION, 1266, N.5"
     }
   ]
 }

@@ -265,7 +265,7 @@
 </aside>
 
 <script>
-  import type { PublishedEntities, PublishedEvent, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
+  import type { PublishedEntities, PublishedEvent, PublishedRouteFeatureCollection, PublishedSources, Selection } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
   import { formatCoordinates } from "../../lib/geo/format";
   import { consumeSelectionTrigger, recordSelectionTrigger } from "../../lib/map/interactionState";
@@ -327,15 +327,17 @@
   let entitiesCache: PublishedEntities | null = null;
   let routesCache: PublishedRouteFeatureCollection | null = null;
   let eventsCache: PublishedEvent[] | null = null;
+  let sourcesCache: PublishedSources | null = null;
   let currentReturnTarget: HTMLElement | null = null;
   let activeTimeFilter = timeFilterStore.get();
 
   async function loadData() {
     try {
-      const [entRes, routesRes, evRes] = await Promise.all([
+      const [entRes, routesRes, evRes, srcRes] = await Promise.all([
         fetch(publishedDataUrl("entities")),
         fetch(publishedDataUrl("routes")),
         fetch(publishedDataUrl("events")),
+        fetch(publishedDataUrl("sources")),
       ]);
       if (entRes.ok) entitiesCache = await entRes.json();
       if (routesRes.ok) routesCache = await routesRes.json();
@@ -343,6 +345,7 @@
         const evData = await evRes.json();
         eventsCache = Array.isArray(evData) ? evData : evData.events || [];
       }
+      if (srcRes.ok) sourcesCache = await srcRes.json();
       const curr = selectionStore.get();
       if (curr) syncInspector(curr);
     } catch (e) {
@@ -432,6 +435,15 @@
       });
       selectionStore.set({ kind, id });
     });
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        recordSelectionTrigger({
+          modality: "keyboard",
+          origin: "inspector_connection",
+          returnTarget: btn,
+        });
+      }
+    });
     return btn;
   }
 
@@ -463,7 +475,13 @@
     if (titleEl) titleEl.textContent = place.canonical_name;
     if (subtitleEl) subtitleEl.textContent = `${place.region} · Modern coordinates for navigation`;
 
-    if (placeRawName) placeRawName.textContent = place.raw_source_name;
+    if (placeRawName) {
+      if (place.endonym && place.endonym !== place.canonical_name) {
+        placeRawName.textContent = `${place.raw_source_name} (Endonym: ${place.endonym})`;
+      } else {
+        placeRawName.textContent = place.raw_source_name;
+      }
+    }
     if (placePrecision) placePrecision.textContent = humanizePrecision(place.geographic_precision);
     if (placeCoords) placeCoords.textContent = formatCoordinates(place.coordinates[0], place.coordinates[1]);
     if (placeGeomProv) placeGeomProv.textContent = humanizePrecision(place.geometry_provenance);
@@ -545,6 +563,8 @@
     const occId = ship.occurrence_ids[0];
     const shipOcc = entitiesCache.ship_occurrences.find((o) => o.id === occId);
     const crewOccs = entitiesCache.crew_occurrences.filter((c) => c.ship_occurrence_id === occId);
+    const sr = sourcesCache?.source_records.find((r) => r.id === shipOcc?.source_record_id);
+    const primarySourceId = sr?.source_id || "src_imlm_ukda_852135";
 
     const capYearMatch = shipOcc?.recorded_capture_date?.match(/^(\d{4})/);
     const capYear = capYearMatch ? parseInt(capYearMatch[1], 10) : null;
@@ -593,7 +613,11 @@
     }
 
     if (shipUpstreamRef) {
-      shipUpstreamRef.textContent = `Upstream Archive: TNA High Court of Admiralty Prize Papers`;
+      if (sr?.upstream_archive_source_id === "src_pares_agi") {
+        shipUpstreamRef.textContent = `Upstream Archive: Archivo General de Indias (${sr.upstream_archive_reference || "PARES"})`;
+      } else {
+        shipUpstreamRef.textContent = `Upstream Archive: TNA High Court of Admiralty Prize Papers`;
+      }
     }
 
     if (shipConnectionsWrap && shipConnectionsList) {
@@ -641,7 +665,7 @@
         window.dispatchEvent(
           new CustomEvent("cc:open-source", {
             detail: {
-              sourceId: "src_imlm_ukda_852135",
+              sourceId: primarySourceId,
               assertionIds: allAsts,
               triggerEl: shipEvidenceBtn,
             },
@@ -736,6 +760,24 @@
     const origin = entitiesCache.places.find((p) => p.id === firstRoute.properties.origin_place_id);
     const dest = entitiesCache.places.find((p) => p.id === firstRoute.properties.destination_place_id);
 
+    const filterActive = activeTimeFilter.id !== "all";
+    const startY = activeTimeFilter.startYear;
+    const endY = activeTimeFilter.endYear;
+
+    const archivalRoutes = entitiesCache.routes || [];
+    const constituentRouteObjs = archivalRoutes.filter((ar: any) =>
+      firstRoute.properties.constituent_route_ids.includes(ar.id)
+    );
+
+    const activeMembers = filterActive
+      ? constituentRouteObjs.filter(
+          (ar: any) =>
+            ar.associated_record_year &&
+            ar.associated_record_year >= startY &&
+            ar.associated_record_year <= endY
+        )
+      : constituentRouteObjs;
+
     checkPeriodFocus(firstRoute.properties.associated_record_year);
 
     if (kickerEl) kickerEl.textContent = "Route Connection";
@@ -749,7 +791,13 @@
     const destName = dest?.canonical_name || firstRoute.properties.destination_place_id;
 
     if (titleEl) titleEl.textContent = `${originName} → ${destName}`;
-    if (subtitleEl) subtitleEl.textContent = `${firstRoute.properties.record_count} documented vessel voyage${firstRoute.properties.record_count > 1 ? "s" : ""} in current corpus`;
+    if (subtitleEl) {
+      if (filterActive && firstRoute.properties.record_count > 1) {
+        subtitleEl.textContent = `${activeMembers.length} of ${firstRoute.properties.record_count} documented voyages in current period focus (${activeTimeFilter.label})`;
+      } else {
+        subtitleEl.textContent = `${firstRoute.properties.record_count} documented vessel voyage${firstRoute.properties.record_count > 1 ? "s" : ""} in current corpus`;
+      }
+    }
 
     if (voyageOrigin) voyageOrigin.textContent = originName;
     if (voyageDest) voyageDest.textContent = destName;
@@ -757,11 +805,14 @@
 
     if (voyageVesselsList) {
       voyageVesselsList.replaceChildren();
-      for (const vid of firstRoute.properties.constituent_vessel_ids) {
-        const ship = entitiesCache.ships.find((s) => s.id === vid);
-        const shipName = ship ? ship.canonical_name : vid;
+      for (const ar of constituentRouteObjs) {
+        const ship = entitiesCache.ships.find((s) => s.id === ar.vessel_id);
+        const shipName = ship ? ship.canonical_name : ar.vessel_id;
+        const yearDisplay = ar.associated_record_year || "Unknown Year";
+        const isOutOfPeriod = filterActive && (!ar.associated_record_year || ar.associated_record_year < startY || ar.associated_record_year > endY);
+        const label = `${shipName} (${yearDisplay})${isOutOfPeriod ? " · Outside Focus" : ""}`;
         voyageVesselsList.appendChild(
-          createRelationshipRow("VESSEL", "Documented Voyage", `${shipName} (${firstRoute.properties.associated_record_year})`, "ship", vid)
+          createRelationshipRow("VESSEL", "Documented Voyage", label, "ship", ar.vessel_id)
         );
       }
     }
@@ -822,8 +873,15 @@
         renderShip(currentSelection.id);
       } else if (currentSelection.kind === "event") {
         renderEvent(currentSelection.id);
+      } else if (currentSelection.kind === "voyage") {
+        renderVoyage(currentSelection.id);
       }
     }
+  });
+
+  (window as any).__CC_SELECTION_STORE__ = selectionStore;
+  window.addEventListener("cc:test-select", (e: any) => {
+    if (e.detail) selectionStore.set(e.detail);
   });
 
   closeBtn?.addEventListener("click", () => {
