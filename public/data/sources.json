@@ -483,6 +483,14 @@
       "inspection_state": "dataset_record_inspected",
       "upstream_archive_source_id": "src_pares_agi",
       "upstream_archive_reference": "CONTRATACION, 1266, N.5"
+    },
+    {
+      "id": "sr_pares_contratacion_1266_n5",
+      "source_id": "src_pares_agi",
+      "record_type": "archival_catalogue_entry",
+      "native_identifier": "CONTRATACION,1266,N.5",
+      "inspection_state": "metadata_only",
+      "upstream_archive_reference": "Archivo General de Indias / CONTRATACION,1266,N.5 (Digitalizadas)"
     }
   ],
   "assertions": [
@@ -1650,6 +1658,12 @@
       "source_record_id": "sr_crespo_navio_6627",
       "field": "fuente",
       "raw_value": "A.G.I.: CONTRATACION, 1266, N.5"
+    },
+    {
+      "id": "ast_pares_1266_n5_title",
+      "source_record_id": "sr_pares_contratacion_1266_n5",
+      "field": "archival_catalogue_title",
+      "raw_value": "Registro del navío: Jesús Nazareno"
     }
   ]
 }

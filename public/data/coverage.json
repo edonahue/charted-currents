@@ -2,6 +2,7 @@
   {
     "source_id": "src_imlm_ukda_852135",
     "short_label": "IMLM Prize Papers",
+    "sample_type": "continuous_chronological_sample",
     "source_declared_scope": {
       "start_year": 1650,
       "end_year": 1815,
@@ -16,7 +17,7 @@
     "project_reviewed_sample": {
       "start_year": 1702,
       "end_year": 1712,
-      "sample_type": "continuous_prize_sample",
+      "sample_type": "continuous_chronological_sample",
       "record_count": 15,
       "caveat": "Sample slice from English Prize Court examinations (HCA 32)."
     }
@@ -24,23 +25,29 @@
   {
     "source_id": "src_crespo_dyncoopnet",
     "short_label": "Crespo Spanish Atlantic",
+    "sample_type": "discrete_carrera_records",
     "source_declared_scope": {
       "start_year": 1648,
       "end_year": 1778,
       "description": "DynCoopNet Atlantic Trade dataset compiled from Archivo General de Indias registers."
     },
     "local_database_scope": {
-      "start_year": 1623,
-      "end_year": 1778,
+      "start_year": 1609,
+      "end_year": 1787,
       "record_count": 13767,
-      "description": "Locally profiled TODOSNAVIOS voyage/register database."
+      "description": "TODOSNAVIOS table scope derived via automated profiler (CSIC ODC-DbCL)."
     },
     "project_reviewed_sample": {
       "start_year": 1684,
       "end_year": 1706,
       "sample_type": "discrete_carrera_records",
+      "discrete_years": [
+        1684,
+        1695,
+        1706
+      ],
       "record_count": 3,
-      "caveat": "Reviewed Carrera de Indias registers to Havana citing Archivo General de Indias Contratación."
+      "caveat": "Discrete reviewed Carrera de Indias registers calling at Havana (1684, 1695, 1706)."
     }
   }
 ]

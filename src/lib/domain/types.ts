@@ -58,9 +58,12 @@ export interface NameAttestation {
   normalized_search_key?: string;
 }
 
+export type CoverageSampleType = "continuous_chronological_sample" | "discrete_carrera_records";
+
 export interface PublishedSourceCoverage {
   source_id: string;
   short_label: string;
+  sample_type?: CoverageSampleType;
   source_declared_scope: {
     start_year: number;
     end_year: number;
@@ -75,7 +78,8 @@ export interface PublishedSourceCoverage {
   project_reviewed_sample: {
     start_year: number;
     end_year: number;
-    sample_type: string;
+    sample_type: CoverageSampleType;
+    discrete_years?: number[];
     record_count: number;
     caveat: string;
   };
@@ -219,20 +223,29 @@ export interface PublishedAssertion {
   [key: string]: unknown;
 }
 
+export type OccurrenceContextKind = "prize_capture" | "voyage_register" | "maritime_survey";
+
 export interface PublishedShipOccurrence {
   id: string;
   source_record_id: string;
+  record_context?: OccurrenceContextKind;
   raw_name: string;
   attestations?: NameAttestation[];
-  raw_tonnage: string;
-  raw_construction_place: string;
+  raw_tonnage?: string | null;
+  raw_construction_place?: string | null;
   reported_age_years?: number;
-  reported_owner_residence: string;
-  recorded_voyage_origin: string;
-  recorded_muster_place?: string;
-  recorded_voyage_destination: string;
-  recorded_capture_location: string;
-  recorded_capture_date: string;
+  recorded_master?: string | null;
+  recorded_year?: number;
+  recorded_date?: string | null;
+  date_precision?: "day" | "month" | "year" | "circa";
+  recorded_voyage_origin?: string | null;
+  recorded_muster_place?: string | null;
+  recorded_voyage_destination?: string | null;
+  reported_owner_residence?: string | null;
+  recorded_capture_location?: string | null;
+  recorded_capture_date?: string | null;
+  fleet_convoy_display?: string | null;
+  archival_register_reference?: string | null;
   assertion_ids: string[];
 }
 
@@ -255,14 +268,18 @@ export interface PublishedCrewOccurrence {
 export interface PublishedShip {
   id: string;
   canonical_name: string;
+  disambiguation_display?: string | null;
   attestations?: NameAttestation[];
   evidence_state: EvidenceState;
   occurrence_ids: string[];
   reported_burden_display: string;
   construction_display: string;
-  owner_display: string;
+  owner_display?: string | null;
   voyage_display: string;
-  capture_display: string;
+  capture_display?: string | null;
+  master_display?: string | null;
+  fleet_display?: string | null;
+  register_display?: string | null;
 }
 
 export interface PublishedEntityResolutionEdge {

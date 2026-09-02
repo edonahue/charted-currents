@@ -387,15 +387,15 @@ const PLACES = (entitiesData.places || []).map((p) => ({
     const inTimeCondition: any = filterActive
       ? [
           "any",
+          ...Array.from({ length: endY - startY + 1 }, (_, i) => [
+            "in",
+            startY + i,
+            ["get", "member_years"],
+          ]),
           [
             "all",
             [">=", ["get", "associated_record_year"], startY],
             ["<=", ["get", "associated_record_year"], endY],
-          ],
-          [
-            "all",
-            ["<=", ["to-number", ["get", "start_year", ["get", "temporal_extent"]]], endY],
-            [">=", ["to-number", ["get", "end_year", ["get", "temporal_extent"]]], startY],
           ],
         ]
       : true;

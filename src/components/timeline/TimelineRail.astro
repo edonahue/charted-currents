@@ -85,13 +85,25 @@ const formattedEvents = [
   ...assignStackIndices(captureEvents),
 ];
 
-// Data-driven continuous coverage bands compiled from coverage.json
-const COVERAGE_BANDS = (coverageData as any[]).map((cov: any) => ({
+// Data-driven coverage elements compiled from coverage.json
+const continuousCoverages = (coverageData as any[]).filter(
+  (cov: any) => cov.project_reviewed_sample?.sample_type === "continuous_chronological_sample"
+).map((cov: any) => ({
   label: `${cov.project_reviewed_sample.start_year}–${cov.project_reviewed_sample.end_year} ${cov.short_label}`,
   start: cov.project_reviewed_sample.start_year,
   end: cov.project_reviewed_sample.end_year,
   caveat: cov.project_reviewed_sample.caveat,
 }));
+
+const discreteCoverages = (coverageData as any[]).filter(
+  (cov: any) => cov.project_reviewed_sample?.sample_type === "discrete_carrera_records"
+).flatMap((cov: any) =>
+  (cov.project_reviewed_sample.discrete_years || [1684, 1695, 1706]).map((yr: number) => ({
+    year: yr,
+    label: `${yr} ${cov.short_label}`,
+    caveat: cov.project_reviewed_sample.caveat,
+  }))
+);
 ---
 
 <section
@@ -112,18 +124,31 @@ const COVERAGE_BANDS = (coverageData as any[]).map((cov: any) => ({
   </div>
 
   <div class="timeline-shell__rail" aria-label="1650 to 1730 period rail">
-    <!-- Source Coverage Background Shading -->
+    <!-- Source Coverage Background Shading & Discrete Markers -->
     <div class="timeline-coverage-layer" aria-hidden="true">
-      {COVERAGE_BANDS.map((band) => {
+      {continuousCoverages.map((band) => {
         const left = ((band.start - TIMELINE_RANGE.startYear) / totalSpan) * 100;
         const width = ((band.end - band.start) / totalSpan) * 100;
         return (
           <div
-            class="timeline-coverage-band"
+            class="timeline-coverage-band timeline-coverage-band--continuous"
             style={`left: ${left}%; width: ${Math.max(width, 1.8)}%;`}
             title={`Documentary sample coverage: ${band.label} (${band.caveat})`}
           >
             <span class="timeline-coverage-label">{band.label}</span>
+          </div>
+        );
+      })}
+      {discreteCoverages.map((marker) => {
+        const left = ((marker.year - TIMELINE_RANGE.startYear) / totalSpan) * 100;
+        return (
+          <div
+            class="timeline-coverage-marker timeline-coverage-marker--discrete"
+            style={`left: ${left}%;`}
+            title={`Discrete archival sample record: ${marker.label} (${marker.caveat})`}
+          >
+            <span class="timeline-coverage-marker-line"></span>
+            <span class="timeline-coverage-label">{marker.year}</span>
           </div>
         );
       })}
@@ -173,15 +198,14 @@ const COVERAGE_BANDS = (coverageData as any[]).map((cov: any) => ({
     </div>
   </div>
 
-  <footer class="timeline-shell__footer">
+  <div class="timeline-shell__footer">
     <span class="timeline-shell__note">
-      Shaded intervals indicate documented dataset coverage boundaries (1684–1706 Spanish Carrera records, 1702–1712 English Prize Court records). Unshaded intervals reflect documentary sample boundaries, not historical inactivity.
+      Focus highlights verified prize events (1702–1712), discrete Spanish Atlantic registers (1684, 1695, 1706), and Port Royal contextual disaster history.
     </span>
-  </footer>
+  </div>
 </section>
 
 <script>
-  import type { Selection } from "../../lib/domain/types";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
   import { timeFilterStore } from "../../lib/state/timeFilter";
@@ -198,7 +222,15 @@ const COVERAGE_BANDS = (coverageData as any[]).map((cov: any) => ({
         lastModality = "keyboard";
         const active = document.activeElement;
         if (active && active.hasAttribute("data-timeline-event")) {
-          (active as HTMLButtonElement).click();
+          const sid = active.getAttribute("data-selection-id");
+          if (sid) {
+            recordSelectionTrigger({
+              modality: "keyboard",
+              origin: "timeline",
+              returnTarget: active as HTMLElement,
+            });
+            selectionStore.set({ kind: "event", id: sid });
+          }
         }
       }
     },
@@ -266,7 +298,7 @@ const COVERAGE_BANDS = (coverageData as any[]).map((cov: any) => ({
     });
   });
 
-  selectionStore.subscribe((selection: Selection) => {
+  selectionStore.subscribe((selection) => {
     markers.forEach((btn) => {
       const sid = btn.getAttribute("data-selection-id");
       if (selection && sid === selection.id) {
@@ -361,6 +393,24 @@ const COVERAGE_BANDS = (coverageData as any[]).map((cov: any) => ({
     border-left: 1px dashed color-mix(in srgb, var(--cc-sand) 50%, transparent);
     border-right: 1px dashed color-mix(in srgb, var(--cc-sand) 50%, transparent);
     border-radius: var(--cc-radius-xs);
+  }
+
+  .timeline-coverage-marker--discrete {
+    position: absolute;
+    top: 0.2rem;
+    bottom: 0.2rem;
+    width: 2px;
+    transform: translateX(-50%);
+  }
+
+  .timeline-coverage-marker-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: color-mix(in srgb, var(--cc-sand) 40%, transparent);
+    border-radius: 1px;
   }
 
   .timeline-coverage-label {

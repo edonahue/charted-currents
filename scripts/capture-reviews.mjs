@@ -897,11 +897,20 @@ async function runReviewSuite() {
         const hasRelRoles = rows.every(r => Boolean(r.querySelector('.inspector-rel-role')));
         const hasRelLabels = rows.every(r => Boolean(r.querySelector('.inspector-rel-label')));
         
+        // Verify individual constituent member years for Havana network connections
+        const estrellaRow = rows.find(r => r.textContent?.includes('Nuestra Señora de la Estrella'));
+        const remediosRow = rows.find(r => r.textContent?.includes('Remedios y las Animas'));
+        const guadalupeRow = rows.find(r => r.textContent?.includes('Jesús, Nazareno'));
+
+        const has1684 = estrellaRow?.textContent?.includes('(1684)');
+        const has1695 = remediosRow?.textContent?.includes('(1695)');
+        const has1706 = guadalupeRow?.textContent?.includes('(1706)');
+
         // Select the connected vessel (St John Baptiste, captured 1712)
         const stJohnRow = rows.find(r => r.textContent?.includes('St John Baptiste'));
         stJohnRow?.click();
 
-        return { isOpen, hasRelTypes, hasRelRoles, hasRelLabels };
+        return { isOpen, hasRelTypes, hasRelRoles, hasRelLabels, has1684, has1695, has1706 };
       })()`,
       returnByValue: true,
     });
@@ -921,6 +930,9 @@ async function runReviewSuite() {
     assert(temporalPrecedenceCheck?.result?.value?.hasRelTypes, "Relationship rows contain semantic uppercase TYPE badges");
     assert(temporalPrecedenceCheck?.result?.value?.hasRelRoles, "Relationship rows contain editorial role descriptions");
     assert(temporalPrecedenceCheck?.result?.value?.hasRelLabels, "Relationship rows contain clear entity labels");
+    assert(temporalPrecedenceCheck?.result?.value?.has1684, "Havana network connections display correct member year 1684 for Estrella");
+    assert(temporalPrecedenceCheck?.result?.value?.has1695, "Havana network connections display correct member year 1695 for Remedios y Animas");
+    assert(temporalPrecedenceCheck?.result?.value?.has1706, "Havana network connections display correct member year 1706 for Jesús Nazareno");
     assert(outOfPeriodNoticeCheck?.result?.value?.isNoticeVisible, "Inspecting 1712 vessel during 1684–1695 filter displays 'Outside current period focus' banner");
 
     // Reset to All
@@ -946,14 +958,25 @@ async function runReviewSuite() {
     const estrellaCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
         const tonnage = document.querySelector('[data-ship-tonnage]')?.textContent || '';
+        const master = document.querySelector('[data-ship-master]')?.textContent || '';
+        const fleet = document.querySelector('[data-ship-fleet]')?.textContent || '';
+        const register = document.querySelector('[data-ship-register]')?.textContent || '';
+        const ownerRow = document.querySelector('[data-ship-owner-row]');
+        const isOwnerHidden = !ownerRow || ownerRow.hidden || getComputedStyle(ownerRow).display === 'none';
         const upstream = document.querySelector('[data-ship-upstream-ref]')?.textContent || '';
-        return { title, tonnage, upstream };
+        return { title, subtitle, tonnage, master, fleet, register, isOwnerHidden, upstream };
       })()`,
       returnByValue: true,
     });
-    assert(estrellaCheck?.result?.value?.title === "Nuestra Señora de la Estrella (1684)", "Estrella 1684 vessel selected in inspector");
+    assert(estrellaCheck?.result?.value?.title === "Nuestra Señora de la Estrella", "Estrella 1684 canonical title uses historical vessel name");
+    assert(estrellaCheck?.result?.value?.subtitle?.includes("1684 Carrera Register"), "Estrella 1684 subtitle indicates 1684 Carrera Register context");
     assert(estrellaCheck?.result?.value?.tonnage === "Recorded tonnage: 278", "Estrella 1684 burden formatted with conservative recorded tonnage");
+    assert(estrellaCheck?.result?.value?.master === "Master: Juan Bernardo de Heredia", "Estrella 1684 displays documented master Juan Bernardo de Heredia");
+    assert(estrellaCheck?.result?.value?.fleet === "Galeones a Tierra Firme (1684)", "Estrella 1684 displays documented fleet convoy");
+    assert(estrellaCheck?.result?.value?.register === "Registered in AGI CONTRATACION 1240, N.6", "Estrella 1684 displays AGI Contratación register citation");
+    assert(estrellaCheck?.result?.value?.isOwnerHidden, "Estrella 1684 hides inapplicable Owner Residence field");
     assert(estrellaCheck?.result?.value?.upstream.includes("Archivo General de Indias"), "Estrella 1684 displays Archivo General de Indias upstream archive series");
 
     // Capture Spanish Atlantic vessel inspector screenshot

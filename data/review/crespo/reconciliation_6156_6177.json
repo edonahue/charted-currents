@@ -1,0 +1,50 @@
+{
+  "reconciliation_task": "crespo_1684_estrella_collision_audit",
+  "candidate_occurrences": [
+    {
+      "occurrence_id": "occ_crespo_6156",
+      "native_id": 6156,
+      "source_record_id": "sr_crespo_navio_6156",
+      "raw_vessel_name": "Nuestra Señora de la Estrella",
+      "recorded_year": 1684,
+      "recorded_tonnage": "278",
+      "master_name": "Juan Bernardo de Heredia",
+      "departure_place": "Cádiz",
+      "arrival_place": "La Habana",
+      "convoy_fleet_id": 141,
+      "fuente": "A.G.I.: CONTRATACION, 1240, N.6"
+    },
+    {
+      "occurrence_id": "occ_crespo_6177",
+      "native_id": 6177,
+      "source_record_id": "sr_crespo_navio_6177",
+      "raw_vessel_name": "Nuestra Señora de la Estrella",
+      "recorded_year": 1684,
+      "recorded_tonnage": null,
+      "master_name": "Pedro Carrillo de Albornoz",
+      "departure_place": "Cádiz",
+      "arrival_place": "Tierra Firme",
+      "convoy_fleet_id": 141,
+      "fuente": "A.G.I.: CONTRATACION, 1241, N. 1, R. 13"
+    }
+  ],
+  "comparison_analysis": {
+    "matching_attributes": [
+      "raw_vessel_name: 'Nuestra Señora de la Estrella'",
+      "recorded_year: 1684",
+      "departure_place: 'Cádiz'",
+      "convoy_fleet_id: 141 (Galeones a Tierra Firme)"
+    ],
+    "conflicting_attributes": [
+      "master_name: 'Juan Bernardo de Heredia' vs 'Pedro Carrillo de Albornoz'",
+      "arrival_place: 'La Habana' vs 'Tierra Firme'",
+      "fuente_signatura: 'AGI CONTRATACION 1240, N.6' vs 'AGI CONTRATACION 1241, N.1, R.13'",
+      "recorded_tonnage: '278' vs unrecorded"
+    ]
+  },
+  "reconciliation_verdict": {
+    "resolution_state": "distinct_occurrences_unresolved_physical_identity",
+    "rationale": "In the Carrera de Indias, multiple merchant vessels in the same departure year frequently bore the same popular devotional name. The conflicting masters, destinations (Havana vs Tierra Firme), and distinct AGI register files establish that these are separate voyage occurrences. While they may represent two distinct hulls or a re-registered vessel, the available source records do not prove physical identity. Therefore, occ_crespo_6156 is promoted to canonical ship_nuestra_senora_de_la_estrella_1684, while occ_crespo_6177 remains an independent candidate occurrence.",
+    "auto_merge_permitted": false
+  }
+}
