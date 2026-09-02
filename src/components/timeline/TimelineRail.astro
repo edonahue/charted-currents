@@ -7,6 +7,7 @@
  * collision-free hover/focus tooltips, and a reactive 3-way temporal period focus store.
  */
 import eventsData from "../../../public/data/events.json";
+import coverageData from "../../../public/data/coverage.json";
 import { TIMELINE_RANGE } from "../../lib/time/config";
 
 const majorYears = [1650, 1670, 1690, 1710, 1730] as const;
@@ -84,10 +85,13 @@ const formattedEvents = [
   ...assignStackIndices(captureEvents),
 ];
 
-// Sourced continuous coverage band: structured IMLM Prize Papers sample (1702–1712)
-const COVERAGE_BANDS = [
-  { label: "1702–1712 IMLM Prize Papers Sample", start: 1702, end: 1712 },
-];
+// Data-driven continuous coverage bands compiled from coverage.json
+const COVERAGE_BANDS = (coverageData as any[]).map((cov: any) => ({
+  label: `${cov.project_reviewed_sample.start_year}–${cov.project_reviewed_sample.end_year} ${cov.short_label}`,
+  start: cov.project_reviewed_sample.start_year,
+  end: cov.project_reviewed_sample.end_year,
+  caveat: cov.project_reviewed_sample.caveat,
+}));
 ---
 
 <section
@@ -117,7 +121,7 @@ const COVERAGE_BANDS = [
           <div
             class="timeline-coverage-band"
             style={`left: ${left}%; width: ${Math.max(width, 1.8)}%;`}
-            title={`Documentary sample coverage: ${band.label}`}
+            title={`Documentary sample coverage: ${band.label} (${band.caveat})`}
           >
             <span class="timeline-coverage-label">{band.label}</span>
           </div>
@@ -171,7 +175,7 @@ const COVERAGE_BANDS = [
 
   <footer class="timeline-shell__footer">
     <span class="timeline-shell__note">
-      Shaded interval indicates structured IMLM dataset coverage (1702–1712); discrete markers indicate contemporary cartographic and manuscript accounts. Unshaded intervals reflect documentary sample boundaries, not historical inactivity.
+      Shaded intervals indicate documented dataset coverage boundaries (1684–1706 Spanish Carrera records, 1702–1712 English Prize Court records). Unshaded intervals reflect documentary sample boundaries, not historical inactivity.
     </span>
   </footer>
 </section>

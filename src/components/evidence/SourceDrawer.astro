@@ -286,8 +286,13 @@
 
       const upNote = document.createElement("p");
       upNote.className = "inspector-note";
-      upNote.textContent =
-        "Cited in dataset extract from High Court of Admiralty prize papers. The physical 17th/18th-century manuscript at Kew was not independently examined.";
+      if (record?.upstream_archive_source_id === "src_pares_agi") {
+        upNote.textContent =
+          "Cited in dataset extract from Archivo General de Indias (Sevilla). Portal de Archivos Españoles (PARES) · Ministerio de Cultura.";
+      } else {
+        upNote.textContent =
+          "Cited in dataset extract from High Court of Admiralty prize papers. The physical 17th/18th-century manuscript at Kew was not independently examined.";
+      }
 
       upSection.append(upKicker, upDl, upNote);
       card.appendChild(upSection);

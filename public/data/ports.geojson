@@ -15,6 +15,8 @@
         "id": "place_jamaica",
         "canonical_name": "Jamaica",
         "raw_source_name": "Jamaica",
+        "endonym": null,
+        "attestations": [],
         "region": "Greater Antilles",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -40,6 +42,8 @@
         "id": "place_port_royal",
         "canonical_name": "Port Royal",
         "raw_source_name": "Port Royal",
+        "endonym": null,
+        "attestations": [],
         "region": "Jamaica",
         "geographic_precision": "populated_place",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -65,6 +69,8 @@
         "id": "place_london",
         "canonical_name": "London",
         "raw_source_name": "London",
+        "endonym": null,
+        "attestations": [],
         "region": "England",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -92,6 +98,8 @@
         "id": "place_bristol",
         "canonical_name": "Bristol",
         "raw_source_name": "Bristoll",
+        "endonym": null,
+        "attestations": [],
         "region": "England",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -117,6 +125,8 @@
         "id": "place_dartmouth",
         "canonical_name": "Dartmouth, Devon",
         "raw_source_name": "Dartmouth, Devon",
+        "endonym": null,
+        "attestations": [],
         "region": "England",
         "geographic_precision": "port_town",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -140,6 +150,8 @@
         "id": "place_plymouth",
         "canonical_name": "Plymouth, Devon",
         "raw_source_name": "Plymouth, Devon",
+        "endonym": null,
+        "attestations": [],
         "region": "England",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -174,6 +186,8 @@
         "id": "place_barbados",
         "canonical_name": "Barbados",
         "raw_source_name": "Barbados",
+        "endonym": null,
+        "attestations": [],
         "region": "Windward Islands",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -198,6 +212,8 @@
         "id": "place_antigua",
         "canonical_name": "Antigua",
         "raw_source_name": "Antigua",
+        "endonym": null,
+        "attestations": [],
         "region": "Leeward Islands",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -221,6 +237,8 @@
         "id": "place_nevis",
         "canonical_name": "Nevis",
         "raw_source_name": "Island of Nevis",
+        "endonym": null,
+        "attestations": [],
         "region": "Leeward Islands",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -244,6 +262,8 @@
         "id": "place_st_christopher",
         "canonical_name": "St Christopher (St Kitts)",
         "raw_source_name": "St Christopher in the West Indies",
+        "endonym": null,
+        "attestations": [],
         "region": "Leeward Islands",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -267,6 +287,8 @@
         "id": "place_montserrat",
         "canonical_name": "Montserrat",
         "raw_source_name": "Montserrat",
+        "endonym": null,
+        "attestations": [],
         "region": "Leeward Islands",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -290,6 +312,8 @@
         "id": "place_st_domingo",
         "canonical_name": "Saint-Domingue (Hispaniola)",
         "raw_source_name": "St Domingo on the island of Hispaniola",
+        "endonym": null,
+        "attestations": [],
         "region": "Greater Antilles",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -314,6 +338,8 @@
         "id": "place_martinique",
         "canonical_name": "Martinique",
         "raw_source_name": "Martinicoe in the West Indies",
+        "endonym": null,
+        "attestations": [],
         "region": "Windward Islands",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -338,13 +364,51 @@
         "id": "place_havana",
         "canonical_name": "Havana",
         "raw_source_name": "Havana",
+        "endonym": "La Habana",
+        "attestations": [
+          {
+            "raw_name": "Havana",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "en",
+            "attestation_relationship": "source_transcription",
+            "source_record_id": "sr_imlm_ship_1582",
+            "normalized_search_key": "havana"
+          },
+          {
+            "raw_name": "La Habana",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "es",
+            "attestation_relationship": "editorial_normalization",
+            "source_record_id": "sr_crespo_navio_6156",
+            "normalized_search_key": "la habana"
+          },
+          {
+            "raw_name": "La Habana",
+            "evidence_layer": "archival_catalogue_metadata",
+            "language": "es",
+            "attestation_relationship": "editorial_normalization",
+            "source_record_id": "sr_crespo_navio_6156",
+            "normalized_search_key": "la habana"
+          },
+          {
+            "raw_name": "Havana",
+            "evidence_layer": "historical_map_label",
+            "language": "en",
+            "attestation_relationship": "modern_preferred_label",
+            "source_record_id": "sr_loc_map_jamaica_1684",
+            "normalized_search_key": "havana"
+          }
+        ],
         "region": "Cuba",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
         "source_assertion_ids": [
-          "ast_1582_voyage"
+          "ast_crespo_6156_arr",
+          "ast_1582_voyage",
+          "ast_crespo_6587_arr",
+          "ast_crespo_6627_arr"
         ],
-        "notes": "Recorded as the voyage origin for IMLM Ship 1582 in Prize Court examinations."
+        "notes": "Strategic Spanish Atlantic port city recorded as prize departure port in IMLM 1582 and arrival port for Carrera de Indias registers in Crespo 6156, 6587, 6627."
       }
     },
     {
@@ -361,6 +425,8 @@
         "id": "place_st_augustine",
         "canonical_name": "St Augustine",
         "raw_source_name": "St Augustine",
+        "endonym": null,
+        "attestations": [],
         "region": "Florida",
         "geographic_precision": "populated_place",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -384,6 +450,8 @@
         "id": "place_cartagena",
         "canonical_name": "Cartagena",
         "raw_source_name": "Carthegena",
+        "endonym": null,
+        "attestations": [],
         "region": "Spanish Main",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -407,6 +475,8 @@
         "id": "place_marseille",
         "canonical_name": "Marseille",
         "raw_source_name": "Marseille",
+        "endonym": null,
+        "attestations": [],
         "region": "France",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -430,6 +500,8 @@
         "id": "place_rochelle",
         "canonical_name": "La Rochelle",
         "raw_source_name": "Rochelle",
+        "endonym": null,
+        "attestations": [],
         "region": "France",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -455,6 +527,8 @@
         "id": "place_nantes",
         "canonical_name": "Nantes",
         "raw_source_name": "the river Nantes",
+        "endonym": null,
+        "attestations": [],
         "region": "France",
         "geographic_precision": "port_city",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -478,6 +552,8 @@
         "id": "place_south_carolina",
         "canonical_name": "South Carolina",
         "raw_source_name": "South Carolina",
+        "endonym": null,
+        "attestations": [],
         "region": "North America",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_generalized_navigation_reference",
@@ -501,6 +577,8 @@
         "id": "place_biddeford",
         "canonical_name": "Bideford, Devon",
         "raw_source_name": "Biddeford, Devon",
+        "endonym": null,
+        "attestations": [],
         "region": "England",
         "geographic_precision": "port_town",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -524,6 +602,8 @@
         "id": "place_guernsey",
         "canonical_name": "Guernsey",
         "raw_source_name": "Guernsey",
+        "endonym": null,
+        "attestations": [],
         "region": "Channel Islands",
         "geographic_precision": "colony_or_island",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -547,6 +627,8 @@
         "id": "place_port_mahon",
         "canonical_name": "Port Mahon, Minorca",
         "raw_source_name": "Port Mahon",
+        "endonym": null,
+        "attestations": [],
         "region": "Mediterranean",
         "geographic_precision": "port_town",
         "geometry_provenance": "modern_navigation_reference_coordinate",
@@ -554,6 +636,50 @@
           "ast_1964_capture"
         ],
         "notes": "Minorca port recorded as the capture location for IMLM Ship 1964."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_cadiz",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2886,
+          36.5298
+        ]
+      },
+      "properties": {
+        "id": "place_cadiz",
+        "canonical_name": "Cádiz",
+        "raw_source_name": "Cádiz",
+        "endonym": "Cádiz",
+        "attestations": [
+          {
+            "raw_name": "Cádiz",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "es",
+            "attestation_relationship": "source_transcription",
+            "source_record_id": "sr_crespo_navio_6156",
+            "normalized_search_key": "cadiz"
+          },
+          {
+            "raw_name": "Cadiz",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "en",
+            "attestation_relationship": "editorial_normalization",
+            "source_record_id": "sr_imlm_ship_1582",
+            "normalized_search_key": "cadiz"
+          }
+        ],
+        "region": "Spain",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_crespo_6156_dep",
+          "ast_crespo_6587_dep",
+          "ast_crespo_6627_dep"
+        ],
+        "notes": "Primary transatlantic departure port for Spanish Carrera de Indias fleets calling at Havana."
       }
     }
   ]

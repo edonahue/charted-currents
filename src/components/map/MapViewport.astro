@@ -383,12 +383,20 @@ const PLACES = (entitiesData.places || []).map((p) => ({
     const startY = timeFilter.startYear;
     const endY = timeFilter.endYear;
 
-    // Helper condition: is route inside active temporal filter?
+    // Helper condition: is route or any constituent member inside active temporal filter?
     const inTimeCondition: any = filterActive
       ? [
-          "all",
-          [">=", ["get", "associated_record_year"], startY],
-          ["<=", ["get", "associated_record_year"], endY],
+          "any",
+          [
+            "all",
+            [">=", ["get", "associated_record_year"], startY],
+            ["<=", ["get", "associated_record_year"], endY],
+          ],
+          [
+            "all",
+            ["<=", ["to-number", ["get", "start_year", ["get", "temporal_extent"]]], endY],
+            [">=", ["to-number", ["get", "end_year", ["get", "temporal_extent"]]], startY],
+          ],
         ]
       : true;
 

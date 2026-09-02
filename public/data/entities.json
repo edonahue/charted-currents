@@ -310,6 +310,99 @@
         "ast_1982_capture",
         "ast_1982_upstream_hca"
       ]
+    },
+    {
+      "id": "occ_crespo_6156",
+      "source_record_id": "sr_crespo_navio_6156",
+      "raw_name": "Nuestra Señora de la Estrella",
+      "attestations": [
+        {
+          "raw_name": "Nuestra Señora de la Estrella",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6156",
+          "normalized_search_key": "nuestra senora de la estrella"
+        }
+      ],
+      "raw_tonnage": "278",
+      "raw_construction_place": "Unknown",
+      "reported_owner_residence": "Cádiz, Spain",
+      "recorded_voyage_origin": "Cádiz",
+      "recorded_voyage_destination": "La Habana",
+      "recorded_capture_location": "Not captured (peaceful merchant voyage)",
+      "recorded_capture_date": "1684",
+      "assertion_ids": [
+        "ast_crespo_6156_name",
+        "ast_crespo_6156_ton",
+        "ast_crespo_6156_year",
+        "ast_crespo_6156_master",
+        "ast_crespo_6156_dep",
+        "ast_crespo_6156_arr",
+        "ast_crespo_6156_fuente"
+      ]
+    },
+    {
+      "id": "occ_crespo_6587",
+      "source_record_id": "sr_crespo_navio_6587",
+      "raw_name": "Nuestra Señora de los Remedios y las Animas",
+      "attestations": [
+        {
+          "raw_name": "Nuestra Señora de los Remedios y las Animas",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6587",
+          "normalized_search_key": "nuestra senora de los remedios y las animas"
+        }
+      ],
+      "raw_tonnage": "318",
+      "raw_construction_place": "Unknown",
+      "reported_owner_residence": "Cádiz, Spain",
+      "recorded_voyage_origin": "Cádiz",
+      "recorded_voyage_destination": "La Habana",
+      "recorded_capture_location": "Not captured (peaceful merchant voyage)",
+      "recorded_capture_date": "1695",
+      "assertion_ids": [
+        "ast_crespo_6587_name",
+        "ast_crespo_6587_ton",
+        "ast_crespo_6587_year",
+        "ast_crespo_6587_master",
+        "ast_crespo_6587_dep",
+        "ast_crespo_6587_arr",
+        "ast_crespo_6587_fuente"
+      ]
+    },
+    {
+      "id": "occ_crespo_6627",
+      "source_record_id": "sr_crespo_navio_6627",
+      "raw_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+      "attestations": [
+        {
+          "raw_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6627",
+          "normalized_search_key": "jesus nazareno y nuestra senora de guadalupe"
+        }
+      ],
+      "raw_tonnage": "112",
+      "raw_construction_place": "Unknown",
+      "reported_owner_residence": "Cádiz, Spain",
+      "recorded_voyage_origin": "Cádiz",
+      "recorded_voyage_destination": "La Habana",
+      "recorded_capture_location": "Not captured (peaceful merchant voyage)",
+      "recorded_capture_date": "1706",
+      "assertion_ids": [
+        "ast_crespo_6627_name",
+        "ast_crespo_6627_ton",
+        "ast_crespo_6627_year",
+        "ast_crespo_6627_master",
+        "ast_crespo_6627_dep",
+        "ast_crespo_6627_arr",
+        "ast_crespo_6627_fuente"
+      ]
     }
   ],
   "crew_occurrences": [
@@ -901,6 +994,75 @@
       "owner_display": "Bideford",
       "voyage_display": "South Carolina → Bideford",
       "capture_display": "Plymouth, Devon (June 1709)"
+    },
+    {
+      "id": "ship_nuestra_senora_de_la_estrella_1684",
+      "canonical_name": "Nuestra Señora de la Estrella (1684)",
+      "attestations": [
+        {
+          "raw_name": "Nuestra Señora de la Estrella",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6156",
+          "normalized_search_key": "nuestra senora de la estrella"
+        }
+      ],
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_crespo_6156"
+      ],
+      "reported_burden_display": "Recorded tonnage: 278",
+      "construction_display": "Unknown",
+      "owner_display": "Spanish Carrera merchant (Master: Juan Bernardo de Heredia)",
+      "voyage_display": "1684 voyage from Cádiz to Havana (Galeones a Tierra Firme convoy)",
+      "capture_display": "Not captured; registered merchant vessel in AGI Contratación 1240, N.6"
+    },
+    {
+      "id": "ship_remedios_y_animas_1695",
+      "canonical_name": "Nuestra Señora de los Remedios y las Animas (1695)",
+      "attestations": [
+        {
+          "raw_name": "Nuestra Señora de los Remedios y las Animas",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6587",
+          "normalized_search_key": "nuestra senora de los remedios y las animas"
+        }
+      ],
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_crespo_6587"
+      ],
+      "reported_burden_display": "Recorded tonnage: 318",
+      "construction_display": "Unknown",
+      "owner_display": "Spanish Carrera merchant (Master: Diego Dazá)",
+      "voyage_display": "1695 voyage from Cádiz to Havana (Flota a Nueva España convoy)",
+      "capture_display": "Not captured; registered merchant vessel in AGI Contratación 1255, N.7"
+    },
+    {
+      "id": "ship_jesus_nazareno_guadalupe_1706",
+      "canonical_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe (1706)",
+      "attestations": [
+        {
+          "raw_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6627",
+          "normalized_search_key": "jesus nazareno y nuestra senora de guadalupe"
+        }
+      ],
+      "evidence_state": "documented",
+      "occurrence_ids": [
+        "occ_crespo_6627"
+      ],
+      "reported_burden_display": "Recorded tonnage: 112",
+      "construction_display": "Unknown",
+      "owner_display": "Spanish Carrera merchant (Master: Bartolomé Antonio Garrote)",
+      "voyage_display": "1706 voyage from Cádiz to Havana (Flota a Nueva España convoy)",
+      "capture_display": "Not captured; registered merchant vessel in AGI Contratación 1266, N.5"
     }
   ],
   "entity_resolution_edges": [
@@ -1064,6 +1226,45 @@
         "ast_1982_name",
         "ast_1982_tonnage",
         "ast_1982_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_crespo_6156",
+      "target_entity_id": "ship_nuestra_senora_de_la_estrella_1684",
+      "resolution_state": "documented_identity",
+      "resolver": "human_editor_review",
+      "evidence_assertions": [
+        "ast_crespo_6156_name",
+        "ast_crespo_6156_ton",
+        "ast_crespo_6156_year",
+        "ast_crespo_6156_master",
+        "ast_crespo_6156_fuente"
+      ]
+    },
+    {
+      "occurrence_id": "occ_crespo_6587",
+      "target_entity_id": "ship_remedios_y_animas_1695",
+      "resolution_state": "documented_identity",
+      "resolver": "human_editor_review",
+      "evidence_assertions": [
+        "ast_crespo_6587_name",
+        "ast_crespo_6587_ton",
+        "ast_crespo_6587_year",
+        "ast_crespo_6587_master",
+        "ast_crespo_6587_fuente"
+      ]
+    },
+    {
+      "occurrence_id": "occ_crespo_6627",
+      "target_entity_id": "ship_jesus_nazareno_guadalupe_1706",
+      "resolution_state": "documented_identity",
+      "resolver": "human_editor_review",
+      "evidence_assertions": [
+        "ast_crespo_6627_name",
+        "ast_crespo_6627_ton",
+        "ast_crespo_6627_year",
+        "ast_crespo_6627_master",
+        "ast_crespo_6627_fuente"
       ]
     }
   ],
@@ -1311,9 +1512,47 @@
         23.1136
       ],
       "geometry_provenance": "modern_navigation_reference_coordinate",
-      "notes": "Recorded as the voyage origin for IMLM Ship 1582 in Prize Court examinations.",
+      "notes": "Strategic Spanish Atlantic port city recorded as prize departure port in IMLM 1582 and arrival port for Carrera de Indias registers in Crespo 6156, 6587, 6627.",
       "source_assertion_ids": [
-        "ast_1582_voyage"
+        "ast_crespo_6156_arr",
+        "ast_1582_voyage",
+        "ast_crespo_6587_arr",
+        "ast_crespo_6627_arr"
+      ],
+      "endonym": "La Habana",
+      "attestations": [
+        {
+          "raw_name": "Havana",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "en",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_imlm_ship_1582",
+          "normalized_search_key": "havana"
+        },
+        {
+          "raw_name": "La Habana",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "editorial_normalization",
+          "source_record_id": "sr_crespo_navio_6156",
+          "normalized_search_key": "la habana"
+        },
+        {
+          "raw_name": "La Habana",
+          "evidence_layer": "archival_catalogue_metadata",
+          "language": "es",
+          "attestation_relationship": "editorial_normalization",
+          "source_record_id": "sr_crespo_navio_6156",
+          "normalized_search_key": "la habana"
+        },
+        {
+          "raw_name": "Havana",
+          "evidence_layer": "historical_map_label",
+          "language": "en",
+          "attestation_relationship": "modern_preferred_label",
+          "source_record_id": "sr_loc_map_jamaica_1684",
+          "normalized_search_key": "havana"
+        }
       ]
     },
     {
@@ -1461,6 +1700,43 @@
       "source_assertion_ids": [
         "ast_1964_capture"
       ]
+    },
+    {
+      "id": "place_cadiz",
+      "canonical_name": "Cádiz",
+      "raw_source_name": "Cádiz",
+      "endonym": "Cádiz",
+      "attestations": [
+        {
+          "raw_name": "Cádiz",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6156",
+          "normalized_search_key": "cadiz"
+        },
+        {
+          "raw_name": "Cadiz",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "en",
+          "attestation_relationship": "editorial_normalization",
+          "source_record_id": "sr_imlm_ship_1582",
+          "normalized_search_key": "cadiz"
+        }
+      ],
+      "region": "Spain",
+      "geographic_precision": "port_city",
+      "coordinates": [
+        -6.2886,
+        36.5298
+      ],
+      "geometry_provenance": "modern_navigation_reference_coordinate",
+      "notes": "Primary transatlantic departure port for Spanish Carrera de Indias fleets calling at Havana.",
+      "source_assertion_ids": [
+        "ast_crespo_6156_dep",
+        "ast_crespo_6587_dep",
+        "ast_crespo_6627_dep"
+      ]
     }
   ],
   "routes": [
@@ -1481,6 +1757,9 @@
       "source_assertion_ids": [
         "ast_2052_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Jamaica → London voyage relationship from IMLM 2052; rendered line is schematic."
     },
     {
@@ -1499,6 +1778,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_2228_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Jamaica → London voyage relationship from IMLM 2228; rendered line is schematic."
     },
@@ -1519,6 +1801,9 @@
       "source_assertion_ids": [
         "ast_2154_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Barbados → London voyage relationship from IMLM 2154; rendered line is schematic."
     },
     {
@@ -1537,6 +1822,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_2155_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Antigua → Bristol voyage relationship from IMLM 2155; rendered line is schematic."
     },
@@ -1557,6 +1845,9 @@
       "source_assertion_ids": [
         "ast_2144_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Nevis → Bristol voyage relationship from IMLM 2144; rendered line is schematic."
     },
     {
@@ -1575,6 +1866,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_2106_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented St Christopher → London voyage relationship from IMLM 2106; rendered line is schematic."
     },
@@ -1595,6 +1889,9 @@
       "source_assertion_ids": [
         "ast_2098_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Montserrat → London voyage relationship from IMLM 2098; rendered line is schematic."
     },
     {
@@ -1613,6 +1910,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1511_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Bristol → Barbados outward voyage relationship from IMLM 1511; rendered line is schematic."
     },
@@ -1633,6 +1933,9 @@
       "source_assertion_ids": [
         "ast_1245_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Saint-Domingue → La Rochelle voyage relationship from IMLM 1245; rendered line is schematic."
     },
     {
@@ -1651,6 +1954,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1993_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Saint-Domingue → La Rochelle voyage relationship from IMLM 1993; rendered line is schematic."
     },
@@ -1671,6 +1977,9 @@
       "source_assertion_ids": [
         "ast_1516_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Martinique → La Rochelle voyage relationship from IMLM 1516; rendered line is schematic."
     },
     {
@@ -1689,6 +1998,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1278_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Nantes → Martinique outward voyage relationship from IMLM 1278; rendered line is schematic."
     },
@@ -1709,6 +2021,9 @@
       "source_assertion_ids": [
         "ast_1582_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented Havana → St Augustine regional voyage relationship from IMLM 1582; rendered line is schematic."
     },
     {
@@ -1727,6 +2042,9 @@
       "geometry_provenance": "project visualization between resolved endpoint references",
       "source_assertion_ids": [
         "ast_1964_voyage"
+      ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
       ],
       "notes": "Documented Cartagena → Marseille voyage relationship from IMLM 1964; rendered line is schematic."
     },
@@ -1747,7 +2065,82 @@
       "source_assertion_ids": [
         "ast_1982_voyage"
       ],
+      "source_ids": [
+        "src_imlm_ukda_852135"
+      ],
       "notes": "Documented South Carolina → Bideford voyage relationship from IMLM 1982; rendered line is schematic."
+    },
+    {
+      "id": "route_crespo_6156_cadiz_havana",
+      "vessel_id": "ship_nuestra_senora_de_la_estrella_1684",
+      "origin_place_id": "place_cadiz",
+      "destination_place_id": "place_havana",
+      "date_display": "1684 Carrera de Indias register (Cádiz → La Habana)",
+      "associated_record_year": 1684,
+      "associated_record_month": null,
+      "temporal_basis": "capture_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_6156_dep",
+        "ast_crespo_6156_arr",
+        "ast_crespo_6156_fuente"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": "Documented Cádiz → La Habana voyage register from AGI Contratación 1240, N.6 in Crespo 6156."
+    },
+    {
+      "id": "route_crespo_6587_cadiz_havana",
+      "vessel_id": "ship_remedios_y_animas_1695",
+      "origin_place_id": "place_cadiz",
+      "destination_place_id": "place_havana",
+      "date_display": "1695 Carrera de Indias register (Cádiz → La Habana)",
+      "associated_record_year": 1695,
+      "associated_record_month": null,
+      "temporal_basis": "capture_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_6587_dep",
+        "ast_crespo_6587_arr",
+        "ast_crespo_6587_fuente"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": "Documented Cádiz → La Habana voyage register from AGI Contratación 1255, N.7 in Crespo 6587."
+    },
+    {
+      "id": "route_crespo_6627_cadiz_havana",
+      "vessel_id": "ship_jesus_nazareno_guadalupe_1706",
+      "origin_place_id": "place_cadiz",
+      "destination_place_id": "place_havana",
+      "date_display": "1706 Carrera de Indias register (Cádiz → La Habana)",
+      "associated_record_year": 1706,
+      "associated_record_month": null,
+      "temporal_basis": "capture_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_6627_dep",
+        "ast_crespo_6627_arr",
+        "ast_crespo_6627_fuente"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": "Documented Cádiz → La Habana voyage register from AGI Contratación 1266, N.5 in Crespo 6627."
     }
   ],
   "visuals": [
@@ -1775,6 +2168,52 @@
         "ast_loc_map_date",
         "ast_loc_map_port_royal"
       ]
+    }
+  ],
+  "source_coverages": [
+    {
+      "source_id": "src_imlm_ukda_852135",
+      "short_label": "IMLM Prize Papers",
+      "source_declared_scope": {
+        "start_year": 1650,
+        "end_year": 1815,
+        "description": "Relational database 1650-1815 compiled from High Court of Admiralty prize records."
+      },
+      "local_database_scope": {
+        "start_year": 1702,
+        "end_year": 1712,
+        "record_count": 15,
+        "description": "Inspected Queen Anne's War prize sample (HCA 32)."
+      },
+      "project_reviewed_sample": {
+        "start_year": 1702,
+        "end_year": 1712,
+        "sample_type": "continuous_prize_sample",
+        "record_count": 15,
+        "caveat": "Sample slice from English Prize Court examinations (HCA 32)."
+      }
+    },
+    {
+      "source_id": "src_crespo_dyncoopnet",
+      "short_label": "Crespo Spanish Atlantic",
+      "source_declared_scope": {
+        "start_year": 1648,
+        "end_year": 1778,
+        "description": "DynCoopNet Atlantic Trade dataset compiled from Archivo General de Indias registers."
+      },
+      "local_database_scope": {
+        "start_year": 1623,
+        "end_year": 1778,
+        "record_count": 13767,
+        "description": "Locally profiled TODOSNAVIOS voyage/register database."
+      },
+      "project_reviewed_sample": {
+        "start_year": 1684,
+        "end_year": 1706,
+        "sample_type": "discrete_carrera_records",
+        "record_count": 3,
+        "caveat": "Reviewed Carrera de Indias registers to Havana citing Archivo General de Indias Contratación."
+      }
     }
   ]
 }

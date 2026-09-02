@@ -243,6 +243,25 @@ A user can open the public product at `https://charted-currents.pages.dev/`, imm
 
 ---
 
-## After Packet 3
+## Packet 4 — Source Adapters & Deeper Historical Network (COMPLETE)
 
-All initial implementation packets (Packets 1–3) are complete. Subsequent milestones are formalized in `docs/ROADMAP.md` Phase 2 (*Packet 4 — Source Adapters, Entity Resolution Workbench, and Deeper Port Royal Connections*).
+### Outcome
+
+Transform Charted Currents from a single-source English prize collection into a multi-tradition historical atlas by establishing reproducible source adapter pipelines, upstream archival citation architecture (CrespoDynCoopNet → AGI PARES), multilingual name attestation layers, and member-aware aggregate display edges.
+
+### Completed Milestones
+
+- **Reproducible Acquisition & Profiling Pipeline**: Committed SHA-256 acquisition manifest [`data/acquisition/crespo.json`](file:///home/erich/projects/charted-currents/data/acquisition/crespo.json) (`4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5`) and CLI profiler [`data/pipeline/adapters/crespo_profile.py`](file:///home/erich/projects/charted-currents/data/pipeline/adapters/crespo_profile.py) run via `npm run data:profile-crespo`.
+- **Extraction Adapter & Candidate Staging**: Implemented [`data/pipeline/adapters/crespo_adapter.py`](file:///home/erich/projects/charted-currents/data/pipeline/adapters/crespo_adapter.py) producing candidate envelopes with unmutated raw strings and Spanish orthographic search normalization.
+- **Multilingual Name Attestation Architecture**: Added `EvidenceLayer`, `AttestationLanguage`, `AttestationRelationship`, and `NameAttestation` to domain models. Places and ships preserve historical multilingual attestations (`La Habana`, `Cádiz`) alongside normalized search keys and editorial English display labels without string blending.
+- **Upstream Archival Provenance Layer**: Added `src_pares_agi` with official Spanish Ministry of Culture citation (*Ministerio de Cultura / Archivo General de Indias / Signatura / PARES*). Source records honestly classify digitization states (`Digitalizadas` vs `metadata_only`).
+- **Member-Aware Temporal Display Edges**: Compiled `constituent_source_ids`, `constituent_vessel_ids`, `constituent_route_ids`, `member_years`, and `temporal_extent` into `routes.geojson`. Multi-period display edges (e.g. `Cádiz → Havana` with 1684, 1695, and 1706 voyages) dynamically evaluate active constituent count and render out-of-period badges when filtered.
+- **Continuous Coverage Artifact**: Added `coverage.json` declaring declared source scope vs project reviewed sample boundaries, integrated into timeline footnotes and background bands.
+- **Spanish Atlantic Expansion**: Ingested 3 Spanish Carrera de Indias occurrences and 3 canonical vessels (*Nuestra Señora de la Estrella*, *Nuestra Señora de los Remedios y las Animas*, *Jesús, Nazareno y Nuestra Señora de Guadalupe*) with conservative recorded tonnage.
+- **Automated Verification Suite**: 26 Python unit tests (including `test_multilingual_resolution.py` and `test_crespo_adapter.py`), 8 negative publication validator checks, and 82 browser assertions passing with 0 failures.
+
+---
+
+## After Packet 4
+
+Subsequent milestones are formalized in `docs/ROADMAP.md` Phase 3 (*Broader Greater Caribbean, person/merchant networks, commodities, and French/Dutch traditions*).

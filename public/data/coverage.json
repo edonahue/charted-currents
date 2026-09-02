@@ -1,0 +1,46 @@
+[
+  {
+    "source_id": "src_imlm_ukda_852135",
+    "short_label": "IMLM Prize Papers",
+    "source_declared_scope": {
+      "start_year": 1650,
+      "end_year": 1815,
+      "description": "Relational database 1650-1815 compiled from High Court of Admiralty prize records."
+    },
+    "local_database_scope": {
+      "start_year": 1702,
+      "end_year": 1712,
+      "record_count": 15,
+      "description": "Inspected Queen Anne's War prize sample (HCA 32)."
+    },
+    "project_reviewed_sample": {
+      "start_year": 1702,
+      "end_year": 1712,
+      "sample_type": "continuous_prize_sample",
+      "record_count": 15,
+      "caveat": "Sample slice from English Prize Court examinations (HCA 32)."
+    }
+  },
+  {
+    "source_id": "src_crespo_dyncoopnet",
+    "short_label": "Crespo Spanish Atlantic",
+    "source_declared_scope": {
+      "start_year": 1648,
+      "end_year": 1778,
+      "description": "DynCoopNet Atlantic Trade dataset compiled from Archivo General de Indias registers."
+    },
+    "local_database_scope": {
+      "start_year": 1623,
+      "end_year": 1778,
+      "record_count": 13767,
+      "description": "Locally profiled TODOSNAVIOS voyage/register database."
+    },
+    "project_reviewed_sample": {
+      "start_year": 1684,
+      "end_year": 1706,
+      "sample_type": "discrete_carrera_records",
+      "record_count": 3,
+      "caveat": "Reviewed Carrera de Indias registers to Havana citing Archivo General de Indias Contratación."
+    }
+  }
+]
