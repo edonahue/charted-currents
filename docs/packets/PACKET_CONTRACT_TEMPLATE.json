@@ -1,0 +1,40 @@
+{
+  "packet": 0,
+  "title": "COPY AND RENAME FOR ACTIVE PACKET",
+  "status": "planned",
+  "base_commit": "",
+  "working_branch": "packetN-short-name",
+  "objective": "One bounded sentence describing what this packet proves.",
+  "acceptance": [
+    {
+      "id": "PN-A01",
+      "requirement": "Concrete acceptance condition.",
+      "proof_class": "structural",
+      "required_command": "npm run verify"
+    },
+    {
+      "id": "PN-A02",
+      "requirement": "Concrete source-grounded acceptance condition.",
+      "proof_class": "source",
+      "required_command": ""
+    },
+    {
+      "id": "PN-A03",
+      "requirement": "Concrete browser/user behavior acceptance condition.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:capture"
+    }
+  ],
+  "required_commands": [
+    "npm run preflight",
+    "npm run data:build",
+    "npm run data:validate",
+    "npm run data:test",
+    "npm run data:test-negative",
+    "npm run verify"
+  ],
+  "non_goals": [
+    "State material work intentionally excluded from this packet."
+  ],
+  "notes": "The implementation agent may reach SELF_VERIFIED/REVIEW_PENDING but may not mark this packet ACCEPTED."
+}

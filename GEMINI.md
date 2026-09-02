@@ -1,164 +1,108 @@
-# Gemini project instructions — Charted Currents
+# Gemini project constitution — Charted Currents
 
-Charted Currents is deliberately documentation-heavy because product judgment, historical provenance, uncertainty, source rights, visual quality, and public/private boundaries are part of the implementation contract. Treat this file as the always-loaded project constitution, not as an invitation to reread the entire research library on every task.
+Charted Currents is a provenance-aware historical atlas/research product for the Greater Caribbean. The repository owns durable product, historical, rights, architectural, and verification decisions. The coding agent implements within those decisions.
 
-## Initial-build execution context
+Keep this file small and evergreen. Current packet status, research details, and phase-specific instructions belong in routed docs and packet contracts rather than permanent context.
 
-Before substantial implementation:
+## Read order for substantial work
 
-1. read `docs/KICKOFF.md` when starting the project for the first time;
-2. read `docs/AGENT_CONTEXT_INDEX.md` and load only the context relevant to the task;
-3. read `docs/MAINTAINER_EXPECTATIONS.md`;
-4. read `docs/IMPLEMENTATION_CONTRACT.md`;
-5. read `docs/PACKET1_DIRECTION.md` and `docs/VISUAL_QUALITY_CONTRACT.md` during Packet 1;
-6. read the current unfinished **work packet** in `docs/FIRST_SESSIONS.md`;
-7. follow `docs/AGENT_EXECUTION_PLAYBOOK.md`.
+1. inspect `git status --short`, current branch, and relevant diff;
+2. read `docs/AGENT_CONTEXT_INDEX.md`;
+3. read `docs/MAINTAINER_EXPECTATIONS.md` and `docs/IMPLEMENTATION_CONTRACT.md`;
+4. read `docs/AGENT_PACKET_LIFECYCLE.md`;
+5. read the active packet contract under `docs/packets/` when one exists;
+6. load only the source/data/design/runtime docs routed by the task;
+7. use the relevant workspace skill under `.agents/skills/`;
+8. read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before changing data, config, screenshots, logs, source artifacts, environment-facing files, or generated research outputs.
 
-For the initial local harness configuration, use `docs/ANTIGRAVITY_SETUP.md`.
+For local Antigravity configuration, use `docs/ANTIGRAVITY_SETUP.md`.
 
-For map-provider/runtime work, use `docs/BASEMAP_RUNTIME.md`.
+## Permanent project invariants
 
-For deployment readiness or hosted verification, use `docs/CLOUDFLARE_DEPLOYMENT.md`.
+1. **Never invent history.** Missing or unresolved evidence is a valid result.
+2. **Evidence precedes entities.** Preserve the chain `Source → Source Record → Assertion → Occurrence → Canonical Entity`.
+3. **Raw/source values are immutable evidence.** Normalization, interpretation, and project display labels must remain separate.
+4. **Do not silently merge entities.** Same/similar names are not identity proof.
+5. **AI output is proposal generation, never historical authority.**
+6. **Inspection state must describe what was actually inspected.** Catalogue metadata, dataset rows, digitized source content, and upstream citations are different states.
+7. **Upstream provenance is not independent corroboration.** A scholarly row and the archival item it cites are a source chain unless a genuinely separate historical record exists.
+8. **Respect source-specific rights and public/private boundaries.**
+9. **Do not treat enslaved people as generic cargo.** Follow `docs/CONTENT_AND_HISTORICAL_ETHICS.md`.
+10. **Historical route geometry must communicate uncertainty.** Endpoint connectors are project visualizations, not observed sailing tracks.
+11. **Static-first architecture remains the default.** No backend, browser database, or runtime research APIs without an approved architectural change.
+12. **Use canonical sources of truth.** Do not create parallel configs, historical datasets, enums, or generated outputs to avoid understanding the existing path.
+13. **Historical values may not originate in adapter source code.** Adapters may contain mappings, schemas, transforms, and source semantics; historical facts must originate in source rows/fixtures and pass the review boundary.
+14. **Do not coerce a new source into irrelevant old-source fields.** If a source reveals a source-specific schema assumption, generalize the model rather than filling fields with prose such as “not applicable” historical claims.
+15. **Documentation must match reality.** Planned, inferred, local-only, and deployed states must remain distinct.
+16. **Never fabricate verification.** A green self-authored test is not automatically independent evidence.
+17. **Visual quality is functional correctness.** Preserve the editorial atlas identity; do not opportunistically redesign the product.
+18. **Generated design explorations are noncanonical until explicitly approved.** Do not implement visual mockups merely because they exist in conversation history.
+19. **Preserve user work.** No destructive cleanup or unrelated refactors.
+20. **Fix valid review feedback at the invariant/root-cause level and add regression proof where useful.**
 
-For any task that may commit data, config, screenshots, logs, benchmarks, environment details, source payloads, or generated research artifacts, also read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before editing.
+## Packet lifecycle authority
 
-## Current bootstrap state
+Use the state model in `docs/AGENT_PACKET_LIFECYCLE.md`:
 
-The repository is **already a bootable Astro application scaffold**. Do not spend Packet 1 recreating framework setup.
+`PLANNED → APPROVED → IMPLEMENTING → SELF_VERIFIED → REVIEW_PENDING → ACCEPTED → DEPLOYED`
 
-Existing bootstrap decisions include:
+The implementation agent may move a packet through **SELF_VERIFIED** and hand it off for review. It may not declare its own work **ACCEPTED**.
 
-- Node `22.23.1` in `.nvmrc` (project engine floor `>=22.19.0 <23`);
-- Astro `7.2.9`, MapLibre GL JS `6.6.0`, TypeScript `6.0.3`, and npm scripts in `package.json`;
-- `@astrojs/check` `0.9.10` for TypeScript 6-compatible Astro diagnostics;
-- static `astro.config.mjs` and strict `tsconfig.json`;
-- a real MapLibre viewport using the documented OpenFreeMap provider and clean Positron seed;
-- a machine-readable basemap/project-marker posture in `src/lib/map/visualPolicy.ts` plus runtime policy adapter in `src/lib/map/applyVisualPolicy.ts`;
-- four real modern development anchors in `src/lib/map/developmentAnchors.ts`, explicitly not historical geometry;
-- context-preserving north-up/2D camera defaults in `src/lib/map/config.ts`, with rotation/pitch interactions disabled in the bootstrap viewport;
-- `BaseLayout`, starter semantic design tokens/styles, inspector/timeline/evidence/source component boundaries;
-- locally bundled Libre Caslon Text, Inter, and IBM Plex Mono through pinned Fontsource packages;
-- canonical domain enums/types in `src/lib/domain/types.ts`;
-- base-aware public paths in `src/lib/paths.ts`;
-- canonical published-data filenames in `src/lib/data/loadPublished.ts`;
-- explicit Packet 1 timeline bounds/non-filtering posture under `src/lib/time/`;
-- local historical visual-reference manifest/sync tooling under `design/reference-board/`;
-- modern interaction precedents in `design/MODERN_INTERACTION_REFERENCES.md`;
-- explicit visual anti-patterns, composition rules, review viewports, and mandatory refinement pass in `docs/VISUAL_QUALITY_CONTRACT.md`;
-- early noindex metadata and `public/robots.txt`;
-- zero-dependency `npm run preflight`.
+Use these phrases precisely:
 
-Do **not** run `npm create astro`, `npm create cloudflare`, replace `package.json`, or generate a parallel starter tree merely because a fresh template is familiar. Inspect and refine the existing scaffold.
+- `PACKET IMPLEMENTATION SELF-VERIFIED — EXTERNAL REVIEW REQUIRED`
+- `PACKET REVIEW PENDING`
 
-The first `npm install` is expected to create `package-lock.json`; preserve and commit that lockfile with Packet 1. The kickoff also syncs the reviewed local reference-board derivatives; preserve those generated assets/checksums with Packet 1 after review.
+Only an explicit maintainer/external-review decision authorizes `ACCEPTED`.
 
-## Non-negotiable rules
+A successful local build or self-verification does not authorize merging/pushing `main` or prove deployment.
 
-1. **Never invent history.** No historical fact may be presented as observed/documented without a traceable source record.
-2. **Preserve evidence state.** Every public historical assertion must be classifiable as `documented`, `probable_match`, `reconstructed`, or `contextual` where interpretation is involved.
-3. **Do not silently merge entities.** A repeated ship name does not prove repeated physical identity.
-4. **AI extraction is proposal generation.** Candidate output remains `proposed` until validation.
-5. **Respect source-specific rights.** Do not ingest or publish a source/asset until its rights entry permits the intended use.
-6. **Do not treat enslaved people as generic cargo.** Follow `docs/CONTENT_AND_HISTORICAL_ETHICS.md`.
-7. **The map is a primary product surface.** Favor inspector-first interaction over unnecessary page navigation.
-8. **Do not overbuild infrastructure.** v0.1 is static-first; do not add runtime backend or DuckDB-Wasm without a documented need.
-9. **No faux pirate voice.** Avoid parody language such as “arrr,” “matey,” or “yo-ho-ho.”
-10. **Historical routes must communicate uncertainty.** Endpoint lines are schematic unless supported by track/reconstruction evidence.
-11. **Primary documents are evidence, not decoration.** Keep item-level attribution and rights metadata.
-12. **Do not copy Sid Meier's Pirates! or Pirate Arcade UI.** They are conceptual/family references only.
-13. **Missing evidence is allowed.** An empty state or unresolved record is preferable to a plausible invented fixture.
-14. **Never fabricate verification.** Do not claim a test, browser state, screenshot, source check, benchmark, deployment, or runtime result that was not actually observed.
-15. **Preserve user work.** Inspect status/diff first; do not overwrite unrelated edits or clean the workspace destructively.
-16. **Keep public/private boundaries explicit.** Never commit secrets, private environment details, restricted source material, or sensitive heritage locations merely to make development easier.
-17. **Documentation must match reality.** Do not present planned, local-only, synthetic, or unverified capability as implemented/public fact.
-18. **Prefer canonical sources of truth.** Do not create parallel configs/enums/manifests or hand-edit generated outputs when a canonical representation already exists.
-19. **Do not manufacture checkpoints.** Once a work packet is approved, continue through its routine documented subsections without repeatedly asking whether to proceed.
-20. **Publication is a separate gate.** Local file edits/builds do not authorize `git push` or prove a Cloudflare deployment succeeded.
-21. **Visual quality is a functional acceptance criterion.** Packet 1 may not ship as a generic dashboard, SaaS card layout, stock MapLibre demo, faux-parchment theme, or decorative pirate skin. Follow `docs/VISUAL_QUALITY_CONTRACT.md`.
-22. **The first functional visual pass is not the final pass.** Once interaction works, perform a distinct visual-refinement review against the real application and the required viewports before declaring Packet 1 complete.
+## Branch/publication behavior
 
-## Locked engineering defaults
+For substantial packet implementation:
 
-The routine implementation choices are resolved in `docs/IMPLEMENTATION_CONTRACT.md`. In summary:
+- work on the packet feature branch/worktree;
+- commit and push the feature branch after self-verification when allowed;
+- create/use a PR and preview/review boundary;
+- do not merge or push `main` before packet acceptance;
+- after acceptance, merge/deploy only through the documented human-visible publication gate.
 
-- npm;
-- pinned Astro 7 static output + strict TypeScript 6;
-- pinned MapLibre GL JS 6;
-- project CSS/design tokens, no Tailwind/component library by default;
-- no React/Preact/Svelte layer by default;
-- small typed client state, no state framework by default;
-- Python + DuckDB for ingestion, normalization, QA, and analytical derivation;
-- JSON/GeoJSON for the first tiny published corpus;
-- Parquet/GeoParquet/PMTiles only when measured scale warrants them;
-- precomputed rights-safe artifacts over runtime infrastructure;
-- raw/source-specific staging separate from normalized and published artifacts;
-- deterministic validation for ingestion and publication boundaries.
+Small explicit maintainer-requested governance/documentation fixes may be committed directly to `main` when no packet implementation is active.
 
-Do not reopen these choices because another library is familiar. Change a locked default only when the current requirement demonstrates a material benefit and record the architectural reason.
+## Evidence classes
 
-During Packet 1, `docs/PACKET1_DIRECTION.md` additionally locks the real development anchors, quiet basemap posture, desktop dock/mobile bottom-sheet composition, restrained camera behavior, non-filtering timeline shell, typography, local historical reference board, and secondary maker identity. `docs/VISUAL_QUALITY_CONTRACT.md` locks the visual grammar and review bar. Do not conduct new preference surveys for those choices.
+Every acceptance claim should identify the kind of proof it needs:
 
-## Initial implementation goal
+- **structural** — schema, references, deterministic build, generated shape;
+- **source** — independent source row/unit, pinned extraction, rights/inspection evidence;
+- **behavioral** — actual user-visible/native interaction behavior;
+- **hosted** — deployed URL/commit/runtime observation.
 
-Build a beautiful, credible vertical slice, not a giant incomplete platform. The initial work is organized into a few larger packets because Antigravity should spend its time implementing rather than repeatedly re-requesting approval for small milestones.
+A lower evidence class cannot silently satisfy a higher one. A constant copied into a test fixture cannot prove source extraction. DOM state alone cannot prove a native keyboard interaction. A local build cannot prove hosted deployment.
 
-Packet 1 ends with a polished interactive shell ready for its **first public Cloudflare Pages deployment**. Real historical corpus/provenance work follows in Packet 2. Public-beta polish and meaningful corpus expansion follow in Packet 3.
+## No goal substitution
 
-The completed v0.1 direction remains:
+When an approved acceptance condition says to inspect/profile/verify a real source or runtime behavior, implement that exact proof. Do not substitute an easier operation with a similar name.
 
-- Greater Caribbean map, centered initially around Port Royal connections;
-- ~10–20 real, properly sourced vessels;
-- several meaningful ports;
-- repeated-vessel histories where identity is documented or carefully labeled probable;
-- ship/port/voyage/person/event inspector states, with contextual history represented through the canonical `event` kind;
-- at least one period map/reference layer;
-- at least one contextual event;
-- explicit provenance and uncertainty;
-- a compact timeline;
-- enough architecture that expansion to hundreds/thousands of records does not require a rewrite.
+Examples:
 
-Follow `docs/FIRST_SESSIONS.md` for the packet sequence. Do not skip ahead into broad corpus growth before the interaction and provenance spine works.
+- “profile the MDB” means inspect MDB schema/rows, not only checksum the file;
+- “source adapter” means source row → candidate, not historical dictionaries embedded in Python;
+- “exclude the visual on Havana” requires an exclusion assertion, not only a Jamaica-positive assertion;
+- “keyboard activation” requires native keyboard proof, not `.click()` called from JavaScript;
+- “continuous coverage” requires continuous reviewed coverage, not min/max dates around discrete samples.
 
-## Planning behavior
-
-For a work packet:
-
-1. inspect `git status`, relevant code, and routed context from `docs/AGENT_CONTEXT_INDEX.md`;
-2. identify the **entire current packet** and its acceptance criteria;
-3. make one bounded plan for the packet rather than separate plans for each component;
-4. state source/rights/privacy/deployment implications where relevant;
-5. for Packet 1, state the visual strategy and how it avoids the explicit anti-patterns in `docs/VISUAL_QUALITY_CONTRACT.md`;
-6. use existing decisions and canonical sources of truth rather than generating option menus;
-7. choose the simplest reversible option for genuinely undecided local details;
-8. continue through routine packet subsections without stopping for a new approval;
-9. record out-of-scope work in `docs/FOLLOWUPS.md`.
-
-Apply `docs/MAINTAINER_EXPECTATIONS.md`: polished vertical slices, behavior-focused tests, local/CI honesty, measured optimization, documentation/reality parity, and root-cause handling of review feedback.
-
-If two materially different attempts fail at the same blocker, stop cycling. Diagnose from actual errors/runtime evidence and either make one evidence-based next attempt or report the blocker.
+If the requested proof cannot be obtained, report the blocker instead of weakening the acceptance criterion.
 
 ## Completion behavior
 
-A packet is not complete because the diff looks plausible. Run applicable checks from `docs/IMPLEMENTATION_CONTRACT.md`, inspect the actual diff, and distinguish:
+Before handing off implementation:
 
-- **observed** results;
-- **inferred** conclusions;
-- **unverified** items the available tools could not check.
+1. run the packet's required proof commands;
+2. inspect the diff for scope drift, source-of-truth duplication, provenance inflation, generated drift, private/restricted files, and source-specific schema coercion;
+3. run `npm run packet:report` and use its data-derived facts in the handoff;
+4. distinguish **observed**, **inferred**, and **unverified** results;
+5. state unresolved items explicitly;
+6. stop at `REVIEW_PENDING` rather than beginning the next packet.
 
-For browser-visible changes, inspect the real running product when tooling permits. During Packet 1, inspect the required desktop/ultrawide/phone viewports, perform the dedicated visual-refinement pass, and retain safe visual-review artifacts under `design/reviews/` when the tooling can capture them. Never substitute a generated mock or self-authored artifact for runtime evidence.
-
-For historical/data changes, verify supporting source unit, evidence state, source ID/link, and publication rights metadata before treating a result as published fact.
-
-For deployment work, distinguish a local successful `dist/` build from an actually observed Cloudflare Pages deployment and matching commit.
-
-For any committed data/config/artifact, verify it satisfies `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
-
-Update documentation in the same change when commands, behavior, schemas, deployment assumptions, or architectural boundaries change.
-
-## Quality bar
-
-The initial build should make a user think:
-
-> “The data here is surprisingly detailed, and connecting these sources gives me a new way to understand this history.”
-
-Aesthetics are part of acceptance, not post-MVP polish. Correct code that looks like a generic MapLibre demo, generic product dashboard, or costume-historical website is not finished.
+Never reconstruct vessel names, source IDs, counts, masters, routes, commit SHA, branch, or corpus counts from memory when a repository command/artifact can provide them.

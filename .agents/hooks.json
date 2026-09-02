@@ -1,0 +1,35 @@
+{
+  "charted-currents-packet-policy": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 scripts/agent-policy-hook.py pre",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 scripts/agent-policy-hook.py post",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python3 scripts/agent-policy-hook.py stop",
+        "timeout": 10
+      }
+    ]
+  }
+}

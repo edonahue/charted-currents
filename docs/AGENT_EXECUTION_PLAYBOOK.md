@@ -1,177 +1,180 @@
 # Agent execution playbook
 
-Charted Currents is intentionally set up so a fast coding agent can execute **large bounded work packets** without being asked to rediscover product strategy, historical policy, maintainership conventions, or architecture on every turn.
+Charted Currents is intentionally configured so a fast coding agent can execute large bounded packets without repeatedly rediscovering strategy. The repository owns durable decisions; the agent owns implementation within them.
 
-This playbook is optimized for the Antigravity CLI and Gemini Flash-class coding models, but the rules apply to any coding agent.
+## 1. Start with the contract, not the whole repo
 
-## Division of labor
+For substantial work:
 
-The repository owns durable decisions. The coding agent owns implementation within them.
+1. inspect current branch, `git status --short`, and relevant diff;
+2. read `GEMINI.md`;
+3. read `docs/AGENT_CONTEXT_INDEX.md`;
+4. read `docs/MAINTAINER_EXPECTATIONS.md`, `docs/IMPLEMENTATION_CONTRACT.md`, and `docs/AGENT_PACKET_LIFECYCLE.md`;
+5. read the active packet contract under `docs/packets/` when present;
+6. load only source/design/runtime docs relevant to the packet;
+7. use the relevant `.agents/skills/` skill.
 
-**Do not reopen by default:** product identity, historical scope, evidence states, static-first architecture, Astro/TypeScript, MapLibre, Python/DuckDB pipeline, warm editorial-atlas direction, inspector-first interaction, source-rights policy, public/private boundary, or the principle that AI output is not historical authority.
+Do not load the whole research library for ordinary UI work.
 
-`docs/MAINTAINER_EXPECTATIONS.md` defines the expected implementation/review style. It is project process context, not permission to infer additional personal preferences.
+## 2. Plan the whole packet once
 
-Escalate only when implementation exposes a real contradiction, irreversible choice, rights/privacy question, or material scope change.
+A packet plan must identify:
 
-## Work-packet model
+- exact objective;
+- bounded scope and non-goals;
+- acceptance IDs/criteria;
+- proof class for each difficult criterion;
+- source/rights/privacy implications;
+- expected files and generated artifacts;
+- branch/preview/deployment gates.
 
-`docs/FIRST_SESSIONS.md` defines the initial work as a few larger packets rather than many small sessions.
+Do not produce a menu of speculative enhancements. Prefer the simplest reversible option consistent with locked decisions.
 
-For each packet:
+## 3. Identify the hardest proof before coding
 
-1. plan the **whole packet** once;
-2. execute through its documented subsections without asking for a fresh approval at ordinary milestones;
-3. use targeted checks during iteration;
-4. run the packet acceptance/verification gates at the end;
-5. hand off once with `changed / verified / unresolved / next`.
+For each nontrivial acceptance item, ask:
 
-A packet is a review boundary, not every component inside it.
+> What independent observation would prove this condition?
 
-Do not stop merely because one subsection is complete. Stop only for a documented escalation condition, a permission gate that is intentionally human-controlled, or a genuine blocker after evidence-based diagnosis.
+Do not substitute an easier operation later.
 
-## Context discipline
+Examples:
 
-A large context window is not a reason to load the whole repository.
+- source profiling requires schema/row inspection, not only checksum verification;
+- source ingestion requires values derived from the source, not copied into adapter constants;
+- browser exclusion requires a negative assertion;
+- native keyboard behavior requires native keyboard activation;
+- discrete samples cannot become continuous coverage merely because they have min/max dates.
 
-Use `docs/AGENT_CONTEXT_INDEX.md` to route into the minimum useful context. For an ordinary implementation packet, the common core is:
+If the requested proof is unavailable, leave the item unresolved and report the blocker.
 
-1. `GEMINI.md`;
-2. `docs/MAINTAINER_EXPECTATIONS.md`;
-3. `docs/IMPLEMENTATION_CONTRACT.md`;
-4. the current packet in `docs/FIRST_SESSIONS.md`;
-5. only the product/design/data/source docs relevant to the files being changed.
+## 4. Execute continuously inside the approved packet
 
-For the initial local harness setup, use `docs/ANTIGRAVITY_SETUP.md`.
+Once approved, implement through routine subsections without manufacturing checkpoints.
 
-For deployment readiness or hosted verification, use `docs/CLOUDFLARE_DEPLOYMENT.md`.
+- preserve existing architecture and canonical sources of truth;
+- prefer local reversible changes;
+- do not opportunistically redesign product, ontology, palette, build system, or source model;
+- do not hand-edit generated outputs;
+- do not expand historical scope to make a demo look fuller;
+- use `docs/FOLLOWUPS.md` as the pressure valve for good out-of-scope ideas;
+- update docs when commands/schema/behavior change.
 
-Read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before work that can place environment, source, benchmark, screenshot, config, log, location, or data artifacts in Git.
+After two materially different failed approaches to the same blocker, diagnose actual runtime/source evidence before attempting again.
 
-Do not load every large source dossier for CSS/layout work.
+## 5. Historical/source work has a stricter boundary
 
-## Recommended Antigravity workflow
+Use the staged source flow:
 
-### Planning or difficult decisions
+`raw acquisition → source-specific extraction → candidate → review → reviewed corpus → public build`
 
-Use `plan` mode and higher reasoning effort for:
+Rules:
 
-- the first pass over a new work packet;
-- data-contract changes;
-- architecture or dependency changes;
-- entity-resolution logic;
-- public/private or source-rights boundary changes;
-- difficult debugging after the straightforward fix has failed;
-- final review of a large diff.
+- historical values may not live as fixture dictionaries inside adapter source code;
+- preserve raw spellings/values independently from normalization;
+- direct inspection, metadata inspection, scholarly extraction, and upstream citation are distinct evidence layers;
+- source chain does not equal independent corroboration;
+- do not force voyage registers, archival catalogues, etc. into Prize-Paper-specific fields;
+- entity resolution remains explicit and reviewable;
+- unresolved identity is preferable to a plausible merge.
 
-Planning must end in one bounded implementation proposal tied to the packet acceptance criteria, not a list of every possible enhancement.
+Use `.agents/skills/charted-currents-source-adapter/SKILL.md` for new source-family work.
 
-### Routine execution
+## 6. Verification tiers and evidence classes
 
-Use normal editable mode at medium reasoning effort for a well-specified packet. Fast iteration is valuable once decisions are constrained.
+Use targeted checks while iterating, then packet-level proof at closeout.
 
-Prefer reviewable diffs. Automatic edit acceptance is appropriate only when the permission posture remains sandboxed/scoped and verification remains mandatory.
+Classify evidence as:
 
-### Permission posture
+- **structural** — schema, references, deterministic artifacts;
+- **source** — independent source row/unit/extraction/rights evidence;
+- **behavioral** — real user interaction/browser state;
+- **hosted** — observed deployed origin/commit.
 
-Use the recommended scoped setup in `docs/ANTIGRAVITY_SETUP.md` rather than weakening all permissions.
+Never promote one class into another in the handoff.
 
-Routine sandboxed npm/build/read-only-git commands should not require repeated human confirmation. Keep `git push`, unsandboxed execution, destructive Git, privilege escalation, and broad non-workspace access gated or denied by default.
+A self-authored unit test can prove transformation behavior but cannot, by itself, prove the historical input originated in the external source.
 
-A permission prompt is not itself a reason to restructure the product task. If the operation is a known routine safe command, improve the scoped permission configuration rather than turning one work packet into many tiny prompts.
+## 7. Adversarial self-review before closeout
 
-### Environment safety
+Before saying the implementation is ready for review, inspect the diff as though another reviewer wrote it.
 
-On Linux, use the CLI sandbox where practical. Keep non-workspace file access disabled unless the task explicitly needs it. Do not weaken shell permissions simply to make a command succeed.
+Look specifically for:
 
-Never print, commit, or copy secrets/private environment details into documentation or fixtures. Follow `docs/PUBLIC_PRIVATE_BOUNDARY.md` rather than inferring what is safe from whether a file is locally accessible.
+- goal substitution;
+- hard-coded historical facts in adapter logic;
+- source-specific schema coercion;
+- unsupported narrative prose;
+- invalid source-record references;
+- source-chain provenance described as corroboration;
+- tests that duplicate implementation constants;
+- continuous visual semantics applied to discrete evidence;
+- native-interaction claims proved by synthetic events;
+- branch/deployment claims that exceed what was observed;
+- documentation that overstates reality.
 
-## Anti-swirl rules
+Fix valid findings at the invariant level and add negative/regression coverage when useful.
 
-1. **Existing decision beats new preference.** If the repository has already chosen an approach, implement it unless concrete evidence shows it cannot satisfy the task.
-2. **Prefer reversible simplicity.** When two undecided approaches are both adequate, choose the smaller local/reversible one and continue.
-3. **Two failed approaches trigger diagnosis.** After two materially different failed attempts at the same blocker, inspect actual error/runtime state and either make one evidence-based next attempt or report the blocker.
-4. **No opportunistic redesign.** A component task is not permission to change architecture, palette, ontology, or build system.
-5. **Do not solve missing history with prose generation.** Missing evidence is a data/research task, not a creative-writing task.
-6. **Use `docs/FOLLOWUPS.md` as the pressure valve.** Record a good out-of-scope idea and return to the objective.
-7. **One source of truth.** Do not create a parallel enum/config/manifest/generator merely to avoid understanding the existing canonical path.
-8. **Do not game verification.** Fix the root cause of valid test/review failures instead of weakening the check.
-9. **Do not manufacture checkpoints.** Continue through the current packet unless a real stop condition exists.
+## 8. Packet state and branch discipline
 
-## Verification tiers
+Use:
 
-Prefer explicit tiers as the repository matures:
+`PLANNED → APPROVED → IMPLEMENTING → SELF_VERIFIED → REVIEW_PENDING → ACCEPTED → DEPLOYED`
 
-- **targeted:** smallest relevant checks during iteration;
-- **fast:** deterministic repository-wide checks before ordinary handoff/commit;
-- **full:** browser/accessibility/integration or larger data checks warranted by the changed surface;
-- **CI/deployment:** authoritative remote checks when environment-specific.
+The implementation agent may reach `REVIEW_PENDING`. It cannot accept its own packet.
 
-Until dedicated tiered commands exist, use the baseline in `docs/IMPLEMENTATION_CONTRACT.md`.
+For substantial packet implementation:
 
-Never report a targeted or reduced check as though an unrun full/CI gate passed. Local checks should converge on CI semantics; important suites must not silently skip without being reported.
+- use a feature branch/worktree;
+- push the feature branch after self-verification when authorized;
+- use PR/preview review;
+- do not merge/push `main` before external acceptance.
 
-## Evidence before “done”
+The committed workspace hook policy can enforce this when a local `.agent/active-packet.json` is enabled; see `docs/ANTIGRAVITY_SETUP.md`.
 
-A completion claim must separate:
+## 9. Completion report must be data-derived
 
-- **Observed:** commands run, tests passed, page rendered, source record inspected, measurement captured, or hosted deployment opened.
-- **Inferred:** conclusions drawn from those observations.
-- **Unverified:** anything the available tools could not actually check.
+Run:
 
-Never manufacture proof. In particular:
+```bash
+npm run packet:report
+```
 
-- do not describe a screenshot that was not captured from the running application;
-- do not create an SVG/mock image and call it a screenshot;
-- do not write a test that merely asserts a value copied from implementation and treat that as independent validation;
-- do not claim a source supports a historical fact without opening/recording the supporting source unit;
-- do not declare a visual issue fixed solely because CSS compiled;
-- do not claim a performance improvement without comparable measurement;
-- do not claim Cloudflare deployment success because `npm run build` succeeded locally.
+Use the resulting branch/SHA/corpus/source facts in the handoff rather than recreating them from memory.
 
-For browser-visible layout changes, inspect at least one normal desktop and one narrow phone layout when tooling permits.
+The report intentionally does not claim test, CI, or deployment status; those must be listed from actual observed commands/runs.
 
-For data work, add deterministic schema/fixture/source-ID/publication checks appropriate to the adapter.
+Handoff structure:
 
-For deployment work, distinguish local deployment readiness from an observed hosted Pages deployment and matching commit.
+- **Changed**
+- **Verified**
+- **Unresolved**
+- **Report**
+- **State: PACKET IMPLEMENTATION SELF-VERIFIED — EXTERNAL REVIEW REQUIRED**
 
-## Review feedback
+Do not begin the next packet automatically.
 
-Treat substantive human or automated review as evidence to investigate, not a checklist to silence.
+## 10. Permission and publication gates
 
-When feedback is valid, fix the underlying invariant and add regression coverage when useful. Reject feedback only when repository/runtime/source evidence demonstrates it is incorrect or outside the agreed contract. Never weaken a privacy, security, rights, provenance, or historical-evidence boundary merely to get green output.
+Use scoped Antigravity permissions/sandboxing rather than broad bypasses. Keep destructive Git, privilege escalation, unsandboxed execution, and publication operations deliberately gated.
 
-## Performance work
+A permission prompt is not a reason to split a coherent packet into microtasks.
 
-Optimize measured problems. Favor structural wins such as batching, bounded concurrency, caching, lazy work, early termination, and reduced serialization/DOM work before micro-optimization.
+For deployment, distinguish:
 
-A meaningful benchmark should identify the input/data version, method, elapsed time, and relevant resource usage. Keep environment reporting public-safe per `docs/PUBLIC_PRIVATE_BOUNDARY.md`.
+- local deployment readiness;
+- remote CI success;
+- preview deployment;
+- production deployment matching the accepted commit.
 
-## Historical-data stop conditions
+## Stop conditions
 
-Stop and leave the record unresolved rather than guessing when:
+Stop rather than guess when:
 
-- two same-named vessels cannot be distinguished with available evidence;
-- a date/place/person/route is absent from the source unit;
-- a source or image reuse right is unclear;
-- a generated extraction cannot be traced back to source text/metadata;
-- a route is known only by endpoints but requested geometry implies an actual track;
-- contextual proximity is being mistaken for causation;
-- a wreck/site identity is not sufficiently supported;
-- exact heritage-site location should not be publicly disclosed.
-
-A visible gap is a correct result. An elegant invented connection is a defect.
-
-## Packet closeout
-
-Before ending a work packet:
-
-1. run applicable checks at the appropriate tier;
-2. inspect `git diff` for scope expansion, duplicate sources of truth, generated drift, and secret/private/restricted files;
-3. verify no new historical assertion lacks provenance;
-4. verify rights-sensitive assets and published data have the required metadata;
-5. verify documentation still matches commands, schemas, behavior, deployment assumptions, and current limitations;
-6. update `docs/FOLLOWUPS.md` only for genuinely deferred work;
-7. report: **changed / verified / unresolved / next**.
-
-Do not begin the next packet simply because context remains. Do not push unless explicitly authorized.
+- historical identity is unresolved;
+- source rights are unclear;
+- source extraction cannot be reproduced;
+- requested geometry would overstate evidence;
+- a source-specific model cannot represent a new record without inventing fields;
+- an operation would expose private/restricted material;
+- continuing requires destructive unrelated workspace changes.

@@ -1,53 +1,25 @@
-# Antigravity CLI setup for sustained Charted Currents work
+# Antigravity setup for sustained Charted Currents work
 
-**Purpose:** reduce repetitive permission prompts while keeping destructive operations, publication, non-workspace access, and unsandboxed execution intentionally gated.
+This file documents the recommended local workstation posture. Do not commit your real global Antigravity settings, tokens, authentication files, source downloads, conversation transcripts, or `.agent/` packet state.
 
-This is a public-safe configuration guide. Do not commit the actual global Antigravity settings file from a personal machine.
+## Recommended execution posture
 
-## Why this matters
+Use Antigravity's sandboxed execution and scoped permissions rather than broad bypasses.
 
-Antigravity CLI defaults are intentionally cautious. For a repository like Charted Currents, workspace file reads/writes are already low-friction, but repeated terminal and file-edit approvals can break a long implementation packet into many small interruptions.
+Global CLI settings live at:
 
-The preferred solution is not `--dangerously-skip-permissions`. Use the Linux terminal sandbox, scoped command permissions, and Antigravity's `accept-edits` execution mode for the approved implementation packet.
+`~/.gemini/antigravity-cli/settings.json`
 
-The repository has a bootable scaffold and a small canonical command surface, which means the allowlist can stay narrow rather than granting arbitrary shell access.
-
-## Recommended global posture
-
-In `~/.gemini/antigravity-cli/settings.json`, prefer:
+A reasonable baseline is:
 
 ```json
 {
   "toolPermission": "proceed-in-sandbox",
   "artifactReviewPolicy": "agent-decides",
-  "enableTerminalSandbox": true,
-  "allowNonWorkspaceAccess": false
-}
-```
-
-Why:
-
-- `proceed-in-sandbox` lets normal sandboxed terminal work proceed without a review stop;
-- `agent-decides` avoids unnecessary artifact-level interruptions while preserving discretion for larger artifacts;
-- the Linux sandbox confines agent-launched commands;
-- non-workspace access remains off, matching the repository's public/private policy.
-
-Do not use `always-proceed` or `--dangerously-skip-permissions` as the routine project setup.
-
-## Suggested scoped permission policy
-
-Merge a policy like this into the existing `permissions` object rather than blindly replacing unrelated personal settings:
-
-```json
-{
   "permissions": {
     "allow": [
-      "command(git (status|diff|log|show|rev-parse))",
-      "command(npm (install|ci))",
-      "command(npm run (preflight|verify|check|build|test|lint|typecheck|format:check|dev|preview|refs:sync))",
-      "read_url(registry.npmjs.org)",
-      "read_url(commons.wikimedia.org)",
-      "read_url(upload.wikimedia.org)"
+      "command(git (status|diff|log|show|rev-parse|branch))",
+      "command(npm run (preflight|verify|check|build|data:build|data:validate|data:summary|data:test|data:test-negative|packet:report|review:capture.*))"
     ],
     "deny": [
       "command(sudo)",
@@ -64,106 +36,137 @@ Merge a policy like this into the existing `permissions` object rather than blin
 }
 ```
 
-The Commons domains are present only for the deterministic `refs:sync` helper whose file list is fixed by `design/reference-board/manifest.json`; they are not permission for open-ended web research.
+Antigravity permission precedence is `deny > ask > allow`; do not add a broad `command(*)` ask rule if you expect the narrow allow rules above to remain automatic.
 
-The exact scripts available will evolve. Add a routine project command to `allow` only after it exists and its behavior is understood.
+Adjust the exact command allowlist only after a repository command exists and its behavior is understood.
 
-### Important precedence rule
+## Use worktrees for substantial packets
 
-Antigravity evaluates conflicting rules as:
+For larger packets, prefer Antigravity's **New Worktree** project/conversation mode or create a Git worktree manually. This keeps the canonical main checkout separate from the agent implementation workspace.
 
-`deny > ask > allow`
-
-Do **not** add a broad `ask` rule such as:
+Desired shape:
 
 ```text
-command(*)
+~/projects/charted-currents/                   # normal main checkout
+~/projects/charted-currents-worktrees/packet5 # feature worktree
 ```
 
-if the goal is to auto-approve the scoped command allowlist above. The broad ask rule would win and restore prompts for every command.
+The active Antigravity conversation should target the packet worktree, not the main checkout.
 
-## Execution mode is separate from command permissions
+## Workspace packet hooks
 
-Antigravity execution modes control file-edit review, while the permission rules above continue to govern shell commands.
+The repository commits `.agents/hooks.json` and `scripts/agent-policy-hook.py`.
 
-For Charted Currents Packet 1:
+They are intentionally inert unless this ignored local file exists:
 
-1. start in `plan` mode for the one packet-level plan;
-2. once that plan is approved, switch to **`accept-edits`** for implementation;
-3. keep the sandbox and scoped command policy active;
-4. keep commit/push intentionally gated.
+`.agent/active-packet.json`
 
-`accept-edits` is what prevents Antigravity from pausing for every file creation/replacement. Remaining in `default` mode would reintroduce the exact per-file diff confirmations this setup is trying to avoid.
+When active, the hooks:
 
-You can switch modes in-place with `Shift+Tab`, or start an execution session directly with:
+- log observed packet commands locally under `.agent/command-log/`;
+- prevent an unaccepted packet from switching/merging/pushing `main`;
+- keep `git push main` human-visible even after acceptance;
+- force explicit review for destructive/privileged commands;
+- prevent the agent execution loop from stopping while required packet proof commands are missing;
+- stop at `REVIEW_PENDING`, not self-acceptance.
+
+The entire `.agent/` directory is gitignored.
+
+## Packet activation
+
+1. Copy `docs/packets/PACKET_CONTRACT_TEMPLATE.json` to the active packet contract, e.g.:
 
 ```bash
-agy --mode=accept-edits --model=gemini-3.7-flash-high
+cp docs/packets/PACKET_CONTRACT_TEMPLATE.json docs/packets/PACKET_05.json
 ```
 
-## What remains intentionally gated
+2. Edit the committed contract with the approved packet number/title/base/branch/acceptance criteria and required commands.
 
-### `git push`
+3. Start/use the feature branch or worktree.
 
-A push can trigger the public Cloudflare deployment after Git integration exists. Keep this as a human-visible gate by default.
-
-### `git commit`
-
-Keeping commit gated early in the project gives one natural review point at the end of a large packet. If this proves unnecessarily tedious later, allowing `git commit` is substantially lower risk than allowing `git push`.
-
-### unsandboxed execution
-
-Do not grant `unsandboxed(*)` globally. Approve a one-off escape only when the sandbox itself is the demonstrated blocker.
-
-### destructive Git and privilege escalation
-
-`git reset`, `git clean`, `rm -rf`, and `sudo` are not normal implementation needs. The repository already instructs agents to preserve unrelated work.
-
-## Network/package installation
-
-The scaffold pins the web toolchain in `package.json`; Gemini should not need `npm create astro`, `npm create cloudflare`, or an interactive package-selection flow.
-
-The first local setup is:
+4. Activate the local hook state:
 
 ```bash
-npm install
-npm run refs:sync
+python3 scripts/agent-packet-state.py start \
+  --contract docs/packets/PACKET_05.json \
+  --branch packet5-example
 ```
 
-`npm install` should generate `package-lock.json`, which Packet 1 should keep and commit for reproducible local/Cloudflare installs.
+5. Start Antigravity in plan or accept-edits mode as appropriate.
 
-`refs:sync` uses a fixed reviewed Commons file list to populate the local design-reference board. It should not be generalized into an arbitrary image downloader.
+The Stop hook will require the contract's `required_commands` to have been observed successfully during the active session before the agent can transition out of implementation.
 
-If sandboxed npm access still prompts or fails because outbound network access is not yet permitted, grant the narrow npm registry domain rather than general web/network access.
+## Self-verification and external review
 
-Do not add broad `read_url(*)` or `execute_url(*)` merely to make installation convenient.
-
-## Browser/web research
-
-Historical source research and live web verification should remain more deliberate than local coding. Add source domains to the allowlist only when repeated access during a bounded research task justifies it.
-
-The initial modern basemap decision is already documented in `docs/BASEMAP_RUNTIME.md`; Packet 1 should not conduct a new provider survey unless that provider demonstrably blocks the packet.
-
-The initial visual vocabulary is already locally synced from `design/reference-board/`; Packet 1 should not conduct a new image hunt merely to choose an aesthetic.
-
-Never allow a model's ability to reach a URL to substitute for the source-rights/publication checks in this repository.
-
-## Recommended launch pattern
-
-Follow `docs/KICKOFF.md` for the exact first-run sequence and prompts.
-
-For the first implementation packet, start with:
+After Gemini has completed the implementation and required proof:
 
 ```bash
-agy --mode=plan --model=gemini-3.7-flash-high
+python3 scripts/agent-packet-state.py self-verified
+npm run packet:report
 ```
 
-Use the planning turn to inspect the repo and produce one bounded plan for the **entire current packet**. Then switch to `accept-edits` and execute the approved packet without stopping between routine subsections.
+This moves the ignored local state to `review_pending` and allows the agent to stop.
 
-## Permissions manager
+It does **not** accept the packet.
 
-Antigravity's `/permissions` command can edit the global allow/deny/ask lists interactively. Use it when one recurring safe command is generating avoidable prompts rather than granting broad permissions during a transient approval dialog.
+After external/maintainer review explicitly accepts the exact feature-branch head, the maintainer may run:
 
-## Project boundary
+```bash
+python3 scripts/agent-packet-state.py accept
+```
 
-The global Antigravity settings are workstation configuration, not project source. This repository should contain only this documented recommended policy; never commit the real `~/.gemini/antigravity-cli/settings.json`, authentication files, tokens, or local filesystem details.
+Only then should merge/main publication be performed.
+
+After hosted verification of the accepted commit:
+
+```bash
+python3 scripts/agent-packet-state.py deployed
+```
+
+When the packet is fully closed:
+
+```bash
+python3 scripts/agent-packet-state.py clear
+```
+
+## Inspect hooks
+
+Antigravity supports workspace hook configuration in `.agents/hooks.json`. Use `/hooks` in the TUI to inspect loaded/active hooks.
+
+If the hook configuration is not picked up in an already-running conversation, start a fresh conversation after pulling the governance commit.
+
+## Execution modes
+
+Use plan mode for:
+
+- new packets;
+- source/data-model changes;
+- architecture/dependency changes;
+- entity resolution;
+- difficult debugging;
+- final correction planning.
+
+Use accept-edits for an already approved bounded implementation packet while keeping command permissions/sandbox rules active.
+
+Do not use `--dangerously-skip-permissions` as the routine project posture.
+
+## Publication and GitHub
+
+The local packet hook is a workstation guard, not the only publication control. Main should also be protected through GitHub branch/ruleset settings so packet work normally reaches production through a PR and successful CI.
+
+For a solo-maintainer repository, requiring the PR/check boundary is more important than requiring a second human reviewer.
+
+## Local-only telemetry (optional)
+
+Antigravity hooks receive conversation/session/transcript metadata. If you later want to measure agent reliability, store only public-safe derived metrics under a local ignored directory such as `.agent/telemetry/` or `~/.local/state/charted-currents-agent/`.
+
+Useful metrics include:
+
+- first-pass review acceptance;
+- forced-continue closeout count;
+- blocked direct-main attempts;
+- post-review correction size;
+- source/provenance corrections;
+- completion-summary factual corrections.
+
+Do not commit raw Antigravity transcripts merely to collect these metrics.

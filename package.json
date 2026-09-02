@@ -22,7 +22,8 @@
     "research:test-diagnostic": "node tests/test_research_access_diagnostic.mjs",
     "refs:sync": "node scripts/sync-visual-references.mjs",
     "review:capture": "node scripts/capture-reviews.mjs",
-    "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4"
+    "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4",
+    "packet:report": "node scripts/packet-report.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",
@@ -37,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/edonahue/charted-currents.git"
+    "url": "https://github.com/edonahue/charted-currents"
   },
   "homepage": "https://github.com/edonahue/charted-currents",
   "engines": {

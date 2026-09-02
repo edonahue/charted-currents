@@ -30,6 +30,10 @@ data/cache/
 *.sqlite
 *.sqlite3
 
+# Local agent/session state
+# Packet markers, command logs, and local agent telemetry are workstation state.
+.agent/
+
 # Large/publication artifacts such as Parquet or PMTiles are NOT globally ignored.
 # Commit them only deliberately after rights/provenance review.
 
