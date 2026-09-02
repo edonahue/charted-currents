@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / ".agent"
 MARKER = AGENT_DIR / "active-packet.json"
+LOG_DIR = AGENT_DIR / "command-log"
 
 
 def git(*args: str) -> str:
@@ -26,8 +27,36 @@ def save(marker: dict) -> None:
     MARKER.write_text(json.dumps(marker, indent=2) + "\n", encoding="utf-8")
 
 
+def successful_commands() -> list[str]:
+    commands: list[str] = []
+    if not LOG_DIR.exists():
+        return commands
+    for path in LOG_DIR.glob("*.json"):
+        try:
+            entry = load_json(path)
+        except Exception:
+            continue
+        if entry.get("result") == "passed":
+            commands.append(str(entry.get("command", "")))
+    return commands
+
+
+def missing_required(marker: dict) -> list[str]:
+    passed = successful_commands()
+    required = [str(x) for x in marker.get("required_commands", []) if str(x).strip()]
+    return [req for req in required if not any(req in command for command in passed)]
+
+
+def resolve_contract(raw: str) -> Path:
+    path = Path(raw)
+    if not path.is_absolute():
+        path = ROOT / path
+    return path
+
+
 def start(args: argparse.Namespace) -> None:
-    contract = load_json(Path(args.contract))
+    contract_path = resolve_contract(args.contract)
+    contract = load_json(contract_path)
     branch = git("rev-parse", "--abbrev-ref", "HEAD")
     expected = args.branch or contract.get("working_branch")
     if branch == "main":
@@ -35,10 +64,15 @@ def start(args: argparse.Namespace) -> None:
     if expected and branch != expected:
         raise SystemExit(f"Current branch is {branch!r}, contract expects {expected!r}.")
 
+    AGENT_DIR.mkdir(parents=True, exist_ok=True)
+    if LOG_DIR.exists():
+        for path in LOG_DIR.glob("*.json"):
+            path.unlink()
+
     marker = {
         "packet": contract.get("packet"),
         "title": contract.get("title"),
-        "contract": str(Path(args.contract)),
+        "contract": str(contract_path.relative_to(ROOT)) if contract_path.is_relative_to(ROOT) else str(contract_path),
         "base_commit": contract.get("base_commit"),
         "working_branch": expected or branch,
         "state": "implementing",
@@ -53,7 +87,15 @@ def status(_: argparse.Namespace) -> None:
     if not MARKER.exists():
         print("No active local packet marker.")
         return
-    print(MARKER.read_text(encoding="utf-8"), end="")
+    marker = load_json(MARKER)
+    print(json.dumps(marker, indent=2))
+    missing = missing_required(marker)
+    if missing:
+        print("Missing successful proof commands:")
+        for item in missing:
+            print(f"  - {item}")
+    else:
+        print("All configured required commands have been observed successfully.")
 
 
 def self_verified(_: argparse.Namespace) -> None:
@@ -63,6 +105,14 @@ def self_verified(_: argparse.Namespace) -> None:
     branch = git("rev-parse", "--abbrev-ref", "HEAD")
     if branch != marker.get("working_branch"):
         raise SystemExit(f"Current branch {branch!r} does not match active packet branch {marker.get('working_branch')!r}.")
+
+    missing = missing_required(marker)
+    if missing:
+        raise SystemExit("Cannot mark SELF_VERIFIED; missing successful proof commands: " + "; ".join(missing))
+
+    if git("status", "--porcelain"):
+        raise SystemExit("Cannot mark SELF_VERIFIED with a dirty working tree. Commit/review intended packet changes first.")
+
     marker["state"] = "review_pending"
     marker["self_verified_head"] = git("rev-parse", "HEAD")
     save(marker)

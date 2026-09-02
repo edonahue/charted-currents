@@ -8,7 +8,6 @@ directory is gitignored and is controlled locally by the maintainer/worktree.
 from __future__ import annotations
 
 import json
-import os
 import re
 import subprocess
 import sys
@@ -28,9 +27,7 @@ def stdin_json() -> dict:
 
 def workspace(payload: dict) -> Path:
     paths = payload.get("workspacePaths") or []
-    if paths:
-        return Path(paths[0])
-    return Path.cwd()
+    return Path(paths[0]) if paths else Path.cwd()
 
 
 def marker_path(root: Path) -> Path:
@@ -78,7 +75,6 @@ def pre_tool(payload: dict) -> None:
     state = str(marker.get("state", "implementing"))
     current_branch = git(root, "rev-parse", "--abbrev-ref", "HEAD")
 
-    # Persist the proposed command so PostToolUse can associate success/failure.
     (log_dir(root) / f"{step}.json").write_text(
         json.dumps({"step": step, "command": command, "result": "pending"}, indent=2),
         encoding="utf-8",
@@ -90,7 +86,7 @@ def pre_tool(payload: dict) -> None:
         return
 
     main_switch = re.search(r"\bgit\s+(?:checkout|switch)\s+(?:--\s+)?main\b", command)
-    main_merge = re.search(r"\bgit\s+merge\b", command)
+    main_merge = current_branch == "main" and re.search(r"\bgit\s+merge\b", command)
     main_push = re.search(r"\bgit\s+push(?:\s+[^;&|]*)?\s+(?:origin\s+)?main(?:\s|$)", command)
     commit_on_main = current_branch == "main" and re.search(r"\bgit\s+commit\b", command)
 
