@@ -223,6 +223,9 @@ export interface PublishedAssertion {
   source_record_id: string;
   field: string;
   raw_value?: string;
+  derived_value?: string;
+  derivation_method?: string;
+  source_assertion_id?: string;
   [key: string]: unknown;
 }
 
@@ -262,6 +265,7 @@ export interface FleetConvoyContext {
   fleet_origin: string;
   fleet_destination: string;
   year: number;
+  project_derived_linked_navio_row_count?: number;
   project_derived_vessel_count?: number;
   source_citation?: string;
 }
@@ -285,7 +289,10 @@ export interface PublishedPerson {
   raw_source_name?: string;
   roles: string[];
   evidence_state: EvidenceState;
-  active_year_range: [number, number];
+  recorded_year_range?: [number, number];
+  occurrence_year_range?: [number, number];
+  member_occurrence_years?: number[];
+  active_year_range?: [number, number];
   occurrence_ids: string[];
   source_record_ids: string[];
   attestations?: NameAttestation[];
@@ -316,7 +323,7 @@ export interface PublishedShip {
   evidence_state: EvidenceState;
   occurrence_ids: string[];
   reported_burden_display: string;
-  construction_display: string;
+  construction_display?: string | null;
   owner_display?: string | null;
   voyage_display: string;
   capture_display?: string | null;

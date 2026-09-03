@@ -404,27 +404,31 @@ source_records:
   inspection_state: dataset_record_inspected
   upstream_archive_source_id: src_pares_agi
   upstream_archive_reference: CONTRATACION, 1478, N.2, R.2
+- id: sr_crespo_navio_6820
+  source_id: src_crespo_dyncoopnet
+  record_type: dataset_voyage_record
+  native_identifier: '6820'
+  inspection_state: dataset_record_inspected
+  upstream_archive_source_id: src_pares_agi
+  upstream_archive_reference: CONTRATACION, 1619, N.5, R.2
 - id: sr_crespo_flota_141
   source_id: src_crespo_dyncoopnet
   record_type: dataset_fleet_record
   native_identifier: '141'
   inspection_state: dataset_record_inspected
-  upstream_archive_source_id: src_pares_agi
-  upstream_archive_reference: 'A.G.I.:CONTRATACION,1240'
+  source_citation: "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux& /Morineau, M. p. 280"
 - id: sr_crespo_flota_168
   source_id: src_crespo_dyncoopnet
   record_type: dataset_fleet_record
   native_identifier: '168'
   inspection_state: dataset_record_inspected
-  upstream_archive_source_id: src_pares_agi
-  upstream_archive_reference: 'A.G.I.: Contratación, 1253 ; 1254 ; 1255'
+  source_citation: "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas& /Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial& /Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux& /Morineau, M. p. 236, 282"
 - id: sr_crespo_flota_4
   source_id: src_crespo_dyncoopnet
   record_type: dataset_fleet_record
   native_identifier: '4'
   inspection_state: dataset_record_inspected
-  upstream_archive_source_id: src_pares_agi
-  upstream_archive_reference: 'A.G.I.: Contratación, 1267'
+  source_citation: "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas& / Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162"
 - id: sr_pares_contratacion_1266_n5
   source_id: src_pares_agi
   record_type: archival_catalogue_entry
@@ -1354,7 +1358,7 @@ assertions:
 - id: ast_crespo_flota_141_commander
   source_record_id: sr_crespo_flota_141
   field: fleet_commander
-  raw_value: Gonzalo Chacón Medina y Salazar
+  derived_value: Gonzalo Chacón Medina y Salazar
   derivation_method: regex_parenthetical_extraction
   source_assertion_id: ast_crespo_flota_141_compound
 - id: ast_crespo_flota_141_origin
@@ -1380,7 +1384,7 @@ assertions:
 - id: ast_crespo_flota_168_commander
   source_record_id: sr_crespo_flota_168
   field: fleet_commander
-  raw_value: Ignacio de Barrios Leal
+  derived_value: Ignacio de Barrios Leal
   derivation_method: regex_parenthetical_extraction
   source_assertion_id: ast_crespo_flota_168_compound
 - id: ast_crespo_flota_168_origin
@@ -1406,7 +1410,7 @@ assertions:
 - id: ast_crespo_flota_4_commander
   source_record_id: sr_crespo_flota_4
   field: fleet_commander
-  raw_value: Diego Fernández Santillán
+  derived_value: Diego Fernández Santillán
   derivation_method: regex_parenthetical_extraction
   source_assertion_id: ast_crespo_flota_4_compound
 - id: ast_crespo_flota_4_origin
@@ -1425,6 +1429,26 @@ assertions:
   source_record_id: sr_crespo_flota_4
   field: fleet_merchants_recorded
   raw_value: '7'
+- id: ast_crespo_6820_master
+  source_record_id: sr_crespo_navio_6820
+  field: master_name
+  raw_value: Francisco Antonio Garrote
+- id: ast_crespo_6820_year
+  source_record_id: sr_crespo_navio_6820
+  field: voyage_year
+  raw_value: '1684'
+- id: ast_crespo_6820_vessel
+  source_record_id: sr_crespo_navio_6820
+  field: vessel_name
+  raw_value: La Concepción y las Animas
+- id: ast_crespo_6820_role
+  source_record_id: sr_crespo_navio_6820
+  field: maritime_role
+  raw_value: Capitan / Maestre
+- id: ast_crespo_6820_fuente
+  source_record_id: sr_crespo_navio_6820
+  field: upstream_archive_reference
+  raw_value: 'A.G.I.: CONTRATACION, 1619, N.5, R.2'
 places:
 - id: place_jamaica
   canonical_name: Jamaica
@@ -2065,8 +2089,9 @@ ship_occurrences:
     fleet_origin: Cádiz
     fleet_destination: Tierra Firme
     year: 1684
+    project_derived_linked_navio_row_count: 25
     project_derived_vessel_count: 25
-    source_citation: 'A.G.I.:CONTRATACION,1240'
+    source_citation: "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux& /Morineau, M. p. 280"
   fleet_convoy_display: Galeones a Tierra Firme (1684)
   archival_register_reference: AGI CONTRATACION 1240, N.6
   assertion_ids:
@@ -2107,8 +2132,9 @@ ship_occurrences:
     fleet_origin: Cádiz
     fleet_destination: Nueva España
     year: 1695
+    project_derived_linked_navio_row_count: 24
     project_derived_vessel_count: 24
-    source_citation: 'A.G.I.: Contratación, 1253 ; 1254 ; 1255'
+    source_citation: "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas& /Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial& /Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux& /Morineau, M. p. 236, 282"
   fleet_convoy_display: Flota a Nueva España (1695)
   archival_register_reference: AGI CONTRATACION 1255, N.7
   assertion_ids:
@@ -2150,8 +2176,9 @@ ship_occurrences:
     fleet_origin: Cádiz
     fleet_destination: Nueva España
     year: 1706
+    project_derived_linked_navio_row_count: 14
     project_derived_vessel_count: 14
-    source_citation: 'A.G.I.: Contratación, 1267'
+    source_citation: "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas& / Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162"
   fleet_convoy_display: Flota a Nueva España (1706)
   archival_register_reference: AGI CONTRATACION 1266, N.5
   assertion_ids:
@@ -2742,7 +2769,7 @@ ships:
   master_display: 'Master: Bartolomé Antonio Garrote'
   fleet_display: Flota a Nueva España (1706)
   voyage_display: 1706 voyage from Cádiz to Havana
-  register_display: Registered in AGI CONTRATACION 1266, N.5 (PARES Digitized)
+  register_display: Registered in AGI CONTRATACION 1266, N.5 (PARES catalogue record located)
 persons:
 - id: person_bartolome_antonio_garrote
   canonical_name: Bartolomé Antonio Garrote
@@ -2750,6 +2777,14 @@ persons:
   roles:
   - master
   evidence_state: probable_match
+  recorded_year_range:
+  - 1688
+  - 1706
+  member_occurrence_years:
+  - 1688
+  - 1693
+  - 1701
+  - 1706
   active_year_range:
   - 1688
   - 1706
@@ -2773,10 +2808,10 @@ persons:
   - raw_name: Bartolomé Antonio de Garrote
     evidence_layer: scholarly_dataset_value
     language: es
-    attestation_relationship: historical_variant
+    attestation_relationship: source_transcription
     source_record_id: sr_crespo_navio_6890
     normalized_search_key: bartolome antonio de garrote
-  notes: Probable single career match across 4 transatlantic Carrera registers departing Andalusian ports between 1688 and 1706. Upstream agent ID 11357 conflates this master with Francisco Antonio Garrote (1684) and is discounted.
+  notes: Probable recurring Carrera master across 4 Crespo voyage records departing Andalusian ports between 1688 and 1706. Upstream agent ID 11357 in PRUEBAAGENTES conflates this master with Francisco Antonio Garrote (1684) and is discounted.
 entity_resolution_edges:
 - occurrence_id: occ_ship_imlm_2052
   target_entity_id: ship_richard_and_sarah_1705

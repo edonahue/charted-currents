@@ -204,14 +204,11 @@
               <dd data-fleet-commander></dd>
             </div>
             <div class="inspector-meta__row">
-              <dt>Convoy Route</dt>
+              <dt>Fleet-level Origin / Destination</dt>
               <dd data-fleet-route></dd>
             </div>
-            <div class="inspector-meta__row">
-              <dt>Convoy Size</dt>
-              <dd data-fleet-vessels class="inspector-mono"></dd>
-            </div>
           </dl>
+          <p class="inspector-field-note">Fleet-level context from the Crespo FLOTAS dataset record; the vessel's recorded voyage endpoint is shown separately above.</p>
           <button type="button" class="inspector-evidence-btn" data-fleet-evidence-btn>
             Inspect Fleet Register Provenance ↗
           </button>
@@ -305,11 +302,11 @@
           <p class="panel-kicker">Maritime Actor Context</p>
           <dl class="inspector-meta">
             <div class="inspector-meta__row">
-              <dt>Career Role</dt>
+              <dt>Recorded Role</dt>
               <dd data-person-role></dd>
             </div>
             <div class="inspector-meta__row">
-              <dt>Active Career Span</dt>
+              <dt>Recorded Occurrence Span</dt>
               <dd data-person-active-years class="inspector-mono"></dd>
             </div>
             <div class="inspector-meta__row">
@@ -389,7 +386,6 @@
   const fleetTitle = document.querySelector<HTMLElement>("[data-fleet-title]");
   const fleetCommander = document.querySelector<HTMLElement>("[data-fleet-commander]");
   const fleetRoute = document.querySelector<HTMLElement>("[data-fleet-route]");
-  const fleetVessels = document.querySelector<HTMLElement>("[data-fleet-vessels]");
   const fleetEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-fleet-evidence-btn]");
   const shipConnectionsWrap = document.querySelector<HTMLElement>("[data-ship-connections-wrap]");
   const shipConnectionsList = document.querySelector<HTMLElement>("[data-ship-connections-list]");
@@ -552,13 +548,26 @@
     return btn;
   }
 
-  function checkPeriodFocus(year?: number | null) {
+  function checkPeriodFocus(years?: number | number[] | null) {
     if (!periodNotice || !periodNoticeText) return;
-    if (year && activeTimeFilter.id !== "all") {
-      if (year < activeTimeFilter.startYear || year > activeTimeFilter.endYear) {
-        periodNotice.hidden = false;
-        periodNoticeText.textContent = `Outside current period focus (${activeTimeFilter.label})`;
-        return;
+    if (activeTimeFilter.id !== "all") {
+      if (Array.isArray(years)) {
+        if (years.length > 0) {
+          const hasMemberInFocus = years.some(
+            (y) => y >= activeTimeFilter.startYear && y <= activeTimeFilter.endYear
+          );
+          if (!hasMemberInFocus) {
+            periodNotice.hidden = false;
+            periodNoticeText.textContent = `Outside current period focus (${activeTimeFilter.label})`;
+            return;
+          }
+        }
+      } else if (typeof years === "number") {
+        if (years < activeTimeFilter.startYear || years > activeTimeFilter.endYear) {
+          periodNotice.hidden = false;
+          periodNoticeText.textContent = `Outside current period focus (${activeTimeFilter.label})`;
+          return;
+        }
       }
     }
     periodNotice.hidden = true;
@@ -691,8 +700,10 @@
     if (subtitleEl) {
       if (ship.disambiguation_display) {
         subtitleEl.textContent = `${ship.disambiguation_display} · ${ship.reported_burden_display}`;
-      } else {
+      } else if (ship.construction_display) {
         subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
+      } else {
+        subtitleEl.textContent = ship.reported_burden_display;
       }
     }
 
@@ -724,7 +735,7 @@
           const personBtn = document.createElement("button");
           personBtn.type = "button";
           personBtn.className = "inspector-link-btn";
-          personBtn.textContent = "Master: Bartolomé Antonio Garrote (Probable Career Match ↗)";
+          personBtn.textContent = "Master: Bartolomé Antonio Garrote (Probable Match ↗)";
           personBtn.addEventListener("click", () => {
             const modality = lastInspectorModality;
             recordSelectionTrigger({
@@ -807,7 +818,6 @@
         if (fleetTitle) fleetTitle.textContent = fc.fleet_title;
         if (fleetCommander) fleetCommander.textContent = fc.commander_display;
         if (fleetRoute) fleetRoute.textContent = `${fc.fleet_origin} → ${fc.fleet_destination} (${fc.year})`;
-        if (fleetVessels) fleetVessels.textContent = `${fc.project_derived_vessel_count} documented Carrera vessels in convoy`;
         if (fleetEvidenceBtn) {
           fleetEvidenceBtn.onclick = () => {
             window.dispatchEvent(
@@ -1045,7 +1055,14 @@
     const person = entitiesCache.persons?.find((p) => p.id === personId);
     if (!person) return;
 
-    checkPeriodFocus(person.active_year_range ? person.active_year_range[1] : null);
+    checkPeriodFocus(
+      person.member_occurrence_years ||
+        (person.recorded_year_range
+          ? [person.recorded_year_range[0], person.recorded_year_range[1]]
+          : person.active_year_range
+            ? [person.active_year_range[0], person.active_year_range[1]]
+            : null)
+    );
 
     if (kickerEl) kickerEl.textContent = "Maritime Actor";
     if (badgeWrap && badgeEl) {
@@ -1054,17 +1071,20 @@
       badgeEl.setAttribute("data-evidence-state", "probable_match");
     }
     if (titleEl) titleEl.textContent = person.canonical_name;
+
+    const yr = person.recorded_year_range || person.active_year_range;
     if (subtitleEl) {
-      subtitleEl.textContent = `Transatlantic Carrera Master · Active ${person.active_year_range[0]}–${person.active_year_range[1]}`;
+      const yrStr = yr ? ` · ${yr[0]}–${yr[1]}` : "";
+      subtitleEl.textContent = `Probable recurring Carrera master${yrStr}`;
     }
 
     if (personRole) personRole.textContent = "Master (Carrera de Indias)";
     if (personActiveYears) {
-      const span = person.active_year_range[1] - person.active_year_range[0];
-      personActiveYears.textContent = `${person.active_year_range[0]}–${person.active_year_range[1]} (${span}-year career span)`;
+      const occCount = person.occurrence_ids ? person.occurrence_ids.length : 4;
+      personActiveYears.textContent = yr ? `${yr[0]}–${yr[1]} (${occCount} recorded voyages)` : "";
     }
     if (personResolutionStatus) {
-      personResolutionStatus.textContent = "Probable Career Match (4 Transatlantic Voyage Registers)";
+      personResolutionStatus.textContent = "Probable match across four Crespo voyage records";
     }
     if (personNotes) {
       personNotes.textContent = person.notes || "";
@@ -1224,8 +1244,12 @@
   });
 
   (window as any).__CC_SELECTION_STORE__ = selectionStore;
+  (window as any).__CC_TIME_FILTER_STORE__ = timeFilterStore;
   window.addEventListener("cc:test-select", (e: any) => {
     if (e.detail) selectionStore.set(e.detail);
+  });
+  window.addEventListener("cc:test-filter-time", (e: any) => {
+    if (e.detail) timeFilterStore.set(e.detail);
   });
 
   closeBtn?.addEventListener("click", () => {

@@ -131,6 +131,16 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(typeof ast.field === "string", `Assertion ${ast.id} missing field`);
   }
 
+  for (const ast of sourcesData.assertions || []) {
+    if (ast.derived_value !== undefined) {
+      assert(typeof ast.derived_value === "string", `Derived assertion ${ast.id} derived_value must be string`);
+      assert(ast.raw_value === undefined, `Derived assertion ${ast.id} cannot contain raw_value (cannot masquerade as raw transcription)`);
+      assert(typeof ast.derivation_method === "string" && ast.derivation_method.length > 0, `Derived assertion ${ast.id} missing derivation_method`);
+      assert(typeof ast.source_assertion_id === "string" && ast.source_assertion_id.length > 0, `Derived assertion ${ast.id} missing source_assertion_id`);
+      assert(assertionIds.has(ast.source_assertion_id), `Derived assertion ${ast.id} references nonexistent source_assertion_id: ${ast.source_assertion_id}`);
+    }
+  }
+
   // 2. Entities JSON
   const entities = JSON.parse(fs.readFileSync(path.join(dataDir, "entities.json"), "utf8"));
   assert(Array.isArray(entities.ship_occurrences) && entities.ship_occurrences.length > 0, "entities.json missing ship_occurrences");

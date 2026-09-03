@@ -143,6 +143,25 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
+// Test 10: Invalid evidence_layer on attestation fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.places[0].attestations = [
+    {
+      raw_name: "Fake Name",
+      evidence_layer: "synthetic_conjecture",
+      language: "es",
+      attestation_relationship: "source_transcription",
+      source_record_id: entities.ship_occurrences[0].source_record_id
+    }
+  ];
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when attestation has invalid evidence_layer");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
 // Test 11: Person occurrence referencing nonexistent source_record_id fails
 {
   const tmpDir = createTempDataCopy();
@@ -197,6 +216,49 @@ function createTempDataCopy() {
   fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
   const result = validatePublishedData(tmpDir, true);
   assert(result.valid === false && result.errorCount > 0, "Validator fails when person references nonexistent occurrence ID");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 16: Invalid attestation_relationship on attestation fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.places[0].attestations = [
+    {
+      raw_name: "Fake Name",
+      evidence_layer: "scholarly_dataset_value",
+      language: "es",
+      attestation_relationship: "fabricated_relationship",
+      source_record_id: entities.ship_occurrences[0].source_record_id
+    }
+  ];
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when attestation has invalid attestation_relationship");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 17: Derived assertion missing source_assertion_id fails
+{
+  const tmpDir = createTempDataCopy();
+  const sources = JSON.parse(fs.readFileSync(path.join(tmpDir, "sources.json"), "utf8"));
+  const derivedAst = sources.assertions.find(a => a.derived_value !== undefined);
+  delete derivedAst.source_assertion_id;
+  fs.writeFileSync(path.join(tmpDir, "sources.json"), JSON.stringify(sources));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when derived assertion lacks source_assertion_id");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 18: Derived assertion containing raw_value fails
+{
+  const tmpDir = createTempDataCopy();
+  const sources = JSON.parse(fs.readFileSync(path.join(tmpDir, "sources.json"), "utf8"));
+  const derivedAst = sources.assertions.find(a => a.derived_value !== undefined);
+  derivedAst.raw_value = "Masquerading raw value";
+  fs.writeFileSync(path.join(tmpDir, "sources.json"), JSON.stringify(sources));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when derived assertion contains raw_value");
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 

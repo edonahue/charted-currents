@@ -113,6 +113,11 @@
   function formatAssertionValue(ast: PublishedAssertion): string {
     const field = ast.field;
 
+    if (ast.derived_value !== undefined) {
+      const method = ast.derivation_method ? ` · Method: ${ast.derivation_method.replace(/_/g, " ")}` : "";
+      return `${ast.derived_value} [Project-derived${method}]`;
+    }
+
     if (field === "ship_name") return String(ast.raw_value || "");
     if (field === "tonnage") return `${ast.raw_value} tons reported burden`;
     if (field === "construction_place") {
@@ -318,7 +323,7 @@
       const thField = document.createElement("th");
       thField.textContent = "Assertion Field";
       const thVal = document.createElement("th");
-      thVal.textContent = "Recorded Source Value";
+      thVal.textContent = "Assertion Value";
       headTr.append(thField, thVal);
       thead.appendChild(headTr);
 
@@ -331,8 +336,30 @@
         tdField.textContent = ast.field.replace(/_/g, " ");
 
         const tdVal = document.createElement("td");
-        tdVal.textContent = formatAssertionValue(ast);
         tdVal.className = "inspector-mono";
+
+        if (ast.derived_value !== undefined) {
+          tdVal.setAttribute("data-assertion-type", "project-derived");
+          const valSpan = document.createElement("span");
+          valSpan.textContent = String(ast.derived_value);
+          valSpan.className = "inspector-derived-val";
+
+          const badgeSpan = document.createElement("span");
+          badgeSpan.className = "inspector-field-badge";
+          badgeSpan.textContent = "Project-derived";
+
+          tdVal.append(valSpan, document.createTextNode(" "), badgeSpan);
+
+          if (ast.derivation_method) {
+            const ruleP = document.createElement("div");
+            ruleP.className = "inspector-rule-note";
+            ruleP.textContent = `Rule: ${ast.derivation_method.replace(/_/g, " ")}`;
+            tdVal.appendChild(ruleP);
+          }
+        } else {
+          tdVal.setAttribute("data-assertion-type", "direct-source");
+          tdVal.textContent = formatAssertionValue(ast);
+        }
 
         tr.append(tdField, tdVal);
         tbody.appendChild(tr);
@@ -628,6 +655,29 @@
   .source-drawer-panel :global(.inspector-crew-table tr:last-child td),
   .inspector-crew-table tr:last-child td {
     border-bottom: none;
+  }
+
+  .source-drawer-panel :global(.inspector-field-badge),
+  .inspector-field-badge {
+    display: inline-block;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.62rem;
+    font-family: var(--cc-font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: color-mix(in srgb, var(--cc-accent-warm, #c26932) 15%, transparent);
+    color: var(--cc-accent-warm, #c26932);
+    border: 1px solid color-mix(in srgb, var(--cc-accent-warm, #c26932) 35%, transparent);
+    border-radius: var(--cc-radius-xs, 2px);
+    vertical-align: middle;
+  }
+
+  .source-drawer-panel :global(.inspector-rule-note),
+  .inspector-rule-note {
+    font-size: 0.65rem;
+    color: var(--cc-ink-muted);
+    font-style: italic;
+    margin-top: 0.2rem;
   }
 
   @media (max-width: 767px) {

@@ -346,8 +346,9 @@
         "fleet_origin": "Cádiz",
         "fleet_destination": "Tierra Firme",
         "year": 1684,
+        "project_derived_linked_navio_row_count": 25,
         "project_derived_vessel_count": 25,
-        "source_citation": "A.G.I.:CONTRATACION,1240"
+        "source_citation": "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux& /Morineau, M. p. 280"
       },
       "fleet_convoy_display": "Galeones a Tierra Firme (1684)",
       "archival_register_reference": "AGI CONTRATACION 1240, N.6",
@@ -396,8 +397,9 @@
         "fleet_origin": "Cádiz",
         "fleet_destination": "Nueva España",
         "year": 1695,
+        "project_derived_linked_navio_row_count": 24,
         "project_derived_vessel_count": 24,
-        "source_citation": "A.G.I.: Contratación, 1253 ; 1254 ; 1255"
+        "source_citation": "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas& /Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial& /Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux& /Morineau, M. p. 236, 282"
       },
       "fleet_convoy_display": "Flota a Nueva España (1695)",
       "archival_register_reference": "AGI CONTRATACION 1255, N.7",
@@ -447,8 +449,9 @@
         "fleet_origin": "Cádiz",
         "fleet_destination": "Nueva España",
         "year": 1706,
+        "project_derived_linked_navio_row_count": 14,
         "project_derived_vessel_count": 14,
-        "source_citation": "A.G.I.: Contratación, 1267"
+        "source_citation": "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas& / Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162"
       },
       "fleet_convoy_display": "Flota a Nueva España (1706)",
       "archival_register_reference": "AGI CONTRATACION 1266, N.5",
@@ -1199,7 +1202,7 @@
       "master_display": "Master: Bartolomé Antonio Garrote",
       "fleet_display": "Flota a Nueva España (1706)",
       "voyage_display": "1706 voyage from Cádiz to Havana",
-      "register_display": "Registered in AGI CONTRATACION 1266, N.5 (PARES Digitized)"
+      "register_display": "Registered in AGI CONTRATACION 1266, N.5 (PARES catalogue record located)"
     }
   ],
   "persons": [
@@ -1211,6 +1214,16 @@
         "master"
       ],
       "evidence_state": "probable_match",
+      "recorded_year_range": [
+        1688,
+        1706
+      ],
+      "member_occurrence_years": [
+        1688,
+        1693,
+        1701,
+        1706
+      ],
       "active_year_range": [
         1688,
         1706
@@ -1240,12 +1253,12 @@
           "raw_name": "Bartolomé Antonio de Garrote",
           "evidence_layer": "scholarly_dataset_value",
           "language": "es",
-          "attestation_relationship": "historical_variant",
+          "attestation_relationship": "source_transcription",
           "source_record_id": "sr_crespo_navio_6890",
           "normalized_search_key": "bartolome antonio de garrote"
         }
       ],
-      "notes": "Probable single career match across 4 transatlantic Carrera registers departing Andalusian ports between 1688 and 1706. Upstream agent ID 11357 conflates this master with Francisco Antonio Garrote (1684) and is discounted."
+      "notes": "Probable recurring Carrera master across 4 Crespo voyage records departing Andalusian ports between 1688 and 1706. Upstream agent ID 11357 in PRUEBAAGENTES conflates this master with Francisco Antonio Garrote (1684) and is discounted."
     }
   ],
   "entity_resolution_edges": [

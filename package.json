@@ -18,6 +18,7 @@
     "data:verify-crespo-acquisition": "python3 data/pipeline/adapters/crespo_profile.py --verify-only",
     "data:profile-crespo": "python3 data/pipeline/adapters/crespo_profile.py",
     "data:extract-crespo": "python3 data/pipeline/adapters/crespo_extract.py",
+    "data:audit-crespo-mdbtools": "python3 scripts/audit-crespo-mdbtools.py",
     "data:test": "python3 -m unittest discover tests",
     "data:test-negative": "node tests/test_validator_negative.mjs",
     "research:check-access": "node scripts/check-research-access.mjs",

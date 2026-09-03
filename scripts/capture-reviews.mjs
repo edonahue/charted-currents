@@ -1154,15 +1154,18 @@ async function runReviewSuite() {
         const fleetTitle = document.querySelector('[data-fleet-title]')?.textContent || '';
         const fleetCommander = document.querySelector('[data-fleet-commander]')?.textContent || '';
         const fleetRoute = document.querySelector('[data-fleet-route]')?.textContent || '';
-        const fleetVessels = document.querySelector('[data-fleet-vessels]')?.textContent || '';
+        const fleetRouteLabel = document.querySelector('[data-fleet-route]')?.previousElementSibling?.textContent || '';
+        const fieldNote = document.querySelector('[data-ship-fleet-context] .inspector-field-note')?.textContent || '';
         const hasFleetSection = !document.querySelector('[data-ship-fleet-context]')?.hidden;
+        const fleetSectionText = document.querySelector('[data-ship-fleet-context]')?.textContent || '';
+        const hasConvoySize = fleetSectionText.includes('Convoy Size') || fleetSectionText.includes('documented Carrera vessels');
         const masterBtn = document.querySelector('[data-ship-master] .inspector-link-btn');
         const hasMasterLink = Boolean(masterBtn);
 
         // Click master button to navigate to Person view
         masterBtn?.click();
 
-        return { fleetTitle, fleetCommander, fleetRoute, fleetVessels, hasFleetSection, hasMasterLink };
+        return { fleetTitle, fleetCommander, fleetRoute, fleetRouteLabel, fieldNote, hasFleetSection, hasConvoySize, hasMasterLink };
       })()`,
       returnByValue: true,
     });
@@ -1171,17 +1174,23 @@ async function runReviewSuite() {
     assert(fleetCheck?.result?.value?.hasFleetSection, "Jesús Nazareno 1706 displays Fleet & Convoy Organization section");
     assert(fleetCheck?.result?.value?.fleetTitle === "Flota a Nueva España de 1706", "Fleet title matches 1706 Nueva España Flota");
     assert(fleetCheck?.result?.value?.fleetCommander === "Diego Fernández Santillán", "Fleet commander parsed from compound string as Diego Fernández Santillán");
-    assert(fleetCheck?.result?.value?.fleetVessels.includes("14 documented Carrera vessels"), "Convoy size displays derived count (14 vessels)");
+    assert(fleetCheck?.result?.value?.fleetRouteLabel === "Fleet-level Origin / Destination", "Fleet route label is 'Fleet-level Origin / Destination'");
+    assert(fleetCheck?.result?.value?.fieldNote?.includes("Fleet-level context from the Crespo FLOTAS dataset record"), "Fleet context displays restrained distinction note");
+    assert(!fleetCheck?.result?.value?.hasConvoySize, "Misleading 'Convoy Size' row is excluded from main Fleet Context UI");
     assert(fleetCheck?.result?.value?.hasMasterLink, "Master Garrote is rendered as an interactive link button");
 
     const personCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const title = document.querySelector('[data-inspector-title]')?.textContent || '';
         const kicker = document.querySelector('[data-inspector-kicker]')?.textContent || '';
+        const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
         const badge = document.querySelector('[data-inspector-badge]')?.textContent || '';
         const badgeState = document.querySelector('[data-inspector-badge]')?.getAttribute('data-evidence-state') || '';
         const activeYears = document.querySelector('[data-person-active-years]')?.textContent || '';
+        const activeYearsLabel = document.querySelector('[data-person-active-years]')?.previousElementSibling?.textContent || '';
         const resolution = document.querySelector('[data-person-resolution-status]')?.textContent || '';
+        const inspectorText = document.querySelector('#entity-inspector')?.textContent || '';
+        const hasCareerSpan = inspectorText.toLowerCase().includes('career span') || inspectorText.toLowerCase().includes('probable career match');
         const rows = Array.from(document.querySelectorAll('[data-person-voyages-list] .inspector-rel-row'));
         const rowTexts = rows.map(r => r.textContent || '');
 
@@ -1191,7 +1200,7 @@ async function runReviewSuite() {
         const has1688 = rowTexts.some(t => t.includes('1688') && t.includes('Nuestra Señora del Rosario'));
 
         return {
-          title, kicker, badge, badgeState, activeYears, resolution,
+          title, kicker, subtitle, badge, badgeState, activeYears, activeYearsLabel, resolution, hasCareerSpan,
           rowCount: rows.length, has1706, has1701, has1693, has1688
         };
       })()`,
@@ -1200,14 +1209,47 @@ async function runReviewSuite() {
 
     assert(personCheck?.result?.value?.title === "Bartolomé Antonio Garrote", "Person title is Bartolomé Antonio Garrote");
     assert(personCheck?.result?.value?.kicker === "Maritime Actor", "Person inspector kicker is Maritime Actor");
+    assert(personCheck?.result?.value?.subtitle?.includes("Probable recurring Carrera master"), "Person subtitle states 'Probable recurring Carrera master'");
     assert(personCheck?.result?.value?.badge === "Probable Match", "Person evidence badge is Probable Match");
     assert(personCheck?.result?.value?.badgeState === "probable_match", "Person evidence state attribute is probable_match");
-    assert(personCheck?.result?.value?.activeYears.includes("1688–1706"), "Active career span shows 1688–1706 (18-year career span)");
+    assert(personCheck?.result?.value?.activeYearsLabel === "Recorded Occurrence Span", "Person years label is 'Recorded Occurrence Span'");
+    assert(personCheck?.result?.value?.activeYears.includes("1688–1706 (4 recorded voyages)"), "Occurrence span shows 1688–1706 (4 recorded voyages)");
+    assert(personCheck?.result?.value?.resolution === "Probable match across four Crespo voyage records", "Resolution status states 'Probable match across four Crespo voyage records'");
+    assert(!personCheck?.result?.value?.hasCareerSpan, "UI eliminates career span and career match overstatement");
     assert(personCheck?.result?.value?.rowCount === 4, "Person lists all 4 recorded transatlantic master voyages");
     assert(personCheck?.result?.value?.has1706, "Person list includes 1706 Jesús Nazareno voyage");
     assert(personCheck?.result?.value?.has1701, "Person list includes 1701 Encarnación voyage");
     assert(personCheck?.result?.value?.has1693, "Person list includes 1693 Rosario voyage");
     assert(personCheck?.result?.value?.has1688, "Person list includes 1688 Rosario voyage");
+
+    // Test Person temporal filtering by constituent member occurrences
+    console.log("Testing Person temporal filtering by constituent member occurrences...");
+    const memberPeriodFilterCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const periodNotice = document.querySelector('[data-period-notice]');
+
+        // 1. Filter 1684-1695: Should be IN FOCUS (due to 1688/1693 occurrences)
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: { id: "1684-1695", startYear: 1684, endYear: 1695, label: "1684–1695" } }));
+        const inFocus1688 = periodNotice && (periodNotice.hidden || getComputedStyle(periodNotice).display === 'none');
+
+        // 2. Filter 1702-1712: Should be IN FOCUS (due to 1706 occurrence)
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: { id: "1702-1712", startYear: 1702, endYear: 1712, label: "1702–1712" } }));
+        const inFocus1706 = periodNotice && (periodNotice.hidden || getComputedStyle(periodNotice).display === 'none');
+
+        // 3. Filter custom period 1715-1725: Should be OUTSIDE FOCUS (no member occurrences in range)
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: { id: "test-late-period", startYear: 1715, endYear: 1725, label: "1715–1725" } }));
+        const outsideFocus1720 = periodNotice && !periodNotice.hidden;
+
+        // Reset to all time
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: "all" }));
+
+        return { inFocus1688, inFocus1706, outsideFocus1720 };
+      })()`,
+      returnByValue: true,
+    });
+    assert(memberPeriodFilterCheck?.result?.value?.inFocus1688, "Garrote is in-focus during 1684–1697 filter via 1688/1693 member occurrences");
+    assert(memberPeriodFilterCheck?.result?.value?.inFocus1706, "Garrote is in-focus during 1702–1713 filter via 1706 member occurrence");
+    assert(memberPeriodFilterCheck?.result?.value?.outsideFocus1720, "Garrote is marked outside focus during 1715–1725 filter when no constituent occurrences exist");
 
     // Capture Person Garrote inspector screenshot
     if (!skipScreenshots) {
@@ -1235,13 +1277,15 @@ async function runReviewSuite() {
         const drawer = document.getElementById('source-drawer');
         const isOpen = drawer && !drawer.hidden && drawer.getAttribute('data-state') === 'open';
         const cardText = document.querySelector('[data-source-cards-container]')?.textContent || '';
+        const thText = document.querySelector('[data-source-cards-container] thead th:last-child')?.textContent || '';
         const hasAgiCitations = cardText.includes('CONTRATACION, 1266') || cardText.includes('CONTRATACION, 1478') || cardText.includes('CONTRATACION, 1477') || cardText.includes('CONTRATACION, 1619');
-        return { isOpen, hasAgiCitations };
+        return { isOpen, hasAgiCitations, thText };
       })()`,
       returnByValue: true,
     });
     assert(personDrawerCheck?.result?.value?.isOpen, "Source drawer opened for person Garrote");
     assert(personDrawerCheck?.result?.value?.hasAgiCitations, "Source drawer contains upstream AGI Contratación citations for Garrote");
+    assert(personDrawerCheck?.result?.value?.thText === "Assertion Value", "Source drawer value column header is 'Assertion Value'");
 
     // Close Source Drawer
     await send("Runtime.evaluate", {

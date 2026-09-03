@@ -17,6 +17,7 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 DEFAULT_MDB_PATH = os.path.join(REPO_ROOT, "data/raw/crespo/CrespoDynCoopNetDATASETS.mdb")
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/source_rows.json")
 DEFAULT_FLOTAS_OUTPUT_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/flotas_rows.json")
+DEFAULT_SELECTION_PATH = os.path.join(REPO_ROOT, "data/review/crespo/extraction_selection.json")
 
 def sanitize_value(val: Any) -> Any:
     """Sanitize parser-specific sentinels like '(Invalid Date)' to None."""
@@ -27,7 +28,7 @@ def sanitize_value(val: Any) -> Any:
         return None
     return val
 
-def extract_rows(mdb_path: str, target_ids: List[int], output_path: str):
+def extract_rows(mdb_path: str, target_ids: List[int], target_flota_ids: List[int], output_path: str, flotas_output_path: str = DEFAULT_FLOTAS_OUTPUT_PATH):
     project_venv_lib = os.path.join(REPO_ROOT, ".venv", "lib", f"python{sys.version_info.major}.{sys.version_info.minor}", "site-packages")
     if os.path.exists(project_venv_lib) and project_venv_lib not in sys.path:
         sys.path.insert(0, project_venv_lib)
@@ -78,11 +79,11 @@ def extract_rows(mdb_path: str, target_ids: List[int], output_path: str):
 
     print(f"Extracted {len(extracted_rows)} rows from TODOSNAVIOS to {output_path}")
 
-    # Extract FLOTAS rows (141, 168, 4)
+    # Extract FLOTAS rows
     flotas = db.parse_table("FLOTAS")
     if flotas:
         flotas_ids = flotas.get("ID", [])
-        target_flotas = {141, 168, 4}
+        target_flotas = set(target_flota_ids)
         extracted_flotas = []
         for idx, f_id in enumerate(flotas_ids):
             if f_id in target_flotas or (isinstance(f_id, str) and int(f_id) in target_flotas):
@@ -98,30 +99,51 @@ def extract_rows(mdb_path: str, target_ids: List[int], output_path: str):
                 commander_name = commander_match.group(1).strip() if commander_match else None
                 f_row["_derived_commander_name"] = commander_name
                 
-                # Count matching TODOSNAVIOS rows
+                # Count matching TODOSNAVIOS rows in dataset
                 flota_col = todos_navios.get("FLOTAS CONOCIDAS", [])
-                vessel_count = sum(1 for fl in flota_col if fl == f_id or (isinstance(fl, str) and str(fl).isdigit() and int(fl) == int(f_id)))
-                f_row["_project_derived_vessel_count"] = vessel_count
+                linked_count = sum(1 for fl in flota_col if fl == f_id or (isinstance(fl, str) and str(fl).isdigit() and int(fl) == int(f_id)))
+                f_row["_project_derived_linked_navio_row_count"] = linked_count
+                f_row["_project_derived_vessel_count"] = linked_count
 
                 extracted_flotas.append(f_row)
 
-        os.makedirs(os.path.dirname(DEFAULT_FLOTAS_OUTPUT_PATH), exist_ok=True)
-        with open(DEFAULT_FLOTAS_OUTPUT_PATH, "w", encoding="utf-8") as f:
+        os.makedirs(os.path.dirname(flotas_output_path), exist_ok=True)
+        with open(flotas_output_path, "w", encoding="utf-8") as f:
             json.dump(extracted_flotas, f, indent=2, ensure_ascii=False, default=str)
             f.write("\n")
-        print(f"Extracted {len(extracted_flotas)} rows from FLOTAS to {DEFAULT_FLOTAS_OUTPUT_PATH}")
+        print(f"Extracted {len(extracted_flotas)} rows from FLOTAS to {flotas_output_path}")
 
     return extracted_rows
 
 def main():
     parser = argparse.ArgumentParser(description="Extract target rows from Crespo MDB to JSON")
     parser.add_argument("--mdb", default=DEFAULT_MDB_PATH, help="Path to MDB file")
+    parser.add_argument("--selection", default=DEFAULT_SELECTION_PATH, help="Path to reviewed extraction selection JSON")
     parser.add_argument("--output", default=DEFAULT_OUTPUT_PATH, help="Output JSON path")
-    parser.add_argument("--ids", default="6156,6587,6627,6177,6825,6890,6906,6820", help="Comma-separated list of target IDs")
+    parser.add_argument("--flotas-output", default=DEFAULT_FLOTAS_OUTPUT_PATH, help="Output FLOTAS JSON path")
+    parser.add_argument("--ids", default=None, help="Optional comma-separated list of target navio IDs (overrides selection file)")
+    parser.add_argument("--flota-ids", default=None, help="Optional comma-separated list of target flota IDs (overrides selection file)")
 
     args = parser.parse_args()
-    target_ids = [int(i.strip()) for i in args.ids.split(",") if i.strip()]
-    extract_rows(args.mdb, target_ids, args.output)
+
+    navio_ids = []
+    flota_ids = []
+
+    if args.selection and os.path.exists(args.selection):
+        with open(args.selection, "r", encoding="utf-8") as f:
+            sel = json.load(f)
+            navio_ids = sel.get("navio_ids", [])
+            flota_ids = sel.get("flota_ids", [])
+
+    if args.ids:
+        navio_ids = [int(i.strip()) for i in args.ids.split(",") if i.strip()]
+    if args.flota_ids:
+        flota_ids = [int(i.strip()) for i in args.flota_ids.split(",") if i.strip()]
+
+    if not navio_ids:
+        raise ValueError("No navio IDs specified (via --selection or --ids)")
+
+    extract_rows(args.mdb, navio_ids, flota_ids, args.output, args.flotas_output)
 
 if __name__ == "__main__":
     main()

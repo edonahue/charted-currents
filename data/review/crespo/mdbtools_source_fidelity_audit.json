@@ -1,0 +1,773 @@
+{
+  "summary": {
+    "total_fields_compared": 123,
+    "match_count": 120,
+    "representation_difference_count": 3,
+    "mismatch_count": 0,
+    "unavailable_count": 0
+  },
+  "todosnavios": {
+    "6156": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6156,
+        "mdbtools_val": "6156",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1684",
+        "mdbtools_val": "1684",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "Nuestra Señora de la Estrella",
+        "mdbtools_val": "Nuestra Señora de la Estrella",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Juan Bernardo de Heredia",
+        "mdbtools_val": "Juan Bernardo de Heredia",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 10939,
+        "mdbtools_val": "10939",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 141,
+        "mdbtools_val": "141",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz",
+        "mdbtools_val": "Cádiz",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "La Habana",
+        "mdbtools_val": "La Habana",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Cadíz-La Habana",
+        "mdbtools_val": "Cadíz-La Habana",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": "278",
+        "mdbtools_val": "278",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1240, N.6",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1240, N.6",
+        "note": "Exact character match"
+      }
+    },
+    "6177": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6177,
+        "mdbtools_val": "6177",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1684",
+        "mdbtools_val": "1684",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "Nuestra Señora de la Estrella",
+        "mdbtools_val": "Nuestra Señora de la Estrella",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Pedro Carrillo de Albornoz",
+        "mdbtools_val": "Pedro Carrillo de Albornoz",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 10705,
+        "mdbtools_val": "10705",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 141,
+        "mdbtools_val": "141",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz",
+        "mdbtools_val": "Cádiz",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "Tierra Firme",
+        "mdbtools_val": "Tierra Firme",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz-Tierra Firme",
+        "mdbtools_val": "Cádiz-Tierra Firme",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1241, N. 1, R. 13",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1241, N. 1, R. 13",
+        "note": "Exact character match"
+      }
+    },
+    "6587": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6587,
+        "mdbtools_val": "6587",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1695",
+        "mdbtools_val": "1695",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "Nuestra Señora de los Remedios y las Animas",
+        "mdbtools_val": "Nuestra Señora de los Remedios y las Animas",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Diego Dazá",
+        "mdbtools_val": "Diego Dazá",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 11213,
+        "mdbtools_val": "11213",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 168,
+        "mdbtools_val": "168",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz",
+        "mdbtools_val": "Cádiz",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "La Habana",
+        "mdbtools_val": "La Habana",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz-Nueva España",
+        "mdbtools_val": "Cádiz-Nueva España",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": "318",
+        "mdbtools_val": "318",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1255, N.7",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1255, N.7",
+        "note": "Exact character match"
+      }
+    },
+    "6627": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6627,
+        "mdbtools_val": "6627",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1706",
+        "mdbtools_val": "1706",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+        "mdbtools_val": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Bartolomé Antonio Garrote",
+        "mdbtools_val": "Bartolomé Antonio Garrote",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 11357,
+        "mdbtools_val": "11357",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 4,
+        "mdbtools_val": "4",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz",
+        "mdbtools_val": "Cádiz",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "La Habana",
+        "mdbtools_val": "La Habana",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz-Nueva España",
+        "mdbtools_val": "Cádiz-Nueva España",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": "112",
+        "mdbtools_val": "112",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1266, N.5",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1266, N.5",
+        "note": "Exact character match"
+      }
+    },
+    "6820": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6820,
+        "mdbtools_val": "6820",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1684",
+        "mdbtools_val": "1684",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "La Concepción y las Animas",
+        "mdbtools_val": "La Concepción y las Animas",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Francisco Antonio Garrote",
+        "mdbtools_val": "Francisco Antonio Garrote",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 11357,
+        "mdbtools_val": "11357",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 176,
+        "mdbtools_val": "176",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla",
+        "mdbtools_val": "Sevilla",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "Tierra Firme",
+        "mdbtools_val": "Tierra Firme",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla-Tierra Firme",
+        "mdbtools_val": "Sevilla-Tierra Firme",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1619, N.5, R.2",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1619, N.5, R.2",
+        "note": "Exact character match"
+      }
+    },
+    "6825": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6825,
+        "mdbtools_val": "6825",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1688",
+        "mdbtools_val": "1688",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+        "mdbtools_val": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Bartolomé Antonio Garrote",
+        "mdbtools_val": "Bartolomé Antonio Garrote",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 11357,
+        "mdbtools_val": "11357",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 176,
+        "mdbtools_val": "176",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla",
+        "mdbtools_val": "Sevilla",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "Tierra Firme",
+        "mdbtools_val": "Tierra Firme",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla-Tierra Firme",
+        "mdbtools_val": "Sevilla-Tierra Firme",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1619, N.9",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1619, N.9",
+        "note": "Exact character match"
+      }
+    },
+    "6890": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6890,
+        "mdbtools_val": "6890",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1693",
+        "mdbtools_val": "1693",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+        "mdbtools_val": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Bartolomé Antonio de Garrote",
+        "mdbtools_val": "Bartolomé Antonio de Garrote",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 11357,
+        "mdbtools_val": "11357",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 204,
+        "mdbtools_val": "204",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla",
+        "mdbtools_val": "Sevilla",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "Nueva España",
+        "mdbtools_val": "Nueva España",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla-Nueva España",
+        "mdbtools_val": "Sevilla-Nueva España",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1477, N.4, R.1",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1477, N.4, R.1",
+        "note": "Exact character match"
+      }
+    },
+    "6906": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 6906,
+        "mdbtools_val": "6906",
+        "note": "Exact character match"
+      },
+      "AÑO": {
+        "status": "MATCH",
+        "access_parser_val": "1701",
+        "mdbtools_val": "1701",
+        "note": "Exact character match"
+      },
+      "ESPECTRO DEL NAVIO": {
+        "status": "MATCH",
+        "access_parser_val": "Nuestra Señora de la Encarnación",
+        "mdbtools_val": "Nuestra Señora de la Encarnación",
+        "note": "Exact character match"
+      },
+      "CAPITAN / MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": "Bartolomé Antonio Garrote",
+        "mdbtools_val": "Bartolomé Antonio Garrote",
+        "note": "Exact character match"
+      },
+      "MAESTRE": {
+        "status": "MATCH",
+        "access_parser_val": 11357,
+        "mdbtools_val": "11357",
+        "note": "Exact character match"
+      },
+      "FLOTAS CONOCIDAS": {
+        "status": "MATCH",
+        "access_parser_val": 204,
+        "mdbtools_val": "204",
+        "note": "Exact character match"
+      },
+      "PUERTO DE SALIDA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla",
+        "mdbtools_val": "Sevilla",
+        "note": "Exact character match"
+      },
+      "PUERTO DE LLEGADA": {
+        "status": "MATCH",
+        "access_parser_val": "Nueva España",
+        "mdbtools_val": "Nueva España",
+        "note": "Exact character match"
+      },
+      "RUTA": {
+        "status": "MATCH",
+        "access_parser_val": "Sevilla-Nueva España",
+        "mdbtools_val": "Sevilla-Nueva España",
+        "note": "Exact character match"
+      },
+      "TONELAJE": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      },
+      "BANDERA": {
+        "status": "MATCH",
+        "access_parser_val": "Española",
+        "mdbtools_val": "Española",
+        "note": "Exact character match"
+      },
+      "FUENTE": {
+        "status": "MATCH",
+        "access_parser_val": "A.G.I.: CONTRATACION, 1478, N.2, R.2",
+        "mdbtools_val": "A.G.I.: CONTRATACION, 1478, N.2, R.2",
+        "note": "Exact character match"
+      }
+    }
+  },
+  "flotas": {
+    "4": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 4,
+        "mdbtools_val": "4",
+        "note": "Exact character match"
+      },
+      "ID FLOTA TOTAL": {
+        "status": "MATCH",
+        "access_parser_val": "Flota a Nueva España de 1706",
+        "mdbtools_val": "Flota a Nueva España de 1706",
+        "note": "Exact character match"
+      },
+      "FLOTA": {
+        "status": "MATCH",
+        "access_parser_val": "Flota (Diego Fernández Santillán)",
+        "mdbtools_val": "Flota (Diego Fernández Santillán)",
+        "note": "Exact character match"
+      },
+      "ORIGEN": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz",
+        "mdbtools_val": "Cádiz",
+        "note": "Exact character match"
+      },
+      "DESTINO": {
+        "status": "MATCH",
+        "access_parser_val": "Nueva España",
+        "mdbtools_val": "Nueva España",
+        "note": "Exact character match"
+      },
+      "FECHA": {
+        "status": "MATCH",
+        "access_parser_val": "1706",
+        "mdbtools_val": "1706",
+        "note": "Exact character match"
+      },
+      "Nº DE MERCANTES": {
+        "status": "MATCH",
+        "access_parser_val": "7",
+        "mdbtools_val": "7",
+        "note": "Exact character match"
+      },
+      "FUENTE O DOCUMENTO": {
+        "status": "PARSER_REPRESENTATION_DIFFERENCE",
+        "access_parser_val": "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas& / Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162",
+        "mdbtools_val": "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas…/ Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162",
+        "note": "Jet4 unicode decompression difference: access-parser decodes U+2026 ellipsis as '& ' (low byte 0x26); mdbtools decodes '…' (U+2026)"
+      },
+      "NOTAS": {
+        "status": "MATCH",
+        "access_parser_val": "En PARES, señala las fechas 1705 y 1706 para la Flota. Pero todos los navios citados datan de 1706. Dependiendo de la fuente todo varia, fechas, tonelaje etc. Compra de 3000,000 de libras de tabaco para el Rey (200,000 pesos)",
+        "mdbtools_val": "En PARES, señala las fechas 1705 y 1706 para la Flota. Pero todos los navios citados datan de 1706. Dependiendo de la fuente todo varia, fechas, tonelaje etc. Compra de 3000,000 de libras de tabaco para el Rey (200,000 pesos)",
+        "note": "Exact character match"
+      }
+    },
+    "141": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 141,
+        "mdbtools_val": "141",
+        "note": "Exact character match"
+      },
+      "ID FLOTA TOTAL": {
+        "status": "MATCH",
+        "access_parser_val": "Galeones de 1684",
+        "mdbtools_val": "Galeones de 1684",
+        "note": "Exact character match"
+      },
+      "FLOTA": {
+        "status": "MATCH",
+        "access_parser_val": "Galeones a Tierra Firme (Gonzalo Chacón Medina y Salazar)",
+        "mdbtools_val": "Galeones a Tierra Firme (Gonzalo Chacón Medina y Salazar)",
+        "note": "Exact character match"
+      },
+      "ORIGEN": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz",
+        "mdbtools_val": "Cádiz",
+        "note": "Exact character match"
+      },
+      "DESTINO": {
+        "status": "MATCH",
+        "access_parser_val": "Tierra Firme",
+        "mdbtools_val": "Tierra Firme",
+        "note": "Exact character match"
+      },
+      "FECHA": {
+        "status": "MATCH",
+        "access_parser_val": "1684",
+        "mdbtools_val": "1684",
+        "note": "Exact character match"
+      },
+      "Nº DE MERCANTES": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      },
+      "FUENTE O DOCUMENTO": {
+        "status": "PARSER_REPRESENTATION_DIFFERENCE",
+        "access_parser_val": "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux& /Morineau, M. p. 280",
+        "mdbtools_val": "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux…/Morineau, M. p. 280",
+        "note": "Jet4 unicode decompression difference: access-parser decodes U+2026 ellipsis as '& ' (low byte 0x26); mdbtools decodes '…' (U+2026)"
+      },
+      "NOTAS": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      }
+    },
+    "168": {
+      "ID": {
+        "status": "MATCH",
+        "access_parser_val": 168,
+        "mdbtools_val": "168",
+        "note": "Exact character match"
+      },
+      "ID FLOTA TOTAL": {
+        "status": "MATCH",
+        "access_parser_val": "Flota? de 1695",
+        "mdbtools_val": "Flota? de 1695",
+        "note": "Exact character match"
+      },
+      "FLOTA": {
+        "status": "MATCH",
+        "access_parser_val": "Flota a Nueva España (Ignacio de Barrios Leal)",
+        "mdbtools_val": "Flota a Nueva España (Ignacio de Barrios Leal)",
+        "note": "Exact character match"
+      },
+      "ORIGEN": {
+        "status": "MATCH",
+        "access_parser_val": "Cádiz",
+        "mdbtools_val": "Cádiz",
+        "note": "Exact character match"
+      },
+      "DESTINO": {
+        "status": "MATCH",
+        "access_parser_val": "Nueva España",
+        "mdbtools_val": "Nueva España",
+        "note": "Exact character match"
+      },
+      "FECHA": {
+        "status": "MATCH",
+        "access_parser_val": "1695",
+        "mdbtools_val": "1695",
+        "note": "Exact character match"
+      },
+      "Nº DE MERCANTES": {
+        "status": "MATCH",
+        "access_parser_val": null,
+        "mdbtools_val": "",
+        "note": "Exact character match"
+      },
+      "FUENTE O DOCUMENTO": {
+        "status": "PARSER_REPRESENTATION_DIFFERENCE",
+        "access_parser_val": "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas& /Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial& /Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux& /Morineau, M. p. 236, 282",
+        "mdbtools_val": "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas…/Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial…/Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux…/Morineau, M. p. 236, 282",
+        "note": "Jet4 unicode decompression difference: access-parser decodes U+2026 ellipsis as '& ' (low byte 0x26); mdbtools decodes '…' (U+2026)"
+      },
+      "NOTAS": {
+        "status": "MATCH",
+        "access_parser_val": "Aparece citado que tardan 32 meses, en la obra de María Guadalupe Carrasco González. Dependiendo de la fuente, varia la denominación de Flota o Galeones, y las fechas de salida y llegada a los diferentes puntos de destino.",
+        "mdbtools_val": "Aparece citado que tardan 32 meses, en la obra de María Guadalupe Carrasco González. Dependiendo de la fuente, varia la denominación de Flota o Galeones, y las fechas de salida y llegada a los diferentes puntos de destino.",
+        "note": "Exact character match"
+      }
+    }
+  }
+}
