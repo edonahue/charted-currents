@@ -23,6 +23,8 @@ console.log("==========================================");
 console.log(`- Ships (Canonical):    ${entities.ships.length}`);
 console.log(`- Ship Occurrences:     ${entities.ship_occurrences.length}`);
 console.log(`- Crew Depositions:     ${entities.crew_occurrences.length}`);
+console.log(`- Person Occurrences:   ${(entities.person_occurrences || []).length}`);
+console.log(`- Persons (Canonical):  ${(entities.persons || []).length}`);
 console.log(`- Places (Resolved):    ${entities.places.length}`);
 console.log(`- Archival Routes:      ${(entities.routes || routes.archival_routes || []).length}`);
 console.log(`- Map Display Edges:    ${routes.features.length}`);

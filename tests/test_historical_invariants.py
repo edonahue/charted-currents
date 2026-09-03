@@ -56,19 +56,31 @@ class TestHistoricalInvariants(unittest.TestCase):
                 self.assertIn(ast_id, assertion_ids, f"Occurrence {occ['id']} references nonexistent assertion {ast_id}")
 
     def test_explicit_entity_resolution_edges(self):
-        """Every canonical ship entity must be linked via an explicit resolution edge."""
+        """Every canonical ship and person entity must be linked via an explicit resolution edge."""
         ship_occ_ids = {occ["id"] for occ in self.entities["ship_occurrences"]}
         canonical_ship_ids = {s["id"] for s in self.entities["ships"]}
-        edge_occurrences = set()
+        person_occ_ids = {occ["id"] for occ in self.entities.get("person_occurrences", [])}
+        canonical_person_ids = {p["id"] for p in self.entities.get("persons", [])}
+
+        ship_edge_occurrences = set()
+        person_edge_occurrences = set()
 
         for edge in self.entities["entity_resolution_edges"]:
-            self.assertIn(edge["occurrence_id"], ship_occ_ids)
-            self.assertIn(edge["target_entity_id"], canonical_ship_ids)
-            self.assertEqual(edge["resolution_state"], "documented_identity")
-            edge_occurrences.add(edge["occurrence_id"])
+            if edge["occurrence_id"] in ship_occ_ids:
+                self.assertIn(edge["target_entity_id"], canonical_ship_ids)
+                self.assertEqual(edge["resolution_state"], "documented_identity")
+                ship_edge_occurrences.add(edge["occurrence_id"])
+            elif edge["occurrence_id"] in person_occ_ids:
+                self.assertIn(edge["target_entity_id"], canonical_person_ids)
+                self.assertEqual(edge["resolution_state"], "probable_match")
+                person_edge_occurrences.add(edge["occurrence_id"])
+            else:
+                self.fail(f"Resolution edge occurrence {edge['occurrence_id']} is neither a ship nor person occurrence")
 
         for occ_id in ship_occ_ids:
-            self.assertIn(occ_id, edge_occurrences, f"Occurrence {occ_id} lacks an explicit resolution edge")
+            self.assertIn(occ_id, ship_edge_occurrences, f"Ship occurrence {occ_id} lacks an explicit resolution edge")
+        for occ_id in person_occ_ids:
+            self.assertIn(occ_id, person_edge_occurrences, f"Person occurrence {occ_id} lacks an explicit resolution edge")
 
     def test_inspection_states_declared_honestly(self):
         """Source records must declare specific inspection states matching actual research actions."""

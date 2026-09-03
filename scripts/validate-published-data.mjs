@@ -55,6 +55,7 @@ const VALID_ATTESTATION_RELATIONSHIPS = new Set([
   "editorial_normalization",
   "modern_preferred_label",
   "historical_variant",
+  "catalogue_title_variant",
 ]);
 
 export function validatePublishedData(dataDir = targetDir, isSilent = false) {
@@ -169,10 +170,27 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(!shipOccIds.has(occ.id), `Duplicate ship occurrence ID: ${occ.id}`);
     shipOccIds.add(occ.id);
     assert(sourceRecordIds.has(occ.source_record_id), `Ship occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
+    assert(occ.raw_construction_place !== "Unknown", `Ship occurrence ${occ.id} contains synthetic sentinel 'Unknown' for raw_construction_place`);
     assert(Array.isArray(occ.assertion_ids) && occ.assertion_ids.length > 0, `Ship occurrence ${occ.id} missing assertion_ids`);
     validateAttestations("ShipOccurrence", occ.id, occ.attestations);
     for (const astId of occ.assertion_ids || []) {
       assert(assertionIds.has(astId), `Ship occurrence ${occ.id} references nonexistent assertion ${astId}`);
+    }
+
+    // Validate structured fleet convoy context if present
+    if (occ.fleet_convoy) {
+      const fc = occ.fleet_convoy;
+      assert(typeof fc.native_fleet_id === "number", `Ship occurrence ${occ.id} fleet_convoy missing native_fleet_id`);
+      assert(sourceRecordIds.has(fc.source_record_id), `Ship occurrence ${occ.id} fleet_convoy references nonexistent source_record_id ${fc.source_record_id}`);
+      assert(Array.isArray(fc.assertion_ids) && fc.assertion_ids.length > 0, `Ship occurrence ${occ.id} fleet_convoy missing assertion_ids`);
+      for (const astId of fc.assertion_ids || []) {
+        assert(assertionIds.has(astId), `Ship occurrence ${occ.id} fleet_convoy references nonexistent assertion ${astId}`);
+      }
+      assert(typeof fc.fleet_title === "string", `Ship occurrence ${occ.id} fleet_convoy missing fleet_title`);
+      assert(typeof fc.commander_display === "string", `Ship occurrence ${occ.id} fleet_convoy missing commander_display`);
+      assert(typeof fc.fleet_origin === "string", `Ship occurrence ${occ.id} fleet_convoy missing fleet_origin`);
+      assert(typeof fc.fleet_destination === "string", `Ship occurrence ${occ.id} fleet_convoy missing fleet_destination`);
+      assert(typeof fc.year === "number", `Ship occurrence ${occ.id} fleet_convoy missing year`);
     }
   }
 
@@ -188,6 +206,21 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     }
   }
 
+  const personOccIds = new Set();
+  for (const occ of entities.person_occurrences || []) {
+    assert(typeof occ.id === "string", "Person occurrence missing id");
+    assert(!personOccIds.has(occ.id), `Duplicate person occurrence ID: ${occ.id}`);
+    personOccIds.add(occ.id);
+    assert(sourceRecordIds.has(occ.source_record_id), `Person occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
+    if (occ.ship_occurrence_id) {
+      assert(shipOccIds.has(occ.ship_occurrence_id), `Person occurrence ${occ.id} references nonexistent ship_occurrence_id ${occ.ship_occurrence_id}`);
+    }
+    assert(Array.isArray(occ.assertion_ids) && occ.assertion_ids.length > 0, `Person occurrence ${occ.id} missing assertion_ids`);
+    for (const astId of occ.assertion_ids || []) {
+      assert(assertionIds.has(astId), `Person occurrence ${occ.id} references nonexistent assertion ${astId}`);
+    }
+  }
+
   const shipIds = new Set();
   for (const s of entities.ships || []) {
     assert(typeof s.id === "string", "Ship missing id");
@@ -195,6 +228,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     shipIds.add(s.id);
     assert(typeof s.canonical_name === "string", `Ship ${s.id} missing canonical_name`);
     assert(s.evidence_state === "documented", `Ship ${s.id} evidence_state must be 'documented'`);
+    assert(s.construction_display !== "Unknown", `Ship ${s.id} contains synthetic sentinel 'Unknown' for construction_display`);
     assert(Array.isArray(s.occurrence_ids) && s.occurrence_ids.length > 0, `Ship ${s.id} missing occurrence_ids`);
     validateAttestations("Ship", s.id, s.attestations);
     for (const occId of s.occurrence_ids || []) {
@@ -202,9 +236,32 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     }
   }
 
+  const personIds = new Set();
+  for (const p of entities.persons || []) {
+    assert(typeof p.id === "string", "Person missing id");
+    assert(!personIds.has(p.id), `Duplicate person ID: ${p.id}`);
+    personIds.add(p.id);
+    assert(typeof p.canonical_name === "string", `Person ${p.id} missing canonical_name`);
+    assert(typeof p.evidence_state === "string", `Person ${p.id} missing evidence_state`);
+    assert(Array.isArray(p.occurrence_ids) && p.occurrence_ids.length > 0, `Person ${p.id} missing occurrence_ids`);
+    for (const occId of p.occurrence_ids || []) {
+      assert(personOccIds.has(occId), `Person ${p.id} references nonexistent occurrence_id ${occId}`);
+    }
+    for (const srId of p.source_record_ids || []) {
+      assert(sourceRecordIds.has(srId), `Person ${p.id} references nonexistent source_record_id ${srId}`);
+    }
+    validateAttestations("Person", p.id, p.attestations);
+  }
+
   for (const edge of entities.entity_resolution_edges || []) {
-    assert(shipOccIds.has(edge.occurrence_id), `Resolution edge references nonexistent occurrence_id ${edge.occurrence_id}`);
-    assert(shipIds.has(edge.target_entity_id), `Resolution edge references nonexistent target_entity_id ${edge.target_entity_id}`);
+    const isShipEdge = shipOccIds.has(edge.occurrence_id);
+    const isPersonEdge = personOccIds.has(edge.occurrence_id);
+    assert(isShipEdge || isPersonEdge, `Resolution edge references nonexistent occurrence_id ${edge.occurrence_id}`);
+    if (isShipEdge) {
+      assert(shipIds.has(edge.target_entity_id), `Resolution edge references nonexistent target ship ${edge.target_entity_id}`);
+    } else if (isPersonEdge) {
+      assert(personIds.has(edge.target_entity_id), `Resolution edge references nonexistent target person ${edge.target_entity_id}`);
+    }
     assert(typeof edge.resolution_state === "string", `Resolution edge missing resolution_state`);
     for (const astId of edge.evidence_assertions || []) {
       assert(assertionIds.has(astId), `Resolution edge references nonexistent assertion ${astId}`);

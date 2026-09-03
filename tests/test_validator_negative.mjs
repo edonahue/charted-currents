@@ -143,22 +143,60 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
-// Test 10: Attestation with invalid evidence_layer fails
+// Test 11: Person occurrence referencing nonexistent source_record_id fails
 {
   const tmpDir = createTempDataCopy();
   const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
-  entities.places[0].attestations = [
-    {
-      raw_name: "Fake Name",
-      evidence_layer: "unapproved_speculative_layer",
-      language: "es",
-      attestation_relationship: "source_transcription",
-      source_record_id: "sr_crespo_navio_6156"
-    }
-  ];
+  entities.person_occurrences[0].source_record_id = "sr_nonexistent_person_record";
   fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
   const result = validatePublishedData(tmpDir, true);
-  assert(result.valid === false && result.errorCount > 0, "Validator fails when attestation has invalid evidence_layer");
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when person occurrence references nonexistent source_record_id");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 12: Fleet convoy referencing nonexistent source_record_id fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  const crespoOcc = entities.ship_occurrences.find(o => o.fleet_convoy);
+  crespoOcc.fleet_convoy.source_record_id = "sr_nonexistent_fleet_record";
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when fleet_convoy references nonexistent source_record_id");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 13: Person resolution edge referencing nonexistent person fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  const pEdge = entities.entity_resolution_edges.find(e => e.target_entity_id.startsWith("person_"));
+  pEdge.target_entity_id = "person_nonexistent_target";
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when person resolution edge references nonexistent person target");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 14: Ship occurrence containing synthetic raw_construction_place Unknown fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.ship_occurrences[0].raw_construction_place = "Unknown";
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when ship occurrence contains synthetic 'Unknown' construction place");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 15: Person referencing nonexistent occurrence ID fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.persons[0].occurrence_ids.push("occ_person_fake_nonexistent");
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when person references nonexistent occurrence ID");
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 

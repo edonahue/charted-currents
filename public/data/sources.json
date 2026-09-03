@@ -485,6 +485,60 @@
       "upstream_archive_reference": "CONTRATACION, 1266, N.5"
     },
     {
+      "id": "sr_crespo_navio_6825",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_voyage_record",
+      "native_identifier": "6825",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "CONTRATACION, 1619, N.9"
+    },
+    {
+      "id": "sr_crespo_navio_6890",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_voyage_record",
+      "native_identifier": "6890",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "CONTRATACION, 1477, N.4, R.1"
+    },
+    {
+      "id": "sr_crespo_navio_6906",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_voyage_record",
+      "native_identifier": "6906",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "CONTRATACION, 1478, N.2, R.2"
+    },
+    {
+      "id": "sr_crespo_flota_141",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_fleet_record",
+      "native_identifier": "141",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "A.G.I.:CONTRATACION,1240"
+    },
+    {
+      "id": "sr_crespo_flota_168",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_fleet_record",
+      "native_identifier": "168",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "A.G.I.: Contratación, 1253 ; 1254 ; 1255"
+    },
+    {
+      "id": "sr_crespo_flota_4",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_fleet_record",
+      "native_identifier": "4",
+      "inspection_state": "dataset_record_inspected",
+      "upstream_archive_source_id": "src_pares_agi",
+      "upstream_archive_reference": "A.G.I.: Contratación, 1267"
+    },
+    {
       "id": "sr_pares_contratacion_1266_n5",
       "source_id": "src_pares_agi",
       "record_type": "archival_catalogue_entry",
@@ -1664,6 +1718,198 @@
       "source_record_id": "sr_pares_contratacion_1266_n5",
       "field": "archival_catalogue_title",
       "raw_value": "Registro del navío: Jesús Nazareno"
+    },
+    {
+      "id": "ast_crespo_6825_master",
+      "source_record_id": "sr_crespo_navio_6825",
+      "field": "master",
+      "raw_value": "Bartolomé Antonio Garrote"
+    },
+    {
+      "id": "ast_crespo_6825_year",
+      "source_record_id": "sr_crespo_navio_6825",
+      "field": "voyage_year",
+      "raw_value": "1688"
+    },
+    {
+      "id": "ast_crespo_6825_vessel",
+      "source_record_id": "sr_crespo_navio_6825",
+      "field": "vessel_name",
+      "raw_value": "Nuestra Señora del Rosario, San Antonio y Santo Domingo"
+    },
+    {
+      "id": "ast_crespo_6825_route",
+      "source_record_id": "sr_crespo_navio_6825",
+      "field": "voyage",
+      "raw_value": "Sevilla-Tierra Firme"
+    },
+    {
+      "id": "ast_crespo_6890_master",
+      "source_record_id": "sr_crespo_navio_6890",
+      "field": "master",
+      "raw_value": "Bartolomé Antonio de Garrote"
+    },
+    {
+      "id": "ast_crespo_6890_year",
+      "source_record_id": "sr_crespo_navio_6890",
+      "field": "voyage_year",
+      "raw_value": "1693"
+    },
+    {
+      "id": "ast_crespo_6890_vessel",
+      "source_record_id": "sr_crespo_navio_6890",
+      "field": "vessel_name",
+      "raw_value": "Nuestra Señora del Rosario, San Antonio y Santo Domingo"
+    },
+    {
+      "id": "ast_crespo_6890_route",
+      "source_record_id": "sr_crespo_navio_6890",
+      "field": "voyage",
+      "raw_value": "Sevilla-Nueva España"
+    },
+    {
+      "id": "ast_crespo_6906_master",
+      "source_record_id": "sr_crespo_navio_6906",
+      "field": "master",
+      "raw_value": "Bartolomé Antonio Garrote"
+    },
+    {
+      "id": "ast_crespo_6906_year",
+      "source_record_id": "sr_crespo_navio_6906",
+      "field": "voyage_year",
+      "raw_value": "1701"
+    },
+    {
+      "id": "ast_crespo_6906_vessel",
+      "source_record_id": "sr_crespo_navio_6906",
+      "field": "vessel_name",
+      "raw_value": "Nuestra Señora de la Encarnación"
+    },
+    {
+      "id": "ast_crespo_6906_route",
+      "source_record_id": "sr_crespo_navio_6906",
+      "field": "voyage",
+      "raw_value": "Sevilla-Nueva España"
+    },
+    {
+      "id": "ast_crespo_flota_141_title",
+      "source_record_id": "sr_crespo_flota_141",
+      "field": "fleet_title",
+      "raw_value": "Galeones de 1684"
+    },
+    {
+      "id": "ast_crespo_flota_141_compound",
+      "source_record_id": "sr_crespo_flota_141",
+      "field": "fleet_compound_description",
+      "raw_value": "Galeones a Tierra Firme (Gonzalo Chacón Medina y Salazar)"
+    },
+    {
+      "id": "ast_crespo_flota_141_commander",
+      "source_record_id": "sr_crespo_flota_141",
+      "field": "fleet_commander",
+      "raw_value": "Gonzalo Chacón Medina y Salazar",
+      "derivation_method": "regex_parenthetical_extraction",
+      "source_assertion_id": "ast_crespo_flota_141_compound"
+    },
+    {
+      "id": "ast_crespo_flota_141_origin",
+      "source_record_id": "sr_crespo_flota_141",
+      "field": "fleet_origin",
+      "raw_value": "Cádiz"
+    },
+    {
+      "id": "ast_crespo_flota_141_destination",
+      "source_record_id": "sr_crespo_flota_141",
+      "field": "fleet_destination",
+      "raw_value": "Tierra Firme"
+    },
+    {
+      "id": "ast_crespo_flota_141_year",
+      "source_record_id": "sr_crespo_flota_141",
+      "field": "fleet_year",
+      "raw_value": "1684"
+    },
+    {
+      "id": "ast_crespo_flota_168_title",
+      "source_record_id": "sr_crespo_flota_168",
+      "field": "fleet_title",
+      "raw_value": "Flota? de 1695"
+    },
+    {
+      "id": "ast_crespo_flota_168_compound",
+      "source_record_id": "sr_crespo_flota_168",
+      "field": "fleet_compound_description",
+      "raw_value": "Flota a Nueva España (Ignacio de Barrios Leal)"
+    },
+    {
+      "id": "ast_crespo_flota_168_commander",
+      "source_record_id": "sr_crespo_flota_168",
+      "field": "fleet_commander",
+      "raw_value": "Ignacio de Barrios Leal",
+      "derivation_method": "regex_parenthetical_extraction",
+      "source_assertion_id": "ast_crespo_flota_168_compound"
+    },
+    {
+      "id": "ast_crespo_flota_168_origin",
+      "source_record_id": "sr_crespo_flota_168",
+      "field": "fleet_origin",
+      "raw_value": "Cádiz"
+    },
+    {
+      "id": "ast_crespo_flota_168_destination",
+      "source_record_id": "sr_crespo_flota_168",
+      "field": "fleet_destination",
+      "raw_value": "Nueva España"
+    },
+    {
+      "id": "ast_crespo_flota_168_year",
+      "source_record_id": "sr_crespo_flota_168",
+      "field": "fleet_year",
+      "raw_value": "1695"
+    },
+    {
+      "id": "ast_crespo_flota_4_title",
+      "source_record_id": "sr_crespo_flota_4",
+      "field": "fleet_title",
+      "raw_value": "Flota a Nueva España de 1706"
+    },
+    {
+      "id": "ast_crespo_flota_4_compound",
+      "source_record_id": "sr_crespo_flota_4",
+      "field": "fleet_compound_description",
+      "raw_value": "Flota (Diego Fernández Santillán)"
+    },
+    {
+      "id": "ast_crespo_flota_4_commander",
+      "source_record_id": "sr_crespo_flota_4",
+      "field": "fleet_commander",
+      "raw_value": "Diego Fernández Santillán",
+      "derivation_method": "regex_parenthetical_extraction",
+      "source_assertion_id": "ast_crespo_flota_4_compound"
+    },
+    {
+      "id": "ast_crespo_flota_4_origin",
+      "source_record_id": "sr_crespo_flota_4",
+      "field": "fleet_origin",
+      "raw_value": "Cádiz"
+    },
+    {
+      "id": "ast_crespo_flota_4_destination",
+      "source_record_id": "sr_crespo_flota_4",
+      "field": "fleet_destination",
+      "raw_value": "Nueva España"
+    },
+    {
+      "id": "ast_crespo_flota_4_year",
+      "source_record_id": "sr_crespo_flota_4",
+      "field": "fleet_year",
+      "raw_value": "1706"
+    },
+    {
+      "id": "ast_crespo_flota_4_merchants_recorded",
+      "source_record_id": "sr_crespo_flota_4",
+      "field": "fleet_merchants_recorded",
+      "raw_value": "7"
     }
   ]
 }

@@ -1,0 +1,96 @@
+{
+  "reconciliation_task": "crespo_garrote_master_identity_audit",
+  "candidate_occurrences": [
+    {
+      "occurrence_id": "occ_person_crespo_6627_master",
+      "native_id": 6627,
+      "source_record_id": "sr_crespo_navio_6627",
+      "raw_master_name": "Bartolomé Antonio Garrote",
+      "upstream_maestre_fk": 11357,
+      "recorded_year": 1706,
+      "raw_vessel_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+      "departure_place": "Cádiz",
+      "arrival_place": "La Habana",
+      "fleet_convoy_id": 4,
+      "fuente": "A.G.I.: CONTRATACION, 1266, N.5"
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6906_master",
+      "native_id": 6906,
+      "source_record_id": "sr_crespo_navio_6906",
+      "raw_master_name": "Bartolomé Antonio Garrote",
+      "upstream_maestre_fk": 11357,
+      "recorded_year": 1701,
+      "raw_vessel_name": "Nuestra Señora de la Encarnación",
+      "departure_place": "Sevilla",
+      "arrival_place": "Nueva España",
+      "fleet_convoy_id": 204,
+      "fuente": "A.G.I.: CONTRATACION, 1478, N.2, R.2"
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6890_master",
+      "native_id": 6890,
+      "source_record_id": "sr_crespo_navio_6890",
+      "raw_master_name": "Bartolomé Antonio de Garrote",
+      "upstream_maestre_fk": 11357,
+      "recorded_year": 1693,
+      "raw_vessel_name": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+      "departure_place": "Sevilla",
+      "arrival_place": "Nueva España",
+      "fleet_convoy_id": 204,
+      "fuente": "A.G.I.: CONTRATACION, 1477, N.4, R.1"
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6825_master",
+      "native_id": 6825,
+      "source_record_id": "sr_crespo_navio_6825",
+      "raw_master_name": "Bartolomé Antonio Garrote",
+      "upstream_maestre_fk": 11357,
+      "recorded_year": 1688,
+      "raw_vessel_name": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+      "departure_place": "Sevilla",
+      "arrival_place": "Tierra Firme",
+      "fleet_convoy_id": 176,
+      "fuente": "A.G.I.: CONTRATACION, 1619, N.9"
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6820_master_research_only",
+      "native_id": 6820,
+      "source_record_id": "sr_crespo_navio_6820",
+      "raw_master_name": "Francisco Antonio Garrote",
+      "upstream_maestre_fk": 11357,
+      "recorded_year": 1684,
+      "raw_vessel_name": "La Concepción y las Animas",
+      "departure_place": "Sevilla",
+      "arrival_place": "Tierra Firme",
+      "fleet_convoy_id": 176,
+      "fuente": "A.G.I.: CONTRATACION, 1619, N.5, R.2",
+      "reconciliation_status": "excluded_from_bartolome_identity"
+    }
+  ],
+  "upstream_fk_audit": {
+    "foreign_key": 11357,
+    "referenced_table": "PRUEBAAGENTES",
+    "referenced_row": {
+      "ID": 11357,
+      "NOMBRE": "Francisco Antonio",
+      "NOMBRE Y APELLIDOS": "Garrote",
+      "PERIODO": "1684",
+      "FUENTES": "A.G.I.: CONTRATACION, 1619, N.5, R.2",
+      "OFICIO": "Maestre"
+    },
+    "finding": "The upstream Crespo database linked all five Garrote records to PRUEBAAGENTES ID 11357 ('Francisco Antonio Garrote'). Because rows 6825, 6890, 6906, and 6627 bear the distinct given name 'Bartolomé Antonio', the upstream foreign key 11357 is internally contradictory and cannot serve as authoritative identity proof.",
+    "treatment": "discounted_upstream_signal"
+  },
+  "reconciliation_verdict": {
+    "target_canonical_person": "person_bartolome_antonio_garrote",
+    "resolution_state": "probable_match",
+    "rationale": "Four distinct transatlantic Carrera de Indias registers spanning 18 years (1688, 1693, 1701, 1706) record the identical master name ('Bartolomé Antonio Garrote' / 'de Garrote') departing Andalusian river/bay ports (Seville and Cádiz) for Spanish America. While primary manuscript biographical confirmation remains uninspected, the consistent professional rank, geography, and chronology establish a strong probable career identity. Row 6820 ('Francisco Antonio Garrote', 1684) is excluded due to given-name conflict.",
+    "included_occurrences": [
+      "occ_person_crespo_6627_master",
+      "occ_person_crespo_6906_master",
+      "occ_person_crespo_6890_master",
+      "occ_person_crespo_6825_master"
+    ]
+  }
+}

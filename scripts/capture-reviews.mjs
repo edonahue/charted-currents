@@ -1083,7 +1083,117 @@ async function runReviewSuite() {
     });
     await new Promise((r) => setTimeout(r, 300));
 
-    // 13. Runtime Exceptions check
+    // 13. Test Packet 5 Fleet Convoy Context & Person View (Bartolomé Antonio Garrote)
+    console.log("Testing Packet 5 fleet convoy context and Garrote person view...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_jesus_nazareno_guadalupe_1706" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const fleetCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const fleetTitle = document.querySelector('[data-fleet-title]')?.textContent || '';
+        const fleetCommander = document.querySelector('[data-fleet-commander]')?.textContent || '';
+        const fleetRoute = document.querySelector('[data-fleet-route]')?.textContent || '';
+        const fleetVessels = document.querySelector('[data-fleet-vessels]')?.textContent || '';
+        const hasFleetSection = !document.querySelector('[data-ship-fleet-context]')?.hidden;
+        const masterBtn = document.querySelector('[data-ship-master] .inspector-link-btn');
+        const hasMasterLink = Boolean(masterBtn);
+
+        // Click master button to navigate to Person view
+        masterBtn?.click();
+
+        return { fleetTitle, fleetCommander, fleetRoute, fleetVessels, hasFleetSection, hasMasterLink };
+      })()`,
+      returnByValue: true,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    assert(fleetCheck?.result?.value?.hasFleetSection, "Jesús Nazareno 1706 displays Fleet & Convoy Organization section");
+    assert(fleetCheck?.result?.value?.fleetTitle === "Flota a Nueva España de 1706", "Fleet title matches 1706 Nueva España Flota");
+    assert(fleetCheck?.result?.value?.fleetCommander === "Diego Fernández Santillán", "Fleet commander parsed from compound string as Diego Fernández Santillán");
+    assert(fleetCheck?.result?.value?.fleetVessels.includes("14 documented Carrera vessels"), "Convoy size displays derived count (14 vessels)");
+    assert(fleetCheck?.result?.value?.hasMasterLink, "Master Garrote is rendered as an interactive link button");
+
+    const personCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const kicker = document.querySelector('[data-inspector-kicker]')?.textContent || '';
+        const badge = document.querySelector('[data-inspector-badge]')?.textContent || '';
+        const badgeState = document.querySelector('[data-inspector-badge]')?.getAttribute('data-evidence-state') || '';
+        const activeYears = document.querySelector('[data-person-active-years]')?.textContent || '';
+        const resolution = document.querySelector('[data-person-resolution-status]')?.textContent || '';
+        const rows = Array.from(document.querySelectorAll('[data-person-voyages-list] .inspector-rel-row'));
+        const rowTexts = rows.map(r => r.textContent || '');
+
+        const has1706 = rowTexts.some(t => t.includes('1706') && t.includes('Jesús, Nazareno'));
+        const has1701 = rowTexts.some(t => t.includes('1701') && t.includes('Nuestra Señora de la Encarnación'));
+        const has1693 = rowTexts.some(t => t.includes('1693') && t.includes('Nuestra Señora del Rosario'));
+        const has1688 = rowTexts.some(t => t.includes('1688') && t.includes('Nuestra Señora del Rosario'));
+
+        return {
+          title, kicker, badge, badgeState, activeYears, resolution,
+          rowCount: rows.length, has1706, has1701, has1693, has1688
+        };
+      })()`,
+      returnByValue: true,
+    });
+
+    assert(personCheck?.result?.value?.title === "Bartolomé Antonio Garrote", "Person title is Bartolomé Antonio Garrote");
+    assert(personCheck?.result?.value?.kicker === "Maritime Actor", "Person inspector kicker is Maritime Actor");
+    assert(personCheck?.result?.value?.badge === "Probable Match", "Person evidence badge is Probable Match");
+    assert(personCheck?.result?.value?.badgeState === "probable_match", "Person evidence state attribute is probable_match");
+    assert(personCheck?.result?.value?.activeYears.includes("1688–1706"), "Active career span shows 1688–1706 (18-year career span)");
+    assert(personCheck?.result?.value?.rowCount === 4, "Person lists all 4 recorded transatlantic master voyages");
+    assert(personCheck?.result?.value?.has1706, "Person list includes 1706 Jesús Nazareno voyage");
+    assert(personCheck?.result?.value?.has1701, "Person list includes 1701 Encarnación voyage");
+    assert(personCheck?.result?.value?.has1693, "Person list includes 1693 Rosario voyage");
+    assert(personCheck?.result?.value?.has1688, "Person list includes 1688 Rosario voyage");
+
+    // Capture Person Garrote inspector screenshot
+    const personScreenshot = await send("Page.captureScreenshot", { format: "png" });
+    if (personScreenshot?.data) {
+      const personOutPath = path.resolve(`design/reviews/${packetPrefix}person-garrote-1440x900.png`);
+      fs.writeFileSync(personOutPath, Buffer.from(personScreenshot.data, "base64"));
+      const size = fs.statSync(personOutPath).size;
+      console.log(`[SAVED] ${packetPrefix}person-garrote-1440x900.png (${size} bytes)`);
+      assert(size > 15000, `Screenshot ${packetPrefix}person-garrote-1440x900.png generated with valid raster size (${size} bytes)`);
+    }
+
+    // Open Source Drawer for Garrote
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const evidenceBtn = document.querySelector('[data-person-evidence-btn]');
+        evidenceBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const personDrawerCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById('source-drawer');
+        const isOpen = drawer && !drawer.hidden && drawer.getAttribute('data-state') === 'open';
+        const cardText = document.querySelector('[data-source-cards-container]')?.textContent || '';
+        const hasAgiCitations = cardText.includes('CONTRATACION, 1266') || cardText.includes('CONTRATACION, 1478') || cardText.includes('CONTRATACION, 1477') || cardText.includes('CONTRATACION, 1619');
+        return { isOpen, hasAgiCitations };
+      })()`,
+      returnByValue: true,
+    });
+    assert(personDrawerCheck?.result?.value?.isOpen, "Source drawer opened for person Garrote");
+    assert(personDrawerCheck?.result?.value?.hasAgiCitations, "Source drawer contains upstream AGI Contratación citations for Garrote");
+
+    // Close Source Drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const closeBtn = document.querySelector('[data-source-drawer-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    // 14. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

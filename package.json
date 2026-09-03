@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Provenance-aware historical exploration of the Greater Caribbean, 1650–1730.",
   "scripts": {
-    "preflight": "node scripts/preflight.mjs",
+    "preflight": "node scripts/preflight.mjs && node scripts/scan-private-leaks.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -25,6 +25,7 @@
     "refs:sync": "node scripts/sync-visual-references.mjs",
     "review:capture": "node scripts/capture-reviews.mjs",
     "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4",
+    "review:capture-packet5": "node scripts/capture-reviews.mjs --packet=packet5",
     "packet:report": "node scripts/packet-report.mjs"
   },
   "dependencies": {

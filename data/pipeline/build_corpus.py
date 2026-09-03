@@ -41,7 +41,9 @@ def main():
     places = data.get("places", [])
     ship_occurrences = data.get("ship_occurrences", [])
     crew_occurrences = data.get("crew_occurrences", [])
+    person_occurrences = data.get("person_occurrences", [])
     ships = data.get("ships", [])
+    persons = data.get("persons", [])
     entity_resolution_edges = data.get("entity_resolution_edges", [])
     routes = data.get("routes", [])
     events = data.get("events", [])
@@ -226,7 +228,9 @@ def main():
     entities_json = {
         "ship_occurrences": ship_occurrences,
         "crew_occurrences": crew_occurrences,
+        "person_occurrences": person_occurrences,
         "ships": ships,
+        "persons": persons,
         "entity_resolution_edges": entity_resolution_edges,
         "places": places,
         "routes": archival_routes,
@@ -262,7 +266,9 @@ def main():
             "assertions": len(assertions),
             "ship_occurrences": len(ship_occurrences),
             "crew_occurrences": len(crew_occurrences),
+            "person_occurrences": len(person_occurrences),
             "ships": len(ships),
+            "persons": len(persons),
             "entity_resolution_edges": len(entity_resolution_edges),
             "places": len(places),
             "routes": len(archival_routes),
