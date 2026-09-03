@@ -103,7 +103,6 @@ def extract_rows(mdb_path: str, target_ids: List[int], target_flota_ids: List[in
                 flota_col = todos_navios.get("FLOTAS CONOCIDAS", [])
                 linked_count = sum(1 for fl in flota_col if fl == f_id or (isinstance(fl, str) and str(fl).isdigit() and int(fl) == int(f_id)))
                 f_row["_project_derived_linked_navio_row_count"] = linked_count
-                f_row["_project_derived_vessel_count"] = linked_count
 
                 extracted_flotas.append(f_row)
 

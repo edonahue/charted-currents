@@ -18,9 +18,16 @@ MDB_PATH = os.path.join(REPO_ROOT, "data/raw/crespo/CrespoDynCoopNetDATASETS.mdb
 NAVIO_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/source_rows.json")
 FLOTAS_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/flotas_rows.json")
 REPORT_PATH = os.path.join(REPO_ROOT, "data/review/crespo/mdbtools_source_fidelity_audit.json")
+SELECTION_PATH = os.path.join(REPO_ROOT, "data/review/crespo/extraction_selection.json")
 
-AUDIT_NAVIO_IDS = [6156, 6177, 6587, 6627, 6820, 6825, 6890, 6906]
-AUDIT_FLOTA_IDS = [4, 141, 168]
+if os.path.exists(SELECTION_PATH):
+    with open(SELECTION_PATH, "r", encoding="utf-8") as f:
+        _sel = json.load(f)
+    AUDIT_NAVIO_IDS = _sel.get("todosnavios_ids", [6156, 6177, 6587, 6627, 6820, 6825, 6890, 6906])
+    AUDIT_FLOTA_IDS = _sel.get("flotas_ids", [4, 141, 168])
+else:
+    AUDIT_NAVIO_IDS = [6156, 6177, 6587, 6627, 6820, 6825, 6890, 6906]
+    AUDIT_FLOTA_IDS = [4, 141, 168]
 
 NAVIO_FIELDS = [
     "ID", "AÑO", "ESPECTRO DEL NAVIO", "CAPITAN / MAESTRE", "MAESTRE",
@@ -108,6 +115,13 @@ def run_audit():
             pass
 
     results = {
+        "audit_meta": {
+            "description": "Independent cross-parser source-fidelity QA comparing native mdbtools (mdb-export) against Python access-parser 0.0.6 extracted fixtures for Crespo MDB.",
+            "source_file": os.path.relpath(MDB_PATH, REPO_ROOT),
+            "selection_file": os.path.relpath(SELECTION_PATH, REPO_ROOT),
+            "finding_summary": "access-parser 0.0.6 and mdbtools differ in representation of some Jet4 Unicode ellipsis characters in FLOTAS bibliography fields. No substantive Packet 5 historical value mismatch was detected.",
+            "disclaimer": "This is software/source-fidelity QA, not independent historical corroboration."
+        },
         "summary": {
             "total_fields_compared": 0,
             "match_count": 0,

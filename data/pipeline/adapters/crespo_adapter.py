@@ -84,8 +84,7 @@ class CrespoAdapter:
                         "fleet_origin": f_row.get("ORIGEN"),
                         "fleet_destination": f_row.get("DESTINO"),
                         "year": int(f_row.get("FECHA")) if f_row.get("FECHA") and str(f_row.get("FECHA")).isdigit() else None,
-                        "project_derived_linked_navio_row_count": f_row.get("_project_derived_linked_navio_row_count") or f_row.get("_project_derived_vessel_count"),
-                        "project_derived_vessel_count": f_row.get("_project_derived_linked_navio_row_count") or f_row.get("_project_derived_vessel_count"),
+                        "project_derived_linked_navio_row_count": f_row.get("_project_derived_linked_navio_row_count"),
                         "source_citation": f_row.get("FUENTE O DOCUMENTO")
                     }
             except (ValueError, TypeError):

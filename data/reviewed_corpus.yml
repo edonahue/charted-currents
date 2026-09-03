@@ -2090,7 +2090,6 @@ ship_occurrences:
     fleet_destination: Tierra Firme
     year: 1684
     project_derived_linked_navio_row_count: 25
-    project_derived_vessel_count: 25
     source_citation: "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux& /Morineau, M. p. 280"
   fleet_convoy_display: Galeones a Tierra Firme (1684)
   archival_register_reference: AGI CONTRATACION 1240, N.6
@@ -2133,7 +2132,6 @@ ship_occurrences:
     fleet_destination: Nueva España
     year: 1695
     project_derived_linked_navio_row_count: 24
-    project_derived_vessel_count: 24
     source_citation: "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas& /Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial& /Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux& /Morineau, M. p. 236, 282"
   fleet_convoy_display: Flota a Nueva España (1695)
   archival_register_reference: AGI CONTRATACION 1255, N.7
@@ -2177,7 +2175,6 @@ ship_occurrences:
     fleet_destination: Nueva España
     year: 1706
     project_derived_linked_navio_row_count: 14
-    project_derived_vessel_count: 14
     source_citation: "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas& / Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162"
   fleet_convoy_display: Flota a Nueva España (1706)
   archival_register_reference: AGI CONTRATACION 1266, N.5

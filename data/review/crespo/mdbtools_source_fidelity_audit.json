@@ -1,4 +1,11 @@
 {
+  "audit_meta": {
+    "description": "Independent cross-parser source-fidelity QA comparing native mdbtools (mdb-export) against Python access-parser 0.0.6 extracted fixtures for Crespo MDB.",
+    "source_file": "data/raw/crespo/CrespoDynCoopNetDATASETS.mdb",
+    "selection_file": "data/review/crespo/extraction_selection.json",
+    "finding_summary": "access-parser 0.0.6 and mdbtools differ in representation of some Jet4 Unicode ellipsis characters in FLOTAS bibliography fields. No substantive Packet 5 historical value mismatch was detected.",
+    "disclaimer": "This is software/source-fidelity QA, not independent historical corroboration."
+  },
   "summary": {
     "total_fields_compared": 123,
     "match_count": 120,

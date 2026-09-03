@@ -266,7 +266,6 @@ export interface FleetConvoyContext {
   fleet_destination: string;
   year: number;
   project_derived_linked_navio_row_count?: number;
-  project_derived_vessel_count?: number;
   source_citation?: string;
 }
 
