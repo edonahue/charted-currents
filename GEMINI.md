@@ -15,7 +15,7 @@ Keep this file small and evergreen. Current packet status, research details, and
 7. use the relevant workspace skill under `.agents/skills/`;
 8. read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before changing data, config, screenshots, logs, source artifacts, environment-facing files, or generated research outputs.
 
-For local Antigravity configuration, use `docs/ANTIGRAVITY_SETUP.md`.
+For local Antigravity configuration, use `docs/ANTIGRAVITY_SETUP.md`. For the current maintainer posture around scholarly-review agents and deferred worktree/rules setup, use `docs/LOCAL_GEMINI_SCHOLARLY_REVIEW_SETUP.md`.
 
 ## Permanent project invariants
 
@@ -39,6 +39,13 @@ For local Antigravity configuration, use `docs/ANTIGRAVITY_SETUP.md`.
 18. **Generated design explorations are noncanonical until explicitly approved.** Do not implement visual mockups merely because they exist in conversation history.
 19. **Preserve user work.** No destructive cleanup or unrelated refactors.
 20. **Fix valid review feedback at the invariant/root-cause level and add regression proof where useful.**
+21. **Review strength cannot upgrade evidence strength.** More reviewers, stronger models, or expert review can validate handling of evidence; they do not turn a probable inference into a direct historical assertion.
+22. **AI agreement is process QA, not historical corroboration.** Multiple models agreeing do not create additional historical witnesses.
+23. **Contradictory evidence is part of the record.** Preserve and review it rather than optimizing it away to simplify an entity or narrative.
+24. **Review burden rises with inference.** Direct transcription, deterministic transformation, relational derivation, identity resolution, interpretation, reconstruction, and causal argument require different review intensity. Follow `docs/HISTORICAL_ASSERTION_POLICY.md`.
+25. **Interpretive prose must not outrun its support.** If sources establish only a bounded descriptive statement, do not generate a broader historical interpretation merely because it sounds plausible; use appropriate secondary scholarship or omit the claim.
+
+For substantial historical publication or review work, follow `docs/SCHOLARLY_INTEGRITY.md` and `docs/HISTORICAL_REVIEW_POLICY.md` in addition to the source/provenance documents routed by `docs/AGENT_CONTEXT_INDEX.md`.
 
 ## Packet lifecycle authority
 
@@ -57,15 +64,18 @@ Only an explicit maintainer/external-review decision authorizes `ACCEPTED`.
 
 A successful local build or self-verification does not authorize merging/pushing `main` or prove deployment.
 
+The lifecycle is a review/communication contract even when optional local packet hooks are not activated.
+
 ## Branch/publication behavior
 
 For substantial packet implementation:
 
-- work on the packet feature branch/worktree;
+- work on the packet feature branch;
+- a worktree is optional, not a current maintainer requirement;
 - commit and push the feature branch after self-verification when allowed;
-- create/use a PR and preview/review boundary;
-- do not merge or push `main` before packet acceptance;
-- after acceptance, merge/deploy only through the documented human-visible publication gate.
+- stop for external review before treating the packet as accepted;
+- use a PR/preview boundary when the maintainer requests it or when it materially improves review; do not treat a local merge as a substitute for historical review;
+- after acceptance, merge/deploy only through an explicit maintainer-visible publication step.
 
 Small explicit maintainer-requested governance/documentation fixes may be committed directly to `main` when no packet implementation is active.
 
@@ -79,6 +89,8 @@ Every acceptance claim should identify the kind of proof it needs:
 - **hosted** — deployed URL/commit/runtime observation.
 
 A lower evidence class cannot silently satisfy a higher one. A constant copied into a test fixture cannot prove source extraction. DOM state alone cannot prove a native keyboard interaction. A local build cannot prove hosted deployment.
+
+Historical assertion risk classes (A–G) are separate from these verification evidence classes. Use `docs/HISTORICAL_ASSERTION_POLICY.md` rather than conflating them.
 
 ## No goal substitution
 
@@ -100,9 +112,10 @@ Before handing off implementation:
 
 1. run the packet's required proof commands;
 2. inspect the diff for scope drift, source-of-truth duplication, provenance inflation, generated drift, private/restricted files, and source-specific schema coercion;
-3. run `npm run packet:report` and use its data-derived facts in the handoff;
-4. distinguish **observed**, **inferred**, and **unverified** results;
-5. state unresolved items explicitly;
-6. stop at `REVIEW_PENDING` rather than beginning the next packet.
+3. when historical publication changed, classify/inspect the changed claims using the scholarly-integrity/review policy appropriate to the packet's current tooling;
+4. run `npm run packet:report` and use its data-derived facts in the handoff;
+5. distinguish **observed**, **inferred**, and **unverified** results;
+6. state unresolved items explicitly;
+7. stop at `REVIEW_PENDING` rather than beginning the next packet.
 
 Never reconstruct vessel names, source IDs, counts, masters, routes, commit SHA, branch, or corpus counts from memory when a repository command/artifact can provide them.
