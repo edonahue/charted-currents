@@ -53,3 +53,6 @@ jobs:
 
       - name: Astro check and build
         run: npm run verify
+
+      - name: Run browser review suite and UI behavioral assertions
+        run: npm run review:behavioral

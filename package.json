@@ -23,6 +23,7 @@
     "research:check-access": "node scripts/check-research-access.mjs",
     "research:test-diagnostic": "node tests/test_research_access_diagnostic.mjs",
     "refs:sync": "node scripts/sync-visual-references.mjs",
+    "review:behavioral": "node scripts/capture-reviews.mjs --behavioral-only",
     "review:capture": "node scripts/capture-reviews.mjs",
     "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4",
     "review:capture-packet5": "node scripts/capture-reviews.mjs --packet=packet5",
