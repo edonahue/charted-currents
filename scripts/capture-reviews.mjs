@@ -138,13 +138,45 @@ async function runReviewSuite() {
     "about:blank",
   ]);
 
+  let chromeStderr = "";
+  let chromeStdout = "";
+  proc.stderr?.on("data", (d) => {
+    chromeStderr += d.toString();
+  });
+  proc.stdout?.on("data", (d) => {
+    chromeStdout += d.toString();
+  });
+  let procExitCode = null;
+  proc.on("exit", (code) => {
+    procExitCode = code;
+  });
+
   let uncaughtExceptions = [];
 
   try {
-    await new Promise((r) => setTimeout(r, 1500));
-    const listRes = await fetch(`http://127.0.0.1:${debugPort}/json/list`);
-    const targets = await listRes.json();
-    const pageTarget = targets.find((t) => t.type === "page");
+    let targets = null;
+    const startTime = Date.now();
+    while (Date.now() - startTime < 10000) {
+      if (procExitCode !== null) {
+        throw new Error(`Browser process exited early with code ${procExitCode}. Stderr: ${chromeStderr}`);
+      }
+      try {
+        const listRes = await fetch(`http://127.0.0.1:${debugPort}/json/list`);
+        if (listRes.ok) {
+          targets = await listRes.json();
+          if (Array.isArray(targets) && targets.length > 0) break;
+        }
+      } catch {
+        // Retry while Chrome initializes
+      }
+      await new Promise((r) => setTimeout(r, 200));
+    }
+
+    if (!targets || targets.length === 0) {
+      throw new Error(`Failed to connect to browser debugger on port ${debugPort} after 10s. Exit: ${procExitCode}. Stderr: ${chromeStderr}`);
+    }
+
+    const pageTarget = targets.find((t) => t.type === "page") || targets[0];
     if (!pageTarget) throw new Error("No page target found in browser debugger");
 
     const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
