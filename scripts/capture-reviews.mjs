@@ -126,15 +126,19 @@ async function runReviewSuite() {
   console.log(`Using browser: ${chromePath}`);
 
   const debugPort = await getAvailablePort();
+  const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "cc-chrome-"));
   const proc = spawn(chromePath, [
     "--headless=new",
     "--no-sandbox",
+    "--disable-gpu",
     "--disable-dev-shm-usage",
+    `--user-data-dir=${userDataDir}`,
+    "--remote-debugging-address=127.0.0.1",
+    `--remote-debugging-port=${debugPort}`,
     "--use-gl=angle",
     "--use-angle=swiftshader",
     "--enable-webgl",
     "--hide-scrollbars",
-    `--remote-debugging-port=${debugPort}`,
     "about:blank",
   ]);
 
@@ -1363,6 +1367,9 @@ async function runReviewSuite() {
     failureCount++;
   } finally {
     proc.kill();
+    try {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+    } catch {}
     server.close(() => {
       console.log("\n==========================================");
       console.log(`Review Summary: ${passCount} passed, ${failureCount} failed.`);
