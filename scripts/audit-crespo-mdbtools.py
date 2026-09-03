@@ -20,14 +20,26 @@ FLOTAS_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/flotas_rows.jso
 REPORT_PATH = os.path.join(REPO_ROOT, "data/review/crespo/mdbtools_source_fidelity_audit.json")
 SELECTION_PATH = os.path.join(REPO_ROOT, "data/review/crespo/extraction_selection.json")
 
-if os.path.exists(SELECTION_PATH):
+if not os.path.exists(SELECTION_PATH):
+    raise FileNotFoundError(f"Authoritative extraction selection fixture not found: {SELECTION_PATH}")
+
+try:
     with open(SELECTION_PATH, "r", encoding="utf-8") as f:
         _sel = json.load(f)
-    AUDIT_NAVIO_IDS = _sel.get("todosnavios_ids", [6156, 6177, 6587, 6627, 6820, 6825, 6890, 6906])
-    AUDIT_FLOTA_IDS = _sel.get("flotas_ids", [4, 141, 168])
-else:
-    AUDIT_NAVIO_IDS = [6156, 6177, 6587, 6627, 6820, 6825, 6890, 6906]
-    AUDIT_FLOTA_IDS = [4, 141, 168]
+except Exception as e:
+    raise ValueError(f"Malformed extraction selection fixture {SELECTION_PATH}: {e}")
+
+if not isinstance(_sel, dict):
+    raise ValueError(f"Extraction selection fixture must be a JSON object: {SELECTION_PATH}")
+
+if "navio_ids" not in _sel or not _sel["navio_ids"]:
+    raise ValueError(f"Missing or empty 'navio_ids' in selection fixture: {SELECTION_PATH}")
+
+if "flota_ids" not in _sel or not _sel["flota_ids"]:
+    raise ValueError(f"Missing or empty 'flota_ids' in selection fixture: {SELECTION_PATH}")
+
+AUDIT_NAVIO_IDS = [int(x) for x in _sel["navio_ids"]]
+AUDIT_FLOTA_IDS = [int(x) for x in _sel["flota_ids"]]
 
 NAVIO_FIELDS = [
     "ID", "AÑO", "ESPECTRO DEL NAVIO", "CAPITAN / MAESTRE", "MAESTRE",
@@ -83,6 +95,7 @@ def run_audit():
     print("CHARTED CURRENTS · INDEPENDENT MDBTOOLS SOURCE-FIDELITY AUDIT")
     print("============================================================")
     print(f"Source MDB: {MDB_PATH}")
+    print(f"Selection:  {os.path.relpath(SELECTION_PATH, REPO_ROOT)} (Loaded {len(AUDIT_NAVIO_IDS)} navio IDs, {len(AUDIT_FLOTA_IDS)} flota IDs)")
 
     # Load access-parser fixtures
     with open(NAVIO_FIXTURE, "r", encoding="utf-8") as f:

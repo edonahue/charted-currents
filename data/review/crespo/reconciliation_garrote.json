@@ -108,7 +108,7 @@
   "reconciliation_verdict": {
     "target_canonical_person": "person_bartolome_antonio_garrote",
     "resolution_state": "probable_match",
-    "rationale": "Four Crespo TODOSNAVIOS rows, each carrying an AGI Contratación citation, record Bartolomé Antonio [de] Garrote as master across an 18-year span of recorded occurrences (1688, 1693, 1701, 1706). Underlying archival register content has not been independently inspected by Charted Currents. While primary manuscript biographical confirmation remains uninspected, the consistent professional rank, geography, and chronology supports a probable recurring Carrera master identity. Continuous career or continuous employment is not claimed. Row 6820 ('Francisco Antonio Garrote', 1684, sr_crespo_navio_6820) is preserved as negative evidence and excluded due to given-name conflict.",
+    "rationale": "Four Crespo TODOSNAVIOS rows, each carrying an AGI Contratación citation, record Bartolomé Antonio [de] Garrote as master across an 18-year span of recorded occurrences (1688, 1693, 1701, 1706). Underlying archival register content has not been independently inspected by Charted Currents. While primary manuscript biographical confirmation remains uninspected, the consistent professional rank, geography, and chronology support a probable recurring Carrera master identity. Continuous career or continuous employment is not claimed. Row 6820 ('Francisco Antonio Garrote', 1684, sr_crespo_navio_6820) is preserved as negative evidence and excluded due to given-name conflict.",
     "included_occurrences": [
       "occ_person_crespo_6627_master",
       "occ_person_crespo_6906_master",
