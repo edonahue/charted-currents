@@ -188,14 +188,51 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(vis["rights_state"], "open_public_domain")
         self.assertIn("Library of Congress", vis["holding_institution"])
 
-    def test_eighteen_vessels_in_public_corpus(self):
-        """Packet 4 corpus must contain exactly 18 verified vessels and 18 archival routes across 14 display edges."""
+    def test_vessels_in_public_corpus(self):
+        """Corpus must contain exactly 21 verified vessels (18 baseline + 3 Packet 6) and 21 archival routes across 16 display edges."""
         ships = self.entities["ships"]
-        self.assertEqual(len(ships), 18, f"Expected 18 vessels, found {len(ships)}")
+        self.assertEqual(len(ships), 21, f"Expected 21 vessels, found {len(ships)}")
         archival_routes = self.entities.get("routes", [])
-        self.assertEqual(len(archival_routes), 18, f"Expected 18 archival routes, found {len(archival_routes)}")
+        self.assertEqual(len(archival_routes), 21, f"Expected 21 archival routes, found {len(archival_routes)}")
         display_edges = self.routes_geojson["features"]
-        self.assertEqual(len(display_edges), 14, f"Expected 14 display edges, found {len(display_edges)}")
+        self.assertEqual(len(display_edges), 16, f"Expected 16 display edges, found {len(display_edges)}")
+
+    def test_packet6_recorded_goods_invariants(self):
+        """Packet 6 Recorded Goods occurrences must preserve exact counts, provenance, and ethical boundaries."""
+        goods = self.entities.get("goods_occurrences", [])
+        self.assertEqual(len(goods), 160, f"Expected exactly 160 goods occurrences, found {len(goods)}")
+
+        # Vessel 5890: 135 lines of Cacao, 86 distinct nonblank consignees
+        v5890_goods = [g for g in goods if g["ship_occurrence_id"] == "occ_ship_crespo_5890"]
+        self.assertEqual(len(v5890_goods), 135)
+        self.assertTrue(all(g["recorded_commodity_label"] == "Cacao" for g in v5890_goods))
+        consignees_5890 = {g["recorded_consignee"] for g in v5890_goods if g.get("recorded_consignee")}
+        self.assertEqual(len(consignees_5890), 86, f"Expected 86 distinct nonblank consignees on 5890, got {len(consignees_5890)}")
+
+        # Vessel 4493: 16 lines across 9 distinct commodities
+        v4493_goods = [g for g in goods if g["ship_occurrence_id"] == "occ_ship_crespo_4493"]
+        self.assertEqual(len(v4493_goods), 16)
+        commodities_4493 = {g["recorded_commodity_label"] for g in v4493_goods}
+        self.assertEqual(len(commodities_4493), 9)
+
+        # Vessel 4501: 9 lines across 9 commodities with prize valuation on vessel
+        v4501_goods = [g for g in goods if g["ship_occurrence_id"] == "occ_ship_crespo_4501"]
+        self.assertEqual(len(v4501_goods), 9)
+        self.assertTrue(all(g["raw_quantity"] == 0 for g in v4501_goods))
+        self.assertTrue(all(g["parsed_quantity"] is None for g in v4501_goods))
+
+        # Ethical invariant: no commercial goods occurrence may represent enslaved persons
+        for g in goods:
+            self.assertNotEqual(g["commodity_ref_key"], 11)
+            self.assertNotIn("esclavo", g["recorded_commodity_label"].lower())
+
+        # Relational Class A/C/B assertion integrity
+        ast_by_id = {a["id"]: a for a in self.sources["assertions"]}
+        for g in goods:
+            # Must reference at least one Class A and one Class C assertion
+            risk_classes = {ast_by_id[aid].get("risk_class") for aid in g["assertion_ids"] if aid in ast_by_id}
+            self.assertIn("A", risk_classes, f"Goods {g['id']} missing Class A assertion")
+            self.assertIn("C", risk_classes, f"Goods {g['id']} missing Class C relational assertion")
 
     def test_vessel_events_bidirectional_link(self):
         """Capture events must declare valid vessel_id linking to ships[]."""

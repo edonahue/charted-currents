@@ -1,0 +1,70 @@
+[
+  {
+    "idTipoMercancia": 29,
+    "tipoMercancia": "Añil"
+  },
+  {
+    "idTipoMercancia": 40,
+    "tipoMercancia": "Azúcar"
+  },
+  {
+    "idTipoMercancia": 68,
+    "tipoMercancia": "Cacao"
+  },
+  {
+    "idTipoMercancia": 95,
+    "tipoMercancia": "Cáscaras  de naranja "
+  },
+  {
+    "idTipoMercancia": 111,
+    "tipoMercancia": "Cobre"
+  },
+  {
+    "idTipoMercancia": 117,
+    "tipoMercancia": "Conchas de carey "
+  },
+  {
+    "idTipoMercancia": 119,
+    "tipoMercancia": "Corambre"
+  },
+  {
+    "idTipoMercancia": 199,
+    "tipoMercancia": "Jengibre"
+  },
+  {
+    "idTipoMercancia": 221,
+    "tipoMercancia": "Limón"
+  },
+  {
+    "idTipoMercancia": 266,
+    "tipoMercancia": "Monedas de plata españolas"
+  },
+  {
+    "idTipoMercancia": 278,
+    "tipoMercancia": "Palo de Brasil "
+  },
+  {
+    "idTipoMercancia": 279,
+    "tipoMercancia": "Palo de Campeche"
+  },
+  {
+    "idTipoMercancia": 349,
+    "tipoMercancia": "Rocú "
+  },
+  {
+    "idTipoMercancia": 371,
+    "tipoMercancia": "Tabaco"
+  },
+  {
+    "idTipoMercancia": 372,
+    "tipoMercancia": "Tabaco de Barinas"
+  },
+  {
+    "idTipoMercancia": 392,
+    "tipoMercancia": "Cuero"
+  },
+  {
+    "idTipoMercancia": 440,
+    "tipoMercancia": "Algodón"
+  }
+]

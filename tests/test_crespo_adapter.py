@@ -12,7 +12,7 @@ from data.pipeline.adapters.crespo_adapter import CrespoAdapter
 class TestCrespoAdapter(unittest.TestCase):
     def test_load_and_transform_candidates(self):
         candidates = CrespoAdapter.load_and_transform_candidates()
-        self.assertEqual(len(candidates), 8, "Should transform 8 source rows from candidate fixture")
+        self.assertEqual(len(candidates), 11, "Should transform 11 source rows from candidate fixture")
 
         ids = [c["candidate_id"] for c in candidates]
         self.assertIn("occ_crespo_6156", ids)
@@ -23,6 +23,9 @@ class TestCrespoAdapter(unittest.TestCase):
         self.assertIn("occ_crespo_6890", ids)
         self.assertIn("occ_crespo_6906", ids)
         self.assertIn("occ_crespo_6820", ids)
+        self.assertIn("occ_crespo_5890", ids)
+        self.assertIn("occ_crespo_4493", ids)
+        self.assertIn("occ_crespo_4501", ids)
 
     def test_attestation_structure(self):
         candidates = CrespoAdapter.load_and_transform_candidates()

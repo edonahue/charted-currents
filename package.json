@@ -28,6 +28,8 @@
     "review:capture": "node scripts/capture-reviews.mjs",
     "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4",
     "review:capture-packet5": "node scripts/capture-reviews.mjs --packet=packet5",
+    "review:capture-packet6": "node scripts/capture-reviews.mjs --packet=packet6",
+    "historical:review-bundle": "node scripts/generate-review-bundle.mjs",
     "packet:report": "node scripts/packet-report.mjs"
   },
   "dependencies": {

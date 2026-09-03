@@ -17,6 +17,9 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MDB_PATH = os.path.join(REPO_ROOT, "data/raw/crespo/CrespoDynCoopNetDATASETS.mdb")
 NAVIO_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/source_rows.json")
 FLOTAS_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/flotas_rows.json")
+MERCANCIAS_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/mercancias_rows.json")
+TIPOMERCANCIA_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/tipomercancia_rows.json")
+TIPOMEDIDA_FIXTURE = os.path.join(REPO_ROOT, "data/candidates/crespo/tipomedida_rows.json")
 REPORT_PATH = os.path.join(REPO_ROOT, "data/review/crespo/mdbtools_source_fidelity_audit.json")
 SELECTION_PATH = os.path.join(REPO_ROOT, "data/review/crespo/extraction_selection.json")
 
@@ -40,6 +43,7 @@ if "flota_ids" not in _sel or not _sel["flota_ids"]:
 
 AUDIT_NAVIO_IDS = [int(x) for x in _sel["navio_ids"]]
 AUDIT_FLOTA_IDS = [int(x) for x in _sel["flota_ids"]]
+AUDIT_COMMODITY_NAVIO_IDS = [int(x) for x in _sel.get("commodity_navio_ids", [])]
 
 NAVIO_FIELDS = [
     "ID", "AÑO", "ESPECTRO DEL NAVIO", "CAPITAN / MAESTRE", "MAESTRE",
@@ -51,6 +55,14 @@ FLOTA_FIELDS = [
     "ID", "ID FLOTA TOTAL", "FLOTA", "ORIGEN", "DESTINO", "FECHA",
     "Nº DE MERCANTES", "FUENTE O DOCUMENTO", "NOTAS"
 ]
+
+MERCANCIAS_FIELDS = [
+    "identificador", "NAVIO MERCANTE", "MERCANCIA", "CANTIDAD", "MEDIDAS",
+    "VALOR", "MONEDA", "CONSIGNATARIO", "NOTAS"
+]
+
+TIPOMERCANCIA_FIELDS = ["idTipoMercancia", "tipoMercancia"]
+TIPOMEDIDA_FIELDS = ["IdTipoMedida", "tipoMedida"]
 
 def export_mdb_table(table_name: str) -> List[Dict[str, str]]:
     cmd = ["mdb-export", MDB_PATH, table_name]
@@ -201,6 +213,102 @@ def run_audit():
                 "note": note
             }
         results["flotas"][str(fid)] = row_report
+
+    # Audit MERCANCIAS if fixture exists
+    if os.path.exists(MERCANCIAS_FIXTURE):
+        print("Auditing MERCANCIAS fixture against mdb-export...")
+        with open(MERCANCIAS_FIXTURE, "r", encoding="utf-8") as f:
+            ap_merc = {int(r["identificador"]): r for r in json.load(f)}
+        
+        mdb_merc_all = export_mdb_table("MERCANCIAS")
+        mdb_merc = {int(r["identificador"]): r for r in mdb_merc_all if int(r.get("identificador", 0)) in ap_merc}
+        
+        results["mercancias"] = {}
+        for mid, row_ap in ap_merc.items():
+            row_mdb = mdb_merc.get(mid, {})
+            row_report = {}
+            for field in MERCANCIAS_FIELDS:
+                results["summary"]["total_fields_compared"] += 1
+                if field not in row_mdb and field not in row_ap:
+                    status, note = "UNAVAILABLE", "Field missing from both parsers"
+                    results["summary"]["unavailable_count"] += 1
+                else:
+                    val_ap = row_ap.get(field)
+                    val_mdb = row_mdb.get(field)
+                    status, note = classify_field(val_ap, val_mdb)
+                    if status == "MATCH":
+                        results["summary"]["match_count"] += 1
+                    elif status == "PARSER_REPRESENTATION_DIFFERENCE":
+                        results["summary"]["representation_difference_count"] += 1
+                    else:
+                        results["summary"]["mismatch_count"] += 1
+                row_report[field] = {
+                    "status": status,
+                    "access_parser_val": row_ap.get(field),
+                    "mdbtools_val": row_mdb.get(field),
+                    "note": note
+                }
+            results["mercancias"][str(mid)] = row_report
+
+    # Audit TIPOMERCANCIA if fixture exists
+    if os.path.exists(TIPOMERCANCIA_FIXTURE):
+        print("Auditing TIPOMERCANCIA fixture against mdb-export...")
+        with open(TIPOMERCANCIA_FIXTURE, "r", encoding="utf-8") as f:
+            ap_tm = {int(r["idTipoMercancia"]): r for r in json.load(f)}
+        mdb_tm_all = export_mdb_table("TIPOMERCANCIA")
+        mdb_tm = {int(r["idTipoMercancia"]): r for r in mdb_tm_all if int(r.get("idTipoMercancia", 0)) in ap_tm}
+        results["tipomercancia"] = {}
+        for tmid, row_ap in ap_tm.items():
+            row_mdb = mdb_tm.get(tmid, {})
+            row_report = {}
+            for field in TIPOMERCANCIA_FIELDS:
+                results["summary"]["total_fields_compared"] += 1
+                val_ap = row_ap.get(field)
+                val_mdb = row_mdb.get(field)
+                status, note = classify_field(val_ap, val_mdb)
+                if status == "MATCH":
+                    results["summary"]["match_count"] += 1
+                elif status == "PARSER_REPRESENTATION_DIFFERENCE":
+                    results["summary"]["representation_difference_count"] += 1
+                else:
+                    results["summary"]["mismatch_count"] += 1
+                row_report[field] = {
+                    "status": status,
+                    "access_parser_val": val_ap,
+                    "mdbtools_val": val_mdb,
+                    "note": note
+                }
+            results["tipomercancia"][str(tmid)] = row_report
+
+    # Audit TIPOMEDIDA if fixture exists
+    if os.path.exists(TIPOMEDIDA_FIXTURE):
+        print("Auditing TIPOMEDIDA fixture against mdb-export...")
+        with open(TIPOMEDIDA_FIXTURE, "r", encoding="utf-8") as f:
+            ap_tmed = {int(r["IdTipoMedida"]): r for r in json.load(f)}
+        mdb_tmed_all = export_mdb_table("TIPOMEDIDA")
+        mdb_tmed = {int(r["IdTipoMedida"]): r for r in mdb_tmed_all if int(r.get("IdTipoMedida", 0)) in ap_tmed}
+        results["tipomedida"] = {}
+        for tmedid, row_ap in ap_tmed.items():
+            row_mdb = mdb_tmed.get(tmedid, {})
+            row_report = {}
+            for field in TIPOMEDIDA_FIELDS:
+                results["summary"]["total_fields_compared"] += 1
+                val_ap = row_ap.get(field)
+                val_mdb = row_mdb.get(field)
+                status, note = classify_field(val_ap, val_mdb)
+                if status == "MATCH":
+                    results["summary"]["match_count"] += 1
+                elif status == "PARSER_REPRESENTATION_DIFFERENCE":
+                    results["summary"]["representation_difference_count"] += 1
+                else:
+                    results["summary"]["mismatch_count"] += 1
+                row_report[field] = {
+                    "status": status,
+                    "access_parser_val": val_ap,
+                    "mdbtools_val": val_mdb,
+                    "note": note
+                }
+            results["tipomedida"][str(tmedid)] = row_report
 
     # Save audit report
     os.makedirs(os.path.dirname(REPORT_PATH), exist_ok=True)

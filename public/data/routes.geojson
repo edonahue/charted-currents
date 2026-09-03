@@ -277,6 +277,63 @@
     },
     {
       "type": "Feature",
+      "id": "display_edge_place_curacao_place_amsterdam",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -68.9333,
+            12.1167
+          ],
+          [
+            4.9041,
+            52.3676
+          ]
+        ]
+      },
+      "properties": {
+        "id": "display_edge_place_curacao_place_amsterdam",
+        "origin_place_id": "place_curacao",
+        "destination_place_id": "place_amsterdam",
+        "origin_name": "Curaçao",
+        "destination_name": "Amsterdam",
+        "route_group_id": "route_group_place_curacao_place_amsterdam",
+        "constituent_vessel_ids": [
+          "ship_crespo_4493",
+          "ship_crespo_4501"
+        ],
+        "constituent_route_ids": [
+          "route_crespo_4493",
+          "route_crespo_4501"
+        ],
+        "constituent_assertion_ids": [
+          "ast_crespo_4493_dep",
+          "ast_crespo_4493_arr",
+          "ast_crespo_4501_dep",
+          "ast_crespo_4501_arr"
+        ],
+        "constituent_source_ids": [
+          "src_crespo_dyncoopnet"
+        ],
+        "record_count": 2,
+        "member_years": [
+          1700
+        ],
+        "associated_record_year": 1700,
+        "temporal_extent": {
+          "start_year": 1700,
+          "end_year": 1700,
+          "temporal_basis": "historical_record"
+        },
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "notes": "Aggregated display edge for 2 documented transatlantic vessel voyages between Curaçao and Amsterdam."
+      }
+    },
+    {
+      "type": "Feature",
       "id": "display_edge_place_havana_place_st_augustine",
       "geometry": {
         "type": "LineString",
@@ -750,6 +807,57 @@
         "geometry_provenance": "project visualization between resolved endpoint references",
         "notes": "Aggregated display edge for 2 documented transatlantic vessel voyages between Saint-Domingue (Hispaniola) and La Rochelle."
       }
+    },
+    {
+      "type": "Feature",
+      "id": "display_edge_place_venezuela_place_seville",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -66.9333,
+            10.6
+          ],
+          [
+            -5.9845,
+            37.3891
+          ]
+        ]
+      },
+      "properties": {
+        "id": "display_edge_place_venezuela_place_seville",
+        "origin_place_id": "place_venezuela",
+        "destination_place_id": "place_seville",
+        "origin_name": "Venezuela (Province / La Guaira)",
+        "destination_name": "Sevilla",
+        "route_group_id": "route_group_place_venezuela_place_seville",
+        "constituent_vessel_ids": [
+          "ship_crespo_5890"
+        ],
+        "constituent_route_ids": [
+          "route_crespo_5890"
+        ],
+        "constituent_assertion_ids": [
+          "ast_crespo_5890_dep",
+          "ast_crespo_5890_arr"
+        ],
+        "constituent_source_ids": [
+          "src_crespo_dyncoopnet"
+        ],
+        "record_count": 1,
+        "member_years": [],
+        "associated_record_year": 1700,
+        "temporal_extent": {
+          "start_year": null,
+          "end_year": null,
+          "temporal_basis": "historical_record"
+        },
+        "geometry_kind": "endpoints_only",
+        "evidence_state": "documented",
+        "is_track_observed": false,
+        "geometry_provenance": "project visualization between resolved endpoint references",
+        "notes": "Aggregated display edge for 1 documented transatlantic vessel voyage between Venezuela (Province / La Guaira) and Sevilla."
+      }
     }
   ],
   "archival_routes": [
@@ -1154,6 +1262,75 @@
         "src_crespo_dyncoopnet"
       ],
       "notes": "Documented Cádiz → La Habana voyage register from AGI Contratación 1266, N.5 in Crespo 6627."
+    },
+    {
+      "id": "route_crespo_5890",
+      "vessel_id": "ship_crespo_5890",
+      "origin_place_id": "place_venezuela",
+      "destination_place_id": "place_seville",
+      "date_display": "",
+      "associated_record_year": null,
+      "associated_record_month": null,
+      "temporal_basis": "register_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_5890_dep",
+        "ast_crespo_5890_arr"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "route_crespo_4493",
+      "vessel_id": "ship_crespo_4493",
+      "origin_place_id": "place_curacao",
+      "destination_place_id": "place_amsterdam",
+      "date_display": "",
+      "associated_record_year": null,
+      "associated_record_month": null,
+      "temporal_basis": "register_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_4493_dep",
+        "ast_crespo_4493_arr"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "route_crespo_4501",
+      "vessel_id": "ship_crespo_4501",
+      "origin_place_id": "place_curacao",
+      "destination_place_id": "place_amsterdam",
+      "date_display": "",
+      "associated_record_year": 1700,
+      "associated_record_month": null,
+      "temporal_basis": "capture_record",
+      "date_precision": "year",
+      "geometry_kind": "endpoints_only",
+      "evidence_state": "documented",
+      "is_track_observed": false,
+      "geometry_provenance": "project visualization between resolved endpoint references",
+      "source_assertion_ids": [
+        "ast_crespo_4501_dep",
+        "ast_crespo_4501_arr"
+      ],
+      "source_ids": [
+        "src_crespo_dyncoopnet"
+      ],
+      "notes": ""
     }
   ]
 }

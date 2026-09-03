@@ -1402,7 +1402,99 @@ async function runReviewSuite() {
     assert(remediosFleetCheck?.result?.value?.commander === "Ignacio de Barrios Leal", "Remedios y Animas displays parsed fleet commander Ignacio de Barrios Leal");
     assert(remediosFleetCheck?.result?.value?.route?.includes("Cádiz → Nueva España"), "Remedios y Animas displays fleet route Cádiz → Nueva España");
 
-    // 18. Runtime Exceptions check
+    // 18. Packet 6: Test Vessel 5890 Recorded Goods, Discrepancy Note, and Consignees
+    console.log("Testing Packet 6 Vessel 5890 Recorded Goods display...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_crespo_5890" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const v5890GoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const goodsSection = document.querySelector('[data-ship-goods-section]');
+        const isGoodsVisible = Boolean(goodsSection && !goodsSection.hidden && getComputedStyle(goodsSection).display !== 'none');
+        const summaryText = document.querySelector('[data-ship-goods-summary-text]')?.textContent || '';
+        const discNote = document.querySelector('[data-ship-goods-discrepancy-note]');
+        const isDiscVisible = Boolean(discNote && !discNote.hidden && getComputedStyle(discNote).display !== 'none');
+        const badges = Array.from(document.querySelectorAll('[data-ship-goods-badges] .inspector-goods-card')).map(c => c.textContent);
+        const consigneesText = document.querySelector('[data-ship-goods-consignees-text]')?.textContent || '';
+        return { isGoodsVisible, summaryText, isDiscVisible, badgesCount: badges.length, badgesJoined: badges.join(' '), consigneesText };
+      })()`,
+      returnByValue: true,
+    });
+    assert(v5890GoodsCheck?.result?.value?.isGoodsVisible, "Vessel 5890 Recorded Goods section is visible");
+    assert(v5890GoodsCheck?.result?.value?.summaryText?.includes("3698 fanegas"), "Vessel 5890 displays summary 3698 fanegas");
+    assert(v5890GoodsCheck?.result?.value?.isDiscVisible, "Vessel 5890 displays discrepancy note between itemized rows and summary");
+    assert(v5890GoodsCheck?.result?.value?.badgesJoined?.includes("135 recorded goods lines"), "Vessel 5890 renders grouped badge with 135 recorded lines");
+    assert(v5890GoodsCheck?.result?.value?.consigneesText?.includes("86 distinct nonblank consignees"), "Vessel 5890 renders 86 distinct nonblank consignees preview");
+
+    // 19. Packet 6: Test Vessel 4493 Itemized Commodities and Measure Caveat
+    console.log("Testing Packet 6 Vessel 4493 Itemized Commodities...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_crespo_4493" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const v4493GoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const badges = Array.from(document.querySelectorAll('[data-ship-goods-badges] .inspector-goods-card')).map(c => c.textContent);
+        const measureNote = document.querySelector('[data-ship-goods-measure-text]')?.textContent || '';
+        return { badgesCount: badges.length, badgesJoined: badges.join(' '), measureNote };
+      })()`,
+      returnByValue: true,
+    });
+    assert(v4493GoodsCheck?.result?.value?.badgesCount === 9, "Vessel 4493 renders 9 grouped commodity cards");
+    assert(v4493GoodsCheck?.result?.value?.badgesJoined?.includes("Azúcar"), "Vessel 4493 includes Azúcar card");
+    assert(v4493GoodsCheck?.result?.value?.badgesJoined?.includes("Palo de Campeche"), "Vessel 4493 includes Palo de Campeche card");
+    assert(v4493GoodsCheck?.result?.value?.measureNote?.includes("Vara"), "Vessel 4493 displays vat vs Vara measure caveat note");
+
+    // 20. Packet 6: Test Vessel 4501 Lump-Sum Goods Valuation Banner and Unitemized Goods
+    console.log("Testing Packet 6 Vessel 4501 Lump-Sum Valuation Banner...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_crespo_4501" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const v4501GoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const valBanner = document.querySelector('[data-ship-goods-value-banner]');
+        const isValVisible = Boolean(valBanner && !valBanner.hidden && getComputedStyle(valBanner).display !== 'none');
+        const valAmount = document.querySelector('[data-ship-goods-total-value]')?.textContent || '';
+        const badges = Array.from(document.querySelectorAll('[data-ship-goods-badges] .inspector-goods-card')).map(c => c.textContent);
+        return { isValVisible, valAmount, badgesCount: badges.length };
+      })()`,
+      returnByValue: true,
+    });
+    assert(v4501GoodsCheck?.result?.value?.isValVisible, "Vessel 4501 Total Goods Value banner is visible");
+    assert(v4501GoodsCheck?.result?.value?.valAmount?.includes("10491 pesos"), "Vessel 4501 displays 10491 pesos valuation");
+    assert(v4501GoodsCheck?.result?.value?.badgesCount === 9, "Vessel 4501 renders 9 unitemized commodity cards");
+
+    // 21. Packet 6: Test Negative Goods Isolation on Unrelated Vessel
+    console.log("Testing goods negative isolation on non-commodity vessel...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_richard_and_sarah_1705" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const negativeGoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const goodsSection = document.querySelector('[data-ship-goods-section]');
+        const isHidden = !goodsSection || goodsSection.hidden || getComputedStyle(goodsSection).display === 'none';
+        return { isHidden };
+      })()`,
+      returnByValue: true,
+    });
+    assert(negativeGoodsCheck?.result?.value?.isHidden, "Recorded goods section strictly hidden on non-commodity vessel");
+
+    // 22. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

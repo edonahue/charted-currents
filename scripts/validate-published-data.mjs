@@ -231,6 +231,34 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     }
   }
 
+  const VALID_COMMODITY_FACETS = new Set([
+    "cacao", "indigo", "tobacco", "sugar", "cotton", "copper", "tortoiseshell", "specie"
+  ]);
+
+  const goodsOccIds = new Set();
+  for (const occ of entities.goods_occurrences || []) {
+    assert(typeof occ.id === "string", "Goods occurrence missing id");
+    assert(!goodsOccIds.has(occ.id), `Duplicate goods occurrence ID: ${occ.id}`);
+    goodsOccIds.add(occ.id);
+    assert(sourceRecordIds.has(occ.source_record_id), `Goods occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
+    assert(shipOccIds.has(occ.ship_occurrence_id), `Goods occurrence ${occ.id} references nonexistent ship_occurrence_id ${occ.ship_occurrence_id}`);
+    assert(typeof occ.commodity_ref_key === "number", `Goods occurrence ${occ.id} missing commodity_ref_key`);
+    assert(typeof occ.recorded_commodity_label === "string" && occ.recorded_commodity_label.length > 0, `Goods occurrence ${occ.id} missing recorded_commodity_label`);
+    assert(typeof occ.raw_quantity === "number", `Goods occurrence ${occ.id} missing raw_quantity`);
+    assert(occ.parsed_quantity === null || typeof occ.parsed_quantity === "number", `Goods occurrence ${occ.id} invalid parsed_quantity`);
+    assert(typeof occ.measure_ref_key === "number", `Goods occurrence ${occ.id} missing measure_ref_key`);
+    assert(occ.recorded_measure_label === null || typeof occ.recorded_measure_label === "string", `Goods occurrence ${occ.id} invalid recorded_measure_label`);
+    if (occ.commodity_facet) {
+      assert(VALID_COMMODITY_FACETS.has(occ.commodity_facet), `Goods occurrence ${occ.id} has invalid commodity_facet: ${occ.commodity_facet}`);
+    }
+    // Ethical boundary: no commercial commodity record may represent enslaved human beings
+    assert(occ.commodity_ref_key !== 11 && !occ.recorded_commodity_label.toLowerCase().includes("esclavo"), `Ethical violation: enslaved person represented as commercial goods occurrence in ${occ.id}`);
+    assert(Array.isArray(occ.assertion_ids) && occ.assertion_ids.length > 0, `Goods occurrence ${occ.id} missing assertion_ids`);
+    for (const astId of occ.assertion_ids || []) {
+      assert(assertionIds.has(astId), `Goods occurrence ${occ.id} references nonexistent assertion ${astId}`);
+    }
+  }
+
   const shipIds = new Set();
   for (const s of entities.ships || []) {
     assert(typeof s.id === "string", "Ship missing id");
@@ -379,6 +407,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   assert(manifest.counts.sources === sourcesData.sources.length, "Manifest sources count mismatch");
   assert(manifest.counts.source_records === sourcesData.source_records.length, "Manifest source_records count mismatch");
   assert(manifest.counts.assertions === sourcesData.assertions.length, "Manifest assertions count mismatch");
+  assert(manifest.counts.goods_occurrences === (entities.goods_occurrences || []).length, "Manifest goods_occurrences count mismatch");
   assert(manifest.counts.ships === entities.ships.length, "Manifest ships count mismatch");
   assert(manifest.counts.routes === archivalRoutes.length, "Manifest routes count mismatch");
   assert(manifest.counts.display_edges === routes.features.length, "Manifest display_edges count mismatch");

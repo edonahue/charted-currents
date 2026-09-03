@@ -1,0 +1,46 @@
+[
+  {
+    "IdTipoMedida": 6,
+    "tipoMedida": "Bala"
+  },
+  {
+    "IdTipoMedida": 16,
+    "tipoMedida": "Caja"
+  },
+  {
+    "IdTipoMedida": 20,
+    "tipoMedida": "Canasta"
+  },
+  {
+    "IdTipoMedida": 30,
+    "tipoMedida": "Fanega"
+  },
+  {
+    "IdTipoMedida": 36,
+    "tipoMedida": "Libra"
+  },
+  {
+    "IdTipoMedida": 54,
+    "tipoMedida": "Pieza"
+  },
+  {
+    "IdTipoMedida": 55,
+    "tipoMedida": "Pipa"
+  },
+  {
+    "IdTipoMedida": 61,
+    "tipoMedida": "Rollo"
+  },
+  {
+    "IdTipoMedida": 75,
+    "tipoMedida": "Paquete"
+  },
+  {
+    "IdTipoMedida": 90,
+    "tipoMedida": "Zurrón"
+  },
+  {
+    "IdTipoMedida": 95,
+    "tipoMedida": "Vara"
+  }
+]

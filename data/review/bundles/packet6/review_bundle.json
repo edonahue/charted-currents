@@ -1,0 +1,2635 @@
+{
+  "bundle_type": "historical_review_bundle",
+  "packet": "Packet 6 — Recorded Goods Across the Spanish Atlantic and Dutch Caribbean",
+  "generated_at": "2026-09-03T05:45:00Z",
+  "comparison": {
+    "base_ref": "origin/main",
+    "head_ref": "31037270689306464b9c5407bcb03d97294dd876",
+    "branch": "packet6-recorded-goods"
+  },
+  "summary_counts": {
+    "corpus_version": "0.6.0",
+    "total_added_assertions": 1128,
+    "total_added_source_records": 192,
+    "total_added_ships": 3,
+    "total_goods_occurrences": 160,
+    "by_epistemic_class": {
+      "class_a_direct_transcription": 667,
+      "class_b_deterministic_transformation": 150,
+      "class_c_relational_derivation": 311,
+      "class_d_identity_resolution": 3,
+      "class_e_interpretive_prose": 0
+    }
+  },
+  "ethical_compliance": {
+    "status": "PASS",
+    "enslaved_persons_exclusion_verified": true,
+    "verification_note": "Audited all 160 goods occurrences; commodity_ref_key !== 11 ('Esclavo') across all records. Human beings are never treated as commercial cargo."
+  },
+  "cohort_dossiers": [
+    {
+      "navio_id": 5890,
+      "vessel_name": "La Estrella",
+      "year": 1694,
+      "route": "Venezuela (La Guaira/Caracas) -> Seville",
+      "occurrence_id": "occ_ship_crespo_5890",
+      "entity_id": "ship_crespo_5890",
+      "goods_lines_count": 135,
+      "commodity_summary": "Cacao (3,930 Fanegas, 2,026 Libras across 135 lines)",
+      "vessel_goods_summary": "3698 fanegas y 95 libras de cacao",
+      "reconciliation_status": "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE",
+      "reconciliation_finding": "Itemized Crespo rows sum to 3,930 Fanegas + 2,026 Libras, exceeding the vessel summary of 3,698 Fanegas + 95 Libras. Discrepancy is explicitly preserved in primary UI.",
+      "distinct_consignees_count": 86,
+      "estrella_lookback_status": "SEPARATE_OCCURRENCE",
+      "estrella_lookback_finding": "No positive evidence of physical continuity with the reviewed 1684 Estrella occurrences was found in available Crespo discriminators. Treat as a separate occurrence. Physical hull identity remains unresolved."
+    },
+    {
+      "navio_id": 4493,
+      "vessel_name": "De Jonge Margaretha (La Joven Margarita)",
+      "year": 1708,
+      "route": "Curaçao -> Amsterdam",
+      "occurrence_id": "occ_ship_crespo_4493",
+      "entity_id": "ship_crespo_4493",
+      "goods_lines_count": 16,
+      "commodity_summary": "16 lines across 9 commodities (Azúcar, Palo de Campeche, Cacao, Cuero, Tabaco, Algodón, Limón, Jengibre, Rocú)",
+      "reconciliation_status": "REFERENCE_TABLE_REPRESENTATION_CONFLICT",
+      "reconciliation_finding": "16 goods lines match 1:1. Dutch cargo container 'vat' in summary is keyed as ID 95 'Vara' in TIPOMEDIDA. Conflict is explicitly recorded in notes."
+    },
+    {
+      "navio_id": 4501,
+      "vessel_name": "De Jonge Jacob (El Joven Jacob)",
+      "year": 1708,
+      "route": "Curaçao -> Amsterdam",
+      "occurrence_id": "occ_ship_crespo_4501",
+      "entity_id": "ship_crespo_4501",
+      "goods_lines_count": 9,
+      "commodity_summary": "9 lines across 9 commodities (Añil, Cacao, Tabaco de Barinas, Plata, Palo de Brasil, Corambre, Cobre, Carey, Cáscaras de naranja)",
+      "reconciliation_status": "MATCH",
+      "reconciliation_finding": "9 commodities match 1:1. Quantities unitemized in prize record. Lump sum valuation (10,491 pesos and 2 reales) is modeled at the vessel goods set level."
+    }
+  ],
+  "added_source_records": [
+    {
+      "id": "sr_crespo_flota_189",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_fleet_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "189"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_29",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "29"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_40",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "40"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_68",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "68"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_95",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "95"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_111",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "111"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_117",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "117"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_119",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "119"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_199",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "199"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_221",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "221"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_266",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "266"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_278",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "278"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_279",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "279"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_349",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "349"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_371",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "371"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_372",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "372"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_392",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "392"
+    },
+    {
+      "id": "sr_crespo_tipomercancia_440",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "440"
+    },
+    {
+      "id": "sr_crespo_tipomedida_6",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "6"
+    },
+    {
+      "id": "sr_crespo_tipomedida_16",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "16"
+    },
+    {
+      "id": "sr_crespo_tipomedida_20",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "20"
+    },
+    {
+      "id": "sr_crespo_tipomedida_30",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "30"
+    },
+    {
+      "id": "sr_crespo_tipomedida_36",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "36"
+    },
+    {
+      "id": "sr_crespo_tipomedida_54",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "54"
+    },
+    {
+      "id": "sr_crespo_tipomedida_55",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "55"
+    },
+    {
+      "id": "sr_crespo_tipomedida_61",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "61"
+    },
+    {
+      "id": "sr_crespo_tipomedida_75",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "75"
+    },
+    {
+      "id": "sr_crespo_tipomedida_90",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "90"
+    },
+    {
+      "id": "sr_crespo_tipomedida_95",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_reference_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "95"
+    },
+    {
+      "id": "sr_crespo_navio_5890",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_voyage_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "5890"
+    },
+    {
+      "id": "sr_crespo_navio_4493",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_voyage_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4493"
+    },
+    {
+      "id": "sr_crespo_navio_4501",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_voyage_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4501"
+    },
+    {
+      "id": "sr_crespo_merc_487",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "487"
+    },
+    {
+      "id": "sr_crespo_merc_488",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "488"
+    },
+    {
+      "id": "sr_crespo_merc_489",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "489"
+    },
+    {
+      "id": "sr_crespo_merc_490",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "490"
+    },
+    {
+      "id": "sr_crespo_merc_491",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "491"
+    },
+    {
+      "id": "sr_crespo_merc_492",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "492"
+    },
+    {
+      "id": "sr_crespo_merc_493",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "493"
+    },
+    {
+      "id": "sr_crespo_merc_494",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "494"
+    },
+    {
+      "id": "sr_crespo_merc_495",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "495"
+    },
+    {
+      "id": "sr_crespo_merc_2435",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2435"
+    },
+    {
+      "id": "sr_crespo_merc_2436",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2436"
+    },
+    {
+      "id": "sr_crespo_merc_2437",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2437"
+    },
+    {
+      "id": "sr_crespo_merc_2438",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2438"
+    },
+    {
+      "id": "sr_crespo_merc_2439",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2439"
+    },
+    {
+      "id": "sr_crespo_merc_2440",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2440"
+    },
+    {
+      "id": "sr_crespo_merc_2441",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2441"
+    },
+    {
+      "id": "sr_crespo_merc_2442",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2442"
+    },
+    {
+      "id": "sr_crespo_merc_2443",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2443"
+    },
+    {
+      "id": "sr_crespo_merc_2444",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2444"
+    },
+    {
+      "id": "sr_crespo_merc_2445",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2445"
+    },
+    {
+      "id": "sr_crespo_merc_2446",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2446"
+    },
+    {
+      "id": "sr_crespo_merc_2447",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2447"
+    },
+    {
+      "id": "sr_crespo_merc_2448",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2448"
+    },
+    {
+      "id": "sr_crespo_merc_2449",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2449"
+    },
+    {
+      "id": "sr_crespo_merc_2450",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "2450"
+    },
+    {
+      "id": "sr_crespo_merc_4651",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4651"
+    },
+    {
+      "id": "sr_crespo_merc_4652",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4652"
+    },
+    {
+      "id": "sr_crespo_merc_4653",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4653"
+    },
+    {
+      "id": "sr_crespo_merc_4654",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4654"
+    },
+    {
+      "id": "sr_crespo_merc_4655",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4655"
+    },
+    {
+      "id": "sr_crespo_merc_4656",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4656"
+    },
+    {
+      "id": "sr_crespo_merc_4657",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4657"
+    },
+    {
+      "id": "sr_crespo_merc_4658",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4658"
+    },
+    {
+      "id": "sr_crespo_merc_4659",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4659"
+    },
+    {
+      "id": "sr_crespo_merc_4660",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4660"
+    },
+    {
+      "id": "sr_crespo_merc_4661",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4661"
+    },
+    {
+      "id": "sr_crespo_merc_4662",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4662"
+    },
+    {
+      "id": "sr_crespo_merc_4663",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4663"
+    },
+    {
+      "id": "sr_crespo_merc_4664",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4664"
+    },
+    {
+      "id": "sr_crespo_merc_4665",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4665"
+    },
+    {
+      "id": "sr_crespo_merc_4666",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4666"
+    },
+    {
+      "id": "sr_crespo_merc_4667",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4667"
+    },
+    {
+      "id": "sr_crespo_merc_4668",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4668"
+    },
+    {
+      "id": "sr_crespo_merc_4669",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4669"
+    },
+    {
+      "id": "sr_crespo_merc_4670",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4670"
+    },
+    {
+      "id": "sr_crespo_merc_4671",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4671"
+    },
+    {
+      "id": "sr_crespo_merc_4672",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4672"
+    },
+    {
+      "id": "sr_crespo_merc_4673",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4673"
+    },
+    {
+      "id": "sr_crespo_merc_4674",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4674"
+    },
+    {
+      "id": "sr_crespo_merc_4675",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4675"
+    },
+    {
+      "id": "sr_crespo_merc_4676",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4676"
+    },
+    {
+      "id": "sr_crespo_merc_4677",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4677"
+    },
+    {
+      "id": "sr_crespo_merc_4678",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4678"
+    },
+    {
+      "id": "sr_crespo_merc_4679",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4679"
+    },
+    {
+      "id": "sr_crespo_merc_4680",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4680"
+    },
+    {
+      "id": "sr_crespo_merc_4681",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4681"
+    },
+    {
+      "id": "sr_crespo_merc_4682",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4682"
+    },
+    {
+      "id": "sr_crespo_merc_4683",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4683"
+    },
+    {
+      "id": "sr_crespo_merc_4684",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4684"
+    },
+    {
+      "id": "sr_crespo_merc_4685",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4685"
+    },
+    {
+      "id": "sr_crespo_merc_4686",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4686"
+    },
+    {
+      "id": "sr_crespo_merc_4687",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4687"
+    },
+    {
+      "id": "sr_crespo_merc_4688",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4688"
+    },
+    {
+      "id": "sr_crespo_merc_4689",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4689"
+    },
+    {
+      "id": "sr_crespo_merc_4690",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4690"
+    },
+    {
+      "id": "sr_crespo_merc_4691",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4691"
+    },
+    {
+      "id": "sr_crespo_merc_4692",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4692"
+    },
+    {
+      "id": "sr_crespo_merc_4693",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4693"
+    },
+    {
+      "id": "sr_crespo_merc_4694",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4694"
+    },
+    {
+      "id": "sr_crespo_merc_4695",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4695"
+    },
+    {
+      "id": "sr_crespo_merc_4696",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4696"
+    },
+    {
+      "id": "sr_crespo_merc_4697",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4697"
+    },
+    {
+      "id": "sr_crespo_merc_4698",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4698"
+    },
+    {
+      "id": "sr_crespo_merc_4699",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4699"
+    },
+    {
+      "id": "sr_crespo_merc_4700",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4700"
+    },
+    {
+      "id": "sr_crespo_merc_4701",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4701"
+    },
+    {
+      "id": "sr_crespo_merc_4702",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4702"
+    },
+    {
+      "id": "sr_crespo_merc_4703",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4703"
+    },
+    {
+      "id": "sr_crespo_merc_4704",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4704"
+    },
+    {
+      "id": "sr_crespo_merc_4705",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4705"
+    },
+    {
+      "id": "sr_crespo_merc_4706",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4706"
+    },
+    {
+      "id": "sr_crespo_merc_4707",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4707"
+    },
+    {
+      "id": "sr_crespo_merc_4708",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4708"
+    },
+    {
+      "id": "sr_crespo_merc_4709",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4709"
+    },
+    {
+      "id": "sr_crespo_merc_4710",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4710"
+    },
+    {
+      "id": "sr_crespo_merc_4711",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4711"
+    },
+    {
+      "id": "sr_crespo_merc_4712",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4712"
+    },
+    {
+      "id": "sr_crespo_merc_4713",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4713"
+    },
+    {
+      "id": "sr_crespo_merc_4714",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4714"
+    },
+    {
+      "id": "sr_crespo_merc_4715",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4715"
+    },
+    {
+      "id": "sr_crespo_merc_4716",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4716"
+    },
+    {
+      "id": "sr_crespo_merc_4717",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4717"
+    },
+    {
+      "id": "sr_crespo_merc_4718",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4718"
+    },
+    {
+      "id": "sr_crespo_merc_4719",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4719"
+    },
+    {
+      "id": "sr_crespo_merc_4720",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4720"
+    },
+    {
+      "id": "sr_crespo_merc_4721",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4721"
+    },
+    {
+      "id": "sr_crespo_merc_4722",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4722"
+    },
+    {
+      "id": "sr_crespo_merc_4723",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4723"
+    },
+    {
+      "id": "sr_crespo_merc_4724",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4724"
+    },
+    {
+      "id": "sr_crespo_merc_4725",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4725"
+    },
+    {
+      "id": "sr_crespo_merc_4726",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4726"
+    },
+    {
+      "id": "sr_crespo_merc_4727",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4727"
+    },
+    {
+      "id": "sr_crespo_merc_4728",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4728"
+    },
+    {
+      "id": "sr_crespo_merc_4729",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4729"
+    },
+    {
+      "id": "sr_crespo_merc_4730",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4730"
+    },
+    {
+      "id": "sr_crespo_merc_4731",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4731"
+    },
+    {
+      "id": "sr_crespo_merc_4732",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4732"
+    },
+    {
+      "id": "sr_crespo_merc_4733",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4733"
+    },
+    {
+      "id": "sr_crespo_merc_4734",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4734"
+    },
+    {
+      "id": "sr_crespo_merc_4735",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4735"
+    },
+    {
+      "id": "sr_crespo_merc_4736",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4736"
+    },
+    {
+      "id": "sr_crespo_merc_4737",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4737"
+    },
+    {
+      "id": "sr_crespo_merc_4738",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4738"
+    },
+    {
+      "id": "sr_crespo_merc_4739",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4739"
+    },
+    {
+      "id": "sr_crespo_merc_4740",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4740"
+    },
+    {
+      "id": "sr_crespo_merc_4741",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4741"
+    },
+    {
+      "id": "sr_crespo_merc_4742",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4742"
+    },
+    {
+      "id": "sr_crespo_merc_4743",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4743"
+    },
+    {
+      "id": "sr_crespo_merc_4744",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4744"
+    },
+    {
+      "id": "sr_crespo_merc_4745",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4745"
+    },
+    {
+      "id": "sr_crespo_merc_4746",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4746"
+    },
+    {
+      "id": "sr_crespo_merc_4747",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4747"
+    },
+    {
+      "id": "sr_crespo_merc_4748",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4748"
+    },
+    {
+      "id": "sr_crespo_merc_4749",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4749"
+    },
+    {
+      "id": "sr_crespo_merc_4750",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4750"
+    },
+    {
+      "id": "sr_crespo_merc_4751",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4751"
+    },
+    {
+      "id": "sr_crespo_merc_4752",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4752"
+    },
+    {
+      "id": "sr_crespo_merc_4753",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4753"
+    },
+    {
+      "id": "sr_crespo_merc_4754",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4754"
+    },
+    {
+      "id": "sr_crespo_merc_4755",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4755"
+    },
+    {
+      "id": "sr_crespo_merc_4756",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4756"
+    },
+    {
+      "id": "sr_crespo_merc_4757",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4757"
+    },
+    {
+      "id": "sr_crespo_merc_4758",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4758"
+    },
+    {
+      "id": "sr_crespo_merc_4759",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4759"
+    },
+    {
+      "id": "sr_crespo_merc_4760",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4760"
+    },
+    {
+      "id": "sr_crespo_merc_4761",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4761"
+    },
+    {
+      "id": "sr_crespo_merc_4762",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4762"
+    },
+    {
+      "id": "sr_crespo_merc_4763",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4763"
+    },
+    {
+      "id": "sr_crespo_merc_4764",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4764"
+    },
+    {
+      "id": "sr_crespo_merc_4765",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4765"
+    },
+    {
+      "id": "sr_crespo_merc_4766",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4766"
+    },
+    {
+      "id": "sr_crespo_merc_4767",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4767"
+    },
+    {
+      "id": "sr_crespo_merc_4768",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4768"
+    },
+    {
+      "id": "sr_crespo_merc_4769",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4769"
+    },
+    {
+      "id": "sr_crespo_merc_4770",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4770"
+    },
+    {
+      "id": "sr_crespo_merc_4771",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4771"
+    },
+    {
+      "id": "sr_crespo_merc_4772",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4772"
+    },
+    {
+      "id": "sr_crespo_merc_4773",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4773"
+    },
+    {
+      "id": "sr_crespo_merc_4774",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4774"
+    },
+    {
+      "id": "sr_crespo_merc_4775",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4775"
+    },
+    {
+      "id": "sr_crespo_merc_4776",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4776"
+    },
+    {
+      "id": "sr_crespo_merc_4777",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4777"
+    },
+    {
+      "id": "sr_crespo_merc_4778",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4778"
+    },
+    {
+      "id": "sr_crespo_merc_4779",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4779"
+    },
+    {
+      "id": "sr_crespo_merc_4780",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4780"
+    },
+    {
+      "id": "sr_crespo_merc_4781",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4781"
+    },
+    {
+      "id": "sr_crespo_merc_4782",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4782"
+    },
+    {
+      "id": "sr_crespo_merc_4783",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4783"
+    },
+    {
+      "id": "sr_crespo_merc_4784",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4784"
+    },
+    {
+      "id": "sr_crespo_merc_4785",
+      "source_id": "src_crespo_dyncoopnet",
+      "record_type": "dataset_merchandise_record",
+      "inspection_state": "dataset_record_inspected",
+      "native_identifier": "4785"
+    }
+  ],
+  "epistemic_classes": {
+    "class_a_sample": [
+      {
+        "id": "ast_crespo_flota_189_title",
+        "field": "FLOTA",
+        "raw_value": "Barco Holandés",
+        "source_record_id": "sr_crespo_flota_189"
+      },
+      {
+        "id": "ast_crespo_tm_29_label",
+        "field": "tipoMercancia",
+        "raw_value": "Añil",
+        "source_record_id": "sr_crespo_tipomercancia_29"
+      },
+      {
+        "id": "ast_crespo_tm_40_label",
+        "field": "tipoMercancia",
+        "raw_value": "Azúcar",
+        "source_record_id": "sr_crespo_tipomercancia_40"
+      },
+      {
+        "id": "ast_crespo_tm_68_label",
+        "field": "tipoMercancia",
+        "raw_value": "Cacao",
+        "source_record_id": "sr_crespo_tipomercancia_68"
+      },
+      {
+        "id": "ast_crespo_tm_95_label",
+        "field": "tipoMercancia",
+        "raw_value": "Cáscaras  de naranja",
+        "source_record_id": "sr_crespo_tipomercancia_95"
+      },
+      {
+        "id": "ast_crespo_tm_111_label",
+        "field": "tipoMercancia",
+        "raw_value": "Cobre",
+        "source_record_id": "sr_crespo_tipomercancia_111"
+      },
+      {
+        "id": "ast_crespo_tm_117_label",
+        "field": "tipoMercancia",
+        "raw_value": "Conchas de carey",
+        "source_record_id": "sr_crespo_tipomercancia_117"
+      },
+      {
+        "id": "ast_crespo_tm_119_label",
+        "field": "tipoMercancia",
+        "raw_value": "Corambre",
+        "source_record_id": "sr_crespo_tipomercancia_119"
+      },
+      {
+        "id": "ast_crespo_tm_199_label",
+        "field": "tipoMercancia",
+        "raw_value": "Jengibre",
+        "source_record_id": "sr_crespo_tipomercancia_199"
+      },
+      {
+        "id": "ast_crespo_tm_221_label",
+        "field": "tipoMercancia",
+        "raw_value": "Limón",
+        "source_record_id": "sr_crespo_tipomercancia_221"
+      }
+    ],
+    "class_b_all": [
+      {
+        "id": "ast_crespo_merc_489_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_489_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_490_facet",
+        "field": "commodity_facet",
+        "derived_value": "tobacco",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_490_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_491_facet",
+        "field": "commodity_facet",
+        "derived_value": "indigo",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_491_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_492_facet",
+        "field": "commodity_facet",
+        "derived_value": "copper",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_492_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_493_facet",
+        "field": "commodity_facet",
+        "derived_value": "tortoiseshell",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_493_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_495_facet",
+        "field": "commodity_facet",
+        "derived_value": "specie",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_495_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2436_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2436_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2437_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2437_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2438_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2438_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2439_facet",
+        "field": "commodity_facet",
+        "derived_value": "tobacco",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2439_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2440_facet",
+        "field": "commodity_facet",
+        "derived_value": "tobacco",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2440_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2441_facet",
+        "field": "commodity_facet",
+        "derived_value": "tobacco",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2441_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2442_facet",
+        "field": "commodity_facet",
+        "derived_value": "tobacco",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2442_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2445_facet",
+        "field": "commodity_facet",
+        "derived_value": "sugar",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2445_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_2446_facet",
+        "field": "commodity_facet",
+        "derived_value": "cotton",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_2446_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4651_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4651_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4652_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4652_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4653_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4653_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4654_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4654_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4655_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4655_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4656_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4656_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4657_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4657_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4658_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4658_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4659_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4659_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4660_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4660_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4661_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4661_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4662_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4662_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4663_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4663_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4664_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4664_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4665_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4665_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4666_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4666_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4667_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4667_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4668_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4668_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4669_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4669_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4670_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4670_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4671_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4671_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4672_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4672_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4673_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4673_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4674_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4674_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4675_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4675_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4676_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4676_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4677_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4677_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4678_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4678_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4679_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4679_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4680_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4680_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4681_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4681_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4682_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4682_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4683_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4683_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4684_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4684_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4685_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4685_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4686_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4686_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4687_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4687_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4688_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4688_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4689_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4689_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4690_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4690_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4691_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4691_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4692_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4692_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4693_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4693_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4694_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4694_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4695_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4695_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4696_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4696_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4697_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4697_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4698_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4698_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4699_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4699_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4700_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4700_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4701_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4701_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4702_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4702_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4703_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4703_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4704_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4704_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4705_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4705_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4706_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4706_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4707_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4707_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4708_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4708_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4709_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4709_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4710_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4710_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4711_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4711_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4712_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4712_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4713_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4713_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4714_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4714_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4715_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4715_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4716_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4716_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4717_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4717_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4718_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4718_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4719_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4719_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4720_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4720_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4721_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4721_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4722_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4722_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4723_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4723_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4724_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4724_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4725_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4725_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4726_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4726_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4727_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4727_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4728_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4728_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4729_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4729_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4730_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4730_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4731_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4731_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4732_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4732_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4733_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4733_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4734_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4734_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4735_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4735_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4736_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4736_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4737_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4737_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4738_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4738_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4739_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4739_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4740_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4740_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4741_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4741_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4742_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4742_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4743_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4743_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4744_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4744_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4745_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4745_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4746_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4746_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4747_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4747_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4748_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4748_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4749_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4749_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4750_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4750_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4751_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4751_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4752_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4752_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4753_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4753_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4754_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4754_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4755_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4755_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4756_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4756_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4757_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4757_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4758_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4758_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4759_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4759_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4760_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4760_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4761_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4761_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4762_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4762_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4763_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4763_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4764_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4764_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4765_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4765_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4766_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4766_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4767_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4767_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4768_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4768_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4769_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4769_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4770_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4770_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4771_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4771_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4772_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4772_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4773_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4773_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4774_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4774_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4775_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4775_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4776_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4776_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4777_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4777_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4778_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4778_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4779_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4779_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4780_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4780_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4781_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4781_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4782_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4782_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4783_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4783_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4784_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4784_commodity"
+      },
+      {
+        "id": "ast_crespo_merc_4785_facet",
+        "field": "commodity_facet",
+        "derived_value": "cacao",
+        "derivation_method": "deterministic_facet_mapping",
+        "source_assertion_id": "ast_crespo_merc_4785_commodity"
+      }
+    ],
+    "class_c_all": [
+      {
+        "id": "ast_crespo_merc_487_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Corambre",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_487_fk"
+      },
+      {
+        "id": "ast_crespo_merc_488_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Palo de Brasil",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_488_fk"
+      },
+      {
+        "id": "ast_crespo_merc_489_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Cacao",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_489_fk"
+      },
+      {
+        "id": "ast_crespo_merc_490_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Tabaco de Barinas",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_490_fk"
+      },
+      {
+        "id": "ast_crespo_merc_491_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Añil",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_491_fk"
+      },
+      {
+        "id": "ast_crespo_merc_492_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Cobre",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_492_fk"
+      },
+      {
+        "id": "ast_crespo_merc_493_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Conchas de carey",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_493_fk"
+      },
+      {
+        "id": "ast_crespo_merc_494_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Cáscaras  de naranja",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_494_fk"
+      },
+      {
+        "id": "ast_crespo_merc_495_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Monedas de plata españolas",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_495_fk"
+      },
+      {
+        "id": "ast_crespo_merc_2435_commodity",
+        "field": "recorded_commodity_label",
+        "derived_value": "Palo de Campeche",
+        "derivation_method": "relational_join_via_TIPOMERCANCIA",
+        "source_assertion_id": "ast_crespo_merc_2435_fk"
+      }
+    ],
+    "class_d_edges": [
+      {
+        "occurrence_id": "occ_ship_crespo_5890",
+        "target_entity_id": "ship_crespo_5890",
+        "resolution_state": "documented_identity",
+        "resolver": "crespo_adapter",
+        "evidence_assertions": [
+          "ast_crespo_5890_name"
+        ]
+      },
+      {
+        "occurrence_id": "occ_ship_crespo_4493",
+        "target_entity_id": "ship_crespo_4493",
+        "resolution_state": "documented_identity",
+        "resolver": "crespo_adapter",
+        "evidence_assertions": [
+          "ast_crespo_4493_name"
+        ]
+      },
+      {
+        "occurrence_id": "occ_ship_crespo_4501",
+        "target_entity_id": "ship_crespo_4501",
+        "resolution_state": "documented_identity",
+        "resolver": "crespo_adapter",
+        "evidence_assertions": [
+          "ast_crespo_4501_name"
+        ]
+      }
+    ],
+    "class_e_all": []
+  }
+}

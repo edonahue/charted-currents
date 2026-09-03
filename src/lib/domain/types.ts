@@ -253,6 +253,9 @@ export interface PublishedShipOccurrence {
   fleet_convoy?: FleetConvoyContext;
   fleet_convoy_display?: string | null;
   archival_register_reference?: string | null;
+  recorded_goods_summary?: string | null;
+  recorded_goods_value_text?: string | null;
+  goods_occurrence_ids?: string[];
   assertion_ids: string[];
 }
 
@@ -314,6 +317,23 @@ export interface PublishedCrewOccurrence {
   assertion_ids: string[];
 }
 
+export interface PublishedGoodsOccurrence {
+  id: string;
+  source_record_id: string;
+  ship_occurrence_id: string;
+  commodity_ref_key: number;
+  recorded_commodity_label: string;
+  commodity_facet?: string;
+  raw_quantity: number;
+  parsed_quantity: number | null;
+  measure_ref_key: number;
+  recorded_measure_label: string | null;
+  recorded_consignee?: string | null;
+  raw_notes?: string | null;
+  goods_value_text?: string | null;
+  assertion_ids: string[];
+}
+
 export interface PublishedShip {
   id: string;
   canonical_name: string;
@@ -329,6 +349,9 @@ export interface PublishedShip {
   master_display?: string | null;
   fleet_display?: string | null;
   register_display?: string | null;
+  recorded_goods_display?: string | null;
+  goods_summary_display?: string | null;
+  goods_value_display?: string | null;
 }
 
 export interface PublishedEntityResolutionEdge {
@@ -375,6 +398,7 @@ export interface PublishedEntities {
   ship_occurrences: PublishedShipOccurrence[];
   crew_occurrences: PublishedCrewOccurrence[];
   person_occurrences?: PublishedPersonOccurrence[];
+  goods_occurrences?: PublishedGoodsOccurrence[];
   ships: PublishedShip[];
   persons?: PublishedPerson[];
   entity_resolution_edges: PublishedEntityResolutionEdge[];

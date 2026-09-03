@@ -42,6 +42,7 @@ def main():
     ship_occurrences = data.get("ship_occurrences", [])
     crew_occurrences = data.get("crew_occurrences", [])
     person_occurrences = data.get("person_occurrences", [])
+    goods_occurrences = data.get("goods_occurrences", [])
     ships = data.get("ships", [])
     persons = data.get("persons", [])
     entity_resolution_edges = data.get("entity_resolution_edges", [])
@@ -229,6 +230,7 @@ def main():
         "ship_occurrences": ship_occurrences,
         "crew_occurrences": crew_occurrences,
         "person_occurrences": person_occurrences,
+        "goods_occurrences": goods_occurrences,
         "ships": ships,
         "persons": persons,
         "entity_resolution_edges": entity_resolution_edges,
@@ -255,10 +257,10 @@ def main():
 
     # 7. manifest.json (Deterministic: uses reviewed_at as publishedAt)
     manifest_json = {
-        "version": meta.get("version", "0.4.0"),
+        "version": meta.get("version", "0.6.0"),
         "corpusId": meta.get("corpus_id", "greater_caribbean_public_beta"),
         "corpusTitle": meta.get("corpus_title", ""),
-        "publishedAt": meta.get("reviewed_at", "2026-09-01"),
+        "publishedAt": meta.get("reviewed_at", "2026-09-03"),
         "reviewStatus": meta.get("review_status", "reviewed_for_publication"),
         "counts": {
             "sources": len(sources),
@@ -267,6 +269,7 @@ def main():
             "ship_occurrences": len(ship_occurrences),
             "crew_occurrences": len(crew_occurrences),
             "person_occurrences": len(person_occurrences),
+            "goods_occurrences": len(goods_occurrences),
             "ships": len(ships),
             "persons": len(persons),
             "entity_resolution_edges": len(entity_resolution_edges),

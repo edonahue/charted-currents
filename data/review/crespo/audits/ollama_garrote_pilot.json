@@ -1,0 +1,13 @@
+{
+  "audit_name": "garrote_maestre_11357_adversarial_pilot",
+  "model": "qwen2.5:14b-instruct-q4_K_M",
+  "input_dossier": "data/review/crespo/reconciliation_garrote.json",
+  "model_evaluation": {
+    "verdict": "CONFLICT_SIGNAL",
+    "evidence_summary": "The dossier includes five occurrences linked by MAESTRE foreign key 11357, with four records naming Bartolom\u00e9 Antonio Garrote and one record naming Francisco Antonio Garrote. The upstream PRUEBAAGENTES row for ID 11357 lists 'Francisco Antonio' as the given name, conflicting directly with the majority of the dataset's occurrences which use 'Bartolom\u00e9'.",
+    "upstream_fk_evaluation": "The MAESTRE foreign key 11357 is unreliable due to internal contradictions. It links both Francisco Antonio Garrote and Bartolom\u00e9 Antonio Garrote, despite these being distinct given names. This inconsistency undermines the upstream database's authority in resolving identity.",
+    "recommended_resolution_posture": "Given the direct name conflict between 'Francisco' and 'Bartolom\u00e9', Charted Currents should maintain separate identities for these individuals until primary manuscript evidence can confirm or resolve their relationship, if any exists.",
+    "reversibility_assessment": "The identity linking is not reversible due to the unresolved conflict signal. Any assertion that Francisco Antonio Garrote and Bartolom\u00e9 Antonio Garrote are the same individual lacks direct proof and should be treated as speculative until further evidence emerges.",
+    "epistemic_class": "Class D"
+  }
+}

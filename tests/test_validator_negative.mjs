@@ -262,5 +262,28 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
+// Test 19: Goods occurrence referencing nonexistent ship_occurrence_id fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.goods_occurrences[0].ship_occurrence_id = "occ_ship_fake_nonexistent";
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when goods occurrence references nonexistent ship_occurrence_id");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 20: Ethical boundary: representation of enslaved persons as commercial goods fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.goods_occurrences[0].commodity_ref_key = 11;
+  entities.goods_occurrences[0].recorded_commodity_label = "Esclavo";
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails on ethical boundary violation when goods represent enslaved persons");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
 console.log(`\nNegative Test Summary: ${passedTests} passed, ${failedTests} failed.`);
 process.exit(failedTests > 0 ? 1 : 0);
