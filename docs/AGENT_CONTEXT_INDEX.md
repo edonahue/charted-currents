@@ -3,14 +3,16 @@
 Use this file to load **the minimum useful context for the task**. Do not read the entire documentation tree simply because a large context window is available.
 
 ## Current phase
- 
+
 - Packet 1 is complete, deployed, and hosted-verified.
 - Packet 2 historical corpus, provenance hardening, and deterministic publication pipeline are complete and hosted-verified.
-- Packet 3 public-beta quality, 15-vessel corpus expansion, period filtering, route aggregation, and open search indexing are **complete** and deployed on `main`.
- 
-For subsequent implementation sessions, consult `docs/ROADMAP.md` (Phase 2: Source Adapters, Entity Resolution Workbench, and Deeper Port Royal Connections).
+- Packet 3 public-beta quality, 15-vessel corpus expansion, period filtering, route aggregation, and open search indexing are complete and deployed on `main`.
+- Packet 4 source adapters, Crespo/PARES provenance hardening, multilingual attestations, and the first Spanish Atlantic sample are complete on `main`.
+- Packet 5 planning is the current next product phase: broader Greater Caribbean / deeper Carrera relationships, with a deliberately bounded source-integrity foundation gate.
 
-The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–3 interaction and provenance architecture.
+A short **scholarly-integrity interstitial** is planned between feature packets to establish scalable historical-review bundles, assertion-risk/review states, and parallel-auditor conventions without replacing or derailing the existing packet roadmap.
+
+The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–4 interaction/provenance architecture.
 
 ## Always for substantial implementation
 
@@ -20,7 +22,7 @@ The repository owns the Astro/MapLibre application, production Cloudflare Pages 
 4. Next roadmap packet in `docs/ROADMAP.md` — immediate objective and acceptance criteria.
 5. `docs/AGENT_EXECUTION_PLAYBOOK.md` — execution, anti-swirl, and blocker behavior.
 
-Packet 1's settled product/visual contracts remain constraints when Packet 2 adds real historical content. Read `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, and `docs/VISUAL_ASSET_STRATEGY.md` only when the Packet 2 work affects the existing UI, map composition, or historical visual surfaces; do not reopen the completed Packet 1 direction.
+Packet 1's settled product/visual contracts remain constraints when later packets add real historical content. Read `docs/PACKET1_DIRECTION.md`, `docs/VISUAL_QUALITY_CONTRACT.md`, and `docs/VISUAL_ASSET_STRATEGY.md` only when the work affects the existing UI, map composition, or historical visual surfaces; do not reopen the completed Packet 1 direction.
 
 ## UI / product work
 
@@ -54,6 +56,17 @@ Read:
 - `docs/HISTORICAL_SCOPE.md`
 - `docs/PRE_INGESTION_NORMALIZATION_POLICY.md` — source roles, calendars/dates, historical units, legal status, translations, authority IDs, and field/component rights
 - `docs/PUBLIC_PRIVATE_BOUNDARY.md`
+
+When the task changes or reviews public historical claims, also read:
+
+- `docs/SCHOLARLY_INTEGRITY.md` — project credibility/auditability principles;
+- `docs/HISTORICAL_ASSERTION_POLICY.md` — A–G assertion risk/review classes;
+- `docs/HISTORICAL_REVIEW_POLICY.md` — sampling, parallel audits, escalation, and review-state separation;
+- `docs/ENTITY_RESOLUTION_POLICY.md` when person/vessel/place identity is involved;
+- `docs/SECONDARY_SCHOLARSHIP_POLICY.md` when explanatory/interpretive prose is involved;
+- `docs/CORRECTIONS_POLICY.md` when changing a previously published substantive historical claim.
+
+For adversarial historical review, use `.agents/skills/charted-currents-historical-audit/SKILL.md`.
 
 Then read only the relevant source registries/dossiers.
 
@@ -122,9 +135,14 @@ Read:
 
 The root Cloudflare Pages deployment is live at the recorded production URL (`https://charted-currents.pages.dev/`) under the intentional public indexing posture (`index,follow` with `robots.txt Allow: /`). Do not solve the eventual `/labs/...` URL shape during historical-data work.
 
-## Benchmark, environment, data-export, screenshot, or config work
+## Benchmark, environment, data-export, screenshot, config, or agent-local setup work
 
 Always read `docs/PUBLIC_PRIVATE_BOUNDARY.md` before producing a committed artifact.
+
+For Gemini/Antigravity local configuration use:
+
+- `docs/ANTIGRAVITY_SETUP.md` for the broad optional workstation posture;
+- `docs/LOCAL_GEMINI_SCHOLARLY_REVIEW_SETUP.md` for the current maintainer workflow, deferred worktree/rules posture, and parallel historical auditors.
 
 Visual review screenshots belong under `design/reviews/` only when they come from the real running application and are safe to publish.
 
