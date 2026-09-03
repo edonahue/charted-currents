@@ -43,11 +43,14 @@ export type EvidenceLayer =
 
 export type AttestationLanguage = "es" | "en" | "fr" | "nl" | "und";
 
-export type AttestationRelationship =
-  | "source_transcription"
-  | "historical_spelling_variant"
-  | "editorial_normalization"
-  | "modern_preferred_label";
+export const ATTESTATION_RELATIONSHIPS = [
+  "source_transcription",
+  "historical_variant",
+  "catalogue_title_variant",
+  "editorial_normalization",
+  "modern_preferred_label",
+] as const;
+export type AttestationRelationship = (typeof ATTESTATION_RELATIONSHIPS)[number];
 
 export interface NameAttestation {
   raw_name: string;
@@ -220,6 +223,9 @@ export interface PublishedAssertion {
   source_record_id: string;
   field: string;
   raw_value?: string;
+  derived_value?: string;
+  derivation_method?: string;
+  source_assertion_id?: string;
   [key: string]: unknown;
 }
 
@@ -244,9 +250,52 @@ export interface PublishedShipOccurrence {
   reported_owner_residence?: string | null;
   recorded_capture_location?: string | null;
   recorded_capture_date?: string | null;
+  fleet_convoy?: FleetConvoyContext;
   fleet_convoy_display?: string | null;
   archival_register_reference?: string | null;
   assertion_ids: string[];
+}
+
+export interface FleetConvoyContext {
+  native_fleet_id: number;
+  source_record_id: string;
+  assertion_ids: string[];
+  fleet_title: string;
+  commander_display: string;
+  fleet_origin: string;
+  fleet_destination: string;
+  year: number;
+  project_derived_linked_navio_row_count?: number;
+  source_citation?: string;
+}
+
+export interface PublishedPersonOccurrence {
+  id: string;
+  source_record_id: string;
+  raw_name: string;
+  role: "master" | "commander" | "mariner" | "merchant";
+  ship_occurrence_id?: string;
+  vessel_name_raw?: string;
+  year_as_recorded?: number;
+  departure_place_raw?: string;
+  arrival_place_raw?: string;
+  assertion_ids: string[];
+}
+
+export interface PublishedPerson {
+  id: string;
+  canonical_name: string;
+  raw_source_name?: string;
+  roles: string[];
+  evidence_state: EvidenceState;
+  recorded_year_range?: [number, number];
+  occurrence_year_range?: [number, number];
+  member_occurrence_years?: number[];
+  active_year_range?: [number, number];
+  occurrence_ids: string[];
+  source_record_ids: string[];
+  attestations?: NameAttestation[];
+  notes?: string;
 }
 
 export interface PublishedCrewOccurrence {
@@ -273,7 +322,7 @@ export interface PublishedShip {
   evidence_state: EvidenceState;
   occurrence_ids: string[];
   reported_burden_display: string;
-  construction_display: string;
+  construction_display?: string | null;
   owner_display?: string | null;
   voyage_display: string;
   capture_display?: string | null;
@@ -325,7 +374,9 @@ export interface PublishedVisual {
 export interface PublishedEntities {
   ship_occurrences: PublishedShipOccurrence[];
   crew_occurrences: PublishedCrewOccurrence[];
+  person_occurrences?: PublishedPersonOccurrence[];
   ships: PublishedShip[];
+  persons?: PublishedPerson[];
   entity_resolution_edges: PublishedEntityResolutionEdge[];
   places: PublishedPlace[];
   routes?: PublishedArchivalRoute[];

@@ -250,8 +250,10 @@ const discreteCoverages = (coverageData as any[]).filter(
       const selectionId = btn.getAttribute("data-selection-id");
       if (!selectionId) return;
 
+      const modality = lastModality === "keyboard" ? "keyboard" : "pointer";
+
       recordSelectionTrigger({
-        modality: lastModality,
+        modality,
         origin: "timeline",
         returnTarget: btn,
       });

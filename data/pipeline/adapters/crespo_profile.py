@@ -58,18 +58,27 @@ def verify_acquisition(manifest_path: str = MANIFEST_PATH) -> bool:
     return True
 
 def profile_mdb(mdb_path: str = DEFAULT_MDB_PATH, output_path: str = PROFILE_OUTPUT_PATH) -> Dict[str, Any]:
+    project_venv_lib = os.path.join(REPO_ROOT, ".venv", "lib", f"python{sys.version_info.major}.{sys.version_info.minor}", "site-packages")
+    if os.path.exists(project_venv_lib) and project_venv_lib not in sys.path:
+        sys.path.insert(0, project_venv_lib)
+
     try:
         from access_parser import AccessParser
     except ImportError:
-        scratch_venv_lib = os.path.expanduser("~/.gemini/antigravity-cli/brain/70c73afe-250d-43d4-ad29-68928a9eab0e/scratch/venv/lib/python3.12/site-packages")
-        if os.path.exists(scratch_venv_lib) and scratch_venv_lib not in sys.path:
-            sys.path.insert(0, scratch_venv_lib)
-            from access_parser import AccessParser
-        else:
-            raise ImportError("access_parser library not found.")
+        print(
+            "[ERROR] 'access-parser' is required for Crespo MDB profiling.\n"
+            "Install project ETL dependencies with: pip install -e . or pip install access-parser",
+            file=sys.stderr
+        )
+        sys.exit(1)
 
     if not os.path.exists(mdb_path):
-        raise FileNotFoundError(f"MDB file not found at {mdb_path}")
+        print(
+            f"[ERROR] Raw MDB file not found at {mdb_path}.\n"
+            "Place CrespoDynCoopNetDATASETS.mdb in data/raw/crespo/ or run npm run data:verify-crespo-acquisition.",
+            file=sys.stderr
+        )
+        sys.exit(1)
 
     db = AccessParser(mdb_path)
     table_names = [t for t in db.catalog.keys() if not t.startswith("MSys")]

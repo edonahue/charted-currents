@@ -126,24 +126,61 @@ async function runReviewSuite() {
   console.log(`Using browser: ${chromePath}`);
 
   const debugPort = await getAvailablePort();
+  const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "cc-chrome-"));
   const proc = spawn(chromePath, [
     "--headless=new",
     "--no-sandbox",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    `--user-data-dir=${userDataDir}`,
+    "--remote-debugging-address=127.0.0.1",
+    `--remote-debugging-port=${debugPort}`,
     "--use-gl=angle",
     "--use-angle=swiftshader",
     "--enable-webgl",
     "--hide-scrollbars",
-    `--remote-debugging-port=${debugPort}`,
     "about:blank",
   ]);
+
+  let chromeStderr = "";
+  let chromeStdout = "";
+  proc.stderr?.on("data", (d) => {
+    chromeStderr += d.toString();
+  });
+  proc.stdout?.on("data", (d) => {
+    chromeStdout += d.toString();
+  });
+  let procExitCode = null;
+  proc.on("exit", (code) => {
+    procExitCode = code;
+  });
 
   let uncaughtExceptions = [];
 
   try {
-    await new Promise((r) => setTimeout(r, 1500));
-    const listRes = await fetch(`http://127.0.0.1:${debugPort}/json/list`);
-    const targets = await listRes.json();
-    const pageTarget = targets.find((t) => t.type === "page");
+    let targets = null;
+    const startTime = Date.now();
+    while (Date.now() - startTime < 10000) {
+      if (procExitCode !== null) {
+        throw new Error(`Browser process exited early with code ${procExitCode}. Stderr: ${chromeStderr}`);
+      }
+      try {
+        const listRes = await fetch(`http://127.0.0.1:${debugPort}/json/list`);
+        if (listRes.ok) {
+          targets = await listRes.json();
+          if (Array.isArray(targets) && targets.length > 0) break;
+        }
+      } catch {
+        // Retry while Chrome initializes
+      }
+      await new Promise((r) => setTimeout(r, 200));
+    }
+
+    if (!targets || targets.length === 0) {
+      throw new Error(`Failed to connect to browser debugger on port ${debugPort} after 10s. Exit: ${procExitCode}. Stderr: ${chromeStderr}`);
+    }
+
+    const pageTarget = targets.find((t) => t.type === "page") || targets[0];
     if (!pageTarget) throw new Error("No page target found in browser debugger");
 
     const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
@@ -229,169 +266,185 @@ async function runReviewSuite() {
 
     const packetArg = process.argv.find((a) => a.startsWith("--packet="));
     const packetPrefix = packetArg ? packetArg.split("=")[1] + "-" : "packet3-";
+    const skipScreenshots =
+      process.argv.includes("--no-screenshots") ||
+      process.argv.includes("--ci") ||
+      process.argv.includes("--behavioral-only");
 
-    const viewports = [
-      { name: `${packetPrefix}desktop-1440x900.png`, width: 1440, height: 900 },
-      { name: `${packetPrefix}ultrawide-3440x1440.png`, width: 3440, height: 1440 },
-      { name: `${packetPrefix}phone-390x844.png`, width: 390, height: 844 },
-      { name: `${packetPrefix}phone-430x932.png`, width: 430, height: 932 },
-    ];
-
-    fs.mkdirSync("design/reviews", { recursive: true });
-
-    for (const vp of viewports) {
-      console.log(`[CAPTURE] ${vp.name} (${vp.width}x${vp.height})...`);
+    if (skipScreenshots) {
+      console.log("[MODE] Behavioral assertions only (skipping raster review screenshot generation)");
       await send("Emulation.setDeviceMetricsOverride", {
-        width: vp.width,
-        height: vp.height,
+        width: 1440,
+        height: 900,
         deviceScaleFactor: 1,
-        mobile: vp.width < 500,
+        mobile: false,
       });
-      await new Promise((r) => setTimeout(r, 1200));
+      await new Promise((r) => setTimeout(r, 400));
+    } else {
+      const viewports = [
+        { name: `${packetPrefix}desktop-1440x900.png`, width: 1440, height: 900 },
+        { name: `${packetPrefix}ultrawide-3440x1440.png`, width: 3440, height: 1440 },
+        { name: `${packetPrefix}phone-390x844.png`, width: 390, height: 844 },
+        { name: `${packetPrefix}phone-430x932.png`, width: 430, height: 932 },
+      ];
 
-      const screenshot = await send("Page.captureScreenshot", { format: "png" });
-      assert(Boolean(screenshot?.data), `Screenshot capture returned valid image data for ${vp.name}`);
-      if (screenshot?.data) {
-        const outPath = path.resolve("design/reviews", vp.name);
-        fs.writeFileSync(outPath, Buffer.from(screenshot.data, "base64"));
-        const size = fs.statSync(outPath).size;
-        console.log(`[SAVED] ${vp.name} (${size} bytes)`);
-        assert(size > 15000, `Screenshot ${vp.name} generated with valid non-empty raster size (${size} bytes)`);
-      }
-    }
+      fs.mkdirSync("design/reviews", { recursive: true });
 
-    // Active selection capture on desktop (1440x900) - Select Jamaica
-    console.log("[CAPTURE] desktop selected state (Jamaica)...");
-    await send("Emulation.setDeviceMetricsOverride", {
-      width: 1440,
-      height: 900,
-      deviceScaleFactor: 1,
-      mobile: false,
-    });
-    await new Promise((r) => setTimeout(r, 300));
+      for (const vp of viewports) {
+        console.log(`[CAPTURE] ${vp.name} (${vp.width}x${vp.height})...`);
+        await send("Emulation.setDeviceMetricsOverride", {
+          width: vp.width,
+          height: vp.height,
+          deviceScaleFactor: 1,
+          mobile: vp.width < 500,
+        });
+        await new Promise((r) => setTimeout(r, 1200));
 
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const toggle = document.querySelector('[data-locator-toggle]');
-        toggle?.click();
-        const jamaicaBtn = document.querySelector('[data-place-id="place_jamaica"]');
-        jamaicaBtn?.click();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 800));
-
-    const selectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
-    assert(Boolean(selectedScreenshot?.data), "Screenshot capture returned valid image data for desktop selected state");
-    if (selectedScreenshot?.data) {
-      const selectedOutPath = path.resolve(`design/reviews/${packetPrefix}desktop-selected-1440x900.png`);
-      fs.writeFileSync(selectedOutPath, Buffer.from(selectedScreenshot.data, "base64"));
-      const size = fs.statSync(selectedOutPath).size;
-      console.log(`[SAVED] ${packetPrefix}desktop-selected-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot ${packetPrefix}desktop-selected-1440x900.png generated with valid raster size (${size} bytes)`);
-    }
-
-    // Capture inspector-open timeline state (verifying zero overlap with Period Focus)
-    console.log("[CAPTURE] inspector-open timeline state (1440x900)...");
-    const inspectorOpenScreenshot = await send("Page.captureScreenshot", { format: "png" });
-    if (inspectorOpenScreenshot?.data) {
-      const inspectorOpenOutPath = path.resolve(`design/reviews/${packetPrefix}inspector-open-timeline-1440x900.png`);
-      fs.writeFileSync(inspectorOpenOutPath, Buffer.from(inspectorOpenScreenshot.data, "base64"));
-      const size = fs.statSync(inspectorOpenOutPath).size;
-      console.log(`[SAVED] ${packetPrefix}inspector-open-timeline-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot ${packetPrefix}inspector-open-timeline-1440x900.png generated with valid raster size (${size} bytes)`);
-    }
-
-    // Active Source Drawer capture on desktop (1440x900)
-    console.log("[CAPTURE] desktop source drawer state...");
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const openVisualBtn = document.querySelector('[data-open-visual-source]');
-        openVisualBtn?.click();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 600));
-
-    const drawerScreenshot = await send("Page.captureScreenshot", { format: "png" });
-    assert(Boolean(drawerScreenshot?.data), "Screenshot capture returned valid image data for source drawer state");
-    if (drawerScreenshot?.data) {
-      const drawerOutPath = path.resolve(`design/reviews/${packetPrefix}source-drawer-1440x900.png`);
-      fs.writeFileSync(drawerOutPath, Buffer.from(drawerScreenshot.data, "base64"));
-      const size = fs.statSync(drawerOutPath).size;
-      console.log(`[SAVED] ${packetPrefix}source-drawer-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot ${packetPrefix}source-drawer-1440x900.png generated with valid raster size (${size} bytes)`);
-    }
-
-    // Close source drawer
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const closeBtn = document.querySelector('[data-source-drawer-close]');
-        closeBtn?.click();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    // Active selection capture on mobile (390x844)
-    console.log("[CAPTURE] mobile selected state (390x844)...");
-    await send("Emulation.setDeviceMetricsOverride", {
-      width: 390,
-      height: 844,
-      deviceScaleFactor: 1,
-      mobile: true,
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    const mobileSelectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
-    assert(Boolean(mobileSelectedScreenshot?.data), "Screenshot capture returned valid image data for mobile selected state");
-    if (mobileSelectedScreenshot?.data) {
-      const mobileSelectedOutPath = path.resolve(`design/reviews/${packetPrefix}phone-selected-390x844.png`);
-      fs.writeFileSync(mobileSelectedOutPath, Buffer.from(mobileSelectedScreenshot.data, "base64"));
-      const size = fs.statSync(mobileSelectedOutPath).size;
-      console.log(`[SAVED] ${packetPrefix}phone-selected-390x844.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot ${packetPrefix}phone-selected-390x844.png generated with valid raster size (${size} bytes)`);
-    }
-
-    // Reset viewport to desktop for behavioral tests
-    await send("Emulation.setDeviceMetricsOverride", {
-      width: 1440,
-      height: 900,
-      deviceScaleFactor: 1,
-      mobile: false,
-    });
-
-    // Capture temporal precedence state (1684-1695 filter + Havana selected)
-    console.log("[CAPTURE] temporal precedence state (1684-1695 filter + Havana selected)...");
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const filter1684 = document.querySelector('[data-time-filter="1684-1695"]');
-        filter1684?.click();
-        const toggle = document.querySelector('[data-locator-toggle]');
-        if (!document.querySelector('.locator-drawer[data-state="open"]')) {
-          toggle?.click();
+        const screenshot = await send("Page.captureScreenshot", { format: "png" });
+        assert(Boolean(screenshot?.data), `Screenshot capture returned valid image data for ${vp.name}`);
+        if (screenshot?.data) {
+          const outPath = path.resolve("design/reviews", vp.name);
+          fs.writeFileSync(outPath, Buffer.from(screenshot.data, "base64"));
+          const size = fs.statSync(outPath).size;
+          console.log(`[SAVED] ${vp.name} (${size} bytes)`);
+          assert(size > 15000, `Screenshot ${vp.name} generated with valid non-empty raster size (${size} bytes)`);
         }
-        const havanaBtn = document.querySelector('[data-place-id="place_havana"]');
-        havanaBtn?.click();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 800));
+      }
 
-    const tempPrecedenceScreenshot = await send("Page.captureScreenshot", { format: "png" });
-    if (tempPrecedenceScreenshot?.data) {
-      const tempPrecedenceOutPath = path.resolve(`design/reviews/${packetPrefix}temporal-precedence-1440x900.png`);
-      fs.writeFileSync(tempPrecedenceOutPath, Buffer.from(tempPrecedenceScreenshot.data, "base64"));
-      const size = fs.statSync(tempPrecedenceOutPath).size;
-      console.log(`[SAVED] ${packetPrefix}temporal-precedence-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot ${packetPrefix}temporal-precedence-1440x900.png generated with valid raster size (${size} bytes)`);
+      // Active selection capture on desktop (1440x900) - Select Jamaica
+      console.log("[CAPTURE] desktop selected state (Jamaica)...");
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await new Promise((r) => setTimeout(r, 300));
+
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const toggle = document.querySelector('[data-locator-toggle]');
+          toggle?.click();
+          const jamaicaBtn = document.querySelector('[data-place-id="place_jamaica"]');
+          jamaicaBtn?.click();
+        })()`,
+      });
+      await new Promise((r) => setTimeout(r, 800));
+
+      const selectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      assert(Boolean(selectedScreenshot?.data), "Screenshot capture returned valid image data for desktop selected state");
+      if (selectedScreenshot?.data) {
+        const selectedOutPath = path.resolve(`design/reviews/${packetPrefix}desktop-selected-1440x900.png`);
+        fs.writeFileSync(selectedOutPath, Buffer.from(selectedScreenshot.data, "base64"));
+        const size = fs.statSync(selectedOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}desktop-selected-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}desktop-selected-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+
+      // Capture inspector-open timeline state (verifying zero overlap with Period Focus)
+      console.log("[CAPTURE] inspector-open timeline state (1440x900)...");
+      const inspectorOpenScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (inspectorOpenScreenshot?.data) {
+        const inspectorOpenOutPath = path.resolve(`design/reviews/${packetPrefix}inspector-open-timeline-1440x900.png`);
+        fs.writeFileSync(inspectorOpenOutPath, Buffer.from(inspectorOpenScreenshot.data, "base64"));
+        const size = fs.statSync(inspectorOpenOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}inspector-open-timeline-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}inspector-open-timeline-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+
+      // Active Source Drawer capture on desktop (1440x900)
+      console.log("[CAPTURE] desktop source drawer state...");
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const openVisualBtn = document.querySelector('[data-open-visual-source]');
+          openVisualBtn?.click();
+        })()`,
+      });
+      await new Promise((r) => setTimeout(r, 600));
+
+      const drawerScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      assert(Boolean(drawerScreenshot?.data), "Screenshot capture returned valid image data for source drawer state");
+      if (drawerScreenshot?.data) {
+        const drawerOutPath = path.resolve(`design/reviews/${packetPrefix}source-drawer-1440x900.png`);
+        fs.writeFileSync(drawerOutPath, Buffer.from(drawerScreenshot.data, "base64"));
+        const size = fs.statSync(drawerOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}source-drawer-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}source-drawer-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+
+      // Close source drawer
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const closeBtn = document.querySelector('[data-source-drawer-close]');
+          closeBtn?.click();
+        })()`,
+      });
+      await new Promise((r) => setTimeout(r, 300));
+
+      // Active selection capture on mobile (390x844)
+      console.log("[CAPTURE] mobile selected state (390x844)...");
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 390,
+        height: 844,
+        deviceScaleFactor: 1,
+        mobile: true,
+      });
+      await new Promise((r) => setTimeout(r, 300));
+
+      const mobileSelectedScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      assert(Boolean(mobileSelectedScreenshot?.data), "Screenshot capture returned valid image data for mobile selected state");
+      if (mobileSelectedScreenshot?.data) {
+        const mobileSelectedOutPath = path.resolve(`design/reviews/${packetPrefix}phone-selected-390x844.png`);
+        fs.writeFileSync(mobileSelectedOutPath, Buffer.from(mobileSelectedScreenshot.data, "base64"));
+        const size = fs.statSync(mobileSelectedOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}phone-selected-390x844.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}phone-selected-390x844.png generated with valid raster size (${size} bytes)`);
+      }
+
+      // Reset viewport to desktop for behavioral tests
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+
+      // Capture temporal precedence state (1684-1695 filter + Havana selected)
+      console.log("[CAPTURE] temporal precedence state (1684-1695 filter + Havana selected)...");
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const filter1684 = document.querySelector('[data-time-filter="1684-1695"]');
+          filter1684?.click();
+          const toggle = document.querySelector('[data-locator-toggle]');
+          if (!document.querySelector('.locator-drawer[data-state="open"]')) {
+            toggle?.click();
+          }
+          const havanaBtn = document.querySelector('[data-place-id="place_havana"]');
+          havanaBtn?.click();
+        })()`,
+      });
+      await new Promise((r) => setTimeout(r, 800));
+
+      const tempPrecedenceScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (tempPrecedenceScreenshot?.data) {
+        const tempPrecedenceOutPath = path.resolve(`design/reviews/${packetPrefix}temporal-precedence-1440x900.png`);
+        fs.writeFileSync(tempPrecedenceOutPath, Buffer.from(tempPrecedenceScreenshot.data, "base64"));
+        const size = fs.statSync(tempPrecedenceOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}temporal-precedence-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}temporal-precedence-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+
+      // Reset filter to All and close locator drawer
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const filterAll = document.querySelector('[data-time-filter="all"]');
+          filterAll?.click();
+          const closeBtn = document.querySelector('[data-inspector-close]');
+          closeBtn?.click();
+        })()`,
+      });
+      await new Promise((r) => setTimeout(r, 400));
     }
-
-    // Reset filter to All and close locator drawer
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const filterAll = document.querySelector('[data-time-filter="all"]');
-        filterAll?.click();
-        const closeBtn = document.querySelector('[data-inspector-close]');
-        closeBtn?.click();
-      })()`,
-    });
     await new Promise((r) => setTimeout(r, 400));
 
     // ==========================================
@@ -980,13 +1033,15 @@ async function runReviewSuite() {
     assert(estrellaCheck?.result?.value?.upstream.includes("Archivo General de Indias"), "Estrella 1684 displays Archivo General de Indias upstream archive series");
 
     // Capture Spanish Atlantic vessel inspector screenshot
-    const estrellaScreenshot = await send("Page.captureScreenshot", { format: "png" });
-    if (estrellaScreenshot?.data) {
-      const estrellaOutPath = path.resolve(`design/reviews/${packetPrefix}crespo-pares-vessel-1440x900.png`);
-      fs.writeFileSync(estrellaOutPath, Buffer.from(estrellaScreenshot.data, "base64"));
-      const size = fs.statSync(estrellaOutPath).size;
-      console.log(`[SAVED] ${packetPrefix}crespo-pares-vessel-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot ${packetPrefix}crespo-pares-vessel-1440x900.png generated with valid raster size (${size} bytes)`);
+    if (!skipScreenshots) {
+      const estrellaScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (estrellaScreenshot?.data) {
+        const estrellaOutPath = path.resolve(`design/reviews/${packetPrefix}crespo-pares-vessel-1440x900.png`);
+        fs.writeFileSync(estrellaOutPath, Buffer.from(estrellaScreenshot.data, "base64"));
+        const size = fs.statSync(estrellaOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}crespo-pares-vessel-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}crespo-pares-vessel-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
     }
 
     // Open Source Drawer for Estrella
@@ -1063,13 +1118,15 @@ async function runReviewSuite() {
     assert(cadizFilteredCheck?.result?.value?.hasOutOfPeriodBadge, "1706 voyage correctly displays 'Outside Focus' badge under 1684–1695 period focus");
 
     // Capture Cádiz -> Havana route screenshot
-    const cadizScreenshot = await send("Page.captureScreenshot", { format: "png" });
-    if (cadizScreenshot?.data) {
-      const cadizOutPath = path.resolve(`design/reviews/${packetPrefix}cadiz-havana-route-1440x900.png`);
-      fs.writeFileSync(cadizOutPath, Buffer.from(cadizScreenshot.data, "base64"));
-      const size = fs.statSync(cadizOutPath).size;
-      console.log(`[SAVED] ${packetPrefix}cadiz-havana-route-1440x900.png (${size} bytes)`);
-      assert(size > 15000, `Screenshot ${packetPrefix}cadiz-havana-route-1440x900.png generated with valid raster size (${size} bytes)`);
+    if (!skipScreenshots) {
+      const cadizScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (cadizScreenshot?.data) {
+        const cadizOutPath = path.resolve(`design/reviews/${packetPrefix}cadiz-havana-route-1440x900.png`);
+        fs.writeFileSync(cadizOutPath, Buffer.from(cadizScreenshot.data, "base64"));
+        const size = fs.statSync(cadizOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}cadiz-havana-route-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}cadiz-havana-route-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
     }
 
     // Reset filter
@@ -1083,7 +1140,269 @@ async function runReviewSuite() {
     });
     await new Promise((r) => setTimeout(r, 300));
 
-    // 13. Runtime Exceptions check
+    // 13. Test Packet 5 Fleet Convoy Context & Person View (Bartolomé Antonio Garrote)
+    console.log("Testing Packet 5 fleet convoy context and Garrote person view...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_jesus_nazareno_guadalupe_1706" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const fleetCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const fleetTitle = document.querySelector('[data-fleet-title]')?.textContent || '';
+        const fleetCommander = document.querySelector('[data-fleet-commander]')?.textContent || '';
+        const fleetRoute = document.querySelector('[data-fleet-route]')?.textContent || '';
+        const fleetRouteLabel = document.querySelector('[data-fleet-route]')?.previousElementSibling?.textContent || '';
+        const fieldNote = document.querySelector('[data-ship-fleet-context] .inspector-field-note')?.textContent || '';
+        const hasFleetSection = !document.querySelector('[data-ship-fleet-context]')?.hidden;
+        const fleetSectionText = document.querySelector('[data-ship-fleet-context]')?.textContent || '';
+        const hasConvoySize = fleetSectionText.includes('Convoy Size') || fleetSectionText.includes('documented Carrera vessels');
+        const masterBtn = document.querySelector('[data-ship-master] .inspector-link-btn');
+        const hasMasterLink = Boolean(masterBtn);
+
+        // Click master button to navigate to Person view
+        masterBtn?.click();
+
+        return { fleetTitle, fleetCommander, fleetRoute, fleetRouteLabel, fieldNote, hasFleetSection, hasConvoySize, hasMasterLink };
+      })()`,
+      returnByValue: true,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    assert(fleetCheck?.result?.value?.hasFleetSection, "Jesús Nazareno 1706 displays Fleet & Convoy Organization section");
+    assert(fleetCheck?.result?.value?.fleetTitle === "Flota a Nueva España de 1706", "Fleet title matches 1706 Nueva España Flota");
+    assert(fleetCheck?.result?.value?.fleetCommander === "Diego Fernández Santillán", "Fleet commander parsed from compound string as Diego Fernández Santillán");
+    assert(fleetCheck?.result?.value?.fleetRouteLabel === "Fleet-level Origin / Destination", "Fleet route label is 'Fleet-level Origin / Destination'");
+    assert(fleetCheck?.result?.value?.fieldNote?.includes("Fleet-level context from the Crespo FLOTAS dataset record"), "Fleet context displays restrained distinction note");
+    assert(!fleetCheck?.result?.value?.hasConvoySize, "Misleading 'Convoy Size' row is excluded from main Fleet Context UI");
+    assert(fleetCheck?.result?.value?.hasMasterLink, "Master Garrote is rendered as an interactive link button");
+
+    const personCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const kicker = document.querySelector('[data-inspector-kicker]')?.textContent || '';
+        const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
+        const badge = document.querySelector('[data-inspector-badge]')?.textContent || '';
+        const badgeState = document.querySelector('[data-inspector-badge]')?.getAttribute('data-evidence-state') || '';
+        const activeYears = document.querySelector('[data-person-active-years]')?.textContent || '';
+        const activeYearsLabel = document.querySelector('[data-person-active-years]')?.previousElementSibling?.textContent || '';
+        const resolution = document.querySelector('[data-person-resolution-status]')?.textContent || '';
+        const inspectorText = document.querySelector('#entity-inspector')?.textContent || '';
+        const hasCareerSpan = inspectorText.toLowerCase().includes('career span') || inspectorText.toLowerCase().includes('probable career match');
+        const rows = Array.from(document.querySelectorAll('[data-person-voyages-list] .inspector-rel-row'));
+        const rowTexts = rows.map(r => r.textContent || '');
+
+        const has1706 = rowTexts.some(t => t.includes('1706') && t.includes('Jesús, Nazareno'));
+        const has1701 = rowTexts.some(t => t.includes('1701') && t.includes('Nuestra Señora de la Encarnación'));
+        const has1693 = rowTexts.some(t => t.includes('1693') && t.includes('Nuestra Señora del Rosario'));
+        const has1688 = rowTexts.some(t => t.includes('1688') && t.includes('Nuestra Señora del Rosario'));
+
+        return {
+          title, kicker, subtitle, badge, badgeState, activeYears, activeYearsLabel, resolution, hasCareerSpan,
+          rowCount: rows.length, has1706, has1701, has1693, has1688
+        };
+      })()`,
+      returnByValue: true,
+    });
+
+    assert(personCheck?.result?.value?.title === "Bartolomé Antonio Garrote", "Person title is Bartolomé Antonio Garrote");
+    assert(personCheck?.result?.value?.kicker === "Maritime Actor", "Person inspector kicker is Maritime Actor");
+    assert(personCheck?.result?.value?.subtitle?.includes("Probable recurring Carrera master"), "Person subtitle states 'Probable recurring Carrera master'");
+    assert(personCheck?.result?.value?.badge === "Probable Match", "Person evidence badge is Probable Match");
+    assert(personCheck?.result?.value?.badgeState === "probable_match", "Person evidence state attribute is probable_match");
+    assert(personCheck?.result?.value?.activeYearsLabel === "Recorded Occurrence Span", "Person years label is 'Recorded Occurrence Span'");
+    assert(personCheck?.result?.value?.activeYears.includes("1688–1706 (4 recorded voyages)"), "Occurrence span shows 1688–1706 (4 recorded voyages)");
+    assert(personCheck?.result?.value?.resolution === "Probable match across four Crespo voyage records", "Resolution status states 'Probable match across four Crespo voyage records'");
+    assert(!personCheck?.result?.value?.hasCareerSpan, "UI eliminates career span and career match overstatement");
+    assert(personCheck?.result?.value?.rowCount === 4, "Person lists all 4 recorded transatlantic master voyages");
+    assert(personCheck?.result?.value?.has1706, "Person list includes 1706 Jesús Nazareno voyage");
+    assert(personCheck?.result?.value?.has1701, "Person list includes 1701 Encarnación voyage");
+    assert(personCheck?.result?.value?.has1693, "Person list includes 1693 Rosario voyage");
+    assert(personCheck?.result?.value?.has1688, "Person list includes 1688 Rosario voyage");
+
+    // Test Person temporal filtering by constituent member occurrences
+    console.log("Testing Person temporal filtering by constituent member occurrences...");
+    const memberPeriodFilterCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const periodNotice = document.querySelector('[data-period-notice]');
+
+        // 1. Filter 1684-1695: Should be IN FOCUS (due to 1688/1693 occurrences)
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: { id: "1684-1695", startYear: 1684, endYear: 1695, label: "1684–1695" } }));
+        const inFocus1688 = periodNotice && (periodNotice.hidden || getComputedStyle(periodNotice).display === 'none');
+
+        // 2. Filter 1702-1712: Should be IN FOCUS (due to 1706 occurrence)
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: { id: "1702-1712", startYear: 1702, endYear: 1712, label: "1702–1712" } }));
+        const inFocus1706 = periodNotice && (periodNotice.hidden || getComputedStyle(periodNotice).display === 'none');
+
+        // 3. Filter custom period 1715-1725: Should be OUTSIDE FOCUS (no member occurrences in range)
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: { id: "test-late-period", startYear: 1715, endYear: 1725, label: "1715–1725" } }));
+        const outsideFocus1720 = periodNotice && !periodNotice.hidden;
+
+        // Reset to all time
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: "all" }));
+
+        return { inFocus1688, inFocus1706, outsideFocus1720 };
+      })()`,
+      returnByValue: true,
+    });
+    assert(memberPeriodFilterCheck?.result?.value?.inFocus1688, "Garrote is in-focus during 1684–1697 filter via 1688/1693 member occurrences");
+    assert(memberPeriodFilterCheck?.result?.value?.inFocus1706, "Garrote is in-focus during 1702–1713 filter via 1706 member occurrence");
+    assert(memberPeriodFilterCheck?.result?.value?.outsideFocus1720, "Garrote is marked outside focus during 1715–1725 filter when no constituent occurrences exist");
+
+    // Capture Person Garrote inspector screenshot
+    if (!skipScreenshots) {
+      const personScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (personScreenshot?.data) {
+        const personOutPath = path.resolve(`design/reviews/${packetPrefix}person-garrote-1440x900.png`);
+        fs.writeFileSync(personOutPath, Buffer.from(personScreenshot.data, "base64"));
+        const size = fs.statSync(personOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}person-garrote-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}person-garrote-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+    }
+
+    // Open Source Drawer for Garrote
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const evidenceBtn = document.querySelector('[data-person-evidence-btn]');
+        evidenceBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const personDrawerCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById('source-drawer');
+        const isOpen = drawer && !drawer.hidden && drawer.getAttribute('data-state') === 'open';
+        const cardText = document.querySelector('[data-source-cards-container]')?.textContent || '';
+        const thText = document.querySelector('[data-source-cards-container] thead th:last-child')?.textContent || '';
+        const hasAgiCitations = cardText.includes('CONTRATACION, 1266') || cardText.includes('CONTRATACION, 1478') || cardText.includes('CONTRATACION, 1477') || cardText.includes('CONTRATACION, 1619');
+        return { isOpen, hasAgiCitations, thText };
+      })()`,
+      returnByValue: true,
+    });
+    assert(personDrawerCheck?.result?.value?.isOpen, "Source drawer opened for person Garrote");
+    assert(personDrawerCheck?.result?.value?.hasAgiCitations, "Source drawer contains upstream AGI Contratación citations for Garrote");
+    assert(personDrawerCheck?.result?.value?.thText === "Assertion Value", "Source drawer value column header is 'Assertion Value'");
+
+    // Close Source Drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const closeBtn = document.querySelector('[data-source-drawer-close]');
+        closeBtn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    // 14. Test Person -> Vessel Bidirectional Navigation
+    console.log("Testing Person -> Vessel bidirectional navigation...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const rows = Array.from(document.querySelectorAll('[data-person-voyages-list] .inspector-rel-row'));
+        const row1706 = rows.find(r => r.textContent?.includes('1706') && r.textContent?.includes('Jesús, Nazareno'));
+        row1706?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const backToShipCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const kicker = document.querySelector('[data-inspector-kicker]')?.textContent || '';
+        const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
+        const hasFleetSection = !document.querySelector('[data-ship-fleet-context]')?.hidden;
+        const masterBtn = document.querySelector('[data-ship-master] .inspector-link-btn');
+
+        return { title, kicker, subtitle, hasFleetSection, hasMasterBtn: Boolean(masterBtn) };
+      })()`,
+      returnByValue: true,
+    });
+    assert(backToShipCheck?.result?.value?.title === "Jesús, Nazareno y Nuestra Señora de Guadalupe", "Clicking 1706 voyage in Person Inspector navigates to Jesús Nazareno Ship Inspector");
+    assert(backToShipCheck?.result?.value?.kicker === "Documented Vessel", "Navigated ship displays Documented Vessel kicker");
+    assert(backToShipCheck?.result?.value?.subtitle?.includes("1706 Carrera Register"), "Navigated ship subtitle indicates 1706 Carrera Register context");
+    assert(backToShipCheck?.result?.value?.hasFleetSection, "Navigated ship displays Fleet & Convoy Organization section");
+    assert(backToShipCheck?.result?.value?.hasMasterBtn, "Navigated ship displays interactive Master link back to Person");
+
+    // 15. Test Fleet-Context Negative Isolation on Unrelated English Prize Vessel
+    console.log("Testing fleet-context negative isolation on non-convoy prize vessel...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_richard_and_sarah_1705" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const negativeFleetCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const fleetSection = document.querySelector('[data-ship-fleet-context]');
+        const isFleetHidden = !fleetSection || fleetSection.hidden || getComputedStyle(fleetSection).display === 'none';
+        return { title, isFleetHidden };
+      })()`,
+      returnByValue: true,
+    });
+    assert(negativeFleetCheck?.result?.value?.title === "Richard & Sarah of London", "English prize vessel Richard & Sarah selected in inspector");
+    assert(negativeFleetCheck?.result?.value?.isFleetHidden, "Fleet convoy context strictly hidden on unrelated English prize vessel Richard & Sarah");
+
+    // 16. Test Master-Link Gating: Recorded Master Without Resolved Person Entity
+    console.log("Testing master-link gating on recorded master without resolved Person...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_nuestra_senora_de_la_estrella_1684" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const masterGatingCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const masterEl = document.querySelector('[data-ship-master]');
+        const masterText = masterEl?.textContent || '';
+        const hasLinkBtn = Boolean(masterEl?.querySelector('.inspector-link-btn'));
+        return { masterText, hasLinkBtn };
+      })()`,
+      returnByValue: true,
+    });
+    assert(masterGatingCheck?.result?.value?.masterText === "Master: Juan Bernardo de Heredia", "Estrella 1684 displays recorded master Juan Bernardo de Heredia");
+    assert(!masterGatingCheck?.result?.value?.hasLinkBtn, "Recorded master Heredia without resolved Person remains non-interactive plain text");
+
+    // 17. Test Full Carrera Fleet Values for Estrella 1684 and Remedios y Animas 1695
+    console.log("Testing Carrera fleet values for Estrella 1684 and Remedios y Animas 1695...");
+    const estrellaFleetCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-fleet-title]')?.textContent || '';
+        const commander = document.querySelector('[data-fleet-commander]')?.textContent || '';
+        const route = document.querySelector('[data-fleet-route]')?.textContent || '';
+        return { title, commander, route };
+      })()`,
+      returnByValue: true,
+    });
+    assert(estrellaFleetCheck?.result?.value?.title === "Galeones de 1684", "Estrella displays fleet title Galeones de 1684");
+    assert(estrellaFleetCheck?.result?.value?.commander === "Gonzalo Chacón Medina y Salazar", "Estrella displays parsed fleet commander Gonzalo Chacón Medina y Salazar");
+    assert(estrellaFleetCheck?.result?.value?.route?.includes("Cádiz → Tierra Firme"), "Estrella displays fleet route Cádiz → Tierra Firme");
+
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_remedios_y_animas_1695" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const remediosFleetCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-fleet-title]')?.textContent || '';
+        const commander = document.querySelector('[data-fleet-commander]')?.textContent || '';
+        const route = document.querySelector('[data-fleet-route]')?.textContent || '';
+        return { title, commander, route };
+      })()`,
+      returnByValue: true,
+    });
+    assert(remediosFleetCheck?.result?.value?.title === "Flota? de 1695", "Remedios y Animas displays fleet title Flota? de 1695");
+    assert(remediosFleetCheck?.result?.value?.commander === "Ignacio de Barrios Leal", "Remedios y Animas displays parsed fleet commander Ignacio de Barrios Leal");
+    assert(remediosFleetCheck?.result?.value?.route?.includes("Cádiz → Nueva España"), "Remedios y Animas displays fleet route Cádiz → Nueva España");
+
+    // 18. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();
@@ -1092,6 +1411,9 @@ async function runReviewSuite() {
     failureCount++;
   } finally {
     proc.kill();
+    try {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+    } catch {}
     server.close(() => {
       console.log("\n==========================================");
       console.log(`Review Summary: ${passCount} passed, ${failureCount} failed.`);

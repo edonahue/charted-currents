@@ -44,7 +44,7 @@
   },
   "reconciliation_verdict": {
     "resolution_state": "distinct_occurrences_unresolved_physical_identity",
-    "rationale": "In the Carrera de Indias, multiple merchant vessels in the same departure year frequently bore the same popular devotional name. The conflicting masters, destinations (Havana vs Tierra Firme), and distinct AGI register files establish that these are separate voyage occurrences. While they may represent two distinct hulls or a re-registered vessel, the available source records do not prove physical identity. Therefore, occ_crespo_6156 is promoted to canonical ship_nuestra_senora_de_la_estrella_1684, while occ_crespo_6177 remains an independent candidate occurrence.",
+    "rationale": "Source records establish identical raw names ('Nuestra Señora de la Estrella'), departure year (1684), departure port (Cádiz), and fleet membership (141, Galeones de 1684). Crespo row 6156 cites AGI CONTRATACION, 1240, N.6 while Crespo row 6177 cites AGI CONTRATACION, 1241, N.1, R.13; Charted Currents has not directly inspected the underlying AGI files. Conflicting recorded masters ('Juan Bernardo de Heredia' vs 'Pedro Carrillo de Albornoz'), conflicting arrival destinations ('La Habana' vs 'Tierra Firme'), and distinct recorded tonnage ('278' vs unrecorded) establish distinct voyage/source occurrences. In the absence of primary evidence proving physical hull identity, physical hull identity remains unresolved and no automatic merge is permitted.",
     "auto_merge_permitted": false
   }
 }

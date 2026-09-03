@@ -1,0 +1,43 @@
+[
+  {
+    "ID": 4,
+    "ORIGEN1": 195,
+    "ID FLOTA TOTAL": "Flota a Nueva España de 1706",
+    "FLOTA": "Flota (Diego Fernández Santillán)",
+    "TONELAJE": "2674,85 o 2653",
+    "ORIGEN": "Cádiz",
+    "DESTINO": "Nueva España",
+    "Nº DE MERCANTES": "7",
+    "FECHA": "1706",
+    "NOTAS": "En PARES, señala las fechas 1705 y 1706 para la Flota. Pero todos los navios citados datan de 1706. Dependiendo de la fuente todo varia, fechas, tonelaje etc. Compra de 3000,000 de libras de tabaco para el Rey (200,000 pesos)",
+    "FUENTE O DOCUMENTO": "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas& / Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162",
+    "_derived_commander_name": "Diego Fernández Santillán",
+    "_project_derived_linked_navio_row_count": 14
+  },
+  {
+    "ID": 141,
+    "ORIGEN1": 195,
+    "ID FLOTA TOTAL": "Galeones de 1684",
+    "FLOTA": "Galeones a Tierra Firme (Gonzalo Chacón Medina y Salazar)",
+    "ORIGEN": "Cádiz",
+    "DESTINO": "Tierra Firme",
+    "FECHA": "1684",
+    "FUENTE O DOCUMENTO": "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux& /Morineau, M. p. 280",
+    "_derived_commander_name": "Gonzalo Chacón Medina y Salazar",
+    "_project_derived_linked_navio_row_count": 25
+  },
+  {
+    "ID": 168,
+    "ORIGEN1": 195,
+    "DESTINO2": 195,
+    "ID FLOTA TOTAL": "Flota? de 1695",
+    "FLOTA": "Flota a Nueva España (Ignacio de Barrios Leal)",
+    "ORIGEN": "Cádiz",
+    "DESTINO": "Nueva España",
+    "FECHA": "1695",
+    "NOTAS": "Aparece citado que tardan 32 meses, en la obra de María Guadalupe Carrasco González. Dependiendo de la fuente, varia la denominación de Flota o Galeones, y las fechas de salida y llegada a los diferentes puntos de destino.",
+    "FUENTE O DOCUMENTO": "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas& /Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial& /Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux& /Morineau, M. p. 236, 282",
+    "_derived_commander_name": "Ignacio de Barrios Leal",
+    "_project_derived_linked_navio_row_count": 24
+  }
+]

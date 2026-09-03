@@ -1,0 +1,18 @@
+{
+  "description": "Reviewed native selection IDs for Crespo DynCoopNet extraction (Packet 5 Carrera convoy and maritime actor depth)",
+  "navio_ids": [
+    6156,
+    6177,
+    6587,
+    6627,
+    6820,
+    6825,
+    6890,
+    6906
+  ],
+  "flota_ids": [
+    4,
+    141,
+    168
+  ]
+}

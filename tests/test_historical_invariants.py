@@ -56,19 +56,31 @@ class TestHistoricalInvariants(unittest.TestCase):
                 self.assertIn(ast_id, assertion_ids, f"Occurrence {occ['id']} references nonexistent assertion {ast_id}")
 
     def test_explicit_entity_resolution_edges(self):
-        """Every canonical ship entity must be linked via an explicit resolution edge."""
+        """Every canonical ship and person entity must be linked via an explicit resolution edge."""
         ship_occ_ids = {occ["id"] for occ in self.entities["ship_occurrences"]}
         canonical_ship_ids = {s["id"] for s in self.entities["ships"]}
-        edge_occurrences = set()
+        person_occ_ids = {occ["id"] for occ in self.entities.get("person_occurrences", [])}
+        canonical_person_ids = {p["id"] for p in self.entities.get("persons", [])}
+
+        ship_edge_occurrences = set()
+        person_edge_occurrences = set()
 
         for edge in self.entities["entity_resolution_edges"]:
-            self.assertIn(edge["occurrence_id"], ship_occ_ids)
-            self.assertIn(edge["target_entity_id"], canonical_ship_ids)
-            self.assertEqual(edge["resolution_state"], "documented_identity")
-            edge_occurrences.add(edge["occurrence_id"])
+            if edge["occurrence_id"] in ship_occ_ids:
+                self.assertIn(edge["target_entity_id"], canonical_ship_ids)
+                self.assertEqual(edge["resolution_state"], "documented_identity")
+                ship_edge_occurrences.add(edge["occurrence_id"])
+            elif edge["occurrence_id"] in person_occ_ids:
+                self.assertIn(edge["target_entity_id"], canonical_person_ids)
+                self.assertIn(edge["resolution_state"], ["documented_identity", "probable_match", "possible_match", "unresolved_ambiguity"])
+                person_edge_occurrences.add(edge["occurrence_id"])
+            else:
+                self.fail(f"Resolution edge occurrence {edge['occurrence_id']} is neither a ship nor person occurrence")
 
         for occ_id in ship_occ_ids:
-            self.assertIn(occ_id, edge_occurrences, f"Occurrence {occ_id} lacks an explicit resolution edge")
+            self.assertIn(occ_id, ship_edge_occurrences, f"Ship occurrence {occ_id} lacks an explicit resolution edge")
+        for occ_id in person_occ_ids:
+            self.assertIn(occ_id, person_edge_occurrences, f"Person occurrence {occ_id} lacks an explicit resolution edge")
 
     def test_inspection_states_declared_honestly(self):
         """Source records must declare specific inspection states matching actual research actions."""
@@ -239,6 +251,53 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(len(ch["constituent_vessel_ids"]), 3)
         self.assertEqual(len(ch["constituent_route_ids"]), 3)
         self.assertEqual(ch["member_years"], [1684, 1695, 1706])
+
+    def test_crespo_garrote_recurring_master_depth(self):
+        """Garrote entity resolution must maintain evidence chain, probable_match state, and member occurrence years."""
+        persons = {p["id"]: p for p in self.entities.get("persons", [])}
+        self.assertIn("person_bartolome_antonio_garrote", persons)
+        garrote = persons["person_bartolome_antonio_garrote"]
+
+        self.assertEqual(garrote["evidence_state"], "probable_match")
+        self.assertEqual(garrote["recorded_year_range"], [1688, 1706])
+        self.assertEqual(garrote["member_occurrence_years"], [1688, 1693, 1701, 1706])
+
+        # Prohibit continuous career overstatement in published person data
+        notes = garrote.get("notes", "").lower()
+        self.assertNotIn("career span", notes)
+        self.assertNotIn("18-year career", notes)
+
+        # Verify four constituent person occurrences
+        person_occs = {po["id"]: po for po in self.entities.get("person_occurrences", [])}
+        expected_occ_ids = [
+            "occ_person_crespo_6627_master",
+            "occ_person_crespo_6906_master",
+            "occ_person_crespo_6890_master",
+            "occ_person_crespo_6825_master",
+        ]
+        for occ_id in expected_occ_ids:
+            self.assertIn(occ_id, person_occs)
+
+        # Verify each constituent occurrence resolves specifically as probable_match to Garrote
+        edges = {
+            e["occurrence_id"]: e
+            for e in self.entities.get("entity_resolution_edges", [])
+            if e["occurrence_id"] in expected_occ_ids
+        }
+        self.assertEqual(len(edges), 4)
+        for occ_id, edge in edges.items():
+            self.assertEqual(edge["target_entity_id"], "person_bartolome_antonio_garrote")
+            self.assertEqual(edge["resolution_state"], "probable_match")
+
+        # Verify negative evidence 6820 exists in source records for reconciliation dossier traceability
+        source_recs = {sr["id"]: sr for sr in self.sources.get("source_records", [])}
+        self.assertIn("sr_crespo_navio_6820", source_recs)
+        sr_6820 = source_recs["sr_crespo_navio_6820"]
+        self.assertEqual(sr_6820["native_identifier"], "6820")
+
+        # Verify Francisco Antonio Garrote does NOT exist as a canonical person
+        for p in persons.values():
+            self.assertNotIn("francisco", p["canonical_name"].lower())
 
 if __name__ == "__main__":
     unittest.main()

@@ -327,11 +327,28 @@
         }
       ],
       "raw_tonnage": "278",
-      "raw_construction_place": "Unknown",
       "recorded_master": "Juan Bernardo de Heredia",
       "recorded_year": 1684,
       "recorded_voyage_origin": "Cádiz",
       "recorded_voyage_destination": "La Habana",
+      "fleet_convoy": {
+        "native_fleet_id": 141,
+        "source_record_id": "sr_crespo_flota_141",
+        "assertion_ids": [
+          "ast_crespo_flota_141_title",
+          "ast_crespo_flota_141_commander",
+          "ast_crespo_flota_141_origin",
+          "ast_crespo_flota_141_destination",
+          "ast_crespo_flota_141_year"
+        ],
+        "fleet_title": "Galeones de 1684",
+        "commander_display": "Gonzalo Chacón Medina y Salazar",
+        "fleet_origin": "Cádiz",
+        "fleet_destination": "Tierra Firme",
+        "year": 1684,
+        "project_derived_linked_navio_row_count": 25,
+        "source_citation": "A.G.I.:CONTRATACION,1240 ; Incroyables gazettes et fabuleux& /Morineau, M. p. 280"
+      },
       "fleet_convoy_display": "Galeones a Tierra Firme (1684)",
       "archival_register_reference": "AGI CONTRATACION 1240, N.6",
       "assertion_ids": [
@@ -360,11 +377,28 @@
         }
       ],
       "raw_tonnage": "318",
-      "raw_construction_place": "Unknown",
       "recorded_master": "Diego Dazá",
       "recorded_year": 1695,
       "recorded_voyage_origin": "Cádiz",
       "recorded_voyage_destination": "La Habana",
+      "fleet_convoy": {
+        "native_fleet_id": 168,
+        "source_record_id": "sr_crespo_flota_168",
+        "assertion_ids": [
+          "ast_crespo_flota_168_title",
+          "ast_crespo_flota_168_commander",
+          "ast_crespo_flota_168_origin",
+          "ast_crespo_flota_168_destination",
+          "ast_crespo_flota_168_year"
+        ],
+        "fleet_title": "Flota? de 1695",
+        "commander_display": "Ignacio de Barrios Leal",
+        "fleet_origin": "Cádiz",
+        "fleet_destination": "Nueva España",
+        "year": 1695,
+        "project_derived_linked_navio_row_count": 24,
+        "source_citation": "A.G.I.: Contratación, 1253 ; 1254 ; 1255 ; Memorias históricas& /Antúnez y Acevedo, R. Apéndice VII ; Los instrumentos del comercio colonial& /Carrasco González, Mª.G. p. 101, 102 ;  Incroyables gazettes et fabuleux& /Morineau, M. p. 236, 282"
+      },
       "fleet_convoy_display": "Flota a Nueva España (1695)",
       "archival_register_reference": "AGI CONTRATACION 1255, N.7",
       "assertion_ids": [
@@ -393,11 +427,29 @@
         }
       ],
       "raw_tonnage": "112",
-      "raw_construction_place": "Unknown",
       "recorded_master": "Bartolomé Antonio Garrote",
       "recorded_year": 1706,
       "recorded_voyage_origin": "Cádiz",
       "recorded_voyage_destination": "La Habana",
+      "fleet_convoy": {
+        "native_fleet_id": 4,
+        "source_record_id": "sr_crespo_flota_4",
+        "assertion_ids": [
+          "ast_crespo_flota_4_title",
+          "ast_crespo_flota_4_commander",
+          "ast_crespo_flota_4_origin",
+          "ast_crespo_flota_4_destination",
+          "ast_crespo_flota_4_year",
+          "ast_crespo_flota_4_merchants_recorded"
+        ],
+        "fleet_title": "Flota a Nueva España de 1706",
+        "commander_display": "Diego Fernández Santillán",
+        "fleet_origin": "Cádiz",
+        "fleet_destination": "Nueva España",
+        "year": 1706,
+        "project_derived_linked_navio_row_count": 14,
+        "source_citation": "Política Española y Comercio Colonial. / Walker, G. p. 281 ; A.G.I.: Contratación, 1267 ; Memorias históricas& / Antúnez y Acevedo, R. Apendice VII ;  El Tesoro del San José: Muerte en el mar durante la Guerra de Sucesión española./Rahn Phillips, C. p.112, 162"
+      },
       "fleet_convoy_display": "Flota a Nueva España (1706)",
       "archival_register_reference": "AGI CONTRATACION 1266, N.5",
       "assertion_ids": [
@@ -805,6 +857,74 @@
       ]
     }
   ],
+  "person_occurrences": [
+    {
+      "id": "occ_person_crespo_6627_master",
+      "source_record_id": "sr_crespo_navio_6627",
+      "raw_name": "Bartolomé Antonio Garrote",
+      "role": "master",
+      "ship_occurrence_id": "occ_crespo_6627",
+      "vessel_name_raw": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+      "year_as_recorded": 1706,
+      "departure_place_raw": "Cádiz",
+      "arrival_place_raw": "La Habana",
+      "assertion_ids": [
+        "ast_crespo_6627_master",
+        "ast_crespo_6627_year",
+        "ast_crespo_6627_name",
+        "ast_crespo_6627_dep",
+        "ast_crespo_6627_arr"
+      ]
+    },
+    {
+      "id": "occ_person_crespo_6906_master",
+      "source_record_id": "sr_crespo_navio_6906",
+      "raw_name": "Bartolomé Antonio Garrote",
+      "role": "master",
+      "vessel_name_raw": "Nuestra Señora de la Encarnación",
+      "year_as_recorded": 1701,
+      "departure_place_raw": "Sevilla",
+      "arrival_place_raw": "Nueva España",
+      "assertion_ids": [
+        "ast_crespo_6906_master",
+        "ast_crespo_6906_year",
+        "ast_crespo_6906_vessel",
+        "ast_crespo_6906_route"
+      ]
+    },
+    {
+      "id": "occ_person_crespo_6890_master",
+      "source_record_id": "sr_crespo_navio_6890",
+      "raw_name": "Bartolomé Antonio de Garrote",
+      "role": "master",
+      "vessel_name_raw": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+      "year_as_recorded": 1693,
+      "departure_place_raw": "Sevilla",
+      "arrival_place_raw": "Nueva España",
+      "assertion_ids": [
+        "ast_crespo_6890_master",
+        "ast_crespo_6890_year",
+        "ast_crespo_6890_vessel",
+        "ast_crespo_6890_route"
+      ]
+    },
+    {
+      "id": "occ_person_crespo_6825_master",
+      "source_record_id": "sr_crespo_navio_6825",
+      "raw_name": "Bartolomé Antonio Garrote",
+      "role": "master",
+      "vessel_name_raw": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+      "year_as_recorded": 1688,
+      "departure_place_raw": "Sevilla",
+      "arrival_place_raw": "Tierra Firme",
+      "assertion_ids": [
+        "ast_crespo_6825_master",
+        "ast_crespo_6825_year",
+        "ast_crespo_6825_vessel",
+        "ast_crespo_6825_route"
+      ]
+    }
+  ],
   "ships": [
     {
       "id": "ship_richard_and_sarah_1705",
@@ -1020,7 +1140,6 @@
         "occ_crespo_6156"
       ],
       "reported_burden_display": "Recorded tonnage: 278",
-      "construction_display": "Unknown",
       "master_display": "Master: Juan Bernardo de Heredia",
       "fleet_display": "Galeones a Tierra Firme (1684)",
       "voyage_display": "1684 voyage from Cádiz to Havana",
@@ -1045,7 +1164,6 @@
         "occ_crespo_6587"
       ],
       "reported_burden_display": "Recorded tonnage: 318",
-      "construction_display": "Unknown",
       "master_display": "Master: Diego Dazá",
       "fleet_display": "Flota a Nueva España (1695)",
       "voyage_display": "1695 voyage from Cádiz to Havana",
@@ -1068,7 +1186,7 @@
           "raw_name": "Jesús Nazareno",
           "evidence_layer": "archival_catalogue_metadata",
           "language": "es",
-          "attestation_relationship": "historical_variant",
+          "attestation_relationship": "catalogue_title_variant",
           "source_record_id": "sr_pares_contratacion_1266_n5",
           "normalized_search_key": "jesus nazareno"
         }
@@ -1078,11 +1196,66 @@
         "occ_crespo_6627"
       ],
       "reported_burden_display": "Recorded tonnage: 112",
-      "construction_display": "Unknown",
       "master_display": "Master: Bartolomé Antonio Garrote",
       "fleet_display": "Flota a Nueva España (1706)",
       "voyage_display": "1706 voyage from Cádiz to Havana",
-      "register_display": "Registered in AGI CONTRATACION 1266, N.5 (PARES Digitized)"
+      "register_display": "Registered in AGI CONTRATACION 1266, N.5 (PARES catalogue record located)"
+    }
+  ],
+  "persons": [
+    {
+      "id": "person_bartolome_antonio_garrote",
+      "canonical_name": "Bartolomé Antonio Garrote",
+      "raw_source_name": "Bartolomé Antonio Garrote",
+      "roles": [
+        "master"
+      ],
+      "evidence_state": "probable_match",
+      "recorded_year_range": [
+        1688,
+        1706
+      ],
+      "member_occurrence_years": [
+        1688,
+        1693,
+        1701,
+        1706
+      ],
+      "active_year_range": [
+        1688,
+        1706
+      ],
+      "occurrence_ids": [
+        "occ_person_crespo_6627_master",
+        "occ_person_crespo_6906_master",
+        "occ_person_crespo_6890_master",
+        "occ_person_crespo_6825_master"
+      ],
+      "source_record_ids": [
+        "sr_crespo_navio_6627",
+        "sr_crespo_navio_6906",
+        "sr_crespo_navio_6890",
+        "sr_crespo_navio_6825"
+      ],
+      "attestations": [
+        {
+          "raw_name": "Bartolomé Antonio Garrote",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6627",
+          "normalized_search_key": "bartolome antonio garrote"
+        },
+        {
+          "raw_name": "Bartolomé Antonio de Garrote",
+          "evidence_layer": "scholarly_dataset_value",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_crespo_navio_6890",
+          "normalized_search_key": "bartolome antonio de garrote"
+        }
+      ],
+      "notes": "Probable recurring Carrera master across 4 Crespo voyage records departing Andalusian ports between 1688 and 1706. Upstream agent ID 11357 in PRUEBAAGENTES conflates this master with Francisco Antonio Garrote (1684) and is discounted."
     }
   ],
   "entity_resolution_edges": [
@@ -1285,6 +1458,50 @@
         "ast_crespo_6627_year",
         "ast_crespo_6627_master",
         "ast_crespo_6627_fuente"
+      ]
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6627_master",
+      "target_entity_id": "person_bartolome_antonio_garrote",
+      "resolution_state": "probable_match",
+      "resolver": "reviewed_master_career_reconciliation",
+      "evidence_assertions": [
+        "ast_crespo_6627_master",
+        "ast_crespo_6627_year",
+        "ast_crespo_6627_name"
+      ]
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6906_master",
+      "target_entity_id": "person_bartolome_antonio_garrote",
+      "resolution_state": "probable_match",
+      "resolver": "reviewed_master_career_reconciliation",
+      "evidence_assertions": [
+        "ast_crespo_6906_master",
+        "ast_crespo_6906_year",
+        "ast_crespo_6906_vessel"
+      ]
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6890_master",
+      "target_entity_id": "person_bartolome_antonio_garrote",
+      "resolution_state": "probable_match",
+      "resolver": "reviewed_master_career_reconciliation",
+      "evidence_assertions": [
+        "ast_crespo_6890_master",
+        "ast_crespo_6890_year",
+        "ast_crespo_6890_vessel"
+      ]
+    },
+    {
+      "occurrence_id": "occ_person_crespo_6825_master",
+      "target_entity_id": "person_bartolome_antonio_garrote",
+      "resolution_state": "probable_match",
+      "resolver": "reviewed_master_career_reconciliation",
+      "evidence_assertions": [
+        "ast_crespo_6825_master",
+        "ast_crespo_6825_year",
+        "ast_crespo_6825_vessel"
       ]
     }
   ],

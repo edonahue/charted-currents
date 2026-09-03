@@ -191,6 +191,29 @@
           </div>
         </section>
 
+        <!-- Fleet Convoy Context -->
+        <section class="inspector-section" data-ship-fleet-context hidden aria-label="Fleet convoy context">
+          <p class="panel-kicker">Fleet & Convoy Organization</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Convoy Title</dt>
+              <dd data-fleet-title></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Fleet Commander</dt>
+              <dd data-fleet-commander></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Fleet-level Origin / Destination</dt>
+              <dd data-fleet-route></dd>
+            </div>
+          </dl>
+          <p class="inspector-field-note">Fleet-level context from the Crespo FLOTAS dataset record; the vessel's recorded voyage endpoint is shown separately above.</p>
+          <button type="button" class="inspector-evidence-btn" data-fleet-evidence-btn>
+            Inspect Fleet Register Provenance ↗
+          </button>
+        </section>
+
         <!-- Ship Connections -->
         <section class="inspector-section" data-ship-connections-wrap hidden aria-label="Network connections">
           <p class="panel-kicker">Network Connections</p>
@@ -272,6 +295,40 @@
           <div class="inspector-connections-list" data-voyage-vessels-list></div>
         </section>
       </div>
+
+      <!-- PERSON VIEW -->
+      <div data-view-person hidden>
+        <section class="inspector-section" aria-label="Person recorded facts">
+          <p class="panel-kicker">Maritime Actor Context</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row">
+              <dt>Recorded Role</dt>
+              <dd data-person-role></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Recorded Occurrence Span</dt>
+              <dd data-person-active-years class="inspector-mono"></dd>
+            </div>
+            <div class="inspector-meta__row">
+              <dt>Resolution Status</dt>
+              <dd data-person-resolution-status></dd>
+            </div>
+          </dl>
+          <p class="inspector-note" data-person-notes></p>
+        </section>
+
+        <section class="inspector-section" aria-label="Documented master voyages">
+          <p class="panel-kicker">Recorded Master Voyages</p>
+          <div class="inspector-connections-list" data-person-voyages-list></div>
+        </section>
+
+        <section class="inspector-section" aria-label="Person provenance">
+          <p class="panel-kicker">Archival Provenance</p>
+          <button type="button" class="inspector-evidence-btn" data-person-evidence-btn>
+            Inspect Supporting Sourced Evidence ↗
+          </button>
+        </section>
+      </div>
     </div>
   </div>
 </aside>
@@ -325,6 +382,11 @@
   const shipCrewSection = document.querySelector<HTMLElement>("[data-ship-crew-section]");
   const shipCrewTbody = document.querySelector<HTMLElement>("[data-ship-crew-tbody]");
   const shipUpstreamRef = document.querySelector<HTMLElement>("[data-ship-upstream-ref]");
+  const shipFleetContext = document.querySelector<HTMLElement>("[data-ship-fleet-context]");
+  const fleetTitle = document.querySelector<HTMLElement>("[data-fleet-title]");
+  const fleetCommander = document.querySelector<HTMLElement>("[data-fleet-commander]");
+  const fleetRoute = document.querySelector<HTMLElement>("[data-fleet-route]");
+  const fleetEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-fleet-evidence-btn]");
   const shipConnectionsWrap = document.querySelector<HTMLElement>("[data-ship-connections-wrap]");
   const shipConnectionsList = document.querySelector<HTMLElement>("[data-ship-connections-list]");
   const shipEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-ship-evidence-btn]");
@@ -344,12 +406,39 @@
   const voyageCount = document.querySelector<HTMLElement>("[data-voyage-count]");
   const voyageVesselsList = document.querySelector<HTMLElement>("[data-voyage-vessels-list]");
 
+  const viewPerson = document.querySelector<HTMLElement>("[data-view-person]");
+  const personRole = document.querySelector<HTMLElement>("[data-person-role]");
+  const personActiveYears = document.querySelector<HTMLElement>("[data-person-active-years]");
+  const personResolutionStatus = document.querySelector<HTMLElement>("[data-person-resolution-status]");
+  const personNotes = document.querySelector<HTMLElement>("[data-person-notes]");
+  const personVoyagesList = document.querySelector<HTMLElement>("[data-person-voyages-list]");
+  const personEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-person-evidence-btn]");
+
   let entitiesCache: PublishedEntities | null = null;
   let routesCache: PublishedRouteFeatureCollection | null = null;
   let eventsCache: PublishedEvent[] | null = null;
   let sourcesCache: PublishedSources | null = null;
   let currentReturnTarget: HTMLElement | null = null;
   let activeTimeFilter = timeFilterStore.get();
+  let lastInspectorModality: "pointer" | "keyboard" = "pointer";
+
+  window.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        lastInspectorModality = "keyboard";
+      }
+    },
+    { capture: true }
+  );
+
+  window.addEventListener(
+    "mousedown",
+    () => {
+      lastInspectorModality = "pointer";
+    },
+    { capture: true }
+  );
 
   async function loadData() {
     try {
@@ -413,10 +502,10 @@
   }
 
   function createRelationshipRow(
-    type: "LOCATION" | "VESSEL" | "EVENT" | "ROUTE",
+    type: "LOCATION" | "VESSEL" | "EVENT" | "ROUTE" | "PERSON",
     role: string,
     label: string,
-    kind: "port" | "ship" | "event" | "voyage",
+    kind: "port" | "ship" | "event" | "voyage" | "person",
     id: string
   ): HTMLElement {
     const btn = document.createElement("button");
@@ -447,32 +536,38 @@
     contentSpan.append(roleSpan, sepSpan, labelSpan);
     btn.append(typeSpan, contentSpan);
     btn.addEventListener("click", () => {
+      const modality = lastInspectorModality;
       recordSelectionTrigger({
-        modality: "pointer",
         origin: "inspector_connection",
+        modality,
         returnTarget: btn,
       });
+      lastInspectorModality = "pointer";
       selectionStore.set({ kind, id });
-    });
-    btn.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        recordSelectionTrigger({
-          modality: "keyboard",
-          origin: "inspector_connection",
-          returnTarget: btn,
-        });
-      }
     });
     return btn;
   }
 
-  function checkPeriodFocus(year?: number | null) {
+  function checkPeriodFocus(years?: number | number[] | null) {
     if (!periodNotice || !periodNoticeText) return;
-    if (year && activeTimeFilter.id !== "all") {
-      if (year < activeTimeFilter.startYear || year > activeTimeFilter.endYear) {
-        periodNotice.hidden = false;
-        periodNoticeText.textContent = `Outside current period focus (${activeTimeFilter.label})`;
-        return;
+    if (activeTimeFilter.id !== "all") {
+      if (Array.isArray(years)) {
+        if (years.length > 0) {
+          const hasMemberInFocus = years.some(
+            (y) => y >= activeTimeFilter.startYear && y <= activeTimeFilter.endYear
+          );
+          if (!hasMemberInFocus) {
+            periodNotice.hidden = false;
+            periodNoticeText.textContent = `Outside current period focus (${activeTimeFilter.label})`;
+            return;
+          }
+        }
+      } else if (typeof years === "number") {
+        if (years < activeTimeFilter.startYear || years > activeTimeFilter.endYear) {
+          periodNotice.hidden = false;
+          periodNoticeText.textContent = `Outside current period focus (${activeTimeFilter.label})`;
+          return;
+        }
       }
     }
     periodNotice.hidden = true;
@@ -578,6 +673,7 @@
     viewShip?.setAttribute("hidden", "");
     viewEvent?.setAttribute("hidden", "");
     viewVoyage?.setAttribute("hidden", "");
+    viewPerson?.setAttribute("hidden", "");
   }
 
   function renderShip(shipId: string) {
@@ -604,14 +700,23 @@
     if (subtitleEl) {
       if (ship.disambiguation_display) {
         subtitleEl.textContent = `${ship.disambiguation_display} · ${ship.reported_burden_display}`;
-      } else {
+      } else if (ship.construction_display) {
         subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
+      } else {
+        subtitleEl.textContent = ship.reported_burden_display;
       }
     }
 
     if (shipRawName) shipRawName.textContent = shipOcc ? shipOcc.raw_name : ship.canonical_name;
     if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
-    if (shipConstruction) shipConstruction.textContent = ship.construction_display;
+    if (shipConstruction) {
+      if (ship.construction_display && ship.construction_display !== "Unknown") {
+        shipConstruction.parentElement?.removeAttribute("hidden");
+        shipConstruction.textContent = ship.construction_display;
+      } else {
+        shipConstruction.parentElement?.setAttribute("hidden", "");
+      }
+    }
     
     if (shipOwnerRow) {
       if (ship.owner_display) {
@@ -622,10 +727,29 @@
       }
     }
 
-    if (shipMasterRow) {
+    if (shipMasterRow && shipMaster) {
       if (ship.master_display) {
         shipMasterRow.hidden = false;
-        if (shipMaster) shipMaster.textContent = ship.master_display;
+        shipMaster.replaceChildren();
+        if (shipOcc?.recorded_master === "Bartolomé Antonio Garrote") {
+          const personBtn = document.createElement("button");
+          personBtn.type = "button";
+          personBtn.className = "inspector-link-btn";
+          personBtn.textContent = "Master: Bartolomé Antonio Garrote (Probable Match ↗)";
+          personBtn.addEventListener("click", () => {
+            const modality = lastInspectorModality;
+            recordSelectionTrigger({
+              origin: "inspector_connection",
+              modality,
+              returnTarget: personBtn,
+            });
+            lastInspectorModality = "pointer";
+            selectionStore.set({ kind: "person", id: "person_bartolome_antonio_garrote" });
+          });
+          shipMaster.appendChild(personBtn);
+        } else {
+          shipMaster.textContent = ship.master_display;
+        }
       } else {
         shipMasterRow.hidden = true;
       }
@@ -683,6 +807,32 @@
         }
       } else {
         shipCrewSection.hidden = true;
+      }
+    }
+
+    // Structured Fleet Convoy Context
+    if (shipFleetContext) {
+      if (shipOcc?.fleet_convoy) {
+        const fc = shipOcc.fleet_convoy;
+        shipFleetContext.hidden = false;
+        if (fleetTitle) fleetTitle.textContent = fc.fleet_title;
+        if (fleetCommander) fleetCommander.textContent = fc.commander_display;
+        if (fleetRoute) fleetRoute.textContent = `${fc.fleet_origin} → ${fc.fleet_destination} (${fc.year})`;
+        if (fleetEvidenceBtn) {
+          fleetEvidenceBtn.onclick = () => {
+            window.dispatchEvent(
+              new CustomEvent("cc:open-source", {
+                detail: {
+                  sourceId: "src_crespo_dyncoopnet",
+                  assertionIds: fc.assertion_ids,
+                  triggerEl: fleetEvidenceBtn,
+                },
+              })
+            );
+          };
+        }
+      } else {
+        shipFleetContext.hidden = true;
       }
     }
 
@@ -752,6 +902,7 @@
     viewPlace?.setAttribute("hidden", "");
     viewEvent?.setAttribute("hidden", "");
     viewVoyage?.setAttribute("hidden", "");
+    viewPerson?.setAttribute("hidden", "");
   }
 
   function renderEvent(eventId: string) {
@@ -820,6 +971,7 @@
     viewPlace?.setAttribute("hidden", "");
     viewShip?.setAttribute("hidden", "");
     viewVoyage?.setAttribute("hidden", "");
+    viewPerson?.setAttribute("hidden", "");
   }
 
   function renderVoyage(routeGroupId: string) {
@@ -895,6 +1047,140 @@
     viewPlace?.setAttribute("hidden", "");
     viewShip?.setAttribute("hidden", "");
     viewEvent?.setAttribute("hidden", "");
+    viewPerson?.setAttribute("hidden", "");
+  }
+
+  function renderPerson(personId: string) {
+    if (!entitiesCache) return;
+    const person = entitiesCache.persons?.find((p) => p.id === personId);
+    if (!person) return;
+
+    checkPeriodFocus(
+      person.member_occurrence_years ||
+        (person.recorded_year_range
+          ? [person.recorded_year_range[0], person.recorded_year_range[1]]
+          : person.active_year_range
+            ? [person.active_year_range[0], person.active_year_range[1]]
+            : null)
+    );
+
+    if (kickerEl) kickerEl.textContent = "Maritime Actor";
+    if (badgeWrap && badgeEl) {
+      badgeWrap.hidden = false;
+      badgeEl.textContent = "Probable Match";
+      badgeEl.setAttribute("data-evidence-state", "probable_match");
+    }
+    if (titleEl) titleEl.textContent = person.canonical_name;
+
+    const yr = person.recorded_year_range || person.active_year_range;
+    if (subtitleEl) {
+      const yrStr = yr ? ` · ${yr[0]}–${yr[1]}` : "";
+      subtitleEl.textContent = `Probable recurring Carrera master${yrStr}`;
+    }
+
+    if (personRole) personRole.textContent = "Master (Carrera de Indias)";
+    if (personActiveYears) {
+      const occCount = person.occurrence_ids ? person.occurrence_ids.length : 4;
+      personActiveYears.textContent = yr ? `${yr[0]}–${yr[1]} (${occCount} recorded voyages)` : "";
+    }
+    if (personResolutionStatus) {
+      personResolutionStatus.textContent = "Probable match across four Crespo voyage records";
+    }
+    if (personNotes) {
+      personNotes.textContent = person.notes || "";
+    }
+
+    if (personVoyagesList) {
+      personVoyagesList.replaceChildren();
+      const personOccs = entitiesCache.person_occurrences?.filter((po) =>
+        person.occurrence_ids.includes(po.id)
+      ) || [];
+
+      // Sort reverse chronological
+      personOccs.sort((a, b) => (b.year_as_recorded || 0) - (a.year_as_recorded || 0));
+
+      for (const occ of personOccs) {
+        const roleStr = `${occ.year_as_recorded} Master`;
+        const labelStr = `${occ.vessel_name_raw} (${occ.departure_place_raw} → ${occ.arrival_place_raw})`;
+
+        if (occ.ship_occurrence_id) {
+          const ship = entitiesCache.ships.find((s) => s.occurrence_ids.includes(occ.ship_occurrence_id!));
+          if (ship) {
+            personVoyagesList.appendChild(
+              createRelationshipRow("VESSEL", roleStr, labelStr, "ship", ship.id)
+            );
+          } else {
+            personVoyagesList.appendChild(
+              createRelationshipRow("VESSEL", roleStr, labelStr, "voyage", "route_cadiz_havana_crespo")
+            );
+          }
+        } else {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "inspector-rel-row";
+
+          const typeSpan = document.createElement("span");
+          typeSpan.className = "inspector-rel-type";
+          typeSpan.textContent = "REGISTER";
+
+          const contentSpan = document.createElement("span");
+          contentSpan.className = "inspector-rel-content";
+
+          const roleSpan = document.createElement("span");
+          roleSpan.className = "inspector-rel-role";
+          roleSpan.textContent = roleStr;
+
+          const sepSpan = document.createElement("span");
+          sepSpan.className = "inspector-rel-sep";
+          sepSpan.textContent = " · ";
+
+          const labelSpan = document.createElement("span");
+          labelSpan.className = "inspector-rel-label";
+          labelSpan.textContent = labelStr;
+
+          contentSpan.append(roleSpan, sepSpan, labelSpan);
+          btn.append(typeSpan, contentSpan);
+
+          btn.addEventListener("click", () => {
+            window.dispatchEvent(
+              new CustomEvent("cc:open-source", {
+                detail: {
+                  sourceId: "src_crespo_dyncoopnet",
+                  assertionIds: occ.assertion_ids,
+                  triggerEl: btn,
+                },
+              })
+            );
+          });
+
+          personVoyagesList.appendChild(btn);
+        }
+      }
+    }
+
+    if (personEvidenceBtn) {
+      personEvidenceBtn.onclick = () => {
+        const personOccs = entitiesCache?.person_occurrences?.filter((po) =>
+          person.occurrence_ids.includes(po.id)
+        ) || [];
+        const allAsts = Array.from(new Set(personOccs.flatMap((po) => po.assertion_ids)));
+        window.dispatchEvent(
+          new CustomEvent("cc:open-source", {
+            detail: {
+              sourceId: "src_crespo_dyncoopnet",
+              assertionIds: allAsts,
+              triggerEl: personEvidenceBtn,
+            },
+          })
+        );
+      };
+    }
+
+    viewPerson?.removeAttribute("hidden");
+    viewPlace?.setAttribute("hidden", "");
+    viewShip?.setAttribute("hidden", "");
+    viewEvent?.setAttribute("hidden", "");
+    viewVoyage?.setAttribute("hidden", "");
   }
 
   function syncInspector(selection: Selection) {
@@ -930,6 +1216,8 @@
       renderEvent(selection.id);
     } else if (selection.kind === "voyage") {
       renderVoyage(selection.id);
+    } else if (selection.kind === "person") {
+      renderPerson(selection.id);
     }
 
     if (trigger.modality === "keyboard") {
@@ -949,13 +1237,19 @@
         renderEvent(currentSelection.id);
       } else if (currentSelection.kind === "voyage") {
         renderVoyage(currentSelection.id);
+      } else if (currentSelection.kind === "person") {
+        renderPerson(currentSelection.id);
       }
     }
   });
 
   (window as any).__CC_SELECTION_STORE__ = selectionStore;
+  (window as any).__CC_TIME_FILTER_STORE__ = timeFilterStore;
   window.addEventListener("cc:test-select", (e: any) => {
     if (e.detail) selectionStore.set(e.detail);
+  });
+  window.addEventListener("cc:test-filter-time", (e: any) => {
+    if (e.detail) timeFilterStore.set(e.detail);
   });
 
   closeBtn?.addEventListener("click", () => {
@@ -1117,6 +1411,7 @@
     gap: 0.35rem;
   }
 
+  .inspector-shell :global(.inspector-rel-row),
   .inspector-rel-row {
     text-align: left;
     background: var(--cc-paper);
@@ -1132,6 +1427,8 @@
     width: 100%;
   }
 
+  .inspector-shell :global(.inspector-rel-row:hover),
+  .inspector-shell :global(.inspector-rel-row:focus-visible),
   .inspector-rel-row:hover,
   .inspector-rel-row:focus-visible {
     background: color-mix(in srgb, var(--cc-paper-raised) 80%, transparent);
@@ -1139,6 +1436,7 @@
     outline: none;
   }
 
+  .inspector-shell :global(.inspector-rel-type),
   .inspector-rel-type {
     font-family: var(--cc-font-mono);
     font-size: 0.58rem;
@@ -1150,6 +1448,7 @@
     min-width: 4.2rem;
   }
 
+  .inspector-shell :global(.inspector-rel-content),
   .inspector-rel-content {
     flex-grow: 1;
     font-size: var(--cc-text-xs);
@@ -1157,19 +1456,45 @@
     line-height: 1.35;
   }
 
+  .inspector-shell :global(.inspector-rel-role),
   .inspector-rel-role {
     font-size: 0.72rem;
     color: var(--cc-ink-muted);
   }
 
+  .inspector-shell :global(.inspector-rel-sep),
   .inspector-rel-sep {
     color: var(--cc-line-strong);
     padding: 0 0.15rem;
   }
 
+  .inspector-shell :global(.inspector-rel-label),
   .inspector-rel-label {
     font-weight: 500;
     color: var(--cc-ink);
+  }
+
+  .inspector-shell :global(.inspector-link-btn),
+  .inspector-link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    color: var(--cc-sand);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 120ms ease;
+    text-align: left;
+  }
+
+  .inspector-shell :global(.inspector-link-btn:hover),
+  .inspector-shell :global(.inspector-link-btn:focus-visible),
+  .inspector-link-btn:hover,
+  .inspector-link-btn:focus-visible {
+    color: var(--cc-ink);
+    outline: none;
   }
 
   .inspector-evidence-btn {
