@@ -3,11 +3,35 @@
   "model": "qwen2.5:14b-instruct-q4_K_M",
   "input_dossier": "data/review/crespo/reconciliation_garrote.json",
   "model_evaluation": {
-    "verdict": "CONFLICT_SIGNAL",
-    "evidence_summary": "The dossier includes five occurrences linked by MAESTRE foreign key 11357, with four records naming Bartolom\u00e9 Antonio Garrote and one record naming Francisco Antonio Garrote. The upstream PRUEBAAGENTES row for ID 11357 lists 'Francisco Antonio' as the given name, conflicting directly with the majority of the dataset's occurrences which use 'Bartolom\u00e9'.",
-    "upstream_fk_evaluation": "The MAESTRE foreign key 11357 is unreliable due to internal contradictions. It links both Francisco Antonio Garrote and Bartolom\u00e9 Antonio Garrote, despite these being distinct given names. This inconsistency undermines the upstream database's authority in resolving identity.",
-    "recommended_resolution_posture": "Given the direct name conflict between 'Francisco' and 'Bartolom\u00e9', Charted Currents should maintain separate identities for these individuals until primary manuscript evidence can confirm or resolve their relationship, if any exists.",
-    "reversibility_assessment": "The identity linking is not reversible due to the unresolved conflict signal. Any assertion that Francisco Antonio Garrote and Bartolom\u00e9 Antonio Garrote are the same individual lacks direct proof and should be treated as speculative until further evidence emerges.",
-    "epistemic_class": "Class D"
+    "verdict": "NEEDS_MORE_EVIDENCE",
+    "objections_raised": [
+      "Internal inconsistency in upstream foreign key",
+      "Lack of direct manuscript inspection"
+    ],
+    "evaluation_of_four_bartolome_cohort": "While the four Bartolomé occurrences exhibit consistent professional roles and geographic patterns, the absence of age records or signatures weakens the case for a probable match across an 18-year period. The consistency in maritime role does not sufficiently compensate for the lack of direct manuscript evidence to confirm identity.",
+    "evaluation_of_francisco_exclusion": "Excluding Francisco Antonio Garrote (6820) is necessary due to the given-name conflict, but this exclusion alone may not fully resolve the ambiguity without additional corroborative evidence. The upstream foreign key's inconsistency highlights a systemic issue that needs addressing beyond just excluding one occurrence.",
+    "missing_discriminators_noted": [
+      "Master age",
+      "Residence of master",
+      "Signatures unexamined"
+    ],
+    "reversibility_understanding": "The proposed resolution maintains the reversibility principle by preserving occurrences independently and allowing any link to be severed without data loss. However, this does not mitigate the need for stronger evidence.",
+    "recommended_evidence_state": "contextual"
+  },
+  "project_adjudication": {
+    "adjudicator": "Charted Currents Project Editorial Board",
+    "pilot_goal": "Evaluate if local GPU Qwen 14B provides useful adversarial review",
+    "model_verdict": "NEEDS_MORE_EVIDENCE",
+    "model_understood_resolution": true,
+    "model_noticed_11357_conflict": true,
+    "model_invented_facts": false,
+    "model_confused_francisco_with_bartolome": false,
+    "reversibility_claim_critique": "Model correctly noted that occurrence-level architecture allows reversible entity links.",
+    "useful_missing_discriminators_identified": [
+      "Master age",
+      "Residence of master",
+      "Signatures unexamined"
+    ],
+    "adjudication_conclusion": "Model returned 'NEEDS_MORE_EVIDENCE'. It recognized the distinct given names and the internal contradiction in MAESTRE 11357. The model's skepticism regarding the 18-year span without primary signatures validates the project's conservative decision to restrict Bartolomé Antonio Garrote to 'probable_match' (prohibiting 'documented' certainty) and to exclude continuous career claims. No automated promotion or downgrade is performed; the AI audit serves as process critique, not historical corroboration."
   }
 }

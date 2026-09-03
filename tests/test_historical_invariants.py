@@ -10,6 +10,7 @@ import json
 import os
 import unittest
 import yaml
+from pathlib import Path
 
 class TestHistoricalInvariants(unittest.TestCase):
     @classmethod
@@ -335,6 +336,83 @@ class TestHistoricalInvariants(unittest.TestCase):
         # Verify Francisco Antonio Garrote does NOT exist as a canonical person
         for p in persons.values():
             self.assertNotIn("francisco", p["canonical_name"].lower())
+
+    def test_packet6_review_bundle_cohort_derivation(self):
+        """Review bundle cohort dossiers must be mechanically derived from authoritative records without hardcoded constants."""
+        bundle_path = Path(__file__).resolve().parent.parent / "data" / "review" / "bundles" / "packet6" / "review_bundle.json"
+        self.assertTrue(bundle_path.exists(), "review_bundle.json must exist")
+
+        with open(bundle_path, encoding="utf-8") as f:
+            bundle = json.load(f)
+
+        # Bundle must not claim its own commit SHA or contain fluctuating build timestamps
+        self.assertNotIn("head_ref", bundle.get("comparison", {}))
+        self.assertNotIn("generated_at", bundle)
+        self.assertEqual(bundle.get("comparison", {}).get("base_ref"), "origin/main")
+
+        cohort = {d["navio_id"]: d for d in bundle.get("cohort_dossiers", [])}
+        self.assertEqual(set(cohort.keys()), {5890, 4493, 4501})
+
+        # Vessel 4493: West Indische Gally (1706), NOT De Jonge Margaretha (1708)
+        d4493 = cohort[4493]
+        self.assertEqual(d4493["vessel_name"], "West Indische Gally")
+        self.assertEqual(d4493["year"], 1706)
+        self.assertEqual(d4493["route"], "Curaçao -> Amsterdam")
+        self.assertEqual(d4493["goods_lines_count"], 16)
+        self.assertEqual(d4493["reconciliation_status"], "REFERENCE_TABLE_REPRESENTATION_CONFLICT")
+
+        # Vessel 4501: La Provincia de Zeelanda (1700), NOT De Jonge Jacob (1708)
+        d4501 = cohort[4501]
+        self.assertEqual(d4501["vessel_name"], "La Provincia de Zeelanda")
+        self.assertEqual(d4501["year"], 1700)
+        self.assertEqual(d4501["route"], "Curaçao -> Amsterdam")
+        self.assertEqual(d4501["goods_lines_count"], 9)
+        self.assertEqual(d4501["reconciliation_status"], "MATCH")
+        self.assertIn("10491 pesos", d4501.get("goods_valuation_finding", ""))
+
+        # Vessel 5890: Nuestra Señora de la Estrella (1694), Venezuela -> Sevilla ?
+        d5890 = cohort[5890]
+        self.assertEqual(d5890["vessel_name"], "Nuestra Señora de la Estrella")
+        self.assertEqual(d5890["year"], 1694)
+        self.assertEqual(d5890["route"], "Venezuela -> Sevilla ?")
+        self.assertNotIn("La Guaira", d5890["route"])
+        self.assertEqual(d5890["goods_lines_count"], 135)
+        self.assertEqual(d5890["distinct_consignees_count"], 86)
+        self.assertEqual(d5890["reconciliation_status"], "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE")
+
+    def test_packet6_places_precision_and_provenance(self):
+        """Packet 6 place entities must declare source-bounded precision and navigation coordinate provenance."""
+        places = {p["id"]: p for p in self.entities.get("places", [])}
+        self.assertIn("place_venezuela", places)
+        self.assertIn("place_curacao", places)
+        self.assertIn("place_puerto_rico", places)
+        self.assertIn("place_amsterdam", places)
+        self.assertIn("place_seville", places)
+
+        # Venezuela: broad province/region precision, generalized coordinate, no spurious La Guaira resolution
+        vz = places["place_venezuela"]
+        self.assertEqual(vz["canonical_name"], "Venezuela")
+        self.assertEqual(vz["geographic_precision"], "province_or_region")
+        self.assertEqual(vz["geometry_provenance"], "modern_generalized_navigation_reference")
+        self.assertNotIn("La Guaira", vz.get("notes", ""))
+
+        # Curaçao and Puerto Rico: colony_or_island
+        cur = places["place_curacao"]
+        self.assertEqual(cur["geographic_precision"], "colony_or_island")
+        self.assertEqual(cur["geometry_provenance"], "modern_navigation_reference_coordinate")
+
+        pr = places["place_puerto_rico"]
+        self.assertEqual(pr["geographic_precision"], "colony_or_island")
+        self.assertEqual(pr["geometry_provenance"], "modern_navigation_reference_coordinate")
+
+        # Amsterdam and Sevilla: port_city, evidence-description notes without unsupported institutional overclaims
+        ams = places["place_amsterdam"]
+        self.assertEqual(ams["geographic_precision"], "port_city")
+        self.assertNotIn("Primary", ams.get("notes", ""))
+
+        sev = places["place_seville"]
+        self.assertEqual(sev["geographic_precision"], "port_city")
+        self.assertNotIn("Casa de la Contratación", sev.get("notes", ""))
 
 if __name__ == "__main__":
     unittest.main()

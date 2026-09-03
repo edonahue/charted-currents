@@ -815,8 +815,8 @@
         "type": "LineString",
         "coordinates": [
           [
-            -66.9333,
-            10.6
+            -66.9036,
+            10.4806
           ],
           [
             -5.9845,
@@ -828,7 +828,7 @@
         "id": "display_edge_place_venezuela_place_seville",
         "origin_place_id": "place_venezuela",
         "destination_place_id": "place_seville",
-        "origin_name": "Venezuela (Province / La Guaira)",
+        "origin_name": "Venezuela",
         "destination_name": "Sevilla",
         "route_group_id": "route_group_place_venezuela_place_seville",
         "constituent_vessel_ids": [
@@ -856,7 +856,7 @@
         "evidence_state": "documented",
         "is_track_observed": false,
         "geometry_provenance": "project visualization between resolved endpoint references",
-        "notes": "Aggregated display edge for 1 documented transatlantic vessel voyage between Venezuela (Province / La Guaira) and Sevilla."
+        "notes": "Aggregated display edge for 1 documented transatlantic vessel voyage between Venezuela and Sevilla."
       }
     }
   ],

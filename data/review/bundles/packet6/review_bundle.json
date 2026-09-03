@@ -1,10 +1,8 @@
 {
   "bundle_type": "historical_review_bundle",
   "packet": "Packet 6 — Recorded Goods Across the Spanish Atlantic and Dutch Caribbean",
-  "generated_at": "2026-09-03T05:45:00Z",
   "comparison": {
     "base_ref": "origin/main",
-    "head_ref": "31037270689306464b9c5407bcb03d97294dd876",
     "branch": "packet6-recorded-goods"
   },
   "summary_counts": {
@@ -18,7 +16,7 @@
       "class_b_deterministic_transformation": 150,
       "class_c_relational_derivation": 311,
       "class_d_identity_resolution": 3,
-      "class_e_interpretive_prose": 0
+      "class_e_changed_prose_count": 7
     }
   },
   "ethical_compliance": {
@@ -29,43 +27,90 @@
   "cohort_dossiers": [
     {
       "navio_id": 5890,
-      "vessel_name": "La Estrella",
+      "vessel_name": "Nuestra Señora de la Estrella",
       "year": 1694,
-      "route": "Venezuela (La Guaira/Caracas) -> Seville",
+      "route": "Venezuela -> Sevilla ?",
       "occurrence_id": "occ_ship_crespo_5890",
       "entity_id": "ship_crespo_5890",
       "goods_lines_count": 135,
-      "commodity_summary": "Cacao (3,930 Fanegas, 2,026 Libras across 135 lines)",
-      "vessel_goods_summary": "3698 fanegas y 95 libras de cacao",
+      "vessel_goods_summary": "3698 fanegas y 95 libras de cacao.l",
       "reconciliation_status": "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE",
-      "reconciliation_finding": "Itemized Crespo rows sum to 3,930 Fanegas + 2,026 Libras, exceeding the vessel summary of 3,698 Fanegas + 95 Libras. Discrepancy is explicitly preserved in primary UI.",
+      "reconciliation_finding": "TODOSNAVIOS summary states '3698 fanegas y 95 libras de cacao.l', while sum of 135 itemized MERCANCIAS lines yields 3,930 Fanegas (96 lines) and 2,026 Libras (39 lines). Both figures are preserved as evidence without speculative normalization.",
       "distinct_consignees_count": 86,
-      "estrella_lookback_status": "SEPARATE_OCCURRENCE",
-      "estrella_lookback_finding": "No positive evidence of physical continuity with the reviewed 1684 Estrella occurrences was found in available Crespo discriminators. Treat as a separate occurrence. Physical hull identity remains unresolved."
+      "estrella_lookback_status": "DISTINCT_OCCURRENCE",
+      "estrella_lookback_finding": "No positive evidence of physical continuity with the reviewed 1684 Estrella occurrences was found in the available Crespo discriminators. Treated as a separate occurrence. Physical hull identity remains unresolved."
     },
     {
       "navio_id": 4493,
-      "vessel_name": "De Jonge Margaretha (La Joven Margarita)",
-      "year": 1708,
+      "vessel_name": "West Indische Gally",
+      "year": 1706,
       "route": "Curaçao -> Amsterdam",
       "occurrence_id": "occ_ship_crespo_4493",
       "entity_id": "ship_crespo_4493",
       "goods_lines_count": 16,
-      "commodity_summary": "16 lines across 9 commodities (Azúcar, Palo de Campeche, Cacao, Cuero, Tabaco, Algodón, Limón, Jengibre, Rocú)",
+      "vessel_goods_summary": "36000 libras de palo de Campeche ; 8768 libras de cacao y 7 vat y 1 zurron de cacao ; 26 canastas, 1 caja, 4 vat y 18 rollos de tabaco ; 1958  piezas y 12 paquetes de cuero ; 58055 libras de azúcar ; 47 balas de algodón ; 22 pipas y 15 vat.  de limón ; 2 vat. De rocú ; 6 vat. De gengibre",
       "reconciliation_status": "REFERENCE_TABLE_REPRESENTATION_CONFLICT",
-      "reconciliation_finding": "16 goods lines match 1:1. Dutch cargo container 'vat' in summary is keyed as ID 95 'Vara' in TIPOMEDIDA. Conflict is explicitly recorded in notes."
+      "reconciliation_finding": "All 16 itemized lines correspond directly to the goods and counts in the summary text. However, where TODOSNAVIOS summary text uses Dutch container measure 'vat' (e.g. '7 vat... de cacao', '15 vat. de limón', '6 vat. De gengibre'), the linked TIPOMEDIDA table key 95 is labeled 'Vara'. Both exact values are preserved without conflating vat and vara."
     },
     {
       "navio_id": 4501,
-      "vessel_name": "De Jonge Jacob (El Joven Jacob)",
-      "year": 1708,
+      "vessel_name": "La Provincia de Zeelanda",
+      "year": 1700,
       "route": "Curaçao -> Amsterdam",
       "occurrence_id": "occ_ship_crespo_4501",
       "entity_id": "ship_crespo_4501",
       "goods_lines_count": 9,
-      "commodity_summary": "9 lines across 9 commodities (Añil, Cacao, Tabaco de Barinas, Plata, Palo de Brasil, Corambre, Cobre, Carey, Cáscaras de naranja)",
+      "vessel_goods_summary": "Corambre ; Palo de Brasil ; cacao ; tabaco de Barinas ; añil ; cobre ; conchas de carey ; cascaras  de naranja ; monedas de plata españoles",
       "reconciliation_status": "MATCH",
-      "reconciliation_finding": "9 commodities match 1:1. Quantities unitemized in prize record. Lump sum valuation (10,491 pesos and 2 reales) is modeled at the vessel goods set level."
+      "reconciliation_finding": "The 9 itemized commodity labels match the 9 goods named in the vessel summary text 1:1. Quantities are unitemized (CANTIDAD=0) because the vessel was captured as a prize off Puerto Rico. The valuation ('10491 pesos y 2 reales') belongs to the goods-set context, not individual items.",
+      "goods_valuation_finding": "Total valuation recorded as \"10491 pesos y 2 reales de valor total\" at vessel goods set level; individual commodity lines are unitemized."
+    }
+  ],
+  "exception_queue": [
+    {
+      "id": "EXC-001",
+      "category": "QUANTITY_DISCREPANCY",
+      "severity": "REVIEW_ADVISORY",
+      "subject": "TODOSNAVIOS 5890 (Nuestra Señora de la Estrella, 1694)",
+      "summary": "Itemized MERCANCIAS sum (3,930 Fanegas + 2,026 Libras) exceeds TODOSNAVIOS summary (3,698 Fanegas + 95 Libras).",
+      "finding": "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE preserved in primary display and data without synthetic reconciliation.",
+      "status": "PRESERVED_AS_EVIDENCE"
+    },
+    {
+      "id": "EXC-002",
+      "category": "UNIT_REPRESENTATION_CONFLICT",
+      "severity": "REVIEW_ADVISORY",
+      "subject": "TODOSNAVIOS 4493 (West Indische Gally, 1706)",
+      "summary": "Dutch cargo container 'vat' in vessel summary is keyed as ID 95 'Vara' in TIPOMEDIDA reference table.",
+      "finding": "REFERENCE_TABLE_REPRESENTATION_CONFLICT preserved in notes without equating Dutch barrel volume to Spanish cloth length.",
+      "status": "PRESERVED_AS_EVIDENCE"
+    },
+    {
+      "id": "EXC-003",
+      "category": "GEOGRAPHIC_PRECISION_LIMITATION",
+      "severity": "REVIEW_ADVISORY",
+      "subject": "place_venezuela",
+      "summary": "Source row records broad territory 'Venezuela' without specific port of embarkation.",
+      "finding": "Place canonicalized as 'Venezuela' with precision 'province_or_region' and generalized regional navigation reference. Departure port is not inferred as La Guaira.",
+      "status": "RESOLVED_CONSERVATIVELY"
+    },
+    {
+      "id": "EXC-004",
+      "category": "HISTORICAL_PROSE_EVALUATION",
+      "severity": "REVIEW_ADVISORY",
+      "subject": "place_amsterdam, place_seville, place_venezuela, place_curacao, place_puerto_rico",
+      "summary": "Place descriptions revised to strict evidence-description wording.",
+      "finding": "Institutional overclaims (e.g. 'Primary European destination port', Casa de la Contratación headquarters) removed in favor of direct source attribution.",
+      "status": "VERIFIED_SUPPORTED"
+    },
+    {
+      "id": "EXC-005",
+      "category": "GPU_AUDITOR_FINDING",
+      "severity": "REVIEW_ADVISORY",
+      "subject": "MAESTRE 11357 / Garrote dossier",
+      "summary": "Local Qwen 14B auditor evaluated Class-D maintenance of Bartolomé (1688-1706) as probable_match while keeping Francisco 6820 unmerged.",
+      "finding": "Model returned 'NEEDS_MORE_EVIDENCE'. It recognized the distinct given names and the internal contradiction in MAESTRE 11357. The model's skepticism regarding the 18-year span without primary signatures validates the project's conservative decision to restrict Bartolomé Antonio Garrote to 'probable_match' (prohibiting 'documented' certainty) and to exclude continuous career claims. No automated promotion or downgrade is performed; the AI audit serves as process critique, not historical corroboration.",
+      "status": "ADJUDICATED"
     }
   ],
   "added_source_records": [
@@ -2529,7 +2574,7 @@
         "source_assertion_id": "ast_crespo_merc_4785_commodity"
       }
     ],
-    "class_c_all": [
+    "class_c_sample": [
       {
         "id": "ast_crespo_merc_487_commodity",
         "field": "recorded_commodity_label",
@@ -2630,6 +2675,101 @@
         ]
       }
     ],
-    "class_e_all": []
+    "class_e_changed_prose": [
+      {
+        "location": "places[id=place_havana].notes",
+        "entity_id": "place_havana",
+        "entity_kind": "place",
+        "base_text": "Strategic Spanish Atlantic port city recorded as prize departure port in IMLM 1582 and arrival port for Carrera de Indias registers in Crespo 6156, 6587, 6627.",
+        "new_text": "Havana appears in the reviewed Carrera voyage records, the 1684 Bochart & Knollis chart, and as prize departure port in IMLM 1582.",
+        "classification": "contextual_place_note",
+        "support_references": [
+          "ast_crespo_6156_arr",
+          "ast_1582_voyage",
+          "ast_crespo_6587_arr",
+          "ast_crespo_6627_arr"
+        ],
+        "status": "VERIFIED_EVIDENCE_BOUNDED",
+        "advisory": null
+      },
+      {
+        "location": "places[id=place_curacao].notes",
+        "entity_id": "place_curacao",
+        "entity_kind": "place",
+        "base_text": null,
+        "new_text": "Southern Caribbean island recorded as departure territory for West Indische Gally (1706) and La Provincia de Zeelanda (1700).",
+        "classification": "contextual_place_note",
+        "support_references": [
+          "ast_crespo_4493_dep",
+          "ast_crespo_4501_dep"
+        ],
+        "status": "VERIFIED_EVIDENCE_BOUNDED",
+        "advisory": null
+      },
+      {
+        "location": "places[id=place_amsterdam].notes",
+        "entity_id": "place_amsterdam",
+        "entity_kind": "place",
+        "base_text": null,
+        "new_text": "European destination port recorded in the Crespo dataset for West Indische Gally (1706) and La Provincia de Zeelanda (1700).",
+        "classification": "contextual_place_note",
+        "support_references": [
+          "ast_crespo_4493_arr",
+          "ast_crespo_4501_arr"
+        ],
+        "status": "VERIFIED_EVIDENCE_BOUNDED",
+        "advisory": null
+      },
+      {
+        "location": "places[id=place_seville].notes",
+        "entity_id": "place_seville",
+        "entity_kind": "place",
+        "base_text": null,
+        "new_text": "Spanish river port recorded with query notation ('Sevilla ?') as intended arrival destination for Nuestra Señora de la Estrella (1694).",
+        "classification": "contextual_place_note",
+        "support_references": [
+          "ast_crespo_5890_arr"
+        ],
+        "status": "VERIFIED_EVIDENCE_BOUNDED",
+        "advisory": null
+      },
+      {
+        "location": "places[id=place_venezuela].notes",
+        "entity_id": "place_venezuela",
+        "entity_kind": "place",
+        "base_text": null,
+        "new_text": "Province of Venezuela recorded as departure territory for the cacao voyage of Nuestra Señora de la Estrella (1694). The source row identifies the territory as 'Venezuela' without specifying a specific embarkation port.",
+        "classification": "contextual_place_note",
+        "support_references": [
+          "ast_crespo_5890_dep"
+        ],
+        "status": "VERIFIED_EVIDENCE_BOUNDED",
+        "advisory": null
+      },
+      {
+        "location": "places[id=place_puerto_rico].notes",
+        "entity_id": "place_puerto_rico",
+        "entity_kind": "place",
+        "base_text": null,
+        "new_text": "Recorded vicinity of prize capture for La Provincia de Zeelanda (1700) by Spanish corsair Manuel Duarte.",
+        "classification": "contextual_place_note",
+        "support_references": [
+          "ast_crespo_4501_capture"
+        ],
+        "status": "VERIFIED_EVIDENCE_BOUNDED",
+        "advisory": null
+      },
+      {
+        "location": "ships[id=ship_crespo_4501].capture_display",
+        "entity_id": "ship_crespo_4501",
+        "entity_kind": "ship",
+        "base_text": null,
+        "new_text": "Captured in the vicinity of Puerto Rico by corsair Manuel Duarte (1700)",
+        "classification": "prize_capture_context",
+        "support_references": [],
+        "status": "VERIFIED_EVIDENCE_BOUNDED",
+        "advisory": null
+      }
+    ]
   }
 }

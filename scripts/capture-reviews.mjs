@@ -1494,7 +1494,29 @@ async function runReviewSuite() {
     });
     assert(negativeGoodsCheck?.result?.value?.isHidden, "Recorded goods section strictly hidden on non-commodity vessel");
 
-    // 22. Runtime Exceptions check
+    // 22. Packet 6: Test Place Precision and Evidence-Description Copy for Venezuela
+    console.log("Testing Packet 6 Place Precision and Evidence-Description Copy for Venezuela...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_venezuela" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const vzCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('#inspector-heading')?.textContent || '';
+        const prec = document.querySelector('[data-place-precision]')?.textContent || '';
+        const note = document.querySelector('[data-place-note]')?.textContent || '';
+        return { title, prec, note };
+      })()`,
+      returnByValue: true,
+    });
+    assert(vzCheck?.result?.value?.title === "Venezuela", "Venezuela canonical name is 'Venezuela' without false precision");
+    assert(vzCheck?.result?.value?.prec === "Province / Region reference", "Venezuela precision is 'Province / Region reference'");
+    assert(!vzCheck?.result?.value?.note?.includes("La Guaira"), "Venezuela place notes do not inject La Guaira port resolution");
+
+    // 23. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

@@ -160,8 +160,8 @@
   },
   "known_caveats": [
     "MDB raw strings preserve source whitespace and Jet4 encodings.",
-    "TIPOMEDIDA IDs start at 1; MEDIDAS=0 represents unrecorded unit in source database.",
-    "CANTIDAD=0 represents unrecorded or unitemized quantity in source database.",
+    "TIPOMEDIDA IDs start at 1; for MEDIDAS=0 no positive TIPOMEDIDA reference resolves in reference join.",
+    "For CANTIDAD=0 no positive quantity value is displayed by the project; raw zero is strictly preserved.",
     "Dates with day 0 (e.g. 01/00/00) represent year/month-only precision in Access.",
     "TODOSNAVIOS summary text differs from itemized MERCANCIAS consignment sums by ~6.7% for vessel 5890.",
     "Dutch container measure 'vat' in TODOSNAVIOS summary for vessel 4493 is recorded as ID 95 'Vara' in TIPOMEDIDA.",

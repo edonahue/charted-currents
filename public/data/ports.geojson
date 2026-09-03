@@ -698,7 +698,7 @@
           "ast_crespo_4493_dep",
           "ast_crespo_4501_dep"
         ],
-        "notes": "Dutch Caribbean commercial hub recorded as departure port for West Indische Gally (1706) and La Provincia de Zeelanda (1700)."
+        "notes": "Southern Caribbean island recorded as departure territory for West Indische Gally (1706) and La Provincia de Zeelanda (1700)."
       }
     },
     {
@@ -733,7 +733,7 @@
           "ast_crespo_4493_arr",
           "ast_crespo_4501_arr"
         ],
-        "notes": "Primary European destination port for Dutch Caribbean trade recorded in Crespo 4493 and 4501."
+        "notes": "European destination port recorded in the Crespo dataset for West Indische Gally (1706) and La Provincia de Zeelanda (1700)."
       }
     },
     {
@@ -767,7 +767,7 @@
         "source_assertion_ids": [
           "ast_crespo_5890_arr"
         ],
-        "notes": "Guadalquivir river port and Casa de la Contratación headquarters recorded as destination for Nuestra Señora de la Estrella (1694)."
+        "notes": "Spanish river port recorded with query notation ('Sevilla ?') as intended arrival destination for Nuestra Señora de la Estrella (1694)."
       }
     },
     {
@@ -776,13 +776,13 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -66.9333,
-          10.6
+          -66.9036,
+          10.4806
         ]
       },
       "properties": {
         "id": "place_venezuela",
-        "canonical_name": "Venezuela (Province / La Guaira)",
+        "canonical_name": "Venezuela",
         "raw_source_name": "Venezuela",
         "endonym": "Venezuela",
         "attestations": [
@@ -796,12 +796,12 @@
           }
         ],
         "region": "Tierra Firme / Southern Caribbean",
-        "geographic_precision": "colony_or_island",
-        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "geographic_precision": "province_or_region",
+        "geometry_provenance": "modern_generalized_navigation_reference",
         "source_assertion_ids": [
           "ast_crespo_5890_dep"
         ],
-        "notes": "Province of Venezuela recorded as departure point for cacao voyage of Nuestra Señora de la Estrella (1694)."
+        "notes": "Province of Venezuela recorded as departure territory for the cacao voyage of Nuestra Señora de la Estrella (1694). The source row identifies the territory as 'Venezuela' without specifying a specific embarkation port."
       }
     },
     {

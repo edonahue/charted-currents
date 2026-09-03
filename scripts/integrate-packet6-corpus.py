@@ -48,7 +48,7 @@ NEW_PLACES = [
         "geographic_precision": "colony_or_island",
         "coordinates": [-68.9333, 12.1167],
         "geometry_provenance": "modern_navigation_reference_coordinate",
-        "notes": "Dutch Caribbean commercial hub recorded as departure port for West Indische Gally (1706) and La Provincia de Zeelanda (1700).",
+        "notes": "Southern Caribbean island recorded as departure territory for West Indische Gally (1706) and La Provincia de Zeelanda (1700).",
         "source_assertion_ids": ["ast_crespo_4493_dep", "ast_crespo_4501_dep"],
         "attestations": [
             {
@@ -78,7 +78,7 @@ NEW_PLACES = [
         "geographic_precision": "port_city",
         "coordinates": [4.9041, 52.3676],
         "geometry_provenance": "modern_navigation_reference_coordinate",
-        "notes": "Primary European destination port for Dutch Caribbean trade recorded in Crespo 4493 and 4501.",
+        "notes": "European destination port recorded in the Crespo dataset for West Indische Gally (1706) and La Provincia de Zeelanda (1700).",
         "source_assertion_ids": ["ast_crespo_4493_arr", "ast_crespo_4501_arr"],
         "attestations": [
             {
@@ -100,7 +100,7 @@ NEW_PLACES = [
         "geographic_precision": "port_city",
         "coordinates": [-5.9845, 37.3891],
         "geometry_provenance": "modern_navigation_reference_coordinate",
-        "notes": "Guadalquivir river port and Casa de la Contratación headquarters recorded as destination for Nuestra Señora de la Estrella (1694).",
+        "notes": "Spanish river port recorded with query notation ('Sevilla ?') as intended arrival destination for Nuestra Señora de la Estrella (1694).",
         "source_assertion_ids": ["ast_crespo_5890_arr"],
         "attestations": [
             {
@@ -115,14 +115,14 @@ NEW_PLACES = [
     },
     {
         "id": "place_venezuela",
-        "canonical_name": "Venezuela (Province / La Guaira)",
+        "canonical_name": "Venezuela",
         "raw_source_name": "Venezuela",
         "endonym": "Venezuela",
         "region": "Tierra Firme / Southern Caribbean",
-        "geographic_precision": "colony_or_island",
-        "coordinates": [-66.9333, 10.6000],
-        "geometry_provenance": "modern_navigation_reference_coordinate",
-        "notes": "Province of Venezuela recorded as departure point for cacao voyage of Nuestra Señora de la Estrella (1694).",
+        "geographic_precision": "province_or_region",
+        "coordinates": [-66.9036, 10.4806],
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "notes": "Province of Venezuela recorded as departure territory for the cacao voyage of Nuestra Señora de la Estrella (1694). The source row identifies the territory as 'Venezuela' without specifying a specific embarkation port.",
         "source_assertion_ids": ["ast_crespo_5890_dep"],
         "attestations": [
             {
@@ -188,7 +188,10 @@ def main() -> None:
     # Add new places if not already present
     existing_place_ids = {p["id"] for p in corpus["places"]}
     for np in NEW_PLACES:
-        if np["id"] not in existing_place_ids:
+        idx = next((i for i, p in enumerate(corpus["places"]) if p["id"] == np["id"]), -1)
+        if idx >= 0:
+            corpus["places"][idx] = np
+        else:
             corpus["places"].append(np)
             existing_place_ids.add(np["id"])
 

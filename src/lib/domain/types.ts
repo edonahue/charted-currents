@@ -22,6 +22,7 @@ export const GEOGRAPHIC_PRECISIONS = [
   "populated_place",
   "port_city",
   "port_town",
+  "province_or_region",
 ] as const;
 export type GeographicPrecision = (typeof GEOGRAPHIC_PRECISIONS)[number];
 

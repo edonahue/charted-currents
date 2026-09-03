@@ -130,7 +130,7 @@ def main() -> None:
             print(f"  - {f}", file=sys.stderr)
         sys.exit(1)
 
-    print("[SUCCESS] All 30 tables verified: 64,207 rows, column counts, and analytical views passed fidelity audit.")
+    print("[SUCCESS] STRUCTURAL PARITY verified across all 30 tables: 64,207 rows, column counts, and analytical views passed audit.")
 
 
 if __name__ == "__main__":
