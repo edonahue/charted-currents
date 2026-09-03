@@ -314,6 +314,7 @@
     {
       "id": "occ_crespo_6156",
       "source_record_id": "sr_crespo_navio_6156",
+      "record_context": "voyage_register",
       "raw_name": "Nuestra Señora de la Estrella",
       "attestations": [
         {
@@ -327,11 +328,12 @@
       ],
       "raw_tonnage": "278",
       "raw_construction_place": "Unknown",
-      "reported_owner_residence": "Cádiz, Spain",
+      "recorded_master": "Juan Bernardo de Heredia",
+      "recorded_year": 1684,
       "recorded_voyage_origin": "Cádiz",
       "recorded_voyage_destination": "La Habana",
-      "recorded_capture_location": "Not captured (peaceful merchant voyage)",
-      "recorded_capture_date": "1684",
+      "fleet_convoy_display": "Galeones a Tierra Firme (1684)",
+      "archival_register_reference": "AGI CONTRATACION 1240, N.6",
       "assertion_ids": [
         "ast_crespo_6156_name",
         "ast_crespo_6156_ton",
@@ -345,6 +347,7 @@
     {
       "id": "occ_crespo_6587",
       "source_record_id": "sr_crespo_navio_6587",
+      "record_context": "voyage_register",
       "raw_name": "Nuestra Señora de los Remedios y las Animas",
       "attestations": [
         {
@@ -358,11 +361,12 @@
       ],
       "raw_tonnage": "318",
       "raw_construction_place": "Unknown",
-      "reported_owner_residence": "Cádiz, Spain",
+      "recorded_master": "Diego Dazá",
+      "recorded_year": 1695,
       "recorded_voyage_origin": "Cádiz",
       "recorded_voyage_destination": "La Habana",
-      "recorded_capture_location": "Not captured (peaceful merchant voyage)",
-      "recorded_capture_date": "1695",
+      "fleet_convoy_display": "Flota a Nueva España (1695)",
+      "archival_register_reference": "AGI CONTRATACION 1255, N.7",
       "assertion_ids": [
         "ast_crespo_6587_name",
         "ast_crespo_6587_ton",
@@ -376,6 +380,7 @@
     {
       "id": "occ_crespo_6627",
       "source_record_id": "sr_crespo_navio_6627",
+      "record_context": "voyage_register",
       "raw_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
       "attestations": [
         {
@@ -389,11 +394,12 @@
       ],
       "raw_tonnage": "112",
       "raw_construction_place": "Unknown",
-      "reported_owner_residence": "Cádiz, Spain",
+      "recorded_master": "Bartolomé Antonio Garrote",
+      "recorded_year": 1706,
       "recorded_voyage_origin": "Cádiz",
       "recorded_voyage_destination": "La Habana",
-      "recorded_capture_location": "Not captured (peaceful merchant voyage)",
-      "recorded_capture_date": "1706",
+      "fleet_convoy_display": "Flota a Nueva España (1706)",
+      "archival_register_reference": "AGI CONTRATACION 1266, N.5",
       "assertion_ids": [
         "ast_crespo_6627_name",
         "ast_crespo_6627_ton",
@@ -997,7 +1003,8 @@
     },
     {
       "id": "ship_nuestra_senora_de_la_estrella_1684",
-      "canonical_name": "Nuestra Señora de la Estrella (1684)",
+      "canonical_name": "Nuestra Señora de la Estrella",
+      "disambiguation_display": "1684 Carrera Register",
       "attestations": [
         {
           "raw_name": "Nuestra Señora de la Estrella",
@@ -1014,13 +1021,15 @@
       ],
       "reported_burden_display": "Recorded tonnage: 278",
       "construction_display": "Unknown",
-      "owner_display": "Spanish Carrera merchant (Master: Juan Bernardo de Heredia)",
-      "voyage_display": "1684 voyage from Cádiz to Havana (Galeones a Tierra Firme convoy)",
-      "capture_display": "Not captured; registered merchant vessel in AGI Contratación 1240, N.6"
+      "master_display": "Master: Juan Bernardo de Heredia",
+      "fleet_display": "Galeones a Tierra Firme (1684)",
+      "voyage_display": "1684 voyage from Cádiz to Havana",
+      "register_display": "Registered in AGI CONTRATACION 1240, N.6"
     },
     {
       "id": "ship_remedios_y_animas_1695",
-      "canonical_name": "Nuestra Señora de los Remedios y las Animas (1695)",
+      "canonical_name": "Nuestra Señora de los Remedios y las Animas",
+      "disambiguation_display": "1695 Carrera Register",
       "attestations": [
         {
           "raw_name": "Nuestra Señora de los Remedios y las Animas",
@@ -1037,13 +1046,15 @@
       ],
       "reported_burden_display": "Recorded tonnage: 318",
       "construction_display": "Unknown",
-      "owner_display": "Spanish Carrera merchant (Master: Diego Dazá)",
-      "voyage_display": "1695 voyage from Cádiz to Havana (Flota a Nueva España convoy)",
-      "capture_display": "Not captured; registered merchant vessel in AGI Contratación 1255, N.7"
+      "master_display": "Master: Diego Dazá",
+      "fleet_display": "Flota a Nueva España (1695)",
+      "voyage_display": "1695 voyage from Cádiz to Havana",
+      "register_display": "Registered in AGI CONTRATACION 1255, N.7"
     },
     {
       "id": "ship_jesus_nazareno_guadalupe_1706",
-      "canonical_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe (1706)",
+      "canonical_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+      "disambiguation_display": "1706 Carrera Register",
       "attestations": [
         {
           "raw_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
@@ -1052,6 +1063,14 @@
           "attestation_relationship": "source_transcription",
           "source_record_id": "sr_crespo_navio_6627",
           "normalized_search_key": "jesus nazareno y nuestra senora de guadalupe"
+        },
+        {
+          "raw_name": "Jesús Nazareno",
+          "evidence_layer": "archival_catalogue_metadata",
+          "language": "es",
+          "attestation_relationship": "historical_variant",
+          "source_record_id": "sr_pares_contratacion_1266_n5",
+          "normalized_search_key": "jesus nazareno"
         }
       ],
       "evidence_state": "documented",
@@ -1060,9 +1079,10 @@
       ],
       "reported_burden_display": "Recorded tonnage: 112",
       "construction_display": "Unknown",
-      "owner_display": "Spanish Carrera merchant (Master: Bartolomé Antonio Garrote)",
-      "voyage_display": "1706 voyage from Cádiz to Havana (Flota a Nueva España convoy)",
-      "capture_display": "Not captured; registered merchant vessel in AGI Contratación 1266, N.5"
+      "master_display": "Master: Bartolomé Antonio Garrote",
+      "fleet_display": "Flota a Nueva España (1706)",
+      "voyage_display": "1706 voyage from Cádiz to Havana",
+      "register_display": "Registered in AGI CONTRATACION 1266, N.5 (PARES Digitized)"
     }
   ],
   "entity_resolution_edges": [
@@ -1533,25 +1553,9 @@
           "raw_name": "La Habana",
           "evidence_layer": "scholarly_dataset_value",
           "language": "es",
-          "attestation_relationship": "editorial_normalization",
+          "attestation_relationship": "source_transcription",
           "source_record_id": "sr_crespo_navio_6156",
           "normalized_search_key": "la habana"
-        },
-        {
-          "raw_name": "La Habana",
-          "evidence_layer": "archival_catalogue_metadata",
-          "language": "es",
-          "attestation_relationship": "editorial_normalization",
-          "source_record_id": "sr_crespo_navio_6156",
-          "normalized_search_key": "la habana"
-        },
-        {
-          "raw_name": "Havana",
-          "evidence_layer": "historical_map_label",
-          "language": "en",
-          "attestation_relationship": "modern_preferred_label",
-          "source_record_id": "sr_loc_map_jamaica_1684",
-          "normalized_search_key": "havana"
         }
       ]
     },
@@ -1713,14 +1717,6 @@
           "language": "es",
           "attestation_relationship": "source_transcription",
           "source_record_id": "sr_crespo_navio_6156",
-          "normalized_search_key": "cadiz"
-        },
-        {
-          "raw_name": "Cadiz",
-          "evidence_layer": "scholarly_dataset_value",
-          "language": "en",
-          "attestation_relationship": "editorial_normalization",
-          "source_record_id": "sr_imlm_ship_1582",
           "normalized_search_key": "cadiz"
         }
       ],
@@ -2078,7 +2074,7 @@
       "date_display": "1684 Carrera de Indias register (Cádiz → La Habana)",
       "associated_record_year": 1684,
       "associated_record_month": null,
-      "temporal_basis": "capture_record",
+      "temporal_basis": "register_record",
       "date_precision": "year",
       "geometry_kind": "endpoints_only",
       "evidence_state": "documented",
@@ -2102,7 +2098,7 @@
       "date_display": "1695 Carrera de Indias register (Cádiz → La Habana)",
       "associated_record_year": 1695,
       "associated_record_month": null,
-      "temporal_basis": "capture_record",
+      "temporal_basis": "register_record",
       "date_precision": "year",
       "geometry_kind": "endpoints_only",
       "evidence_state": "documented",
@@ -2126,7 +2122,7 @@
       "date_display": "1706 Carrera de Indias register (Cádiz → La Habana)",
       "associated_record_year": 1706,
       "associated_record_month": null,
-      "temporal_basis": "capture_record",
+      "temporal_basis": "register_record",
       "date_precision": "year",
       "geometry_kind": "endpoints_only",
       "evidence_state": "documented",
@@ -2174,6 +2170,7 @@
     {
       "source_id": "src_imlm_ukda_852135",
       "short_label": "IMLM Prize Papers",
+      "sample_type": "continuous_chronological_sample",
       "source_declared_scope": {
         "start_year": 1650,
         "end_year": 1815,
@@ -2188,7 +2185,7 @@
       "project_reviewed_sample": {
         "start_year": 1702,
         "end_year": 1712,
-        "sample_type": "continuous_prize_sample",
+        "sample_type": "continuous_chronological_sample",
         "record_count": 15,
         "caveat": "Sample slice from English Prize Court examinations (HCA 32)."
       }
@@ -2196,23 +2193,29 @@
     {
       "source_id": "src_crespo_dyncoopnet",
       "short_label": "Crespo Spanish Atlantic",
+      "sample_type": "discrete_carrera_records",
       "source_declared_scope": {
         "start_year": 1648,
         "end_year": 1778,
         "description": "DynCoopNet Atlantic Trade dataset compiled from Archivo General de Indias registers."
       },
       "local_database_scope": {
-        "start_year": 1623,
-        "end_year": 1778,
+        "start_year": 1609,
+        "end_year": 1787,
         "record_count": 13767,
-        "description": "Locally profiled TODOSNAVIOS voyage/register database."
+        "description": "TODOSNAVIOS table scope derived via automated profiler (CSIC ODC-DbCL)."
       },
       "project_reviewed_sample": {
         "start_year": 1684,
         "end_year": 1706,
         "sample_type": "discrete_carrera_records",
+        "discrete_years": [
+          1684,
+          1695,
+          1706
+        ],
         "record_count": 3,
-        "caveat": "Reviewed Carrera de Indias registers to Havana citing Archivo General de Indias Contratación."
+        "caveat": "Discrete reviewed Carrera de Indias registers calling at Havana (1684, 1695, 1706)."
       }
     }
   ]

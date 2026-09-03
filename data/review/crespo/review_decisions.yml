@@ -1,0 +1,35 @@
+# data/review/crespo/review_decisions.yml
+# Human review promotion decisions for Crespo candidate occurrences.
+
+dataset_id: crespo_dyncoopnet
+reviewed_at: "2026-09-02"
+reviewer: "Erich Donahue / Antigravity"
+
+promotions:
+  - candidate_id: occ_crespo_6156
+    native_id: 6156
+    decision: accept_for_publication
+    target_canonical_vessel_id: ship_nuestra_senora_de_la_estrella_1684
+    resolution_state: documented_identity
+    notes: "Verified against AGI CONTRATACION 1240, N.6 (Cádiz -> La Habana, 1684, master Juan Bernardo de Heredia, 278 tons)."
+
+  - candidate_id: occ_crespo_6587
+    native_id: 6587
+    decision: accept_for_publication
+    target_canonical_vessel_id: ship_remedios_y_animas_1695
+    resolution_state: documented_identity
+    notes: "Verified against AGI CONTRATACION 1255, N.7 (Cádiz -> La Habana, 1695, master Diego Dazá, 318 tons)."
+
+  - candidate_id: occ_crespo_6627
+    native_id: 6627
+    decision: accept_for_publication
+    target_canonical_vessel_id: ship_jesus_nazareno_guadalupe_1706
+    resolution_state: documented_identity
+    notes: "Verified against AGI CONTRATACION 1266, N.5 (Cádiz -> La Habana, 1706, master Bartolomé Antonio Garrote, 112 tons, PARES digitized holding)."
+
+  - candidate_id: occ_crespo_6177
+    native_id: 6177
+    decision: stage_as_unmerged_candidate
+    target_canonical_vessel_id: null
+    resolution_state: unresolved_collision
+    notes: "Distinct Tierra Firme voyage register in 1684 under master Pedro Carrillo de Albornoz; preserved as collision candidate without auto-merge."

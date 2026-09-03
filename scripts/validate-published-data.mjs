@@ -31,6 +31,32 @@ const VALID_INSPECTION_STATES = new Set([
   "upstream_cited_only",
 ]);
 
+const VALID_EVIDENCE_LAYERS = new Set([
+  "historical_document_text",
+  "archival_catalogue_metadata",
+  "scholarly_dataset_value",
+  "historical_map_label",
+  "modern_authority_label",
+  "project_editorial_label",
+]);
+
+const VALID_ATTESTATION_LANGUAGES = new Set([
+  "en",
+  "es",
+  "fr",
+  "nl",
+  "la",
+  "mul",
+  "und",
+]);
+
+const VALID_ATTESTATION_RELATIONSHIPS = new Set([
+  "source_transcription",
+  "editorial_normalization",
+  "modern_preferred_label",
+  "historical_variant",
+]);
+
 export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   let errorCount = 0;
 
@@ -112,6 +138,18 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   assert(Array.isArray(entities.entity_resolution_edges) && entities.entity_resolution_edges.length > 0, "entities.json missing entity_resolution_edges");
   assert(Array.isArray(entities.places) && entities.places.length > 0, "entities.json missing places array");
 
+  function validateAttestations(parentType, parentId, attestations) {
+    if (!attestations) return;
+    assert(Array.isArray(attestations), `${parentType} ${parentId} attestations must be an array`);
+    for (const att of attestations) {
+      assert(typeof att.raw_name === "string" && att.raw_name.trim().length > 0, `${parentType} ${parentId} attestation missing raw_name`);
+      assert(VALID_EVIDENCE_LAYERS.has(att.evidence_layer), `${parentType} ${parentId} attestation has invalid evidence_layer: ${att.evidence_layer}`);
+      assert(VALID_ATTESTATION_LANGUAGES.has(att.language), `${parentType} ${parentId} attestation has invalid language: ${att.language}`);
+      assert(VALID_ATTESTATION_RELATIONSHIPS.has(att.attestation_relationship), `${parentType} ${parentId} attestation has invalid relationship: ${att.attestation_relationship}`);
+      assert(sourceRecordIds.has(att.source_record_id), `${parentType} ${parentId} attestation references nonexistent source_record_id ${att.source_record_id}`);
+    }
+  }
+
   const placeIds = new Set();
   for (const p of entities.places || []) {
     assert(typeof p.id === "string", "Place missing id");
@@ -119,6 +157,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     placeIds.add(p.id);
     assert(typeof p.canonical_name === "string", `Place ${p.id} missing canonical_name`);
     assert(Array.isArray(p.coordinates) && p.coordinates.length === 2, `Place ${p.id} invalid coordinates`);
+    validateAttestations("Place", p.id, p.attestations);
     for (const astId of p.source_assertion_ids || []) {
       assert(assertionIds.has(astId), `Place ${p.id} references nonexistent assertion ${astId}`);
     }
@@ -131,6 +170,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     shipOccIds.add(occ.id);
     assert(sourceRecordIds.has(occ.source_record_id), `Ship occurrence ${occ.id} references nonexistent source_record_id ${occ.source_record_id}`);
     assert(Array.isArray(occ.assertion_ids) && occ.assertion_ids.length > 0, `Ship occurrence ${occ.id} missing assertion_ids`);
+    validateAttestations("ShipOccurrence", occ.id, occ.attestations);
     for (const astId of occ.assertion_ids || []) {
       assert(assertionIds.has(astId), `Ship occurrence ${occ.id} references nonexistent assertion ${astId}`);
     }
@@ -156,6 +196,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(typeof s.canonical_name === "string", `Ship ${s.id} missing canonical_name`);
     assert(s.evidence_state === "documented", `Ship ${s.id} evidence_state must be 'documented'`);
     assert(Array.isArray(s.occurrence_ids) && s.occurrence_ids.length > 0, `Ship ${s.id} missing occurrence_ids`);
+    validateAttestations("Ship", s.id, s.attestations);
     for (const occId of s.occurrence_ids || []) {
       assert(shipOccIds.has(occId), `Ship ${s.id} references nonexistent occurrence_id ${occId}`);
     }

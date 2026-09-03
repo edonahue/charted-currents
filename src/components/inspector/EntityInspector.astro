@@ -145,17 +145,29 @@
               <dt>Construction Origin</dt>
               <dd data-ship-construction></dd>
             </div>
-            <div class="inspector-meta__row">
+            <div class="inspector-meta__row" data-ship-owner-row>
               <dt>Owner Residence</dt>
               <dd data-ship-owner></dd>
+            </div>
+            <div class="inspector-meta__row" data-ship-master-row hidden>
+              <dt>Recorded Master</dt>
+              <dd data-ship-master></dd>
+            </div>
+            <div class="inspector-meta__row" data-ship-fleet-row hidden>
+              <dt>Fleet Convoy</dt>
+              <dd data-ship-fleet></dd>
             </div>
             <div class="inspector-meta__row">
               <dt>Recorded Voyage</dt>
               <dd data-ship-voyage></dd>
             </div>
-            <div class="inspector-meta__row">
+            <div class="inspector-meta__row" data-ship-capture-row>
               <dt>Capture Record</dt>
               <dd data-ship-capture></dd>
+            </div>
+            <div class="inspector-meta__row" data-ship-register-row hidden>
+              <dt>Archival Register</dt>
+              <dd data-ship-register></dd>
             </div>
           </dl>
         </section>
@@ -299,9 +311,17 @@
   const shipRawName = document.querySelector<HTMLElement>("[data-ship-raw-name]");
   const shipTonnage = document.querySelector<HTMLElement>("[data-ship-tonnage]");
   const shipConstruction = document.querySelector<HTMLElement>("[data-ship-construction]");
+  const shipOwnerRow = document.querySelector<HTMLElement>("[data-ship-owner-row]");
   const shipOwner = document.querySelector<HTMLElement>("[data-ship-owner]");
+  const shipMasterRow = document.querySelector<HTMLElement>("[data-ship-master-row]");
+  const shipMaster = document.querySelector<HTMLElement>("[data-ship-master]");
+  const shipFleetRow = document.querySelector<HTMLElement>("[data-ship-fleet-row]");
+  const shipFleet = document.querySelector<HTMLElement>("[data-ship-fleet]");
   const shipVoyage = document.querySelector<HTMLElement>("[data-ship-voyage]");
+  const shipCaptureRow = document.querySelector<HTMLElement>("[data-ship-capture-row]");
   const shipCapture = document.querySelector<HTMLElement>("[data-ship-capture]");
+  const shipRegisterRow = document.querySelector<HTMLElement>("[data-ship-register-row]");
+  const shipRegister = document.querySelector<HTMLElement>("[data-ship-register]");
   const shipCrewSection = document.querySelector<HTMLElement>("[data-ship-crew-section]");
   const shipCrewTbody = document.querySelector<HTMLElement>("[data-ship-crew-tbody]");
   const shipUpstreamRef = document.querySelector<HTMLElement>("[data-ship-upstream-ref]");
@@ -426,7 +446,6 @@
 
     contentSpan.append(roleSpan, sepSpan, labelSpan);
     btn.append(typeSpan, contentSpan);
-
     btn.addEventListener("click", () => {
       recordSelectionTrigger({
         modality: "pointer",
@@ -520,8 +539,13 @@
           for (const vid of r.properties.constituent_vessel_ids) {
             const ship = entitiesCache.ships.find((s) => s.id === vid);
             const shipName = ship ? ship.canonical_name : vid;
+            // Look up individual archival route to get exact member year
+            const archivalRoute = routesCache?.archival_routes?.find(
+              (ar) => ar.vessel_id === vid && (ar.origin_place_id === r.properties.origin_place_id && ar.destination_place_id === r.properties.destination_place_id)
+            );
+            const vesselYear = archivalRoute?.associated_record_year || r.properties.associated_record_year;
             placeConnectionsList.appendChild(
-              createRelationshipRow("VESSEL", role, `${shipName} (${r.properties.associated_record_year})`, "ship", vid)
+              createRelationshipRow("VESSEL", role, `${shipName} (${vesselYear})`, "ship", vid)
             );
           }
         }
@@ -567,7 +591,7 @@
     const primarySourceId = sr?.source_id || "src_imlm_ukda_852135";
 
     const capYearMatch = shipOcc?.recorded_capture_date?.match(/^(\d{4})/);
-    const capYear = capYearMatch ? parseInt(capYearMatch[1], 10) : null;
+    const capYear = capYearMatch ? parseInt(capYearMatch[1], 10) : shipOcc?.recorded_year || null;
     checkPeriodFocus(capYear);
 
     if (kickerEl) kickerEl.textContent = "Documented Vessel";
@@ -577,14 +601,64 @@
       badgeEl.setAttribute("data-evidence-state", "documented");
     }
     if (titleEl) titleEl.textContent = ship.canonical_name;
-    if (subtitleEl) subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
+    if (subtitleEl) {
+      if (ship.disambiguation_display) {
+        subtitleEl.textContent = `${ship.disambiguation_display} · ${ship.reported_burden_display}`;
+      } else {
+        subtitleEl.textContent = `${ship.reported_burden_display} · ${ship.construction_display}`;
+      }
+    }
 
     if (shipRawName) shipRawName.textContent = shipOcc ? shipOcc.raw_name : ship.canonical_name;
     if (shipTonnage) shipTonnage.textContent = ship.reported_burden_display;
     if (shipConstruction) shipConstruction.textContent = ship.construction_display;
-    if (shipOwner) shipOwner.textContent = `Owner resident at ${ship.owner_display}`;
+    
+    if (shipOwnerRow) {
+      if (ship.owner_display) {
+        shipOwnerRow.hidden = false;
+        if (shipOwner) shipOwner.textContent = `Owner resident at ${ship.owner_display}`;
+      } else {
+        shipOwnerRow.hidden = true;
+      }
+    }
+
+    if (shipMasterRow) {
+      if (ship.master_display) {
+        shipMasterRow.hidden = false;
+        if (shipMaster) shipMaster.textContent = ship.master_display;
+      } else {
+        shipMasterRow.hidden = true;
+      }
+    }
+
+    if (shipFleetRow) {
+      if (ship.fleet_display) {
+        shipFleetRow.hidden = false;
+        if (shipFleet) shipFleet.textContent = ship.fleet_display;
+      } else {
+        shipFleetRow.hidden = true;
+      }
+    }
+
     if (shipVoyage) shipVoyage.textContent = ship.voyage_display;
-    if (shipCapture) shipCapture.textContent = ship.capture_display;
+
+    if (shipCaptureRow) {
+      if (ship.capture_display) {
+        shipCaptureRow.hidden = false;
+        if (shipCapture) shipCapture.textContent = ship.capture_display;
+      } else {
+        shipCaptureRow.hidden = true;
+      }
+    }
+
+    if (shipRegisterRow) {
+      if (ship.register_display) {
+        shipRegisterRow.hidden = false;
+        if (shipRegister) shipRegister.textContent = ship.register_display;
+      } else {
+        shipRegisterRow.hidden = true;
+      }
+    }
 
     if (shipCrewSection && shipCrewTbody) {
       shipCrewTbody.replaceChildren();

@@ -31,6 +31,20 @@ console.log(`- Visual References:    ${entities.visuals.length}`);
 console.log("------------------------------------------");
 console.log("CANONICAL VESSELS IN CORPUS:");
 entities.ships.forEach((s, idx) => {
-  console.log(`  ${String(idx + 1).padStart(2, " ")}. [${s.id}] ${s.canonical_name} (${s.reported_burden_display})`);
+  const disambig = s.disambiguation_display ? ` [${s.disambiguation_display}]` : "";
+  console.log(`  ${String(idx + 1).padStart(2, " ")}. [${s.id}] ${s.canonical_name}${disambig} (${s.reported_burden_display})`);
+});
+console.log("------------------------------------------");
+console.log("SPANISH ATLANTIC / CRESPO REGISTER OCCURRENCES:");
+const crespoOccs = entities.ship_occurrences.filter((o) => o.id.startsWith("occ_crespo_"));
+crespoOccs.forEach((o) => {
+  console.log(`  - Occurrence: ${o.id}`);
+  console.log(`    Vessel:     ${o.raw_name}`);
+  console.log(`    Year:       ${o.recorded_year}`);
+  console.log(`    Master:     ${o.recorded_master || "Unrecorded"}`);
+  console.log(`    Tonnage:    ${o.raw_tonnage || "Unrecorded"}`);
+  console.log(`    Route:      ${o.recorded_voyage_origin} → ${o.recorded_voyage_destination}`);
+  console.log(`    Convoy:     ${o.fleet_convoy_display || "Independent"}`);
+  console.log(`    Register:   ${o.archival_register_reference || "None"}`);
 });
 console.log("==========================================");

@@ -1,166 +1,121 @@
 #!/usr/bin/env python3
 """
-CrespoDynCoopNet Adapter for Charted Currents.
-Transforms raw Carrera de Indias register records from CrespoDynCoopNet
+data/pipeline/adapters/crespo_adapter.py
+
+Data-driven CrespoDynCoopNet Adapter for Charted Currents.
+Transforms raw Carrera de Indias register records from source row dictionaries
 into normalized candidate occurrence envelopes with multilingual name attestations.
 """
-import os
+
 import json
+import os
 import re
+import sys
+import unicodedata
 from typing import Dict, List, Any, Optional
 
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+DEFAULT_SOURCE_ROWS_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/source_rows.json")
+
 class CrespoAdapter:
-    """Extracts and normalizes Spanish Atlantic voyage/register occurrences from Crespo dataset."""
+    """Transforms raw Crespo source row dictionaries into candidate occurrence envelopes."""
 
     ADAPTER_ID = "crespo_dyncoopnet"
     SOURCE_ID = "src_crespo_dyncoopnet"
     UPSTREAM_ARCHIVE_ID = "src_pares_agi"
 
-    # Known reviewed occurrences with exact source extractions
-    REVIEWED_OCCURRENCES = [
-        {
-            "native_id": 6156,
-            "year": 1684,
-            "raw_name": "Nuestra Señora de la Estrella",
-            "tonnage_raw": "278",
-            "origin_id": 195,
-            "origin_name": "Cádiz",
-            "dest_id": 498,
-            "dest_name": "La Habana",
-            "master_id": 10939,
-            "master_name": "Juan Bernardo de Heredia",
-            "fleet_id": 141,
-            "fleet_name": "Galeones a Tierra Firme (Gonzalo Chacón Medina y Salazar)",
-            "fuente": "A.G.I.: CONTRATACION, 1240, N.6",
-            "sovereignty": "Spanish Empire",
-            "canonical_vessel_id": "ship_nuestra_senora_de_la_estrella_1684",
-            "reconciliation_notes": "Distinct 1684 Havana voyage register from Flota 141; distinct from Tierra Firme register occ_crespo_6177."
-        },
-        {
-            "native_id": 6587,
-            "year": 1695,
-            "raw_name": "Nuestra Señora de los Remedios y las Animas",
-            "tonnage_raw": "318",
-            "origin_id": 195,
-            "origin_name": "Cádiz",
-            "dest_id": 498,
-            "dest_name": "La Habana",
-            "master_id": 11213,
-            "master_name": "Diego Dazá",
-            "fleet_id": 168,
-            "fleet_name": "Flota a Nueva España (Ignacio de Barrios Leal)",
-            "fuente": "A.G.I.: CONTRATACION, 1255, N.7",
-            "sovereignty": "Spanish Empire",
-            "canonical_vessel_id": "ship_remedios_y_animas_1695",
-            "reconciliation_notes": "Unique 318-ton vessel registered for the 1695 Flota a Nueva España under master Diego Dazá."
-        },
-        {
-            "native_id": 6627,
-            "year": 1706,
-            "raw_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
-            "tonnage_raw": "112",
-            "origin_id": 195,
-            "origin_name": "Cádiz",
-            "dest_id": 498,
-            "dest_name": "La Habana",
-            "master_id": 11357,
-            "master_name": "Bartolomé Antonio Garrote",
-            "fleet_id": 4,
-            "fleet_name": "Flota a Nueva España de 1706 (Diego Fernández Santillán)",
-            "fuente": "A.G.I.: CONTRATACION, 1266, N.5",
-            "sovereignty": "Spanish Empire",
-            "canonical_vessel_id": "ship_jesus_nazareno_guadalupe_1706",
-            "reconciliation_notes": "112-ton merchant registered for the 1706 Flota calling at Havana; PARES catalogue title is shortened to 'Jesús Nazareno'."
-        }
-    ]
-
-    # Staged collision candidate for identity regression testing
-    STAGED_COLLISION_CANDIDATE = {
-        "native_id": 6177,
-        "year": 1684,
-        "raw_name": "Nuestra Señora de la Estrella",
-        "tonnage_raw": None,
-        "origin_id": 195,
-        "origin_name": "Cádiz",
-        "dest_id": 929,
-        "dest_name": "Tierra Firme",
-        "master_id": 10705,
-        "master_name": "Pedro Carrillo de Albornoz",
-        "fleet_id": 141,
-        "fleet_name": "Galeones a Tierra Firme (Gonzalo Chacón Medina y Salazar)",
-        "fuente": "A.G.I.: CONTRATACION, 1241, N. 1, R. 13",
-        "sovereignty": "Spanish Empire",
-        "status": "staged_unresolved_collision"
-    }
-
     @staticmethod
     def normalize_search_key(text: str) -> str:
-        """Produce reproducible normalized search key without mutating stored historical raw text."""
+        """Produce reproducible normalized search key with Unicode NFKD accent folding."""
         if not text:
             return ""
-        t = text.lower()
-        # Remove punctuation
-        t = re.sub(r"[^\w\s]", " ", t)
-        # Collapse whitespace
-        return " ".join(t.split())
+        # 1. Normalize with NFKD to separate base characters from combining diacritics
+        decomposed = unicodedata.normalize("NFKD", str(text))
+        # 2. Strip combining marks (accents, tildes, etc.)
+        stripped = "".join(c for c in decomposed if not unicodedata.combining(c))
+        # 3. Lowercase
+        lowered = stripped.lower()
+        # 4. Replace non-alphanumeric characters with spaces
+        cleaned = re.sub(r"[^\w\s]", " ", lowered)
+        # 5. Collapse multiple whitespace characters into single space
+        return " ".join(cleaned.split())
 
     @classmethod
-    def generate_candidate_envelope(cls, rec: Dict[str, Any]) -> Dict[str, Any]:
-        """Convert a raw occurrence record into a source candidate envelope."""
-        native_id = f"occ_crespo_{rec['native_id']}"
-        raw_vessel = rec["raw_name"]
-        year = rec["year"]
-        
+    def transform_source_row(cls, row: Dict[str, Any]) -> Dict[str, Any]:
+        """Convert a raw extracted source row dictionary into a candidate occurrence envelope."""
+        native_id = row.get("ID")
+        if native_id is None:
+            raise ValueError("Source row missing required 'ID' field.")
+
+        raw_vessel = row.get("ESPECTRO DEL NAVIO", "Unknown Vessel")
+        year_str = str(row.get("AÑO", ""))
+        year_match = re.search(r"\d{4}", year_str)
+        year = int(year_match.group(0)) if year_match else None
+
+        tonnage_raw = row.get("TONELAJE")
+        master_name = row.get("CAPITAN / MAESTRE")
+        origin_name = row.get("PUERTO DE SALIDA", "Cádiz")
+        dest_name = row.get("PUERTO DE LLEGADA", "La Habana")
+        fuente = row.get("FUENTE", "")
+        flag = row.get("BANDERA", "Española")
+
         attestations = [
             {
                 "raw_name": raw_vessel,
                 "evidence_layer": "scholarly_dataset_value",
                 "language": "es",
                 "attestation_relationship": "source_transcription",
-                "source_record_id": f"sr_crespo_navio_{rec['native_id']}",
+                "source_record_id": f"sr_crespo_navio_{native_id}",
                 "normalized_search_key": cls.normalize_search_key(raw_vessel)
             }
         ]
 
         envelope = {
-            "candidate_id": native_id,
+            "candidate_id": f"occ_crespo_{native_id}",
             "adapter_id": cls.ADAPTER_ID,
             "source_id": cls.SOURCE_ID,
-            "source_record_id": f"sr_crespo_navio_{rec['native_id']}",
+            "source_record_id": f"sr_crespo_navio_{native_id}",
             "upstream_archive_source_id": cls.UPSTREAM_ARCHIVE_ID,
-            "source_citation": rec["fuente"],
+            "source_citation": fuente,
             "rights_posture": "public_domain_with_dataset_license",
             "raw_record": {
-                "native_id": rec["native_id"],
+                "native_id": native_id,
                 "raw_vessel_name": raw_vessel,
-                "recorded_year": str(year),
-                "recorded_tonnage": rec.get("tonnage_raw"),
-                "master_name": rec.get("master_name"),
-                "departure_place": rec.get("origin_name"),
-                "arrival_place": rec.get("dest_name"),
-                "fleet_convoy": rec.get("fleet_name")
+                "recorded_year": year_str,
+                "recorded_tonnage": tonnage_raw,
+                "master_name": master_name,
+                "departure_place": origin_name,
+                "arrival_place": dest_name,
+                "fleet_convoy_id": row.get("FLOTAS CONOCIDAS"),
+                "fuente_citation": fuente
             },
             "name_attestations": attestations,
             "normalized_fields": {
-                "origin_place_id": "place_cadiz",
-                "destination_place_id": "place_havana" if rec["dest_id"] == 498 else f"place_{rec['dest_name'].lower()}",
+                "origin_place_id": "place_cadiz" if cls.normalize_search_key(origin_name) == "cadiz" else f"place_{cls.normalize_search_key(origin_name)}",
+                "destination_place_id": "place_havana" if cls.normalize_search_key(dest_name) in ["la habana", "habana", "havana"] else f"place_{cls.normalize_search_key(dest_name)}",
                 "recorded_year": year,
-                "reported_burden_display": f"Recorded tonnage: {rec['tonnage_raw']}" if rec.get("tonnage_raw") else "Unrecorded burden",
-                "master_name": rec.get("master_name"),
-                "sovereignty": rec.get("sovereignty", "Spanish Empire")
-            },
-            "reconciliation": {
-                "canonical_vessel_id": rec.get("canonical_vessel_id"),
-                "status": "reviewed_accepted" if rec.get("canonical_vessel_id") else "staged_unresolved",
-                "notes": rec.get("reconciliation_notes", "")
+                "reported_burden_display": f"Recorded tonnage: {tonnage_raw}" if tonnage_raw else "Unrecorded burden",
+                "recorded_master": master_name,
+                "sovereignty": "Spanish Empire" if flag == "Española" else flag
             }
         }
         return envelope
 
     @classmethod
-    def get_reviewed_candidates(cls) -> List[Dict[str, Any]]:
-        return [cls.generate_candidate_envelope(r) for r in cls.REVIEWED_OCCURRENCES]
+    def load_and_transform_candidates(cls, source_rows_path: str = DEFAULT_SOURCE_ROWS_PATH) -> List[Dict[str, Any]]:
+        """Load committed derived raw source rows and transform them into candidate envelopes."""
+        if not os.path.exists(source_rows_path):
+            raise FileNotFoundError(f"Source rows file not found: {source_rows_path}")
+
+        with open(source_rows_path, "r", encoding="utf-8") as f:
+            rows = json.load(f)
+
+        return [cls.transform_source_row(r) for r in rows]
+
+def main():
+    source_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_SOURCE_ROWS_PATH
+    candidates = CrespoAdapter.load_and_transform_candidates(source_path)
+    print(json.dumps(candidates, indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
-    candidates = CrespoAdapter.get_reviewed_candidates()
-    print(json.dumps(candidates, indent=2, ensure_ascii=False))
+    main()

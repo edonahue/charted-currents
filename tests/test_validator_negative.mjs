@@ -124,5 +124,43 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
+// Test 9: Attestation referencing nonexistent source_record_id fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.places[0].attestations = [
+    {
+      raw_name: "Fake Name",
+      evidence_layer: "scholarly_dataset_value",
+      language: "es",
+      attestation_relationship: "source_transcription",
+      source_record_id: "sr_fake_nonexistent_record"
+    }
+  ];
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when attestation references nonexistent source_record_id");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 10: Attestation with invalid evidence_layer fails
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  entities.places[0].attestations = [
+    {
+      raw_name: "Fake Name",
+      evidence_layer: "unapproved_speculative_layer",
+      language: "es",
+      attestation_relationship: "source_transcription",
+      source_record_id: "sr_crespo_navio_6156"
+    }
+  ];
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when attestation has invalid evidence_layer");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
 console.log(`\nNegative Test Summary: ${passedTests} passed, ${failedTests} failed.`);
 process.exit(failedTests > 0 ? 1 : 0);

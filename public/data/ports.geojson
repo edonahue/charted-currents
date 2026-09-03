@@ -378,25 +378,9 @@
             "raw_name": "La Habana",
             "evidence_layer": "scholarly_dataset_value",
             "language": "es",
-            "attestation_relationship": "editorial_normalization",
+            "attestation_relationship": "source_transcription",
             "source_record_id": "sr_crespo_navio_6156",
             "normalized_search_key": "la habana"
-          },
-          {
-            "raw_name": "La Habana",
-            "evidence_layer": "archival_catalogue_metadata",
-            "language": "es",
-            "attestation_relationship": "editorial_normalization",
-            "source_record_id": "sr_crespo_navio_6156",
-            "normalized_search_key": "la habana"
-          },
-          {
-            "raw_name": "Havana",
-            "evidence_layer": "historical_map_label",
-            "language": "en",
-            "attestation_relationship": "modern_preferred_label",
-            "source_record_id": "sr_loc_map_jamaica_1684",
-            "normalized_search_key": "havana"
           }
         ],
         "region": "Cuba",
@@ -660,14 +644,6 @@
             "language": "es",
             "attestation_relationship": "source_transcription",
             "source_record_id": "sr_crespo_navio_6156",
-            "normalized_search_key": "cadiz"
-          },
-          {
-            "raw_name": "Cadiz",
-            "evidence_layer": "scholarly_dataset_value",
-            "language": "en",
-            "attestation_relationship": "editorial_normalization",
-            "source_record_id": "sr_imlm_ship_1582",
             "normalized_search_key": "cadiz"
           }
         ],
