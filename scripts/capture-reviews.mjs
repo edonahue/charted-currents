@@ -160,7 +160,7 @@ async function runReviewSuite() {
   try {
     let targets = null;
     const startTime = Date.now();
-    while (Date.now() - startTime < 10000) {
+    while (Date.now() - startTime < 25000) {
       if (procExitCode !== null) {
         throw new Error(`Browser process exited early with code ${procExitCode}. Stderr: ${chromeStderr}`);
       }
@@ -177,7 +177,7 @@ async function runReviewSuite() {
     }
 
     if (!targets || targets.length === 0) {
-      throw new Error(`Failed to connect to browser debugger on port ${debugPort} after 10s. Exit: ${procExitCode}. Stderr: ${chromeStderr}`);
+      throw new Error(`Failed to connect to browser debugger on port ${debugPort} after 25s. Exit: ${procExitCode}. Stderr: ${chromeStderr}`);
     }
 
     const pageTarget = targets.find((t) => t.type === "page") || targets[0];
