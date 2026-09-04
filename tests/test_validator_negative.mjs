@@ -285,5 +285,36 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
+// Test 21: Missing dataset_context.json fails
+{
+  const tmpDir = createTempDataCopy();
+  fs.unlinkSync(path.join(tmpDir, "dataset_context.json"));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails on missing required file (dataset_context.json)");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 22: Dataset context containing forbidden semantic phrase (e.g. 'ships sailed') fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const dsContext = JSON.parse(fs.readFileSync(path.join(tmpDir, "dataset_context.json"), "utf8"));
+  dsContext.places["place_havana"].coverage_caveat = "28 ships sailed through Havana in 1650-1730";
+  fs.writeFileSync(path.join(tmpDir, "dataset_context.json"), JSON.stringify(dsContext));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when dataset context contains forbidden phrase ('ships sailed')");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 23: Dataset context referencing nonexistent canonical place fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const dsContext = JSON.parse(fs.readFileSync(path.join(tmpDir, "dataset_context.json"), "utf8"));
+  dsContext.places["place_nonexistent_fake"] = { ...dsContext.places["place_havana"] };
+  fs.writeFileSync(path.join(tmpDir, "dataset_context.json"), JSON.stringify(dsContext));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when dataset context references nonexistent canonical place");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
 console.log(`\nNegative Test Summary: ${passedTests} passed, ${failedTests} failed.`);
 process.exit(failedTests > 0 ? 1 : 0);

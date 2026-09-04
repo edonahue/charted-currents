@@ -39,6 +39,7 @@ const eventsObj = readJson("public/data/events.json", {});
 const routes = readJson("public/data/routes.geojson", {});
 const sources = readJson("public/data/sources.json", {});
 const coverage = readJson("public/data/coverage.json", []);
+const datasetContext = readJson("public/data/dataset_context.json", null);
 const activePacket = readJson(".agent/active-packet.json", null);
 
 const sourceRecords = Array.isArray(sources.source_records) ? sources.source_records : [];
@@ -99,6 +100,16 @@ const report = {
         })),
       }
     : null,
+  dataset_context: datasetContext
+    ? {
+        baseline_period: datasetContext.metadata?.baseline_period ?? null,
+        total_records_in_baseline: datasetContext.metadata?.total_records_in_baseline ?? null,
+        counting_unit: datasetContext.metadata?.counting_unit ?? null,
+        total_places: Object.keys(datasetContext.places || {}).length,
+        mapped_places: Object.values(datasetContext.places || {}).filter((p) => p.status === "mapped").length,
+        unrecorded_places: Object.values(datasetContext.places || {}).filter((p) => p.status === "unrecorded").length,
+      }
+    : null,
   caveat: "This report is data-derived. It does not assert that tests, CI, preview, production deployment, source URLs, or external services were verified in this run.",
 };
 
@@ -123,6 +134,11 @@ console.log(`Corpus:       ${manifest.version ?? "unknown"} · ${manifest.corpus
 console.log(`Review:       ${manifest.reviewStatus ?? "unknown"}`);
 for (const [key, value] of Object.entries(manifest.counts || {})) {
   console.log(`${key.padEnd(22)} ${value}`);
+}
+if (datasetContext) {
+  console.log("------------------------------------------");
+  console.log(`Dataset Context:       ${datasetContext.metadata?.total_records_in_baseline} baseline records (${datasetContext.metadata?.baseline_period}) across ${Object.keys(datasetContext.places || {}).length} places`);
+  console.log(`Counting unit:         ${datasetContext.metadata?.counting_unit}`);
 }
 console.log("------------------------------------------");
 console.log("Source records by source:");

@@ -1,0 +1,2033 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "source_dataset": "Crespo DynCoopNet (CSIC ODC-DbCL)",
+    "source_tables": [
+      "raw_todosnavios",
+      "raw_lugares"
+    ],
+    "counting_unit": "one Crespo TODOSNAVIOS row / Crespo vessel record",
+    "baseline_period": "1650-1730",
+    "total_records_in_baseline": 1928,
+    "period_presets": [
+      "all",
+      "1684-1695",
+      "1702-1712"
+    ],
+    "derivation_class": "Class C (Relational derivation and deterministic aggregation)",
+    "epistemic_disclaimer": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic."
+  },
+  "places": {
+    "place_cadiz": {
+      "canonical_place_id": "place_cadiz",
+      "canonical_name": "Cádiz",
+      "status": "mapped",
+      "crespo_lugar_id": 195,
+      "source_native_label": "Cádiz",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 1093,
+          "departure_records": 985,
+          "arrival_records": 132,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 678,
+              "source_label": "Nueva España",
+              "total_records": 443,
+              "recorded_as_destination": 437,
+              "recorded_as_origin": 6,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 929,
+              "source_label": "Tierra Firme",
+              "total_records": 245,
+              "recorded_as_destination": 245,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 183,
+              "source_label": "Buenos Aires",
+              "total_records": 76,
+              "recorded_as_destination": 55,
+              "recorded_as_origin": 21,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 41,
+              "source_label": "Amsterdam",
+              "total_records": 54,
+              "recorded_as_destination": 9,
+              "recorded_as_origin": 45,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 219,
+              "source_label": "Cartagena de Indias",
+              "total_records": 27,
+              "recorded_as_destination": 27,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 164,
+          "departure_records": 156,
+          "arrival_records": 8,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 678,
+              "source_label": "Nueva España",
+              "total_records": 69,
+              "recorded_as_destination": 69,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 929,
+              "source_label": "Tierra Firme",
+              "total_records": 56,
+              "recorded_as_destination": 56,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 183,
+              "source_label": "Buenos Aires",
+              "total_records": 8,
+              "recorded_as_destination": 6,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 589,
+              "source_label": "Maracaibo",
+              "total_records": 5,
+              "recorded_as_destination": 5,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 276,
+              "source_label": "Cuba",
+              "total_records": 4,
+              "recorded_as_destination": 4,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 69,
+          "departure_records": 68,
+          "arrival_records": 25,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 678,
+              "source_label": "Nueva España",
+              "total_records": 30,
+              "recorded_as_destination": 30,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 24,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 0,
+              "same_port_return": 24
+            },
+            {
+              "crespo_lugar_id": 183,
+              "source_label": "Buenos Aires",
+              "total_records": 4,
+              "recorded_as_destination": 4,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 929,
+              "source_label": "Tierra Firme",
+              "total_records": 3,
+              "recorded_as_destination": 3,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 202,
+              "source_label": "Campeche",
+              "total_records": 2,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        }
+      }
+    },
+    "place_seville": {
+      "canonical_place_id": "place_seville",
+      "canonical_name": "Sevilla",
+      "status": "mapped",
+      "crespo_lugar_id": 873,
+      "source_native_label": "Sevilla",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 143,
+          "departure_records": 140,
+          "arrival_records": 3,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 678,
+              "source_label": "Nueva España",
+              "total_records": 79,
+              "recorded_as_destination": 79,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 929,
+              "source_label": "Tierra Firme",
+              "total_records": 58,
+              "recorded_as_destination": 58,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 183,
+              "source_label": "Buenos Aires",
+              "total_records": 2,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 497,
+              "source_label": "La Guaira",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 985,
+              "source_label": "Venezuela",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 28,
+          "departure_records": 27,
+          "arrival_records": 1,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 678,
+              "source_label": "Nueva España",
+              "total_records": 14,
+              "recorded_as_destination": 14,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 929,
+              "source_label": "Tierra Firme",
+              "total_records": 11,
+              "recorded_as_destination": 11,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 985,
+              "source_label": "Venezuela",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 462,
+              "source_label": "Indias",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 751,
+              "source_label": "Portobelo",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 16,
+          "departure_records": 16,
+          "arrival_records": 0,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 929,
+              "source_label": "Tierra Firme",
+              "total_records": 10,
+              "recorded_as_destination": 10,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 678,
+              "source_label": "Nueva España",
+              "total_records": 6,
+              "recorded_as_destination": 6,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        }
+      }
+    },
+    "place_havana": {
+      "canonical_place_id": "place_havana",
+      "canonical_name": "Havana",
+      "status": "mapped",
+      "crespo_lugar_id": 498,
+      "source_native_label": "La Habana",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 28,
+          "departure_records": 7,
+          "arrival_records": 21,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 16,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 14,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
+              "total_records": 3,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 3,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 767,
+              "source_label": "Puerto Rico",
+              "total_records": 2,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 171,
+              "source_label": "Brest",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 990,
+              "source_label": "Veracruz",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 5,
+          "departure_records": 1,
+          "arrival_records": 4,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 3,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 3,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 1280,
+              "source_label": "Puerto Trujillo (Honduras)",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 341,
+              "source_label": "España",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 2,
+          "departure_records": 0,
+          "arrival_records": 2,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            }
+          ]
+        }
+      }
+    },
+    "place_curacao": {
+      "canonical_place_id": "place_curacao",
+      "canonical_name": "Curaçao",
+      "status": "mapped",
+      "crespo_lugar_id": 282,
+      "source_native_label": "Curaçao",
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 138,
+          "departure_records": 26,
+          "arrival_records": 112,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 8,
+              "source_label": "Affra",
+              "total_records": 21,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 21,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 16,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 14,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 358,
+              "source_label": "Fida",
+              "total_records": 14,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 14,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 41,
+              "source_label": "Amsterdam",
+              "total_records": 11,
+              "recorded_as_destination": 11,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 325,
+              "source_label": "Elmina",
+              "total_records": 10,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 10,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 23,
+          "departure_records": 0,
+          "arrival_records": 23,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 8,
+              "source_label": "Affra",
+              "total_records": 16,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 16,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 413,
+              "source_label": "Groot Popo",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 13,
+              "source_label": "Aja",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 44,
+              "source_label": "Angola",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 32,
+          "departure_records": 9,
+          "arrival_records": 23,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 358,
+              "source_label": "Fida",
+              "total_records": 9,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 9,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 41,
+              "source_label": "Amsterdam",
+              "total_records": 7,
+              "recorded_as_destination": 7,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 1058,
+              "source_label": "Molemba",
+              "total_records": 4,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 4,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 5,
+              "source_label": "Accra",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 325,
+              "source_label": "Elmina",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            }
+          ]
+        }
+      }
+    },
+    "place_amsterdam": {
+      "canonical_place_id": "place_amsterdam",
+      "canonical_name": "Amsterdam",
+      "status": "mapped",
+      "crespo_lugar_id": 41,
+      "source_native_label": "Amsterdam",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 144,
+          "departure_records": 99,
+          "arrival_records": 45,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 54,
+              "recorded_as_destination": 45,
+              "recorded_as_origin": 9,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
+              "total_records": 12,
+              "recorded_as_destination": 10,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 282,
+              "source_label": "Curaçao",
+              "total_records": 11,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 11,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 214,
+              "source_label": "Caribe",
+              "total_records": 10,
+              "recorded_as_destination": 3,
+              "recorded_as_origin": 7,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 183,
+              "source_label": "Buenos Aires",
+              "total_records": 9,
+              "recorded_as_destination": 7,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 7,
+          "departure_records": 0,
+          "arrival_records": 7,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 282,
+              "source_label": "Curaçao",
+              "total_records": 7,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 7,
+              "same_port_return": 0
+            }
+          ]
+        }
+      }
+    },
+    "place_cartagena": {
+      "canonical_place_id": "place_cartagena",
+      "canonical_name": "Cartagena",
+      "status": "mapped",
+      "crespo_lugar_id": 219,
+      "source_native_label": "Cartagena de Indias",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 35,
+          "departure_records": 3,
+          "arrival_records": 32,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 27,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 27,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 2,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 9,
+              "source_label": "Africa West Coast",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 41,
+              "source_label": "Amsterdam",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 183,
+              "source_label": "Buenos Aires",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_puerto_rico": {
+      "canonical_place_id": "place_puerto_rico",
+      "canonical_name": "Puerto Rico",
+      "status": "mapped",
+      "crespo_lugar_id": 767,
+      "source_native_label": "Puerto Rico",
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 16,
+          "departure_records": 6,
+          "arrival_records": 10,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 6,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 6,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 2,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 498,
+              "source_label": "La Habana",
+              "total_records": 2,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 994,
+              "source_label": "Vigo (Pontevedra)",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 796,
+              "source_label": "Río de la Plata",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 1,
+          "departure_records": 0,
+          "arrival_records": 1,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_venezuela": {
+      "canonical_place_id": "place_venezuela",
+      "canonical_name": "Venezuela",
+      "status": "mapped",
+      "crespo_lugar_id": 985,
+      "source_native_label": "Venezuela",
+      "geographic_precision": "province_or_region",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 5,
+          "departure_records": 2,
+          "arrival_records": 3,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 3,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 3,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 873,
+              "source_label": "Sevilla",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 1,
+          "departure_records": 1,
+          "arrival_records": 0,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 873,
+              "source_label": "Sevilla",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_bristol": {
+      "canonical_place_id": "place_bristol",
+      "canonical_name": "Bristol",
+      "status": "mapped",
+      "crespo_lugar_id": 177,
+      "source_native_label": "Bristol",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 43,
+          "departure_records": 21,
+          "arrival_records": 22,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 397,
+              "source_label": "Gibraltar",
+              "total_records": 12,
+              "recorded_as_destination": 10,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 149,
+              "source_label": "Bilbao",
+              "total_records": 8,
+              "recorded_as_destination": 4,
+              "recorded_as_origin": 4,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
+              "total_records": 7,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 7,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 5,
+              "recorded_as_destination": 5,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 111,
+              "source_label": "Barcelona",
+              "total_records": 3,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 3,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 18,
+          "departure_records": 8,
+          "arrival_records": 10,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 397,
+              "source_label": "Gibraltar",
+              "total_records": 6,
+              "recorded_as_destination": 6,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 111,
+              "source_label": "Barcelona",
+              "total_records": 3,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 3,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 149,
+              "source_label": "Bilbao",
+              "total_records": 2,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        }
+      }
+    },
+    "place_london": {
+      "canonical_place_id": "place_london",
+      "canonical_name": "London",
+      "status": "mapped",
+      "crespo_lugar_id": 559,
+      "source_native_label": "Londres",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_st_domingo": {
+      "canonical_place_id": "place_st_domingo",
+      "canonical_name": "Saint-Domingue (Hispaniola)",
+      "status": "mapped",
+      "crespo_lugar_id": 858,
+      "source_native_label": "Santo Domingo",
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 24,
+          "departure_records": 5,
+          "arrival_records": 19,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 13,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 12,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 282,
+              "source_label": "Curaçao",
+              "total_records": 8,
+              "recorded_as_destination": 4,
+              "recorded_as_origin": 4,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 263,
+              "source_label": "Coro",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 797,
+              "source_label": "Río Hacha",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 830,
+              "source_label": "San Eustaquio",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 2,
+          "departure_records": 0,
+          "arrival_records": 2,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_barbados": {
+      "canonical_place_id": "place_barbados",
+      "canonical_name": "Barbados",
+      "status": "mapped",
+      "crespo_lugar_id": 109,
+      "source_native_label": "Barbados",
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 1,
+          "departure_records": 0,
+          "arrival_records": 1,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 910,
+              "source_label": "Surinam",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 1,
+          "departure_records": 0,
+          "arrival_records": 1,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 910,
+              "source_label": "Surinam",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_jamaica": {
+      "canonical_place_id": "place_jamaica",
+      "canonical_name": "Jamaica",
+      "status": "mapped",
+      "crespo_lugar_id": 486,
+      "source_native_label": "Jamaica",
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 1,
+          "departure_records": 0,
+          "arrival_records": 1,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 195,
+              "source_label": "Cádiz",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_martinique": {
+      "canonical_place_id": "place_martinique",
+      "canonical_name": "Martinique",
+      "status": "mapped",
+      "crespo_lugar_id": 596,
+      "source_native_label": "Martinica",
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 1,
+          "departure_records": 0,
+          "arrival_records": 1,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 1055,
+              "source_label": "Whydah (Benin)",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_st_augustine": {
+      "canonical_place_id": "place_st_augustine",
+      "canonical_name": "St Augustine",
+      "status": "mapped",
+      "crespo_lugar_id": 1344,
+      "source_native_label": "San Agustín de Florida",
+      "geographic_precision": "populated_place",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_marseille": {
+      "canonical_place_id": "place_marseille",
+      "canonical_name": "Marseille",
+      "status": "mapped",
+      "crespo_lugar_id": 595,
+      "source_native_label": "Marsella",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_plymouth": {
+      "canonical_place_id": "place_plymouth",
+      "canonical_name": "Plymouth, Devon",
+      "status": "mapped",
+      "crespo_lugar_id": 736,
+      "source_native_label": "Plymouth",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 10,
+          "departure_records": 7,
+          "arrival_records": 3,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 149,
+              "source_label": "Bilbao",
+              "total_records": 6,
+              "recorded_as_destination": 3,
+              "recorded_as_origin": 3,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 841,
+              "source_label": "San Sebastián",
+              "total_records": 2,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 397,
+              "source_label": "Gibraltar",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 4,
+          "departure_records": 1,
+          "arrival_records": 3,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 149,
+              "source_label": "Bilbao",
+              "total_records": 3,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 3,
+              "same_port_return": 0
+            },
+            {
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        }
+      }
+    },
+    "place_rochelle": {
+      "canonical_place_id": "place_rochelle",
+      "canonical_name": "La Rochelle",
+      "status": "mapped",
+      "crespo_lugar_id": 503,
+      "source_native_label": "La Rochelle",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_nantes": {
+      "canonical_place_id": "place_nantes",
+      "canonical_name": "Nantes",
+      "status": "mapped",
+      "crespo_lugar_id": 654,
+      "source_native_label": "Nantes",
+      "geographic_precision": "port_city",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 1,
+          "departure_records": 1,
+          "arrival_records": 0,
+          "top_counterparts": [
+            {
+              "crespo_lugar_id": 1055,
+              "source_label": "Whydah (Benin)",
+              "total_records": 1,
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0,
+              "same_port_return": 0
+            }
+          ]
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_port_mahon": {
+      "canonical_place_id": "place_port_mahon",
+      "canonical_name": "Port Mahon, Minorca",
+      "status": "mapped",
+      "crespo_lugar_id": 749,
+      "source_native_label": "Port Mahon",
+      "geographic_precision": "port_town",
+      "coverage_caveat": "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_port_royal": {
+      "canonical_place_id": "place_port_royal",
+      "canonical_name": "Port Royal",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "populated_place",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_dartmouth": {
+      "canonical_place_id": "place_dartmouth",
+      "canonical_name": "Dartmouth, Devon",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "port_town",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_antigua": {
+      "canonical_place_id": "place_antigua",
+      "canonical_name": "Antigua",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_nevis": {
+      "canonical_place_id": "place_nevis",
+      "canonical_name": "Nevis",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_st_christopher": {
+      "canonical_place_id": "place_st_christopher",
+      "canonical_name": "St Christopher (St Kitts)",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_montserrat": {
+      "canonical_place_id": "place_montserrat",
+      "canonical_name": "Montserrat",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_south_carolina": {
+      "canonical_place_id": "place_south_carolina",
+      "canonical_name": "South Carolina",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_biddeford": {
+      "canonical_place_id": "place_biddeford",
+      "canonical_name": "Bideford, Devon",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "port_town",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    },
+    "place_guernsey": {
+      "canonical_place_id": "place_guernsey",
+      "canonical_name": "Guernsey",
+      "status": "unrecorded",
+      "crespo_lugar_id": null,
+      "source_native_label": null,
+      "geographic_precision": "colony_or_island",
+      "coverage_caveat": "No matching Crespo vessel records in this scoped dataset.",
+      "periods": {
+        "all": {
+          "period_id": "all",
+          "period_label": "All (1650–1730)",
+          "start_year": 1650,
+          "end_year": 1730,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1684-1695": {
+          "period_id": "1684-1695",
+          "period_label": "1684–1695 (Early / Disaster Context)",
+          "start_year": 1684,
+          "end_year": 1695,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        },
+        "1702-1712": {
+          "period_id": "1702-1712",
+          "period_label": "1702–1712 (Prize Papers Sample)",
+          "start_year": 1702,
+          "end_year": 1712,
+          "total_records": 0,
+          "departure_records": 0,
+          "arrival_records": 0,
+          "top_counterparts": []
+        }
+      }
+    }
+  }
+}

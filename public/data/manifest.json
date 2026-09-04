@@ -1,8 +1,8 @@
 {
-  "version": "0.6.0",
+  "version": "0.7.0",
   "corpusId": "greater_caribbean_public_beta",
   "corpusTitle": "The Greater Caribbean & Transatlantic Maritime Commerce (1684–1712)",
-  "publishedAt": "2026-09-03",
+  "publishedAt": "2026-09-04",
   "reviewStatus": "reviewed_for_publication",
   "counts": {
     "sources": 7,
@@ -20,6 +20,7 @@
     "display_edges": 16,
     "events": 16,
     "visuals": 1,
-    "source_coverages": 2
+    "source_coverages": 2,
+    "dataset_context_places": 29
   }
 }

@@ -347,3 +347,13 @@ At completion report:
 The scholarly-integrity system succeeds when it allows Charted Currents to scale **more confidently and faster**, because routine source handling becomes cheaper to verify and human attention is reserved for consequential historical judgment.
 
 If the new protocol makes every ordinary packet dramatically slower without finding materially better historical errors, simplify it.
+
+## Bootstrapped Posture (Packets 6–7)
+
+The core goals of this interstitial were pragmatically bootstrapped during Packets 6 and 7:
+- **Mechanically derived review bundles:** `scripts/generate-review-bundle.mjs` generates adversarial JSON bundles with epistemic breakdowns (Class A transcription, Class B deterministic, Class C relational, Class D resolution, Class E prose), cohort dossiers, exception queues, and ethical compliance checks without hardcoded values.
+- **Whole-dataset analytical context:** Class C relational derivation from `raw_todosnavios` / `raw_lugares` in `scripts/build-dataset-context.py` powers place-centered Dataset Context across 29 canonical places (1,928 baseline entries, 1650–1730).
+- **Contradiction regressions:** Locked regression test fixtures (`garrote_maestre_11357_regression.json`, `estrella_1694_comparison.json`) verify master identity and cargo reporting without model hallucinations.
+- **Negative validation gates:** 23 publication validator negative tests in `tests/test_validator_negative.mjs` guard against provenance leaks, synthetic values, forbidden vocabulary, and ethical violations.
+- **Adversarial LLM review:** Freewheel CLI scripts (`scripts/audit-freewheel`) enable air-gapped, zero-cost historical review runs using local or free open models (e.g. `opencode/muse-spark-1.3-contributor-free`) without embedding secrets or private workstation paths.
+

@@ -12,7 +12,7 @@
     "check": "astro check",
     "typecheck": "astro check",
     "verify": "npm run check && npm run build",
-    "data:build": "python3 data/pipeline/build_corpus.py",
+    "data:build": "python3 data/pipeline/build_corpus.py && python3 scripts/build-dataset-context.py",
     "data:validate": "node scripts/validate-published-data.mjs",
     "data:summary": "node scripts/data-summary.mjs",
     "data:verify-crespo-acquisition": "python3 data/pipeline/adapters/crespo_profile.py --verify-only",
@@ -29,6 +29,7 @@
     "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4",
     "review:capture-packet5": "node scripts/capture-reviews.mjs --packet=packet5",
     "review:capture-packet6": "node scripts/capture-reviews.mjs --packet=packet6",
+    "review:capture-packet7": "node scripts/capture-reviews.mjs --packet=packet7",
     "historical:review-bundle": "node scripts/generate-review-bundle.mjs",
     "packet:report": "node scripts/packet-report.mjs"
   },

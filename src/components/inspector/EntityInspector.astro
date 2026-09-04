@@ -120,6 +120,26 @@
           <div class="inspector-connections-list" data-place-connections-list></div>
         </section>
 
+        <!-- Dataset Context Section (Packet 7) -->
+        <section class="inspector-section" data-place-dataset-context-wrap aria-label="Dataset context">
+          <div class="inspector-dataset-context-header">
+            <p class="panel-kicker">Dataset Context</p>
+            <span class="inspector-dataset-context-badge">CrespoDynCoopNet analytical context</span>
+          </div>
+
+          <div data-place-dataset-context-content>
+            <p class="inspector-dataset-context-summary" data-place-context-summary></p>
+            <p class="inspector-dataset-context-baseline-note" data-place-context-baseline-note hidden></p>
+
+            <div data-place-context-counterparts-wrap hidden>
+              <p class="inspector-dataset-context-subheading">Recorded counterparts (<span data-place-context-period-label></span>):</p>
+              <ul class="inspector-dataset-context-list" data-place-context-counterparts-list></ul>
+            </div>
+
+            <p class="inspector-field-note" data-place-context-caveat></p>
+          </div>
+        </section>
+
         <section class="inspector-section" aria-label="Place evidence">
           <p class="panel-kicker">Archival Provenance</p>
           <button type="button" class="inspector-evidence-btn" data-place-evidence-btn data-open-place-source>
@@ -361,12 +381,12 @@
 </aside>
 
 <script>
-  import type { PublishedEntities, PublishedEvent, PublishedRouteFeatureCollection, PublishedSources, Selection } from "../../lib/domain/types";
+  import type { PublishedDatasetContext, PublishedEntities, PublishedEvent, PublishedRouteFeatureCollection, PublishedSources, Selection } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
   import { formatCoordinates } from "../../lib/geo/format";
   import { consumeSelectionTrigger, recordSelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
-  import { timeFilterStore } from "../../lib/state/timeFilter";
+  import { timeFilterStore, type TimeFilterState } from "../../lib/state/timeFilter";
 
   const inspector = document.getElementById("entity-inspector");
   const closeBtn = document.querySelector<HTMLButtonElement>("[data-inspector-close]");
@@ -390,6 +410,15 @@
   const placeConnectionsWrap = document.querySelector<HTMLElement>("[data-place-connections-wrap]");
   const placeConnectionsList = document.querySelector<HTMLElement>("[data-place-connections-list]");
   const placeEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-place-evidence-btn]");
+
+  // Dataset Context Selectors (Packet 7)
+  const placeDatasetContextWrap = document.querySelector<HTMLElement>("[data-place-dataset-context-wrap]");
+  const placeContextSummary = document.querySelector<HTMLElement>("[data-place-context-summary]");
+  const placeContextBaselineNote = document.querySelector<HTMLElement>("[data-place-context-baseline-note]");
+  const placeContextCounterpartsWrap = document.querySelector<HTMLElement>("[data-place-context-counterparts-wrap]");
+  const placeContextPeriodLabel = document.querySelector<HTMLElement>("[data-place-context-period-label]");
+  const placeContextCounterpartsList = document.querySelector<HTMLElement>("[data-place-context-counterparts-list]");
+  const placeContextCaveat = document.querySelector<HTMLElement>("[data-place-context-caveat]");
 
   const viewShip = document.querySelector<HTMLElement>("[data-view-ship]");
   const shipRawName = document.querySelector<HTMLElement>("[data-ship-raw-name]");
@@ -459,6 +488,7 @@
   let routesCache: PublishedRouteFeatureCollection | null = null;
   let eventsCache: PublishedEvent[] | null = null;
   let sourcesCache: PublishedSources | null = null;
+  let datasetContextCache: PublishedDatasetContext | null = null;
   let currentReturnTarget: HTMLElement | null = null;
   let activeTimeFilter = timeFilterStore.get();
   let lastInspectorModality: "pointer" | "keyboard" = "pointer";
@@ -483,11 +513,12 @@
 
   async function loadData() {
     try {
-      const [entRes, routesRes, evRes, srcRes] = await Promise.all([
+      const [entRes, routesRes, evRes, srcRes, ctxRes] = await Promise.all([
         fetch(publishedDataUrl("entities")),
         fetch(publishedDataUrl("routes")),
         fetch(publishedDataUrl("events")),
         fetch(publishedDataUrl("sources")),
+        fetch(publishedDataUrl("dataset_context")),
       ]);
       if (entRes.ok) entitiesCache = await entRes.json();
       if (routesRes.ok) routesCache = await routesRes.json();
@@ -496,6 +527,7 @@
         eventsCache = Array.isArray(evData) ? evData : evData.events || [];
       }
       if (srcRes.ok) sourcesCache = await srcRes.json();
+      if (ctxRes.ok) datasetContextCache = await ctxRes.json();
       const curr = selectionStore.get();
       if (curr) syncInspector(curr);
     } catch (e) {
@@ -712,11 +744,107 @@
       };
     }
 
+    renderDatasetContext(place.id, activeTimeFilter);
+
     viewPlace?.removeAttribute("hidden");
     viewShip?.setAttribute("hidden", "");
     viewEvent?.setAttribute("hidden", "");
     viewVoyage?.setAttribute("hidden", "");
     viewPerson?.setAttribute("hidden", "");
+  }
+
+  function renderDatasetContext(placeId: string, filterState: TimeFilterState) {
+    if (!datasetContextCache || !placeDatasetContextWrap) return;
+    const ctx = datasetContextCache.places[placeId];
+    if (!ctx) {
+      placeDatasetContextWrap.hidden = true;
+      return;
+    }
+
+    placeDatasetContextWrap.hidden = false;
+
+    if (ctx.status === "unrecorded" || !ctx.crespo_lugar_id) {
+      if (placeContextSummary) {
+        placeContextSummary.textContent = "No matching Crespo vessel records in this scoped dataset.";
+      }
+      if (placeContextBaselineNote) placeContextBaselineNote.hidden = true;
+      if (placeContextCounterpartsWrap) placeContextCounterpartsWrap.hidden = true;
+      if (placeContextCaveat) {
+        placeContextCaveat.textContent = ctx.coverage_caveat || "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.";
+      }
+      return;
+    }
+
+    // Mapped place
+    const periodData = ctx.periods[filterState.id] || ctx.periods["all"];
+    const periodLabel = periodData.period_label;
+
+    if (placeContextSummary) {
+      if (periodData.total_records === 0) {
+        placeContextSummary.textContent = `No Crespo vessel records record ${ctx.canonical_name} as an endpoint in ${periodLabel}.`;
+      } else {
+        const recordWord = periodData.total_records === 1 ? "Crespo vessel record records" : "Crespo vessel records record";
+        placeContextSummary.textContent = `${periodData.total_records.toLocaleString()} ${recordWord} ${ctx.canonical_name} as an endpoint in ${periodLabel} (${periodData.departure_records.toLocaleString()} departure, ${periodData.arrival_records.toLocaleString()} arrival).`;
+      }
+    }
+
+    // Baseline note if active filter is not "all"
+    if (placeContextBaselineNote) {
+      if (filterState.id !== "all") {
+        const allData = ctx.periods["all"];
+        const allTotal = allData ? allData.total_records : 0;
+        placeContextBaselineNote.hidden = false;
+        placeContextBaselineNote.textContent = `Overall dataset baseline (1650–1730): ${allTotal.toLocaleString()} Crespo vessel records.`;
+      } else {
+        placeContextBaselineNote.hidden = true;
+      }
+    }
+
+    // Counterparts list
+    if (placeContextCounterpartsWrap && placeContextCounterpartsList) {
+      if (periodData.top_counterparts && periodData.top_counterparts.length > 0) {
+        placeContextCounterpartsWrap.hidden = false;
+        if (placeContextPeriodLabel) placeContextPeriodLabel.textContent = periodLabel;
+        placeContextCounterpartsList.replaceChildren();
+
+        for (const cp of periodData.top_counterparts) {
+          const li = document.createElement("li");
+          li.className = "inspector-dataset-context-item";
+
+          const labelSpan = document.createElement("span");
+          labelSpan.className = "inspector-dataset-context-item__name";
+          labelSpan.textContent = cp.source_label;
+
+          const countSpan = document.createElement("span");
+          countSpan.className = "inspector-dataset-context-item__count inspector-mono";
+
+          let roleDetails = "";
+          if (cp.recorded_as_destination > 0 && cp.recorded_as_origin > 0) {
+            roleDetails = ` (${cp.recorded_as_destination} outbound, ${cp.recorded_as_origin} inbound)`;
+          } else if (cp.recorded_as_destination > 0) {
+            roleDetails = " (outbound destination)";
+          } else if (cp.recorded_as_origin > 0) {
+            roleDetails = " (inbound origin)";
+          } else if (cp.same_port_return > 0) {
+            roleDetails = " (same-port return)";
+          }
+
+          const recWord = cp.total_records === 1 ? "record" : "records";
+          countSpan.textContent = `${cp.total_records.toLocaleString()} ${recWord}${roleDetails}`;
+
+          li.appendChild(labelSpan);
+          li.appendChild(countSpan);
+          placeContextCounterpartsList.appendChild(li);
+        }
+      } else {
+        placeContextCounterpartsWrap.hidden = true;
+      }
+    }
+
+    // Persistent caveat
+    if (placeContextCaveat) {
+      placeContextCaveat.textContent = ctx.coverage_caveat;
+    }
   }
 
   function renderShip(shipId: string) {
@@ -1412,7 +1540,9 @@
     activeTimeFilter = filter;
     const currentSelection = selectionStore.get();
     if (currentSelection) {
-      if (currentSelection.kind === "ship") {
+      if (currentSelection.kind === "port") {
+        renderPlace(currentSelection.id);
+      } else if (currentSelection.kind === "ship") {
         renderShip(currentSelection.id);
       } else if (currentSelection.kind === "event") {
         renderEvent(currentSelection.id);
@@ -1879,6 +2009,84 @@
     font-size: 0.7rem;
     font-style: italic;
     color: var(--cc-ink-muted);
+  }
+
+  .inspector-dataset-context-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .inspector-dataset-context-badge {
+    font-family: var(--cc-font-mono);
+    font-size: 0.6rem;
+    padding: 0.15rem 0.35rem;
+    border-radius: var(--cc-radius-xs);
+    background: color-mix(in srgb, var(--cc-line) 50%, transparent);
+    color: var(--cc-ink-muted);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .inspector-dataset-context-summary {
+    font-size: var(--cc-text-xs);
+    line-height: 1.45;
+    color: var(--cc-ink);
+    margin: 0;
+  }
+
+  .inspector-dataset-context-baseline-note {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--cc-ink-muted);
+    margin: 0.25rem 0 0;
+    font-style: italic;
+  }
+
+  .inspector-dataset-context-baseline-note[hidden] {
+    display: none !important;
+  }
+
+  .inspector-dataset-context-subheading {
+    font-size: 0.68rem;
+    font-family: var(--cc-font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--cc-ink-muted);
+    margin: 0.5rem 0 0.25rem;
+  }
+
+  .inspector-dataset-context-list {
+    list-style: none;
+    margin: 0 0 0.5rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .inspector-dataset-context-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.35rem 0.55rem;
+    background: var(--cc-paper);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    font-size: var(--cc-text-xs);
+  }
+
+  .inspector-dataset-context-item__name {
+    color: var(--cc-ink);
+    font-weight: 400;
+  }
+
+  .inspector-dataset-context-item__count {
+    font-size: 0.7rem;
+    color: var(--cc-ink-muted);
+    white-space: nowrap;
   }
 
   @media (max-width: 767px) {

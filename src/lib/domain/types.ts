@@ -427,3 +427,50 @@ export interface PublishedManifest {
   reviewStatus: string;
   counts: Record<string, number>;
 }
+
+export interface DatasetContextCounterpart {
+  crespo_lugar_id: number | null;
+  source_label: string;
+  total_records: number;
+  recorded_as_destination: number;
+  recorded_as_origin: number;
+  same_port_return: number;
+}
+
+export interface DatasetContextPeriodData {
+  period_id: "all" | "1684-1695" | "1702-1712";
+  period_label: string;
+  start_year: number;
+  end_year: number;
+  total_records: number;
+  departure_records: number;
+  arrival_records: number;
+  top_counterparts: DatasetContextCounterpart[];
+}
+
+export interface PublishedPlaceDatasetContext {
+  canonical_place_id: string;
+  canonical_name: string;
+  status: "mapped" | "unrecorded";
+  crespo_lugar_id: number | null;
+  source_native_label: string | null;
+  geographic_precision?: string;
+  coverage_caveat: string;
+  periods: Record<string, DatasetContextPeriodData>;
+}
+
+export interface PublishedDatasetContext {
+  metadata: {
+    version: string;
+    source_dataset: string;
+    source_tables: string[];
+    counting_unit: string;
+    baseline_period: string;
+    total_records_in_baseline: number;
+    period_presets: string[];
+    derivation_class: string;
+    epistemic_disclaimer: string;
+  };
+  places: Record<string, PublishedPlaceDatasetContext>;
+}
+

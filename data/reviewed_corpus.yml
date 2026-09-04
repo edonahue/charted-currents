@@ -1,8 +1,8 @@
 metadata:
   corpus_id: greater_caribbean_public_beta
   corpus_title: The Greater Caribbean & Transatlantic Maritime Commerce (1684–1712)
-  version: 0.6.0
-  reviewed_at: '2026-09-03'
+  version: 0.7.0
+  reviewed_at: '2026-09-04'
   review_status: reviewed_for_publication
 sources:
 - id: src_imlm_ukda_852135

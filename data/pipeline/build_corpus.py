@@ -278,7 +278,8 @@ def main():
             "display_edges": len(display_edge_features),
             "events": len(events),
             "visuals": len(visuals),
-            "source_coverages": len(source_coverages)
+            "source_coverages": len(source_coverages),
+            "dataset_context_places": len(places)
         }
     }
 

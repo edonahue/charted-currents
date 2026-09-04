@@ -46,6 +46,11 @@ const currentSources = JSON.parse(readFileSync("public/data/sources.json", "utf8
 const currentEntities = JSON.parse(readFileSync("public/data/entities.json", "utf8"));
 const currentManifest = JSON.parse(readFileSync("public/data/manifest.json", "utf8"));
 
+let currentDatasetContext = null;
+if (existsSync("public/data/dataset_context.json")) {
+  currentDatasetContext = JSON.parse(readFileSync("public/data/dataset_context.json", "utf8"));
+}
+
 // 2. Load Durable Audit & Reconciliation Artifacts
 const reconciliationAuditPath = "data/review/crespo/goods_reconciliation_audit.json";
 const estrellaComparisonPath = "data/review/crespo/contradictions/estrella_1694_comparison.json";
@@ -330,9 +335,21 @@ const reviewBundle = {
     class_d_edges: addedResolutionEdges,
     class_e_changed_prose: changedProse,
   },
+  dataset_context_summary: currentDatasetContext
+    ? {
+        baseline_period: currentDatasetContext.metadata?.baseline_period,
+        total_records_in_baseline: currentDatasetContext.metadata?.total_records_in_baseline,
+        counting_unit: currentDatasetContext.metadata?.counting_unit,
+        total_places: Object.keys(currentDatasetContext.places || {}).length,
+        mapped_places: Object.values(currentDatasetContext.places || {}).filter((p) => p.status === "mapped").length,
+        unrecorded_places: Object.values(currentDatasetContext.places || {}).filter((p) => p.status === "unrecorded").length,
+      }
+    : null,
 };
 
-const outputDir = "data/review/bundles/packet6";
+const packetArg = process.argv.find((a) => a.startsWith("--packet="));
+const packetName = packetArg ? packetArg.split("=")[1] : (branch.startsWith("packet") ? branch.split("-")[0] : "packet7");
+const outputDir = path.join("data/review/bundles", packetName);
 if (!existsSync(outputDir)) {
   mkdirSync(outputDir, { recursive: true });
 }
@@ -349,6 +366,9 @@ console.log(`    * Class B (Deterministic): ${epistemicBreakdown.class_b_determi
 console.log(`    * Class C (Relational):    ${epistemicBreakdown.class_c_relational.length}`);
 console.log(`    * Class D (Resolution):    ${addedResolutionEdges.length}`);
 console.log(`    * Class E (Changed Prose): ${changedProse.length}`);
+if (currentDatasetContext) {
+  console.log(`  - Dataset Context Baseline:  ${currentDatasetContext.metadata?.total_records_in_baseline} records (${currentDatasetContext.metadata?.baseline_period}) across ${Object.keys(currentDatasetContext.places || {}).length} places`);
+}
 console.log(`  - Published Goods Occurrences: ${goodsOccurrences.length}`);
 console.log(`  - Cohort Dossiers Generated: ${cohortDossiers.length}`);
 for (const cd of cohortDossiers) {

@@ -22,6 +22,7 @@ const REQUIRED_FILES = [
   "events.json",
   "sources.json",
   "coverage.json",
+  "dataset_context.json",
 ];
 
 const VALID_INSPECTION_STATES = new Set([
@@ -398,7 +399,41 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(cov.project_reviewed_sample && typeof cov.project_reviewed_sample.start_year === "number", `Coverage ${cov.source_id} missing project_reviewed_sample`);
   }
 
-  // 7. Manifest
+  // 7. Dataset Context JSON
+  const datasetContext = JSON.parse(fs.readFileSync(path.join(dataDir, "dataset_context.json"), "utf8"));
+  assert(datasetContext.metadata && typeof datasetContext.metadata.version === "string", "dataset_context.json missing metadata.version");
+  assert(datasetContext.metadata.counting_unit === "one Crespo TODOSNAVIOS row / Crespo vessel record", `dataset_context.json invalid counting_unit: ${datasetContext.metadata.counting_unit}`);
+  assert(datasetContext.metadata.baseline_period === "1650-1730", `dataset_context.json invalid baseline_period: ${datasetContext.metadata.baseline_period}`);
+  assert(datasetContext.metadata.total_records_in_baseline === 1928, `dataset_context.json baseline total mismatch (expected 1928, got ${datasetContext.metadata.total_records_in_baseline})`);
+  assert(Array.isArray(datasetContext.metadata.period_presets) && datasetContext.metadata.period_presets.length === 3, "dataset_context.json missing period_presets");
+  assert(datasetContext.places && typeof datasetContext.places === "object", "dataset_context.json missing places object");
+
+  const rawContextString = fs.readFileSync(path.join(dataDir, "dataset_context.json"), "utf8").toLowerCase();
+  for (const forbidden of ["ships sailed", "voyages used", "traffic volume", "market share", "handled 28 voyages"]) {
+    assert(!rawContextString.includes(forbidden), `dataset_context.json contains forbidden semantic phrase: '${forbidden}'`);
+  }
+
+  for (const [placeId, ctx] of Object.entries(datasetContext.places)) {
+    assert(placeIds.has(placeId), `dataset_context.json references nonexistent canonical place: ${placeId}`);
+    assert(typeof ctx.canonical_name === "string", `dataset_context for ${placeId} missing canonical_name`);
+    assert(ctx.status === "mapped" || ctx.status === "unrecorded", `dataset_context for ${placeId} invalid status: ${ctx.status}`);
+    assert(typeof ctx.coverage_caveat === "string", `dataset_context for ${placeId} missing coverage_caveat`);
+    assert(ctx.periods && typeof ctx.periods === "object", `dataset_context for ${placeId} missing periods object`);
+    for (const presetId of ["all", "1684-1695", "1702-1712"]) {
+      const pData = ctx.periods[presetId];
+      assert(pData, `dataset_context for ${placeId} missing period ${presetId}`);
+      assert(typeof pData.total_records === "number" && pData.total_records >= 0, `dataset_context for ${placeId} period ${presetId} invalid total_records`);
+      assert(typeof pData.departure_records === "number" && pData.departure_records >= 0, `dataset_context for ${placeId} period ${presetId} invalid departure_records`);
+      assert(typeof pData.arrival_records === "number" && pData.arrival_records >= 0, `dataset_context for ${placeId} period ${presetId} invalid arrival_records`);
+      assert(Array.isArray(pData.top_counterparts), `dataset_context for ${placeId} period ${presetId} top_counterparts must be an array`);
+      for (const cp of pData.top_counterparts) {
+        assert(typeof cp.source_label === "string", `Counterpart for ${placeId} missing source_label`);
+        assert(typeof cp.total_records === "number" && cp.total_records > 0, `Counterpart for ${placeId} invalid total_records`);
+      }
+    }
+  }
+
+  // 8. Manifest
   const manifest = JSON.parse(fs.readFileSync(path.join(dataDir, "manifest.json"), "utf8"));
   assert(typeof manifest.version === "string", "manifest.json missing version string");
   assert(typeof manifest.corpusId === "string", "manifest.json missing corpusId");
@@ -412,6 +447,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
   assert(manifest.counts.routes === archivalRoutes.length, "Manifest routes count mismatch");
   assert(manifest.counts.display_edges === routes.features.length, "Manifest display_edges count mismatch");
   assert(manifest.counts.events === events.events.length, "Manifest events count mismatch");
+  assert(manifest.counts.dataset_context_places === Object.keys(datasetContext.places).length, "Manifest dataset_context_places count mismatch");
 
   if (errorCount > 0) {
     log(`\n[FAIL] Published data validation failed with ${errorCount} error(s).`);

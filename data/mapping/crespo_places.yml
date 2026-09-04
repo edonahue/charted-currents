@@ -1,0 +1,277 @@
+# data/mapping/crespo_places.yml
+# Packet 7: Explicit Canonical ↔ Crespo Place Mapping
+# Maps public Charted Currents canonical places to source-native Crespo DynCoopNet LUGARES identifiers.
+#
+# Rules:
+# - Deterministic, reviewable link; no runtime fuzzy string join.
+# - Preserves source-native labels and canonical IDs.
+# - Preserves geographic precision distinctions (e.g. province vs port).
+# - Retains unrecorded status with explicit rationale.
+
+version: "1.0.0"
+source_dataset: "Crespo DynCoopNet (CSIC ODC-DbCL)"
+source_table: "raw_lugares"
+review_status: "reviewed_for_packet7"
+
+mappings:
+  - canonical_place_id: "place_cadiz"
+    canonical_name: "Cádiz"
+    status: "mapped"
+    crespo_lugar_id: 195
+    crespo_source_label: "Cádiz"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; primary Andalusian departure/arrival port for the Spanish Carrera de Indias."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_seville"
+    canonical_name: "Sevilla"
+    status: "mapped"
+    crespo_lugar_id: 873
+    crespo_source_label: "Sevilla"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; inland Guadalquivir river port and seat of Casa de la Contratación."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_havana"
+    canonical_name: "Havana"
+    status: "mapped"
+    crespo_lugar_id: 498
+    crespo_source_label: "La Habana"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; primary Antillean rendezvous port for return flotas. Excludes ID 1657 Cabo de Corrientes."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_curacao"
+    canonical_name: "Curaçao"
+    status: "mapped"
+    crespo_lugar_id: 282
+    crespo_source_label: "Curaçao"
+    geographic_precision: "colony_or_island"
+    rationale: "Direct toponym match; Dutch West India Company Caribbean entrepôt."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_amsterdam"
+    canonical_name: "Amsterdam"
+    status: "mapped"
+    crespo_lugar_id: 41
+    crespo_source_label: "Amsterdam"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; European metropole for Dutch Atlantic trade."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_cartagena"
+    canonical_name: "Cartagena"
+    status: "mapped"
+    crespo_lugar_id: 219
+    crespo_source_label: "Cartagena de Indias"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; key Tierra Firme fortified port. Excludes ID 218 Cartagena (Murcia)."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_puerto_rico"
+    canonical_name: "Puerto Rico"
+    status: "mapped"
+    crespo_lugar_id: 767
+    crespo_source_label: "Puerto Rico"
+    geographic_precision: "colony_or_island"
+    rationale: "Direct toponym match; Spanish Antillean island colony and presidio (San Juan)."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_venezuela"
+    canonical_name: "Venezuela"
+    status: "mapped"
+    crespo_lugar_id: 985
+    crespo_source_label: "Venezuela"
+    geographic_precision: "province_or_region"
+    rationale: "Direct toponym match; Spanish Tierra Firme province/territory. Preserves regional precision without La Guaira inference."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_bristol"
+    canonical_name: "Bristol"
+    status: "mapped"
+    crespo_lugar_id: 177
+    crespo_source_label: "Bristol"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; English western commercial port recorded in European trade rows."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_london"
+    canonical_name: "London"
+    status: "mapped"
+    crespo_lugar_id: 559
+    crespo_source_label: "Londres"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; English capital and metropole (0 records in 1650–1730 Carrera dataset)."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_st_domingo"
+    canonical_name: "Saint-Domingue (Hispaniola)"
+    status: "mapped"
+    crespo_lugar_id: 858
+    crespo_source_label: "Santo Domingo"
+    geographic_precision: "colony_or_island"
+    rationale: "Toponym match; Spanish colonial seat on Hispaniola."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_barbados"
+    canonical_name: "Barbados"
+    status: "mapped"
+    crespo_lugar_id: 109
+    crespo_source_label: "Barbados"
+    geographic_precision: "colony_or_island"
+    rationale: "Direct toponym match; English Caribbean sugar colony."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_jamaica"
+    canonical_name: "Jamaica"
+    status: "mapped"
+    crespo_lugar_id: 486
+    crespo_source_label: "Jamaica"
+    geographic_precision: "colony_or_island"
+    rationale: "Direct toponym match; English Caribbean island."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_martinique"
+    canonical_name: "Martinique"
+    status: "mapped"
+    crespo_lugar_id: 596
+    crespo_source_label: "Martinica"
+    geographic_precision: "colony_or_island"
+    rationale: "Direct toponym match; French Windward Caribbean island."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_st_augustine"
+    canonical_name: "St Augustine"
+    status: "mapped"
+    crespo_lugar_id: 1344
+    crespo_source_label: "San Agustín de Florida"
+    geographic_precision: "populated_place"
+    rationale: "Direct toponym match; Spanish Florida presidio."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_marseille"
+    canonical_name: "Marseille"
+    status: "mapped"
+    crespo_lugar_id: 595
+    crespo_source_label: "Marsella"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; French Mediterranean port."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_plymouth"
+    canonical_name: "Plymouth, Devon"
+    status: "mapped"
+    crespo_lugar_id: 736
+    crespo_source_label: "Plymouth"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; English Channel port."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_rochelle"
+    canonical_name: "La Rochelle"
+    status: "mapped"
+    crespo_lugar_id: 503
+    crespo_source_label: "La Rochelle"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; French Atlantic port."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_nantes"
+    canonical_name: "Nantes"
+    status: "mapped"
+    crespo_lugar_id: 654
+    crespo_source_label: "Nantes"
+    geographic_precision: "port_city"
+    rationale: "Direct toponym match; French Atlantic river port."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_port_mahon"
+    canonical_name: "Port Mahon, Minorca"
+    status: "mapped"
+    crespo_lugar_id: 749
+    crespo_source_label: "Port Mahon"
+    geographic_precision: "port_town"
+    rationale: "Direct toponym match; Balearic Mediterranean port."
+    editorial_review: "reviewed"
+
+  # Unrecorded places in Crespo sample
+  - canonical_place_id: "place_port_royal"
+    canonical_name: "Port Royal"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "populated_place"
+    rationale: "English commercial port on Jamaica; unrecorded as discrete endpoint in Spanish Carrera register sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_dartmouth"
+    canonical_name: "Dartmouth, Devon"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "port_town"
+    rationale: "English Devon port; unrecorded in Crespo dataset sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_antigua"
+    canonical_name: "Antigua"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "colony_or_island"
+    rationale: "English Leeward island; unrecorded in Crespo Carrera sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_nevis"
+    canonical_name: "Nevis"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "colony_or_island"
+    rationale: "English Leeward island; unrecorded in Crespo Carrera sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_st_christopher"
+    canonical_name: "St Christopher (St Kitts)"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "colony_or_island"
+    rationale: "Partitioned Anglo-French island; unrecorded in Crespo Carrera sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_montserrat"
+    canonical_name: "Montserrat"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "colony_or_island"
+    rationale: "English Leeward island; unrecorded in Crespo Carrera sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_south_carolina"
+    canonical_name: "South Carolina"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "colony_or_island"
+    rationale: "English mainland colony; unrecorded in Crespo Carrera sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_biddeford"
+    canonical_name: "Bideford, Devon"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "port_town"
+    rationale: "English Devon port; unrecorded in Crespo dataset sample."
+    editorial_review: "reviewed"
+
+  - canonical_place_id: "place_guernsey"
+    canonical_name: "Guernsey"
+    status: "unrecorded"
+    crespo_lugar_id: null
+    crespo_source_label: null
+    geographic_precision: "colony_or_island"
+    rationale: "Channel Island; unrecorded in Crespo dataset sample."
+    editorial_review: "reviewed"
