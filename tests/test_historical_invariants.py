@@ -398,7 +398,7 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(d5890["reconciliation_status"], "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE")
 
     def test_freewheel_garrote_pilot_artifact(self):
-        """Freewheel adversarial pilot audit artifact must record multi-model execution in read-only mode."""
+        """Freewheel adversarial pilot audit artifact must record multi-model execution truthfully without synthetic booleans."""
         fw_path = Path(__file__).resolve().parent.parent / "data" / "review" / "crespo" / "audits" / "freewheel_garrote_pilot.json"
         self.assertTrue(fw_path.exists(), "freewheel_garrote_pilot.json must exist")
 
@@ -408,13 +408,43 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(audit.get("audit_name"), "garrote_maestre_11357_freewheel_pilot")
         self.assertEqual(audit.get("harness"), "freewheel")
         self.assertEqual(audit.get("policy"), "free-only")
-        self.assertEqual(audit.get("mode"), "scout_read_only")
+        self.assertEqual(audit.get("mode"), "ask_no_tools")
+        self.assertEqual(audit.get("execution_contract"), "freewheel ask (fresh server-backed request; no tool execution)")
         self.assertTrue(len(audit.get("attempts", [])) >= 2)
 
+        # Spark route failure truthful representation
+        self.assertEqual(audit["attempts"][2]["status"], "FREEWHEEL_ROUTE_FAILED")
+        self.assertIn("Muse Spark 1.3 Free is available", audit["attempts"][2]["diagnostic_note"])
+
         comparison = audit.get("cross_model_comparison", {})
-        self.assertTrue(comparison.get("both_noticed_11357_conflict"))
-        self.assertTrue(comparison.get("both_distinguished_francisco"))
-        self.assertFalse(comparison.get("either_invented_facts"))
+        # Synthetic booleans must be completely removed
+        self.assertNotIn("both_noticed_11357_conflict", comparison)
+        self.assertNotIn("both_distinguished_francisco", comparison)
+        self.assertNotIn("either_invented_facts", comparison)
+
+        # Model family perspectives and divergence
+        perspectives = comparison.get("model_family_perspectives", {})
+        self.assertEqual(perspectives.get("qwen_2.5_14b"), "NEEDS_MORE_EVIDENCE")
+        self.assertEqual(perspectives.get("nemotron_3_ultra_family"), "ACCEPT_AS_STATED")
+        self.assertEqual(comparison.get("verdict_synthesis"), "PROCESS_REVIEW_DIVERGENCE")
+        self.assertIn("reviewer_source_layer_overstatements_noted", comparison)
+
+    def test_private_leak_scanner_catches_home_paths(self):
+        """Private leak scanner pattern must catch real Unix user home paths while permitting synthetic placeholders."""
+        import re
+        # Pattern from scripts/scan-private-leaks.mjs
+        home_pattern = re.compile(r"/home/(?!(?:username|<user>|user|node|runner)\b)[a-zA-Z0-9_.-]+/", re.IGNORECASE)
+
+        # Must catch real user paths across arbitrary subdirectories (constructed dynamically so test file contains no private paths)
+        for sample_user in ["alice", "bob_smith", "builduser", "dev.user"]:
+            self.assertTrue(home_pattern.search(f"/home/{sample_user}/.local/bin/freewheel"))
+            self.assertTrue(home_pattern.search(f"/home/{sample_user}/projects/repo/script.py"))
+
+        # Must allow synthetic documentation / CI placeholders
+        self.assertIsNone(home_pattern.search('/home/username/projects/example'))
+        self.assertIsNone(home_pattern.search('/home/<user>/.local/bin'))
+        self.assertIsNone(home_pattern.search('/home/user/test'))
+        self.assertIsNone(home_pattern.search('/home/runner/work/repo'))
 
     def test_packet6_places_precision_and_provenance(self):
         """Packet 6 place entities must declare source-bounded precision and navigation coordinate provenance."""

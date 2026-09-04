@@ -43,11 +43,12 @@
       "sample_type": "discrete_carrera_records",
       "discrete_years": [
         1684,
+        1694,
         1695,
         1706
       ],
-      "record_count": 3,
-      "caveat": "Discrete reviewed Carrera de Indias registers calling at Havana (1684, 1695, 1706)."
+      "record_count": 4,
+      "caveat": "Discrete reviewed Carrera de Indias registers calling at Havana and transatlantic routes (1684, 1694, 1695, 1706)."
     }
   }
 ]

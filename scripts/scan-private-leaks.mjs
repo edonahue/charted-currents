@@ -16,7 +16,7 @@ const repoRoot = process.cwd();
 // Patterns that should never appear in public git-tracked files
 const FORBIDDEN_PATTERNS = [
   { pattern: /file:\/\/\/home\//, name: "file:///home/ URI" },
-  { pattern: /\/home\/[a-zA-Z0-9_-]+\/(projects|desktop|downloads|\.gemini)/i, name: "Absolute user home path" },
+  { pattern: /\/home\/(?!(?:username|<user>|user|node|runner)\b)[a-zA-Z0-9_.-]+\//i, name: "Absolute Unix user home path" },
   { pattern: /C:\\Users\\/i, name: "Windows user path" },
   { pattern: /\.gemini\/antigravity-cli\/brain\//, name: "Antigravity brain scratch path" },
   { pattern: /100\.\d{1,3}\.\d{1,3}\.\d{1,3}/, name: "Tailscale / CGNAT IP pattern" },

@@ -265,22 +265,23 @@ const exceptionQueue = [
     id: "EXC-004",
     category: "HISTORICAL_PROSE_EVALUATION",
     severity: "REVIEW_ADVISORY",
-    subject: "place_amsterdam, place_seville, place_venezuela, place_curacao, place_puerto_rico",
+    subject: "place_amsterdam, place_seville, place_venezuela, place_curacao, place_puerto_rico, place_havana",
     summary: `${changedProse.length} changed historical prose items detected across places and ships.`,
-    finding: "Place descriptions revised to restrained evidence-description wording. Machine-generated detection complete; substantive prose review remains pending external review.",
-    status: "REVIEW_PENDING",
+    finding: "Place descriptions revised to restrained evidence-description wording (Havana evidence-description, Curaçao departure territory, Amsterdam destination port without 'primary' overclaim, Sevilla query notation preserved, Venezuela province without La Guaira assumption, Puerto Rico prize capture vicinity, ship capture prose within linked assertion). External review inspected and accepted the restrained prose.",
+    status: "ACCEPTED",
   },
   {
     id: "EXC-005",
     category: "INDEPENDENT_MODEL_REVIEW",
     severity: "REVIEW_ADVISORY",
     subject: "MAESTRE 11357 / Garrote dossier",
-    summary: `Independent model audits conducted via local GPU (Qwen 14B: ${gpuAudit?.model_evaluation?.verdict || "NEEDS_MORE_EVIDENCE"}) and Freewheel harness (${freewheelAudit?.cross_model_comparison?.verdict_synthesis || "PROCESS_REVIEW_DIVERGENCE"}).`,
+    summary: `Independent model audits conducted via local GPU (Qwen 14B: ${gpuAudit?.model_evaluation?.verdict || "NEEDS_MORE_EVIDENCE"}) and Freewheel harness (Nemotron 3 Ultra family: ${freewheelAudit?.cross_model_comparison?.model_family_perspectives?.nemotron_3_ultra_family || "ACCEPT_AS_STATED"}).`,
     finding: (
       "Both reviewer harnesses recognized the Francisco/Bartolomé given-name conflict and supported discounting 11357. " +
-      "Qwen took a more skeptical posture (NEEDS_MORE_EVIDENCE) requiring primary signatures across 18 years, while Freewheel models " +
-      "concluded that occurrence-level provisional 'probable_match' is defensible as stated. Disagreement is classified as " +
-      "PROCESS_REVIEW_DIVERGENCE without majority voting; 'probable_match' remains unchanged pending human scholarly review."
+      "Qwen took a more skeptical posture (NEEDS_MORE_EVIDENCE) requiring primary signatures across 18 years, while the Nemotron family " +
+      "(ACCEPT_AS_STATED across OpenCode and OpenRouter provider routes) concluded that occurrence-level provisional 'probable_match' is defensible as stated. " +
+      "Project adjudication notes reviewer rhetorical overstatements regarding archival manuscript inspection and compiler error. " +
+      "Disagreement is classified as PROCESS_REVIEW_DIVERGENCE without majority voting; 'probable_match' remains unchanged pending human scholarly review."
     ),
     status: "ADJUDICATED",
   },

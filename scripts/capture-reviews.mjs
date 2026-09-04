@@ -264,6 +264,55 @@ async function runReviewSuite() {
       "Historical map initialized and reached idle state within timeout",
     );
 
+    // Mechanical DOM truth assertions for Packet 6
+    console.log("[ASSERTION] Verifying visual truth: places count, timeline copy, and route disclaimer...");
+    const placesCountRes = await send("Runtime.evaluate", {
+      expression: `document.querySelector('[data-locator-toggle]')?.textContent?.trim() || ""`,
+      returnByValue: true,
+    });
+    assert(
+      placesCountRes?.result?.value?.includes("(29)"),
+      `Locator browser shows current published places count of 29 (got: "${placesCountRes?.result?.value}")`
+    );
+
+    const staleCopyRes = await send("Runtime.evaluate", {
+      expression: `document.body.innerText.toLowerCase().includes("verified prize events")`,
+      returnByValue: true,
+    });
+    assert(
+      staleCopyRes?.result?.value === false,
+      "Stale copy 'verified prize events' must be completely absent from rendered DOM"
+    );
+
+    const timelineNoteRes = await send("Runtime.evaluate", {
+      expression: `document.querySelector('.timeline-shell__note')?.textContent || ""`,
+      returnByValue: true,
+    });
+    assert(
+      timelineNoteRes?.result?.value?.includes("Prize Papers-derived sample"),
+      `Timeline note contains source-bounded Prize Papers copy (got: "${timelineNoteRes?.result?.value}")`
+    );
+
+    const routeDisclaimerRes = await send("Runtime.evaluate", {
+      expression: `document.querySelector('.map-epistemic-legend__text')?.textContent || ""`,
+      returnByValue: true,
+    });
+    assert(
+      routeDisclaimerRes?.result?.value?.includes("Not observed sailing tracks"),
+      `Map legend contains route disclaimer: "${routeDisclaimerRes?.result?.value}"`
+    );
+
+    const discreteYearsRes = await send("Runtime.evaluate", {
+      expression: `Array.from(document.querySelectorAll('.timeline-coverage-marker--discrete .timeline-coverage-label')).map(el => el.textContent.trim())`,
+      returnByValue: true,
+    });
+    const renderedYears = discreteYearsRes?.result?.value || [];
+    assert(
+      ["1684", "1694", "1695", "1706"].every(yr => renderedYears.includes(yr)),
+      `Timeline renders discrete years [1684, 1694, 1695, 1706] (got: ${JSON.stringify(renderedYears)})`
+    );
+    console.log("[PASS] Visual truth assertions passed.");
+
     const packetArg = process.argv.find((a) => a.startsWith("--packet="));
     const packetPrefix = packetArg ? packetArg.split("=")[1] + "-" : "packet3-";
     const skipScreenshots =

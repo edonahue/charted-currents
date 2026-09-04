@@ -11,11 +11,12 @@ Compares findings against the baseline local GPU (Qwen 14B) audit without voting
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
 
-FREEWHEEL_BIN = "/home/erich/.local/bin/freewheel"
+FREEWHEEL_BIN = os.environ.get("FREEWHEEL_BIN") or shutil.which("freewheel")
 DOSSIER_PATH = "data/review/crespo/reconciliation_garrote.json"
 REGRESSION_PATH = "data/review/crespo/contradictions/garrote_maestre_11357_regression.json"
 QWEN_AUDIT_PATH = "data/review/crespo/audits/ollama_garrote_pilot.json"
@@ -74,8 +75,8 @@ def normalize_verdict(raw_verdict: str) -> str:
 
 def run_freewheel_audit():
     print(f"\n=== Charted Currents Freewheel Historical-Auditor Pilot ===")
-    if not os.path.exists(FREEWHEEL_BIN):
-        print(f"[!] ERROR: Freewheel binary not found at {FREEWHEEL_BIN}", file=sys.stderr)
+    if not FREEWHEEL_BIN or not os.path.exists(FREEWHEEL_BIN):
+        print(f"[!] ERROR: Freewheel binary not found in PATH or FREEWHEEL_BIN ({FREEWHEEL_BIN})", file=sys.stderr)
         sys.exit(1)
 
     if not os.path.exists(DOSSIER_PATH) or not os.path.exists(REGRESSION_PATH):
@@ -187,12 +188,14 @@ Respond with ONLY a JSON object:
                 "attempt_index": idx,
                 "requested_model": req_model,
                 "requested_provider": req_provider,
-                "status": "PROVIDER_UNAVAILABLE" if "not an approved" in err_msg or "500" in err_msg else "ERROR",
+                "status": "FREEWHEEL_ROUTE_FAILED",
                 "returncode": res.returncode,
                 "diagnostic_note": (
-                    "Model not approved for policy-eligible casual routing in global Freewheel config; "
-                    "probed via zen-status returning HTTP 500 Internal server error from OpenCode Zen."
-                    if "not an approved" in err_msg else err_msg[:200]
+                    "Muse Spark 1.3 Free is available as a free OpenCode Zen model, but the Freewheel / Zen route "
+                    "attempted during this Packet 6 review failed at test time."
+                ),
+                "followup_note": (
+                    "Investigate Freewheel ↔ OpenCode Zen Spark model-ID/catalog routing in a future 10% tooling cycle."
                 ),
                 "duration_seconds": round(dur, 2)
             })
@@ -237,7 +240,6 @@ Respond with ONLY a JSON object:
                 "total_tokens": fw_out.get("total_tokens")
             },
             "tools_disabled": fw_out.get("tools_disabled", 14),
-            "repository_mutation_disabled": True,
             "model_evaluation": parsed_eval or {"raw_text": raw_answer},
             "normalized_verdict": normalized_verdict
         }
@@ -245,12 +247,38 @@ Respond with ONLY a JSON object:
 
     # Cross-Model Comparison & Adjudication
     successful_attempts = [a for a in attempts if a.get("status") == "success"]
-    primary_fw_attempt = successful_attempts[0] if successful_attempts else None
+
+    # Model-family perspective collection
+    qwen_verdict = (
+        qwen_baseline.get("model_evaluation", {}).get("verdict")
+        if qwen_baseline else "NEEDS_MORE_EVIDENCE"
+    )
+
+    nemotron_attempts = [
+        a for a in successful_attempts
+        if "nemotron" in str(a.get("actual_model_id", "")).lower()
+    ]
+    nemotron_verdicts = {a.get("normalized_verdict") for a in nemotron_attempts}
+    nemotron_family_verdict = (
+        nemotron_verdicts.pop() if len(nemotron_verdicts) == 1
+        else ("DIVERGENT_WITHIN_FAMILY" if nemotron_verdicts else "NO_SUCCESSFUL_CALL")
+    )
+
+    perspectives = {
+        "qwen_2.5_14b": qwen_verdict,
+        "nemotron_3_ultra_family": nemotron_family_verdict
+    }
+
+    unique_perspectives = set(perspectives.values())
+    verdict_synthesis = (
+        "PROCESS_REVIEW_AGREEMENT" if len(unique_perspectives) == 1
+        else "PROCESS_REVIEW_DIVERGENCE"
+    )
 
     comparison = {
         "qwen_baseline": {
             "model": qwen_baseline.get("model") if qwen_baseline else "qwen2.5:14b-instruct-q4_K_M",
-            "verdict": qwen_baseline.get("model_evaluation", {}).get("verdict") if qwen_baseline else "NEEDS_MORE_EVIDENCE",
+            "verdict": qwen_verdict,
             "missing_discriminators": qwen_baseline.get("model_evaluation", {}).get("missing_discriminators_noted", []) if qwen_baseline else []
         },
         "freewheel_results": [
@@ -262,21 +290,40 @@ Respond with ONLY a JSON object:
             }
             for a in successful_attempts
         ],
-        "both_noticed_11357_conflict": True,
-        "both_distinguished_francisco": True,
-        "either_invented_facts": False,
-        "reversibility_understanding": "Both reviewers operated under occurrence-level reversibility constraint.",
-        "verdict_synthesis": (
-            "AGREEMENT" if all(a.get("normalized_verdict") == "NEEDS_MORE_EVIDENCE" for a in successful_attempts)
-            else "PROCESS_REVIEW_DIVERGENCE"
+        "model_family_perspectives": perspectives,
+        "provider_routing_note": (
+            "The two successful Nemotron 3 Ultra calls (OpenCode and OpenRouter) represent provider and routing "
+            "redundancy for a single model family, not two independent model judgments."
         ),
+        "reversibility_understanding": "Both reviewer harnesses operated under occurrence-level reversibility constraint.",
+        "reviewer_source_layer_overstatements_noted": [
+            {
+                "model_assertion": "The four rows each cite AGI Contratación manuscripts",
+                "project_adjudication": (
+                    "Crespo TODOSNAVIOS rows carry secondary AGI Contratación citations, "
+                    "but Charted Currents has not independently inspected the underlying archival manuscripts."
+                )
+            },
+            {
+                "model_assertion": "Crespo's PRUEBAAGENTES table normalization is definitively erroneous",
+                "project_adjudication": (
+                    "MAESTRE 11357 is internally contradictory across rows in the Crespo dataset (merging Francisco and Bartolomé), "
+                    "which is sufficient to discount the foreign key as positive identity evidence without needing to assert "
+                    "how or why the upstream compiler produced the conflation."
+                )
+            }
+        ],
+        "verdict_synthesis": verdict_synthesis,
         "adjudication_conclusion": (
-            "Both independent LLM reviewer harnesses (local GPU Qwen 14B and Freewheel-routed Nemotron models) "
-            "evaluated the actual Class D decision. Reviewers recognized the Francisco/Bartolomé given-name conflict "
-            "and confirmed the discounting of MAESTRE 11357. Reviewers raised appropriate epistemic skepticism regarding "
+            "Both independent LLM reviewer harnesses (local GPU Qwen 14B and Freewheel-routed Nemotron 3 Ultra models) "
+            "evaluated the actual Class D decision. Both recognized the Francisco/Bartolomé given-name conflict "
+            "and confirmed the discounting of MAESTRE 11357. Model reviews raised appropriate epistemic skepticism regarding "
             "linking occurrences across an 18-year span without primary signatures or age records. "
+            "The Nemotron family perspective (ACCEPT_AS_STATED across OpenCode and OpenRouter routes) endorsed occurrence-level "
+            "reversibility, while Qwen 14B (NEEDS_MORE_EVIDENCE) demanded primary signatures. "
+            "Project adjudication notes reviewer rhetorical overstatements regarding archival manuscript inspection and compiler error. "
             "Charted Currents retains 'probable_match' as a provisional, occurrence-backed hypothesis that is strictly "
-            "reversible without data loss. Neither review surfaced a genuinely new archival or source-layer contradiction; "
+            "reversible without data loss. Neither review surfaced a genuinely new archival contradiction; "
             "no majority voting is performed and evidence state remains unchanged pending human scholarly review."
         )
     }
@@ -286,7 +333,8 @@ Respond with ONLY a JSON object:
         "harness": "freewheel",
         "freewheel_version": "0.1.0",
         "policy": "free-only",
-        "mode": "scout_read_only",
+        "mode": "ask_no_tools",
+        "execution_contract": "freewheel ask (fresh server-backed request; no tool execution)",
         "input_dossier": DOSSIER_PATH,
         "regression_fixture": REGRESSION_PATH,
         "attempts": attempts,

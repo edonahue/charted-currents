@@ -97,13 +97,19 @@ const continuousCoverages = (coverageData as any[]).filter(
 
 const discreteCoverages = (coverageData as any[]).filter(
   (cov: any) => cov.project_reviewed_sample?.sample_type === "discrete_carrera_records"
-).flatMap((cov: any) =>
-  (cov.project_reviewed_sample.discrete_years || [1684, 1694, 1695, 1706]).map((yr: number) => ({
-    year: yr,
-    label: `${yr} ${cov.short_label}`,
-    caveat: cov.project_reviewed_sample.caveat,
-  }))
-);
+).flatMap((cov: any) => {
+  const years = (cov.project_reviewed_sample.discrete_years || [1684, 1694, 1695, 1706]) as number[];
+  return years.map((yr: number, idx: number) => {
+    const prevYear = idx > 0 ? years[idx - 1] : null;
+    const isClose = prevYear !== null && (yr - prevYear <= 2);
+    return {
+      year: yr,
+      label: `${yr} ${cov.short_label}`,
+      caveat: cov.project_reviewed_sample.caveat,
+      isClose,
+    };
+  });
+});
 ---
 
 <section
@@ -134,9 +140,7 @@ const discreteCoverages = (coverageData as any[]).filter(
             class="timeline-coverage-band timeline-coverage-band--continuous"
             style={`left: ${left}%; width: ${Math.max(width, 1.8)}%;`}
             title={`Documentary sample coverage: ${band.label} (${band.caveat})`}
-          >
-            <span class="timeline-coverage-label">{band.label}</span>
-          </div>
+          />
         );
       })}
       {discreteCoverages.map((marker) => {
@@ -148,7 +152,9 @@ const discreteCoverages = (coverageData as any[]).filter(
             title={`Discrete archival sample record: ${marker.label} (${marker.caveat})`}
           >
             <span class="timeline-coverage-marker-line"></span>
-            <span class="timeline-coverage-label">{marker.year}</span>
+            <span class={`timeline-coverage-label ${marker.isClose ? "timeline-coverage-label--staggered" : ""}`}>
+              {marker.year}
+            </span>
           </div>
         );
       })}
@@ -374,7 +380,7 @@ const discreteCoverages = (coverageData as any[]).filter(
 
   .timeline-shell__rail {
     position: relative;
-    height: 4.25rem;
+    height: 4.5rem;
     margin: 0.25rem 0;
   }
 
@@ -391,7 +397,7 @@ const discreteCoverages = (coverageData as any[]).filter(
     top: 3.45rem;
     left: 0;
     right: 0;
-    height: 0.75rem;
+    height: 1.25rem;
     pointer-events: none;
   }
 
@@ -432,6 +438,10 @@ const discreteCoverages = (coverageData as any[]).filter(
     color: var(--cc-sand);
     white-space: nowrap;
     opacity: 0.85;
+  }
+
+  .timeline-coverage-label--staggered {
+    top: 0.65rem;
   }
 
   .timeline-shell__rule {

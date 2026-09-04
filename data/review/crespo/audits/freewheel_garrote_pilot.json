@@ -3,7 +3,7 @@
   "harness": "freewheel",
   "freewheel_version": "0.1.0",
   "policy": "free-only",
-  "mode": "scout_read_only",
+  "mode": "ask_no_tools",
   "input_dossier": "data/review/crespo/reconciliation_garrote.json",
   "regression_fixture": "data/review/crespo/contradictions/garrote_maestre_11357_regression.json",
   "attempts": [
@@ -23,7 +23,6 @@
         "total_tokens": 6208
       },
       "tools_disabled": 14,
-      "repository_mutation_disabled": true,
       "model_evaluation": {
         "verdict": "ACCEPT_AS_STATED",
         "positive_evidence_noted": [
@@ -64,7 +63,6 @@
         "total_tokens": 6196
       },
       "tools_disabled": 14,
-      "repository_mutation_disabled": true,
       "model_evaluation": {
         "verdict": "ACCEPT_AS_STATED",
         "positive_evidence_noted": [
@@ -95,10 +93,11 @@
       "attempt_index": 3,
       "requested_model": "opencode/muse-spark-1.3-contributor-free",
       "requested_provider": "opencode",
-      "status": "PROVIDER_UNAVAILABLE",
+      "status": "FREEWHEEL_ROUTE_FAILED",
       "returncode": 1,
-      "diagnostic_note": "Model not approved for policy-eligible casual routing in global Freewheel config; probed via zen-status returning HTTP 500 Internal server error from OpenCode Zen.",
-      "duration_seconds": 0.19
+      "diagnostic_note": "Muse Spark 1.3 Free is available as a free OpenCode Zen model, but the Freewheel / Zen route attempted during this Packet 6 review failed at test time.",
+      "duration_seconds": 0.19,
+      "followup_note": "Investigate Freewheel ↔ OpenCode Zen Spark model-ID/catalog routing in a future 10% tooling cycle."
     }
   ],
   "cross_model_comparison": {
@@ -133,11 +132,24 @@
         ]
       }
     ],
-    "both_noticed_11357_conflict": true,
-    "both_distinguished_francisco": true,
-    "either_invented_facts": false,
-    "reversibility_understanding": "Both reviewers operated under occurrence-level reversibility constraint.",
+    "reversibility_understanding": "Both reviewer harnesses operated under occurrence-level reversibility constraint.",
     "verdict_synthesis": "PROCESS_REVIEW_DIVERGENCE",
-    "adjudication_conclusion": "Both independent LLM reviewer harnesses (local GPU Qwen 14B and Freewheel-routed Nemotron models) evaluated the actual Class D decision. Reviewers recognized the Francisco/Bartolomé given-name conflict and confirmed the discounting of MAESTRE 11357. Reviewers raised appropriate epistemic skepticism regarding linking occurrences across an 18-year span without primary signatures or age records. Charted Currents retains 'probable_match' as a provisional, occurrence-backed hypothesis that is strictly reversible without data loss. Neither review surfaced a genuinely new archival or source-layer contradiction; no majority voting is performed and evidence state remains unchanged pending human scholarly review."
-  }
+    "adjudication_conclusion": "Both independent LLM reviewer harnesses (local GPU Qwen 14B and Freewheel-routed Nemotron 3 Ultra models) evaluated the actual Class D decision. Both recognized the Francisco/Bartolomé given-name conflict and confirmed the discounting of MAESTRE 11357. Model reviews raised appropriate epistemic skepticism regarding linking occurrences across an 18-year span without primary signatures or age records. The Nemotron family perspective (ACCEPT_AS_STATED across OpenCode and OpenRouter routes) endorsed occurrence-level reversibility, while Qwen 14B (NEEDS_MORE_EVIDENCE) demanded primary signatures. Project adjudication notes reviewer rhetorical overstatements regarding archival manuscript inspection and compiler error. Charted Currents retains 'probable_match' as a provisional, occurrence-backed hypothesis that is strictly reversible without data loss. Neither review surfaced a genuinely new archival contradiction; no majority voting is performed and evidence state remains unchanged pending human scholarly review.",
+    "model_family_perspectives": {
+      "qwen_2.5_14b": "NEEDS_MORE_EVIDENCE",
+      "nemotron_3_ultra_family": "ACCEPT_AS_STATED"
+    },
+    "provider_routing_note": "The two successful Nemotron 3 Ultra calls (OpenCode and OpenRouter) represent provider and routing redundancy for a single model family, not two independent model judgments.",
+    "reviewer_source_layer_overstatements_noted": [
+      {
+        "model_assertion": "The four rows each cite AGI Contratación manuscripts",
+        "project_adjudication": "Crespo TODOSNAVIOS rows carry secondary AGI Contratación citations, but Charted Currents has not independently inspected the underlying archival manuscripts."
+      },
+      {
+        "model_assertion": "Crespo's PRUEBAAGENTES table normalization is definitively erroneous",
+        "project_adjudication": "MAESTRE 11357 is internally contradictory across rows in the Crespo dataset (merging Francisco and Bartolomé), which is sufficient to discount the foreign key as positive identity evidence without needing to assert how or why the upstream compiler produced the conflation."
+      }
+    ]
+  },
+  "execution_contract": "freewheel ask (fresh server-backed request; no tool execution)"
 }
