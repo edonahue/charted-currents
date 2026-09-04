@@ -17,6 +17,9 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
 DEFAULT_MDB_PATH = os.path.join(REPO_ROOT, "data/raw/crespo/CrespoDynCoopNetDATASETS.mdb")
 DEFAULT_OUTPUT_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/source_rows.json")
 DEFAULT_FLOTAS_OUTPUT_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/flotas_rows.json")
+DEFAULT_MERCANCIAS_OUTPUT_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/mercancias_rows.json")
+DEFAULT_TIPOMERCANCIA_OUTPUT_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/tipomercancia_rows.json")
+DEFAULT_TIPOMEDIDA_OUTPUT_PATH = os.path.join(REPO_ROOT, "data/candidates/crespo/tipomedida_rows.json")
 DEFAULT_SELECTION_PATH = os.path.join(REPO_ROOT, "data/review/crespo/extraction_selection.json")
 
 def sanitize_value(val: Any) -> Any:
@@ -28,7 +31,17 @@ def sanitize_value(val: Any) -> Any:
         return None
     return val
 
-def extract_rows(mdb_path: str, target_ids: List[int], target_flota_ids: List[int], output_path: str, flotas_output_path: str = DEFAULT_FLOTAS_OUTPUT_PATH):
+def extract_rows(
+    mdb_path: str,
+    target_ids: List[int],
+    target_flota_ids: List[int],
+    commodity_navio_ids: List[int],
+    output_path: str,
+    flotas_output_path: str = DEFAULT_FLOTAS_OUTPUT_PATH,
+    mercancias_output_path: str = DEFAULT_MERCANCIAS_OUTPUT_PATH,
+    tipomercancia_output_path: str = DEFAULT_TIPOMERCANCIA_OUTPUT_PATH,
+    tipomedida_output_path: str = DEFAULT_TIPOMEDIDA_OUTPUT_PATH,
+):
     project_venv_lib = os.path.join(REPO_ROOT, ".venv", "lib", f"python{sys.version_info.major}.{sys.version_info.minor}", "site-packages")
     if os.path.exists(project_venv_lib) and project_venv_lib not in sys.path:
         sys.path.insert(0, project_venv_lib)
@@ -112,6 +125,81 @@ def extract_rows(mdb_path: str, target_ids: List[int], target_flota_ids: List[in
             f.write("\n")
         print(f"Extracted {len(extracted_flotas)} rows from FLOTAS to {flotas_output_path}")
 
+    # Extract MERCANCIAS rows
+    extracted_mercancias = []
+    referenced_commodity_keys = set()
+    referenced_measure_keys = set()
+
+    if commodity_navio_ids:
+        mercancias = db.parse_table("MERCANCIAS")
+        if mercancias:
+            navio_mercante_col = mercancias.get("NAVIO MERCANTE", [])
+            target_comm_set = set(commodity_navio_ids)
+            for idx, nm_id in enumerate(navio_mercante_col):
+                if nm_id in target_comm_set or (isinstance(nm_id, str) and str(nm_id).isdigit() and int(nm_id) in target_comm_set):
+                    m_row = {}
+                    for col_name, col_data in mercancias.items():
+                        val = sanitize_value(col_data[idx])
+                        if val is not None:
+                            m_row[col_name] = val
+                    extracted_mercancias.append(m_row)
+
+                    comm_key = m_row.get("MERCANCIA")
+                    if comm_key is not None and str(comm_key).isdigit():
+                        referenced_commodity_keys.add(int(comm_key))
+
+                    meas_key = m_row.get("MEDIDAS")
+                    if meas_key is not None and str(meas_key).isdigit() and int(meas_key) > 0:
+                        referenced_measure_keys.add(int(meas_key))
+
+            os.makedirs(os.path.dirname(mercancias_output_path), exist_ok=True)
+            with open(mercancias_output_path, "w", encoding="utf-8") as f:
+                json.dump(extracted_mercancias, f, indent=2, ensure_ascii=False, default=str)
+                f.write("\n")
+            print(f"Extracted {len(extracted_mercancias)} rows from MERCANCIAS to {mercancias_output_path}")
+
+    # Extract referenced TIPOMERCANCIA rows
+    if referenced_commodity_keys:
+        tipo_merc = db.parse_table("TIPOMERCANCIA")
+        if tipo_merc:
+            tm_id_col = tipo_merc.get("idTipoMercancia", [])
+            extracted_tm = []
+            for idx, tm_id in enumerate(tm_id_col):
+                if tm_id in referenced_commodity_keys or (isinstance(tm_id, str) and str(tm_id).isdigit() and int(tm_id) in referenced_commodity_keys):
+                    tm_row = {}
+                    for col_name, col_data in tipo_merc.items():
+                        val = sanitize_value(col_data[idx])
+                        if val is not None:
+                            tm_row[col_name] = val
+                    extracted_tm.append(tm_row)
+
+            os.makedirs(os.path.dirname(tipomercancia_output_path), exist_ok=True)
+            with open(tipomercancia_output_path, "w", encoding="utf-8") as f:
+                json.dump(extracted_tm, f, indent=2, ensure_ascii=False, default=str)
+                f.write("\n")
+            print(f"Extracted {len(extracted_tm)} referenced rows from TIPOMERCANCIA to {tipomercancia_output_path}")
+
+    # Extract referenced TIPOMEDIDA rows
+    if referenced_measure_keys:
+        tipo_med = db.parse_table("TIPOMEDIDA")
+        if tipo_med:
+            tmed_id_col = tipo_med.get("IdTipoMedida", [])
+            extracted_tmed = []
+            for idx, tmed_id in enumerate(tmed_id_col):
+                if tmed_id in referenced_measure_keys or (isinstance(tmed_id, str) and str(tmed_id).isdigit() and int(tmed_id) in referenced_measure_keys):
+                    tmed_row = {}
+                    for col_name, col_data in tipo_med.items():
+                        val = sanitize_value(col_data[idx])
+                        if val is not None:
+                            tmed_row[col_name] = val
+                    extracted_tmed.append(tmed_row)
+
+            os.makedirs(os.path.dirname(tipomedida_output_path), exist_ok=True)
+            with open(tipomedida_output_path, "w", encoding="utf-8") as f:
+                json.dump(extracted_tmed, f, indent=2, ensure_ascii=False, default=str)
+                f.write("\n")
+            print(f"Extracted {len(extracted_tmed)} referenced rows from TIPOMEDIDA to {tipomedida_output_path}")
+
     return extracted_rows
 
 def main():
@@ -120,19 +208,21 @@ def main():
     parser.add_argument("--selection", default=DEFAULT_SELECTION_PATH, help="Path to reviewed extraction selection JSON")
     parser.add_argument("--output", default=DEFAULT_OUTPUT_PATH, help="Output JSON path")
     parser.add_argument("--flotas-output", default=DEFAULT_FLOTAS_OUTPUT_PATH, help="Output FLOTAS JSON path")
-    parser.add_argument("--ids", default=None, help="Optional comma-separated list of target navio IDs (overrides selection file)")
-    parser.add_argument("--flota-ids", default=None, help="Optional comma-separated list of target flota IDs (overrides selection file)")
+    parser.add_argument("--ids", default=None, help="Optional comma-separated list of target navio IDs")
+    parser.add_argument("--flota-ids", default=None, help="Optional comma-separated list of target flota IDs")
 
     args = parser.parse_args()
 
     navio_ids = []
     flota_ids = []
+    commodity_navio_ids = []
 
     if args.selection and os.path.exists(args.selection):
         with open(args.selection, "r", encoding="utf-8") as f:
             sel = json.load(f)
             navio_ids = sel.get("navio_ids", [])
             flota_ids = sel.get("flota_ids", [])
+            commodity_navio_ids = sel.get("commodity_navio_ids", [])
 
     if args.ids:
         navio_ids = [int(i.strip()) for i in args.ids.split(",") if i.strip()]
@@ -142,7 +232,7 @@ def main():
     if not navio_ids:
         raise ValueError("No navio IDs specified (via --selection or --ids)")
 
-    extract_rows(args.mdb, navio_ids, flota_ids, args.output, args.flotas_output)
+    extract_rows(args.mdb, navio_ids, flota_ids, commodity_navio_ids, args.output, args.flotas_output)
 
 if __name__ == "__main__":
     main()

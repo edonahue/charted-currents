@@ -1,0 +1,1429 @@
+[
+  {
+    "identificador": 487,
+    "MERCANCIA": 119,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 488,
+    "MERCANCIA": 278,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 489,
+    "MERCANCIA": 68,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 490,
+    "MERCANCIA": 372,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 491,
+    "MERCANCIA": 29,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 492,
+    "MERCANCIA": 111,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 493,
+    "MERCANCIA": 117,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 494,
+    "MERCANCIA": 95,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 495,
+    "MERCANCIA": 266,
+    "CANTIDAD": 0,
+    "MEDIDAS": 0,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4501,
+    "NOTAS": "10491 pesos y 2 reales de valor total"
+  },
+  {
+    "identificador": 2435,
+    "MERCANCIA": 279,
+    "CANTIDAD": 36000,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2436,
+    "MERCANCIA": 68,
+    "CANTIDAD": 8768,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2437,
+    "MERCANCIA": 68,
+    "CANTIDAD": 7,
+    "MEDIDAS": 95,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2438,
+    "MERCANCIA": 68,
+    "CANTIDAD": 1,
+    "MEDIDAS": 90,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2439,
+    "MERCANCIA": 371,
+    "CANTIDAD": 26,
+    "MEDIDAS": 20,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2440,
+    "MERCANCIA": 371,
+    "CANTIDAD": 1,
+    "MEDIDAS": 16,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2441,
+    "MERCANCIA": 371,
+    "CANTIDAD": 4,
+    "MEDIDAS": 95,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2442,
+    "MERCANCIA": 371,
+    "CANTIDAD": 18,
+    "MEDIDAS": 61,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2443,
+    "MERCANCIA": 392,
+    "CANTIDAD": 1958,
+    "MEDIDAS": 54,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2444,
+    "MERCANCIA": 392,
+    "CANTIDAD": 12,
+    "MEDIDAS": 75,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2445,
+    "MERCANCIA": 40,
+    "CANTIDAD": 58055,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2446,
+    "MERCANCIA": 440,
+    "CANTIDAD": 47,
+    "MEDIDAS": 6,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2447,
+    "MERCANCIA": 221,
+    "CANTIDAD": 22,
+    "MEDIDAS": 55,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2448,
+    "MERCANCIA": 221,
+    "CANTIDAD": 15,
+    "MEDIDAS": 95,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2449,
+    "MERCANCIA": 349,
+    "CANTIDAD": 2,
+    "MEDIDAS": 95,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 2450,
+    "MERCANCIA": 199,
+    "CANTIDAD": 6,
+    "MEDIDAS": 95,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 4493
+  },
+  {
+    "identificador": 4651,
+    "MERCANCIA": 68,
+    "CANTIDAD": 2,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Luis Cepero"
+  },
+  {
+    "identificador": 4652,
+    "MERCANCIA": 68,
+    "CANTIDAD": 104,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Luis Cepero"
+  },
+  {
+    "identificador": 4653,
+    "MERCANCIA": 68,
+    "CANTIDAD": 25,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Francisco López Andrade"
+  },
+  {
+    "identificador": 4654,
+    "MERCANCIA": 68,
+    "CANTIDAD": 100,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Esteban de Alfaro"
+  },
+  {
+    "identificador": 4655,
+    "MERCANCIA": 68,
+    "CANTIDAD": 15,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés de la Barrera"
+  },
+  {
+    "identificador": 4656,
+    "MERCANCIA": 68,
+    "CANTIDAD": 52,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés de la Barrera"
+  },
+  {
+    "identificador": 4657,
+    "MERCANCIA": 68,
+    "CANTIDAD": 11,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Miguel Ximenorena"
+  },
+  {
+    "identificador": 4658,
+    "MERCANCIA": 68,
+    "CANTIDAD": 70,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Miguel Ximenorena"
+  },
+  {
+    "identificador": 4659,
+    "MERCANCIA": 68,
+    "CANTIDAD": 200,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Diego del Campo"
+  },
+  {
+    "identificador": 4660,
+    "MERCANCIA": 68,
+    "CANTIDAD": 30,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "CONSIGNATARIO-": 8751,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Veedor Martín de Ollo"
+  },
+  {
+    "identificador": 4661,
+    "MERCANCIA": 68,
+    "CANTIDAD": 90,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Manuel González"
+  },
+  {
+    "identificador": 4662,
+    "MERCANCIA": 68,
+    "CANTIDAD": 75,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Marqués de Campoverde"
+  },
+  {
+    "identificador": 4663,
+    "MERCANCIA": 68,
+    "CANTIDAD": 25,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ruiz de Ahumada"
+  },
+  {
+    "identificador": 4664,
+    "MERCANCIA": 68,
+    "CANTIDAD": 25,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Sebastián Zarco"
+  },
+  {
+    "identificador": 4665,
+    "MERCANCIA": 68,
+    "CANTIDAD": 90,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Diego Pérez Garayo"
+  },
+  {
+    "identificador": 4666,
+    "MERCANCIA": 68,
+    "CANTIDAD": 20,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "CONSIGNATARIO-": 4624,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Pedro de Torres"
+  },
+  {
+    "identificador": 4667,
+    "MERCANCIA": 68,
+    "CANTIDAD": 50,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Gabriel de Morales"
+  },
+  {
+    "identificador": 4668,
+    "MERCANCIA": 68,
+    "CANTIDAD": 55,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Luis de Conique"
+  },
+  {
+    "identificador": 4669,
+    "MERCANCIA": 68,
+    "CANTIDAD": 60,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ximenorena"
+  },
+  {
+    "identificador": 4670,
+    "MERCANCIA": 68,
+    "CANTIDAD": 83,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Manuel de Urbina"
+  },
+  {
+    "identificador": 4671,
+    "MERCANCIA": 68,
+    "CANTIDAD": 23,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Manuel de Urbina"
+  },
+  {
+    "identificador": 4672,
+    "MERCANCIA": 68,
+    "CANTIDAD": 28,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Bautista Oneto"
+  },
+  {
+    "identificador": 4673,
+    "MERCANCIA": 68,
+    "CANTIDAD": 10,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Francisco Grazo"
+  },
+  {
+    "identificador": 4674,
+    "MERCANCIA": 68,
+    "CANTIDAD": 72,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Soberanis"
+  },
+  {
+    "identificador": 4675,
+    "MERCANCIA": 68,
+    "CANTIDAD": 30,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Carlos Montefrío"
+  },
+  {
+    "identificador": 4676,
+    "MERCANCIA": 68,
+    "CANTIDAD": 20,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Cristóbal de Orbaneja"
+  },
+  {
+    "identificador": 4677,
+    "MERCANCIA": 68,
+    "CANTIDAD": 77,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Guillermo Clarabout"
+  },
+  {
+    "identificador": 4678,
+    "MERCANCIA": 68,
+    "CANTIDAD": 54,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Guillermo Clarabout"
+  },
+  {
+    "identificador": 4679,
+    "MERCANCIA": 68,
+    "CANTIDAD": 6,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan de Velarde"
+  },
+  {
+    "identificador": 4680,
+    "MERCANCIA": 68,
+    "CANTIDAD": 244,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Francisco López de Andrade"
+  },
+  {
+    "identificador": 4681,
+    "MERCANCIA": 68,
+    "CANTIDAD": 31,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Bandore"
+  },
+  {
+    "identificador": 4682,
+    "MERCANCIA": 68,
+    "CANTIDAD": 97,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Bandore"
+  },
+  {
+    "identificador": 4683,
+    "MERCANCIA": 68,
+    "CANTIDAD": 100,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Thomás Cuneo"
+  },
+  {
+    "identificador": 4684,
+    "MERCANCIA": 68,
+    "CANTIDAD": 18,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Domingo de la Vega"
+  },
+  {
+    "identificador": 4685,
+    "MERCANCIA": 68,
+    "CANTIDAD": 36,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Andrés Ustariz"
+  },
+  {
+    "identificador": 4686,
+    "MERCANCIA": 68,
+    "CANTIDAD": 8,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Cristóbal Roque de Herrera"
+  },
+  {
+    "identificador": 4687,
+    "MERCANCIA": 68,
+    "CANTIDAD": 9,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Martín de Loaizaga"
+  },
+  {
+    "identificador": 4688,
+    "MERCANCIA": 68,
+    "CANTIDAD": 4,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Martín de Loaizaga"
+  },
+  {
+    "identificador": 4689,
+    "MERCANCIA": 68,
+    "CANTIDAD": 26,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Landeche"
+  },
+  {
+    "identificador": 4690,
+    "MERCANCIA": 68,
+    "CANTIDAD": 74,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Landeche"
+  },
+  {
+    "identificador": 4691,
+    "MERCANCIA": 68,
+    "CANTIDAD": 8,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ruiz de Ahumada"
+  },
+  {
+    "identificador": 4692,
+    "MERCANCIA": 68,
+    "CANTIDAD": 108,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ruiz de Ahumada"
+  },
+  {
+    "identificador": 4693,
+    "MERCANCIA": 68,
+    "CANTIDAD": 27,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Sebastián Fernández"
+  },
+  {
+    "identificador": 4694,
+    "MERCANCIA": 68,
+    "CANTIDAD": 17,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Sebastián Fernández"
+  },
+  {
+    "identificador": 4695,
+    "MERCANCIA": 68,
+    "CANTIDAD": 27,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Fernando de Sevilla"
+  },
+  {
+    "identificador": 4696,
+    "MERCANCIA": 68,
+    "CANTIDAD": 17,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Fernando de Sevilla"
+  },
+  {
+    "identificador": 4697,
+    "MERCANCIA": 68,
+    "CANTIDAD": 28,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Diego Chamorro"
+  },
+  {
+    "identificador": 4698,
+    "MERCANCIA": 68,
+    "CANTIDAD": 14,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Diego Chamorro"
+  },
+  {
+    "identificador": 4699,
+    "MERCANCIA": 68,
+    "CANTIDAD": 50,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Theresa Antonia de Aguas Ribas"
+  },
+  {
+    "identificador": 4700,
+    "MERCANCIA": 68,
+    "CANTIDAD": 26,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Pedro Carel de Medina"
+  },
+  {
+    "identificador": 4701,
+    "MERCANCIA": 68,
+    "CANTIDAD": 6,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Baptistina Gallo"
+  },
+  {
+    "identificador": 4702,
+    "MERCANCIA": 68,
+    "CANTIDAD": 50,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Eusebio García Negrete"
+  },
+  {
+    "identificador": 4703,
+    "MERCANCIA": 68,
+    "CANTIDAD": 100,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "José de Morales y Compañía"
+  },
+  {
+    "identificador": 4704,
+    "MERCANCIA": 68,
+    "CANTIDAD": 19,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Bernardo G. de Esparragosa"
+  },
+  {
+    "identificador": 4705,
+    "MERCANCIA": 68,
+    "CANTIDAD": 45,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan de Soberanis"
+  },
+  {
+    "identificador": 4706,
+    "MERCANCIA": 68,
+    "CANTIDAD": 80,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan de Soberanis"
+  },
+  {
+    "identificador": 4707,
+    "MERCANCIA": 68,
+    "CANTIDAD": 194,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Eusebio García Negrete"
+  },
+  {
+    "identificador": 4708,
+    "MERCANCIA": 68,
+    "CANTIDAD": 22,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Pardo"
+  },
+  {
+    "identificador": 4709,
+    "MERCANCIA": 68,
+    "CANTIDAD": 100,
+    "MEDIDAS": 36,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Pardo"
+  },
+  {
+    "identificador": 4710,
+    "MERCANCIA": 68,
+    "CANTIDAD": 50,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Eusebio García Negrete"
+  },
+  {
+    "identificador": 4711,
+    "MERCANCIA": 68,
+    "CANTIDAD": 35,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Correa Silva y Pedro Bilbao la Vieja"
+  },
+  {
+    "identificador": 4712,
+    "MERCANCIA": 68,
+    "CANTIDAD": 67,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Correa Silva y Pedro Bilbao la Vieja"
+  },
+  {
+    "identificador": 4713,
+    "MERCANCIA": 68,
+    "CANTIDAD": 6,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Sebastián Fernández"
+  },
+  {
+    "identificador": 4714,
+    "MERCANCIA": 68,
+    "CANTIDAD": 175,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Bandorre"
+  },
+  {
+    "identificador": 4715,
+    "MERCANCIA": 68,
+    "CANTIDAD": 12,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "María Manuel y Magadalena Sosa."
+  },
+  {
+    "identificador": 4716,
+    "MERCANCIA": 68,
+    "CANTIDAD": 20,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Padre Francisco del Baño"
+  },
+  {
+    "identificador": 4717,
+    "MERCANCIA": 68,
+    "CANTIDAD": 50,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Legorburu"
+  },
+  {
+    "identificador": 4718,
+    "MERCANCIA": 68,
+    "CANTIDAD": 20,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Legorburu"
+  },
+  {
+    "identificador": 4719,
+    "MERCANCIA": 68,
+    "CANTIDAD": 16,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "José de ?"
+  },
+  {
+    "identificador": 4720,
+    "MERCANCIA": 68,
+    "CANTIDAD": 55,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "José de ?"
+  },
+  {
+    "identificador": 4721,
+    "MERCANCIA": 68,
+    "CANTIDAD": 21,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "José Ramos"
+  },
+  {
+    "identificador": 4722,
+    "MERCANCIA": 68,
+    "CANTIDAD": 37,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "José Ramos"
+  },
+  {
+    "identificador": 4723,
+    "MERCANCIA": 68,
+    "CANTIDAD": 6,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Pascual Gallegos"
+  },
+  {
+    "identificador": 4724,
+    "MERCANCIA": 68,
+    "CANTIDAD": 33,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Pascual Gallegos"
+  },
+  {
+    "identificador": 4725,
+    "MERCANCIA": 68,
+    "CANTIDAD": 30,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Miguel Guerrero de Ledesma"
+  },
+  {
+    "identificador": 4726,
+    "MERCANCIA": 68,
+    "CANTIDAD": 5,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Francisco Peláez"
+  },
+  {
+    "identificador": 4727,
+    "MERCANCIA": 68,
+    "CANTIDAD": 6,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Pedro de los Reyes"
+  },
+  {
+    "identificador": 4728,
+    "MERCANCIA": 68,
+    "CANTIDAD": 5,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan García de Salas"
+  },
+  {
+    "identificador": 4729,
+    "MERCANCIA": 68,
+    "CANTIDAD": 6,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Francisco Fernández Cabeza Leal"
+  },
+  {
+    "identificador": 4730,
+    "MERCANCIA": 68,
+    "CANTIDAD": 9,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Sebastián de Ruedas"
+  },
+  {
+    "identificador": 4731,
+    "MERCANCIA": 68,
+    "CANTIDAD": 10,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Sebastián de Ruedas"
+  },
+  {
+    "identificador": 4732,
+    "MERCANCIA": 68,
+    "CANTIDAD": 107,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ignacio Márquez"
+  },
+  {
+    "identificador": 4733,
+    "MERCANCIA": 68,
+    "CANTIDAD": 46,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ignacio Márquez"
+  },
+  {
+    "identificador": 4734,
+    "MERCANCIA": 68,
+    "CANTIDAD": 33,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Diego Gómez"
+  },
+  {
+    "identificador": 4735,
+    "MERCANCIA": 68,
+    "CANTIDAD": 88,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Bernardo G. Esparragosa"
+  },
+  {
+    "identificador": 4736,
+    "MERCANCIA": 68,
+    "CANTIDAD": 3,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Antonio Zamorano"
+  },
+  {
+    "identificador": 4737,
+    "MERCANCIA": 68,
+    "CANTIDAD": 34,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Antonio Zamorano"
+  },
+  {
+    "identificador": 4738,
+    "MERCANCIA": 68,
+    "CANTIDAD": 60,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Bernardo G. Esparragosa"
+  },
+  {
+    "identificador": 4739,
+    "MERCANCIA": 68,
+    "CANTIDAD": 30,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Bernardo G. Esparragosa"
+  },
+  {
+    "identificador": 4740,
+    "MERCANCIA": 68,
+    "CANTIDAD": 18,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Gaspar de Aranda"
+  },
+  {
+    "identificador": 4741,
+    "MERCANCIA": 68,
+    "CANTIDAD": 64,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Gaspar de Aranda"
+  },
+  {
+    "identificador": 4742,
+    "MERCANCIA": 68,
+    "CANTIDAD": 30,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Bautista Cavaleri"
+  },
+  {
+    "identificador": 4743,
+    "MERCANCIA": 68,
+    "CANTIDAD": 8,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Bautista Cavaleri"
+  },
+  {
+    "identificador": 4744,
+    "MERCANCIA": 68,
+    "CANTIDAD": 53,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "CONSIGNATARIO-": 8751,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Martín de Ollo"
+  },
+  {
+    "identificador": 4745,
+    "MERCANCIA": 68,
+    "CANTIDAD": 10,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "CONSIGNATARIO-": 8751,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Martín de Ollo"
+  },
+  {
+    "identificador": 4746,
+    "MERCANCIA": 68,
+    "CANTIDAD": 4,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan de Soto Noguera"
+  },
+  {
+    "identificador": 4747,
+    "MERCANCIA": 68,
+    "CANTIDAD": 100,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Andrés Bandorre"
+  },
+  {
+    "identificador": 4748,
+    "MERCANCIA": 68,
+    "CANTIDAD": 50,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "José Morales y Compañía"
+  },
+  {
+    "identificador": 4749,
+    "MERCANCIA": 68,
+    "CANTIDAD": 12,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Miguel Pérez"
+  },
+  {
+    "identificador": 4750,
+    "MERCANCIA": 68,
+    "CANTIDAD": 38,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Miguel Pérez"
+  },
+  {
+    "identificador": 4751,
+    "MERCANCIA": 68,
+    "CANTIDAD": 39,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Lucas Devoto"
+  },
+  {
+    "identificador": 4752,
+    "MERCANCIA": 68,
+    "CANTIDAD": 49,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Lucas Devoto"
+  },
+  {
+    "identificador": 4753,
+    "MERCANCIA": 68,
+    "CANTIDAD": 20,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Francisco Molina"
+  },
+  {
+    "identificador": 4754,
+    "MERCANCIA": 68,
+    "CANTIDAD": 48,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Lorenzo Martín Villegas"
+  },
+  {
+    "identificador": 4755,
+    "MERCANCIA": 68,
+    "CANTIDAD": 84,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Lorenzo Martín Villegas"
+  },
+  {
+    "identificador": 4756,
+    "MERCANCIA": 68,
+    "CANTIDAD": 26,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "María Espinosa"
+  },
+  {
+    "identificador": 4757,
+    "MERCANCIA": 68,
+    "CANTIDAD": 63,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "María Espinosa"
+  },
+  {
+    "identificador": 4758,
+    "MERCANCIA": 68,
+    "CANTIDAD": 11,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Moreno"
+  },
+  {
+    "identificador": 4759,
+    "MERCANCIA": 68,
+    "CANTIDAD": 70,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Moreno"
+  },
+  {
+    "identificador": 4760,
+    "MERCANCIA": 68,
+    "CANTIDAD": 20,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Pedro Romero"
+  },
+  {
+    "identificador": 4761,
+    "MERCANCIA": 68,
+    "CANTIDAD": 25,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Fernández Pardo o Diego Pablo Figueroa"
+  },
+  {
+    "identificador": 4762,
+    "MERCANCIA": 68,
+    "CANTIDAD": 23,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Reyes Esquivel o Diego Pablo Figueroa"
+  },
+  {
+    "identificador": 4763,
+    "MERCANCIA": 68,
+    "CANTIDAD": 55,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Reyes Esquivel o Diego Pablo Figueroa"
+  },
+  {
+    "identificador": 4764,
+    "MERCANCIA": 68,
+    "CANTIDAD": 50,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Martín Damiano"
+  },
+  {
+    "identificador": 4765,
+    "MERCANCIA": 68,
+    "CANTIDAD": 6,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Lucas Devoto"
+  },
+  {
+    "identificador": 4766,
+    "MERCANCIA": 68,
+    "CANTIDAD": 87,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Lucas Devoto"
+  },
+  {
+    "identificador": 4767,
+    "MERCANCIA": 68,
+    "CANTIDAD": 21,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ruiz Calzado"
+  },
+  {
+    "identificador": 4768,
+    "MERCANCIA": 68,
+    "CANTIDAD": 42,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Ruiz Calzado"
+  },
+  {
+    "identificador": 4769,
+    "MERCANCIA": 68,
+    "CANTIDAD": 12,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Eusebio García Negrete o Miguel Aguinaga"
+  },
+  {
+    "identificador": 4770,
+    "MERCANCIA": 68,
+    "CANTIDAD": 16,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Landeche"
+  },
+  {
+    "identificador": 4771,
+    "MERCANCIA": 68,
+    "CANTIDAD": 53,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Antonio Landeche"
+  },
+  {
+    "identificador": 4772,
+    "MERCANCIA": 68,
+    "CANTIDAD": 18,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Francisco Peña del Pozo"
+  },
+  {
+    "identificador": 4773,
+    "MERCANCIA": 68,
+    "CANTIDAD": 98,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Gaspar de Conique"
+  },
+  {
+    "identificador": 4774,
+    "MERCANCIA": 68,
+    "CANTIDAD": 9,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Gaspar de Conique"
+  },
+  {
+    "identificador": 4775,
+    "MERCANCIA": 68,
+    "CANTIDAD": 5,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Benítez"
+  },
+  {
+    "identificador": 4776,
+    "MERCANCIA": 68,
+    "CANTIDAD": 91,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Benítez"
+  },
+  {
+    "identificador": 4777,
+    "MERCANCIA": 68,
+    "CANTIDAD": 38,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Bernardo Heredia"
+  },
+  {
+    "identificador": 4778,
+    "MERCANCIA": 68,
+    "CANTIDAD": 88,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Bernardo Heredia"
+  },
+  {
+    "identificador": 4779,
+    "MERCANCIA": 68,
+    "CANTIDAD": 3,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Bartolomé Verdura"
+  },
+  {
+    "identificador": 4780,
+    "MERCANCIA": 68,
+    "CANTIDAD": 98,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Bartolomé Verdura"
+  },
+  {
+    "identificador": 4781,
+    "MERCANCIA": 68,
+    "CANTIDAD": 13,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Pedro Carel de Medina"
+  },
+  {
+    "identificador": 4782,
+    "MERCANCIA": 68,
+    "CANTIDAD": 5,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Juan Martínez Villarán"
+  },
+  {
+    "identificador": 4783,
+    "MERCANCIA": 68,
+    "CANTIDAD": 33,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "María de Ruedas"
+  },
+  {
+    "identificador": 4784,
+    "MERCANCIA": 68,
+    "CANTIDAD": 68,
+    "MEDIDAS": 36,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "María de Ruedas"
+  },
+  {
+    "identificador": 4785,
+    "MERCANCIA": 68,
+    "CANTIDAD": 20,
+    "MEDIDAS": 30,
+    "VALOR": 0,
+    "NAVIO MERCANTE": 5890,
+    "CONSIGNATARIO": "Mateo de la Haya"
+  }
+]

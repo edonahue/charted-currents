@@ -264,6 +264,55 @@ async function runReviewSuite() {
       "Historical map initialized and reached idle state within timeout",
     );
 
+    // Mechanical DOM truth assertions for Packet 6
+    console.log("[ASSERTION] Verifying visual truth: places count, timeline copy, and route disclaimer...");
+    const placesCountRes = await send("Runtime.evaluate", {
+      expression: `document.querySelector('[data-locator-toggle]')?.textContent?.trim() || ""`,
+      returnByValue: true,
+    });
+    assert(
+      placesCountRes?.result?.value?.includes("(29)"),
+      `Locator browser shows current published places count of 29 (got: "${placesCountRes?.result?.value}")`
+    );
+
+    const staleCopyRes = await send("Runtime.evaluate", {
+      expression: `document.body.innerText.toLowerCase().includes("verified prize events")`,
+      returnByValue: true,
+    });
+    assert(
+      staleCopyRes?.result?.value === false,
+      "Stale copy 'verified prize events' must be completely absent from rendered DOM"
+    );
+
+    const timelineNoteRes = await send("Runtime.evaluate", {
+      expression: `document.querySelector('.timeline-shell__note')?.textContent || ""`,
+      returnByValue: true,
+    });
+    assert(
+      timelineNoteRes?.result?.value?.includes("Prize Papers-derived sample"),
+      `Timeline note contains source-bounded Prize Papers copy (got: "${timelineNoteRes?.result?.value}")`
+    );
+
+    const routeDisclaimerRes = await send("Runtime.evaluate", {
+      expression: `document.querySelector('.map-epistemic-legend__text')?.textContent || ""`,
+      returnByValue: true,
+    });
+    assert(
+      routeDisclaimerRes?.result?.value?.includes("Not observed sailing tracks"),
+      `Map legend contains route disclaimer: "${routeDisclaimerRes?.result?.value}"`
+    );
+
+    const discreteYearsRes = await send("Runtime.evaluate", {
+      expression: `Array.from(document.querySelectorAll('.timeline-coverage-marker--discrete .timeline-coverage-label')).map(el => el.textContent.trim())`,
+      returnByValue: true,
+    });
+    const renderedYears = discreteYearsRes?.result?.value || [];
+    assert(
+      ["1684", "1694", "1695", "1706"].every(yr => renderedYears.includes(yr)),
+      `Timeline renders discrete years [1684, 1694, 1695, 1706] (got: ${JSON.stringify(renderedYears)})`
+    );
+    console.log("[PASS] Visual truth assertions passed.");
+
     const packetArg = process.argv.find((a) => a.startsWith("--packet="));
     const packetPrefix = packetArg ? packetArg.split("=")[1] + "-" : "packet3-";
     const skipScreenshots =
@@ -1402,7 +1451,121 @@ async function runReviewSuite() {
     assert(remediosFleetCheck?.result?.value?.commander === "Ignacio de Barrios Leal", "Remedios y Animas displays parsed fleet commander Ignacio de Barrios Leal");
     assert(remediosFleetCheck?.result?.value?.route?.includes("Cádiz → Nueva España"), "Remedios y Animas displays fleet route Cádiz → Nueva España");
 
-    // 18. Runtime Exceptions check
+    // 18. Packet 6: Test Vessel 5890 Recorded Goods, Discrepancy Note, and Consignees
+    console.log("Testing Packet 6 Vessel 5890 Recorded Goods display...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_crespo_5890" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const v5890GoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const goodsSection = document.querySelector('[data-ship-goods-section]');
+        const isGoodsVisible = Boolean(goodsSection && !goodsSection.hidden && getComputedStyle(goodsSection).display !== 'none');
+        const summaryText = document.querySelector('[data-ship-goods-summary-text]')?.textContent || '';
+        const discNote = document.querySelector('[data-ship-goods-discrepancy-note]');
+        const isDiscVisible = Boolean(discNote && !discNote.hidden && getComputedStyle(discNote).display !== 'none');
+        const badges = Array.from(document.querySelectorAll('[data-ship-goods-badges] .inspector-goods-card')).map(c => c.textContent);
+        const consigneesText = document.querySelector('[data-ship-goods-consignees-text]')?.textContent || '';
+        return { isGoodsVisible, summaryText, isDiscVisible, badgesCount: badges.length, badgesJoined: badges.join(' '), consigneesText };
+      })()`,
+      returnByValue: true,
+    });
+    assert(v5890GoodsCheck?.result?.value?.isGoodsVisible, "Vessel 5890 Recorded Goods section is visible");
+    assert(v5890GoodsCheck?.result?.value?.summaryText?.includes("3698 fanegas"), "Vessel 5890 displays summary 3698 fanegas");
+    assert(v5890GoodsCheck?.result?.value?.isDiscVisible, "Vessel 5890 displays discrepancy note between itemized rows and summary");
+    assert(v5890GoodsCheck?.result?.value?.badgesJoined?.includes("135 recorded goods lines"), "Vessel 5890 renders grouped badge with 135 recorded lines");
+    assert(v5890GoodsCheck?.result?.value?.consigneesText?.includes("86 distinct nonblank consignees"), "Vessel 5890 renders 86 distinct nonblank consignees preview");
+
+    // 19. Packet 6: Test Vessel 4493 Itemized Commodities and Measure Caveat
+    console.log("Testing Packet 6 Vessel 4493 Itemized Commodities...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_crespo_4493" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const v4493GoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const badges = Array.from(document.querySelectorAll('[data-ship-goods-badges] .inspector-goods-card')).map(c => c.textContent);
+        const measureNote = document.querySelector('[data-ship-goods-measure-text]')?.textContent || '';
+        return { badgesCount: badges.length, badgesJoined: badges.join(' '), measureNote };
+      })()`,
+      returnByValue: true,
+    });
+    assert(v4493GoodsCheck?.result?.value?.badgesCount === 9, "Vessel 4493 renders 9 grouped commodity cards");
+    assert(v4493GoodsCheck?.result?.value?.badgesJoined?.includes("Azúcar"), "Vessel 4493 includes Azúcar card");
+    assert(v4493GoodsCheck?.result?.value?.badgesJoined?.includes("Palo de Campeche"), "Vessel 4493 includes Palo de Campeche card");
+    assert(v4493GoodsCheck?.result?.value?.measureNote?.includes("Vara"), "Vessel 4493 displays vat vs Vara measure caveat note");
+
+    // 20. Packet 6: Test Vessel 4501 Lump-Sum Goods Valuation Banner and Unitemized Goods
+    console.log("Testing Packet 6 Vessel 4501 Lump-Sum Valuation Banner...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_crespo_4501" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const v4501GoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const valBanner = document.querySelector('[data-ship-goods-value-banner]');
+        const isValVisible = Boolean(valBanner && !valBanner.hidden && getComputedStyle(valBanner).display !== 'none');
+        const valAmount = document.querySelector('[data-ship-goods-total-value]')?.textContent || '';
+        const badges = Array.from(document.querySelectorAll('[data-ship-goods-badges] .inspector-goods-card')).map(c => c.textContent);
+        return { isValVisible, valAmount, badgesCount: badges.length };
+      })()`,
+      returnByValue: true,
+    });
+    assert(v4501GoodsCheck?.result?.value?.isValVisible, "Vessel 4501 Total Goods Value banner is visible");
+    assert(v4501GoodsCheck?.result?.value?.valAmount?.includes("10491 pesos"), "Vessel 4501 displays 10491 pesos valuation");
+    assert(v4501GoodsCheck?.result?.value?.badgesCount === 9, "Vessel 4501 renders 9 unitemized commodity cards");
+
+    // 21. Packet 6: Test Negative Goods Isolation on Unrelated Vessel
+    console.log("Testing goods negative isolation on non-commodity vessel...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_richard_and_sarah_1705" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const negativeGoodsCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const goodsSection = document.querySelector('[data-ship-goods-section]');
+        const isHidden = !goodsSection || goodsSection.hidden || getComputedStyle(goodsSection).display === 'none';
+        return { isHidden };
+      })()`,
+      returnByValue: true,
+    });
+    assert(negativeGoodsCheck?.result?.value?.isHidden, "Recorded goods section strictly hidden on non-commodity vessel");
+
+    // 22. Packet 6: Test Place Precision and Evidence-Description Copy for Venezuela
+    console.log("Testing Packet 6 Place Precision and Evidence-Description Copy for Venezuela...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_venezuela" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const vzCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('#inspector-heading')?.textContent || '';
+        const prec = document.querySelector('[data-place-precision]')?.textContent || '';
+        const note = document.querySelector('[data-place-note]')?.textContent || '';
+        return { title, prec, note };
+      })()`,
+      returnByValue: true,
+    });
+    assert(vzCheck?.result?.value?.title === "Venezuela", "Venezuela canonical name is 'Venezuela' without false precision");
+    assert(vzCheck?.result?.value?.prec === "Province / Region reference", "Venezuela precision is 'Province / Region reference'");
+    assert(!vzCheck?.result?.value?.note?.includes("La Guaira"), "Venezuela place notes do not inject La Guaira port resolution");
+
+    // 23. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

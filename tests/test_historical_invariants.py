@@ -10,6 +10,7 @@ import json
 import os
 import unittest
 import yaml
+from pathlib import Path
 
 class TestHistoricalInvariants(unittest.TestCase):
     @classmethod
@@ -188,14 +189,51 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(vis["rights_state"], "open_public_domain")
         self.assertIn("Library of Congress", vis["holding_institution"])
 
-    def test_eighteen_vessels_in_public_corpus(self):
-        """Packet 4 corpus must contain exactly 18 verified vessels and 18 archival routes across 14 display edges."""
+    def test_vessels_in_public_corpus(self):
+        """Corpus must contain exactly 21 verified vessels (18 baseline + 3 Packet 6) and 21 archival routes across 16 display edges."""
         ships = self.entities["ships"]
-        self.assertEqual(len(ships), 18, f"Expected 18 vessels, found {len(ships)}")
+        self.assertEqual(len(ships), 21, f"Expected 21 vessels, found {len(ships)}")
         archival_routes = self.entities.get("routes", [])
-        self.assertEqual(len(archival_routes), 18, f"Expected 18 archival routes, found {len(archival_routes)}")
+        self.assertEqual(len(archival_routes), 21, f"Expected 21 archival routes, found {len(archival_routes)}")
         display_edges = self.routes_geojson["features"]
-        self.assertEqual(len(display_edges), 14, f"Expected 14 display edges, found {len(display_edges)}")
+        self.assertEqual(len(display_edges), 16, f"Expected 16 display edges, found {len(display_edges)}")
+
+    def test_packet6_recorded_goods_invariants(self):
+        """Packet 6 Recorded Goods occurrences must preserve exact counts, provenance, and ethical boundaries."""
+        goods = self.entities.get("goods_occurrences", [])
+        self.assertEqual(len(goods), 160, f"Expected exactly 160 goods occurrences, found {len(goods)}")
+
+        # Vessel 5890: 135 lines of Cacao, 86 distinct nonblank consignees
+        v5890_goods = [g for g in goods if g["ship_occurrence_id"] == "occ_ship_crespo_5890"]
+        self.assertEqual(len(v5890_goods), 135)
+        self.assertTrue(all(g["recorded_commodity_label"] == "Cacao" for g in v5890_goods))
+        consignees_5890 = {g["recorded_consignee"] for g in v5890_goods if g.get("recorded_consignee")}
+        self.assertEqual(len(consignees_5890), 86, f"Expected 86 distinct nonblank consignees on 5890, got {len(consignees_5890)}")
+
+        # Vessel 4493: 16 lines across 9 distinct commodities
+        v4493_goods = [g for g in goods if g["ship_occurrence_id"] == "occ_ship_crespo_4493"]
+        self.assertEqual(len(v4493_goods), 16)
+        commodities_4493 = {g["recorded_commodity_label"] for g in v4493_goods}
+        self.assertEqual(len(commodities_4493), 9)
+
+        # Vessel 4501: 9 lines across 9 commodities with prize valuation on vessel
+        v4501_goods = [g for g in goods if g["ship_occurrence_id"] == "occ_ship_crespo_4501"]
+        self.assertEqual(len(v4501_goods), 9)
+        self.assertTrue(all(g["raw_quantity"] == 0 for g in v4501_goods))
+        self.assertTrue(all(g["parsed_quantity"] is None for g in v4501_goods))
+
+        # Ethical invariant: no commercial goods occurrence may represent enslaved persons
+        for g in goods:
+            self.assertNotEqual(g["commodity_ref_key"], 11)
+            self.assertNotIn("esclavo", g["recorded_commodity_label"].lower())
+
+        # Relational Class A/C/B assertion integrity
+        ast_by_id = {a["id"]: a for a in self.sources["assertions"]}
+        for g in goods:
+            # Must reference at least one Class A and one Class C assertion
+            risk_classes = {ast_by_id[aid].get("risk_class") for aid in g["assertion_ids"] if aid in ast_by_id}
+            self.assertIn("A", risk_classes, f"Goods {g['id']} missing Class A assertion")
+            self.assertIn("C", risk_classes, f"Goods {g['id']} missing Class C relational assertion")
 
     def test_vessel_events_bidirectional_link(self):
         """Capture events must declare valid vessel_id linking to ships[]."""
@@ -298,6 +336,149 @@ class TestHistoricalInvariants(unittest.TestCase):
         # Verify Francisco Antonio Garrote does NOT exist as a canonical person
         for p in persons.values():
             self.assertNotIn("francisco", p["canonical_name"].lower())
+
+    def test_packet6_review_bundle_cohort_derivation(self):
+        """Review bundle cohort dossiers must be mechanically derived from authoritative records without hardcoded constants."""
+        bundle_path = Path(__file__).resolve().parent.parent / "data" / "review" / "bundles" / "packet6" / "review_bundle.json"
+        self.assertTrue(bundle_path.exists(), "review_bundle.json must exist")
+
+        with open(bundle_path, encoding="utf-8") as f:
+            bundle = json.load(f)
+
+        # Bundle must not claim its own commit SHA or contain fluctuating build timestamps
+        self.assertNotIn("head_ref", bundle.get("comparison", {}))
+        self.assertNotIn("generated_at", bundle)
+        self.assertEqual(bundle.get("comparison", {}).get("base_ref"), "origin/main")
+
+        cohort = {d["navio_id"]: d for d in bundle.get("cohort_dossiers", [])}
+        self.assertEqual(set(cohort.keys()), {5890, 4493, 4501})
+
+        # Vessel 4493: West Indische Gally (1706), NOT De Jonge Margaretha (1708)
+        d4493 = cohort[4493]
+        self.assertEqual(d4493["vessel_name"], "West Indische Gally")
+        self.assertEqual(d4493["year"], 1706)
+        self.assertEqual(d4493["route"], "Curaçao -> Amsterdam")
+        self.assertEqual(d4493["goods_lines_count"], 16)
+        self.assertEqual(d4493["reconciliation_status"], "REFERENCE_TABLE_REPRESENTATION_CONFLICT")
+
+        # Vessel 4501: La Provincia de Zeelanda (1700), NOT De Jonge Jacob (1708)
+        d4501 = cohort[4501]
+        self.assertEqual(d4501["vessel_name"], "La Provincia de Zeelanda")
+        self.assertEqual(d4501["year"], 1700)
+        self.assertEqual(d4501["route"], "Curaçao -> Amsterdam")
+        self.assertEqual(d4501["goods_lines_count"], 9)
+        self.assertEqual(d4501["reconciliation_status"], "MATCH")
+        self.assertIn("10491 pesos", d4501.get("goods_valuation_finding", ""))
+
+        # Non-causal wording invariant for vessel 4501
+        self.assertNotIn("because", d4501["reconciliation_finding"].lower())
+        self.assertIn("preserve CANTIDAD=0", d4501["reconciliation_finding"])
+        self.assertIn("separately records prize-capture context", d4501["reconciliation_finding"])
+
+        # Class E changed prose must be pending external review, never self-certified
+        changed_prose = bundle.get("epistemic_classes", {}).get("class_e_changed_prose", [])
+        self.assertTrue(len(changed_prose) > 0)
+        for item in changed_prose:
+            self.assertEqual(item.get("review_status"), "REVIEW_PENDING")
+            self.assertNotIn(item.get("status"), ["VERIFIED_SUPPORTED", "VERIFIED_EVIDENCE_BOUNDED"])
+
+        # Exception queue must feature generic independent model review
+        exc_005 = next((e for e in bundle.get("exception_queue", []) if e["id"] == "EXC-005"), None)
+        self.assertIsNotNone(exc_005)
+        self.assertEqual(exc_005["category"], "INDEPENDENT_MODEL_REVIEW")
+
+        # Vessel 5890: Nuestra Señora de la Estrella (1694), Venezuela -> Sevilla ?
+        d5890 = cohort[5890]
+        self.assertEqual(d5890["vessel_name"], "Nuestra Señora de la Estrella")
+        self.assertEqual(d5890["year"], 1694)
+        self.assertEqual(d5890["route"], "Venezuela -> Sevilla ?")
+        self.assertNotIn("La Guaira", d5890["route"])
+        self.assertEqual(d5890["goods_lines_count"], 135)
+        self.assertEqual(d5890["distinct_consignees_count"], 86)
+        self.assertEqual(d5890["reconciliation_status"], "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE")
+
+    def test_freewheel_garrote_pilot_artifact(self):
+        """Freewheel adversarial pilot audit artifact must record multi-model execution truthfully without synthetic booleans."""
+        fw_path = Path(__file__).resolve().parent.parent / "data" / "review" / "crespo" / "audits" / "freewheel_garrote_pilot.json"
+        self.assertTrue(fw_path.exists(), "freewheel_garrote_pilot.json must exist")
+
+        with open(fw_path, encoding="utf-8") as f:
+            audit = json.load(f)
+
+        self.assertEqual(audit.get("audit_name"), "garrote_maestre_11357_freewheel_pilot")
+        self.assertEqual(audit.get("harness"), "freewheel")
+        self.assertEqual(audit.get("policy"), "free-only")
+        self.assertEqual(audit.get("mode"), "ask_no_tools")
+        self.assertEqual(audit.get("execution_contract"), "freewheel ask (fresh server-backed request; no tool execution)")
+        self.assertTrue(len(audit.get("attempts", [])) >= 2)
+
+        # Spark route failure truthful representation
+        self.assertEqual(audit["attempts"][2]["status"], "FREEWHEEL_ROUTE_FAILED")
+        self.assertIn("Muse Spark 1.3 Free is available", audit["attempts"][2]["diagnostic_note"])
+
+        comparison = audit.get("cross_model_comparison", {})
+        # Synthetic booleans must be completely removed
+        self.assertNotIn("both_noticed_11357_conflict", comparison)
+        self.assertNotIn("both_distinguished_francisco", comparison)
+        self.assertNotIn("either_invented_facts", comparison)
+
+        # Model family perspectives and divergence
+        perspectives = comparison.get("model_family_perspectives", {})
+        self.assertEqual(perspectives.get("qwen_2.5_14b"), "NEEDS_MORE_EVIDENCE")
+        self.assertEqual(perspectives.get("nemotron_3_ultra_family"), "ACCEPT_AS_STATED")
+        self.assertEqual(comparison.get("verdict_synthesis"), "PROCESS_REVIEW_DIVERGENCE")
+        self.assertIn("reviewer_source_layer_overstatements_noted", comparison)
+
+    def test_private_leak_scanner_catches_home_paths(self):
+        """Private leak scanner pattern must catch real Unix user home paths while permitting synthetic placeholders."""
+        import re
+        # Pattern from scripts/scan-private-leaks.mjs
+        home_pattern = re.compile(r"/home/(?!(?:username|<user>|user|node|runner)\b)[a-zA-Z0-9_.-]+/", re.IGNORECASE)
+
+        # Must catch real user paths across arbitrary subdirectories (constructed dynamically so test file contains no private paths)
+        for sample_user in ["alice", "bob_smith", "builduser", "dev.user"]:
+            self.assertTrue(home_pattern.search(f"/home/{sample_user}/.local/bin/freewheel"))
+            self.assertTrue(home_pattern.search(f"/home/{sample_user}/projects/repo/script.py"))
+
+        # Must allow synthetic documentation / CI placeholders
+        self.assertIsNone(home_pattern.search('/home/username/projects/example'))
+        self.assertIsNone(home_pattern.search('/home/<user>/.local/bin'))
+        self.assertIsNone(home_pattern.search('/home/user/test'))
+        self.assertIsNone(home_pattern.search('/home/runner/work/repo'))
+
+    def test_packet6_places_precision_and_provenance(self):
+        """Packet 6 place entities must declare source-bounded precision and navigation coordinate provenance."""
+        places = {p["id"]: p for p in self.entities.get("places", [])}
+        self.assertIn("place_venezuela", places)
+        self.assertIn("place_curacao", places)
+        self.assertIn("place_puerto_rico", places)
+        self.assertIn("place_amsterdam", places)
+        self.assertIn("place_seville", places)
+
+        # Venezuela: broad province/region precision, generalized coordinate, no spurious La Guaira resolution
+        vz = places["place_venezuela"]
+        self.assertEqual(vz["canonical_name"], "Venezuela")
+        self.assertEqual(vz["geographic_precision"], "province_or_region")
+        self.assertEqual(vz["geometry_provenance"], "modern_generalized_navigation_reference")
+        self.assertNotIn("La Guaira", vz.get("notes", ""))
+
+        # Curaçao and Puerto Rico: colony_or_island
+        cur = places["place_curacao"]
+        self.assertEqual(cur["geographic_precision"], "colony_or_island")
+        self.assertEqual(cur["geometry_provenance"], "modern_navigation_reference_coordinate")
+
+        pr = places["place_puerto_rico"]
+        self.assertEqual(pr["geographic_precision"], "colony_or_island")
+        self.assertEqual(pr["geometry_provenance"], "modern_navigation_reference_coordinate")
+
+        # Amsterdam and Sevilla: port_city, evidence-description notes without unsupported institutional overclaims
+        ams = places["place_amsterdam"]
+        self.assertEqual(ams["geographic_precision"], "port_city")
+        self.assertNotIn("Primary", ams.get("notes", ""))
+
+        sev = places["place_seville"]
+        self.assertEqual(sev["geographic_precision"], "port_city")
+        self.assertNotIn("Casa de la Contratación", sev.get("notes", ""))
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,37 @@
+{
+  "audit_name": "garrote_maestre_11357_adversarial_pilot",
+  "model": "qwen2.5:14b-instruct-q4_K_M",
+  "input_dossier": "data/review/crespo/reconciliation_garrote.json",
+  "model_evaluation": {
+    "verdict": "NEEDS_MORE_EVIDENCE",
+    "objections_raised": [
+      "Internal inconsistency in upstream foreign key",
+      "Lack of direct manuscript inspection"
+    ],
+    "evaluation_of_four_bartolome_cohort": "While the four Bartolomé occurrences exhibit consistent professional roles and geographic patterns, the absence of age records or signatures weakens the case for a probable match across an 18-year period. The consistency in maritime role does not sufficiently compensate for the lack of direct manuscript evidence to confirm identity.",
+    "evaluation_of_francisco_exclusion": "Excluding Francisco Antonio Garrote (6820) is necessary due to the given-name conflict, but this exclusion alone may not fully resolve the ambiguity without additional corroborative evidence. The upstream foreign key's inconsistency highlights a systemic issue that needs addressing beyond just excluding one occurrence.",
+    "missing_discriminators_noted": [
+      "Master age",
+      "Residence of master",
+      "Signatures unexamined"
+    ],
+    "reversibility_understanding": "The proposed resolution maintains the reversibility principle by preserving occurrences independently and allowing any link to be severed without data loss. However, this does not mitigate the need for stronger evidence.",
+    "recommended_evidence_state": "contextual"
+  },
+  "project_adjudication": {
+    "adjudication_status": "external_review_pending",
+    "pilot_goal": "Evaluate if local GPU Qwen 14B provides useful adversarial review",
+    "model_verdict": "NEEDS_MORE_EVIDENCE",
+    "model_understood_resolution": true,
+    "model_noticed_11357_conflict": true,
+    "model_invented_facts": false,
+    "model_confused_francisco_with_bartolome": false,
+    "reversibility_claim_critique": "Model correctly noted that occurrence-level architecture allows reversible entity links.",
+    "useful_missing_discriminators_identified": [
+      "Master age",
+      "Residence of master",
+      "Signatures unexamined"
+    ],
+    "adjudication_conclusion": "Model returned 'NEEDS_MORE_EVIDENCE', reflecting an independent review stance more skeptical than the project's provisional resolution threshold. It correctly understood the four-Bartolomé cohort, noticed the 11357 Francisco/Bartolomé given-name conflict, identified useful missing discriminators (master age, residence, signatures), and did not invent evidence. The model recommends stronger evidence before linking across an 18-year span. Charted Currents nevertheless retains 'probable_match' because that state is explicitly provisional and reversible without data loss, resting on consistent maritime role and route evidence across the four occurrences. Model disagreement does not itself downgrade or upgrade evidence state; the pilot serves as an adversarial check."
+  }
+}

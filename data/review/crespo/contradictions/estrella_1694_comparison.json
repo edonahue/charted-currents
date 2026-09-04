@@ -1,0 +1,119 @@
+{
+  "regression_id": "estrella_1694_comparison",
+  "description": "Whole-corpus analysis of Nuestra Señora de la Estrella (1694, row 5890) vs 1684 occurrences and fleet network",
+  "total_estrella_records_in_crespo": 26,
+  "target_row": {
+    "navio_id": 5890,
+    "voyage_year": 1694,
+    "vessel_name": "Nuestra Señora de la Estrella",
+    "master_name": "Juan Ignacio de Cárdenas",
+    "maestre_id": 8581,
+    "origin_port": "Venezuela",
+    "destination_port": "Sevilla ?",
+    "route_raw": "Venezuela-Sevilla ?",
+    "flag_raw": null,
+    "flota_id": 0,
+    "flota_name": null,
+    "incidents": "Regresa junto a la Flota de Nueva España  del Conde de San Remy.",
+    "goods_summary_text": "3698 fanegas y 95 libras de cacao.l",
+    "goods_value_text": null,
+    "fuente_citation": "El comercio español con América…/García Fuentes, L. p. 555-558"
+  },
+  "master_carrier_context": {
+    "master_name": "Juan Ignacio de Cárdenas",
+    "maestre_id": 8581,
+    "associated_voyages": [
+      {
+        "navio_id": 6434,
+        "voyage_year": 1673,
+        "vessel_name": "Nuestra Señora del Buen Suceso y San Miguel",
+        "origin_port": "Cádiz",
+        "destination_port": "Nueva España",
+        "fuente_citation": "A.G.I.: CONTRATACION, 1223, N.15"
+      },
+      {
+        "navio_id": 6446,
+        "voyage_year": 1675,
+        "vessel_name": "Nuestra Señora de la Concepción",
+        "origin_port": "Cádiz",
+        "destination_port": "Nueva España",
+        "fuente_citation": "A.G.I.: CONTRATACION, 1228, N.3"
+      },
+      {
+        "navio_id": 6103,
+        "voyage_year": 1678,
+        "vessel_name": "Nuestra Señora de la Concepción",
+        "origin_port": "Cádiz",
+        "destination_port": "Tierra Firme",
+        "fuente_citation": "A.G.I.: CONTRATACION, 1231, N. 6"
+      },
+      {
+        "navio_id": 6123,
+        "voyage_year": 1678,
+        "vessel_name": "Nuestra Señora de la Concepción",
+        "origin_port": "Cádiz",
+        "destination_port": "Tierra Firme",
+        "fuente_citation": "A.G.I.: CONTRATACION, 1233, N. 6"
+      },
+      {
+        "navio_id": 6494,
+        "voyage_year": 1682,
+        "vessel_name": "Nuestra Señora de la Concepción, San josé y las Animas",
+        "origin_port": "Cádiz",
+        "destination_port": "Nueva España",
+        "fuente_citation": "A.G.I.: CONTRATACION,1238,N.8"
+      },
+      {
+        "navio_id": 6515,
+        "voyage_year": 1687,
+        "vessel_name": "Nuestra Señora del Rosario y las Animas",
+        "origin_port": "Cádiz",
+        "destination_port": "Nueva España",
+        "fuente_citation": "A.G.I.: CONTRATACION, 1242, N.6"
+      },
+      {
+        "navio_id": 6532,
+        "voyage_year": 1689,
+        "vessel_name": "Nuestra Señora de las Mercedes",
+        "origin_port": "Cádiz",
+        "destination_port": "Nueva España",
+        "fuente_citation": "A.G.I.: CONTRATACION, 1245, N.2, R.3"
+      },
+      {
+        "navio_id": 2660,
+        "voyage_year": 1692,
+        "vessel_name": "Nuestra Señora de la Estrella y Santa Teresa",
+        "origin_port": "Cádiz",
+        "destination_port": "Caracas",
+        "fuente_citation": "``Registros de ida a Caracas y La Guaira´´: A.G.I. CONTRATACION, 1683"
+      },
+      {
+        "navio_id": 7396,
+        "voyage_year": 1692,
+        "vessel_name": "Nuestra Señora de la Estrella y Santa Teresa",
+        "origin_port": "Caracas",
+        "destination_port": "La Guaira",
+        "fuente_citation": "``Registros de ida a Caracas y La Guaira´´: A.G.I. CONTRATACION, 1683"
+      },
+      {
+        "navio_id": 5890,
+        "voyage_year": 1694,
+        "vessel_name": "Nuestra Señora de la Estrella",
+        "origin_port": "Venezuela",
+        "destination_port": "Sevilla ?",
+        "fuente_citation": "El comercio español con América…/García Fuentes, L. p. 555-558"
+      },
+      {
+        "navio_id": 13017,
+        "voyage_year": null,
+        "vessel_name": "Nuestra Señora de la Estrella",
+        "origin_port": "Cádiz",
+        "destination_port": "Caracas",
+        "fuente_citation": "A.G.I.: CONTRATACION,5556,N.2,R.1"
+      }
+    ]
+  },
+  "status": "UNRESOLVED",
+  "classification": "DISTINCT_OCCURRENCE",
+  "conclusion": "No positive evidence of physical continuity with the reviewed 1684 Estrella occurrences was found in the available Crespo discriminators. Treated as a separate occurrence. Physical hull identity remains unresolved."
+}

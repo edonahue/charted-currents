@@ -1,0 +1,170 @@
+{
+  "source_dataset": "crespo_dyncoopnet",
+  "source_mdb_sha256": "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5",
+  "source_acquisition_file": "CrespoDynCoopNetDATASETS.mdb",
+  "generator_version": "1.0.0",
+  "mdbtools_version": "mdbtools v1.0.0",
+  "total_tables": 30,
+  "total_rows": 64207,
+  "tables": {
+    "ACCIONES": {
+      "safe_name": "acciones",
+      "row_count": 1186,
+      "column_count": 24
+    },
+    "CARGOS": {
+      "safe_name": "cargos",
+      "row_count": 509,
+      "column_count": 3
+    },
+    "COMPAÑIAS GLOBALES": {
+      "safe_name": "compañias_globales",
+      "row_count": 18,
+      "column_count": 12
+    },
+    "COOPERACION": {
+      "safe_name": "cooperacion",
+      "row_count": 4000,
+      "column_count": 30
+    },
+    "FLOTAS": {
+      "safe_name": "flotas",
+      "row_count": 330,
+      "column_count": 18
+    },
+    "ID NAVIOS": {
+      "safe_name": "id_navios",
+      "row_count": 786,
+      "column_count": 2
+    },
+    "IDENTIFICADOR DE COMPAÑÍAS": {
+      "safe_name": "identificador_de_compañías",
+      "row_count": 1810,
+      "column_count": 2
+    },
+    "IDENTIFICADOR ESPECTRO": {
+      "safe_name": "identificador_espectro",
+      "row_count": 2201,
+      "column_count": 4
+    },
+    "INCIDENCIA": {
+      "safe_name": "incidencia",
+      "row_count": 59,
+      "column_count": 4
+    },
+    "LUGARES": {
+      "safe_name": "lugares",
+      "row_count": 1840,
+      "column_count": 5
+    },
+    "MERCADER Y NAVIO": {
+      "safe_name": "mercader_y_navio",
+      "row_count": 1711,
+      "column_count": 8
+    },
+    "MERCADERIA": {
+      "safe_name": "mercaderia",
+      "row_count": 47,
+      "column_count": 2
+    },
+    "MERCANCIAS": {
+      "safe_name": "mercancias",
+      "row_count": 7534,
+      "column_count": 27
+    },
+    "NAVIOS&MERCADERES": {
+      "safe_name": "navios_and_mercaderes",
+      "row_count": 524,
+      "column_count": 11
+    },
+    "OFICIOS": {
+      "safe_name": "oficios",
+      "row_count": 244,
+      "column_count": 3
+    },
+    "PARENTESCOS": {
+      "safe_name": "parentescos",
+      "row_count": 3571,
+      "column_count": 7
+    },
+    "PRUEBAAGENTES": {
+      "safe_name": "pruebaagentes",
+      "row_count": 19007,
+      "column_count": 40
+    },
+    "SOCIOS": {
+      "safe_name": "socios",
+      "row_count": 2817,
+      "column_count": 9
+    },
+    "TIPOFUNCION": {
+      "safe_name": "tipofuncion",
+      "row_count": 41,
+      "column_count": 2
+    },
+    "TIPOMEDIDA": {
+      "safe_name": "tipomedida",
+      "row_count": 130,
+      "column_count": 2
+    },
+    "TIPOMERCANCIA": {
+      "safe_name": "tipomercancia",
+      "row_count": 679,
+      "column_count": 2
+    },
+    "TIPOPARENTESCO": {
+      "safe_name": "tipoparentesco",
+      "row_count": 40,
+      "column_count": 2
+    },
+    "TITULACION": {
+      "safe_name": "titulacion",
+      "row_count": 180,
+      "column_count": 3
+    },
+    "TODAS LAS COMPAÑÍAS": {
+      "safe_name": "todas_las_compañías",
+      "row_count": 854,
+      "column_count": 15
+    },
+    "TODOSNAVIOS": {
+      "safe_name": "todosnavios",
+      "row_count": 13767,
+      "column_count": 42
+    },
+    "Titulos nobiliaro sin mas": {
+      "safe_name": "titulos_nobiliaro_sin_mas",
+      "row_count": 19,
+      "column_count": 2
+    },
+    "tipoCargo": {
+      "safe_name": "tipocargo",
+      "row_count": 188,
+      "column_count": 2
+    },
+    "tipoCooperacion": {
+      "safe_name": "tipocooperacion",
+      "row_count": 39,
+      "column_count": 2
+    },
+    "tipoNaviocondefinicion": {
+      "safe_name": "tiponaviocondefinicion",
+      "row_count": 52,
+      "column_count": 4
+    },
+    "tipoReligion": {
+      "safe_name": "tiporeligion",
+      "row_count": 24,
+      "column_count": 2
+    }
+  },
+  "known_caveats": [
+    "MDB raw strings preserve source whitespace and Jet4 encodings.",
+    "TIPOMEDIDA IDs start at 1; for MEDIDAS=0 no positive TIPOMEDIDA reference resolves in reference join.",
+    "For CANTIDAD=0 no positive quantity value is displayed by the project; raw zero is strictly preserved.",
+    "Dates with day 0 (e.g. 01/00/00) represent year/month-only precision in Access.",
+    "TODOSNAVIOS summary text differs from itemized MERCANCIAS consignment sums by ~6.7% for vessel 5890.",
+    "Dutch container measure 'vat' in TODOSNAVIOS summary for vessel 4493 is recorded as ID 95 'Vara' in TIPOMEDIDA.",
+    "Layer 1 Parquet files preserve raw string/null representations; typed parsing is performed strictly in Layer 2 views."
+  ]
+}

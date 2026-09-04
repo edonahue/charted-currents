@@ -214,6 +214,33 @@
           </button>
         </section>
 
+        <!-- Recorded Goods (Packet 6) -->
+        <section class="inspector-section" data-ship-goods-section hidden aria-label="Recorded goods">
+          <p class="panel-kicker">Recorded Goods (Crespo CSIC)</p>
+          <div data-ship-goods-value-banner hidden class="inspector-goods-value-banner">
+            <span class="inspector-goods-value-label">Recorded Total Goods Value:</span>
+            <span class="inspector-goods-value-amount" data-ship-goods-total-value></span>
+            <p class="inspector-field-note">Recorded for the vessel cargo set in prize capture context; individual lines are unitemized.</p>
+          </div>
+          <div data-ship-goods-summary-box hidden class="inspector-goods-summary-box">
+            <dl class="inspector-meta">
+              <div class="inspector-meta__row">
+                <dt>Vessel Goods Summary</dt>
+                <dd data-ship-goods-summary-text class="inspector-mono"></dd>
+              </div>
+            </dl>
+            <p data-ship-goods-discrepancy-note hidden class="inspector-field-note">
+              Itemized Crespo rows differ from this summary. Inspect evidence in drawer.
+            </p>
+          </div>
+          <div class="inspector-goods-badges-wrap" data-ship-goods-badges></div>
+          <p data-ship-goods-consignees-note hidden class="inspector-field-note" data-ship-goods-consignees-text></p>
+          <p data-ship-goods-measure-note hidden class="inspector-field-note" data-ship-goods-measure-text></p>
+          <button type="button" class="inspector-evidence-btn" data-ship-goods-evidence-btn>
+            Inspect Recorded Goods in Source Drawer ↗
+          </button>
+        </section>
+
         <!-- Ship Connections -->
         <section class="inspector-section" data-ship-connections-wrap hidden aria-label="Network connections">
           <p class="panel-kicker">Network Connections</p>
@@ -391,6 +418,20 @@
   const shipConnectionsList = document.querySelector<HTMLElement>("[data-ship-connections-list]");
   const shipEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-ship-evidence-btn]");
 
+  // Recorded Goods Selectors (Packet 6)
+  const shipGoodsSection = document.querySelector<HTMLElement>("[data-ship-goods-section]");
+  const shipGoodsValueBanner = document.querySelector<HTMLElement>("[data-ship-goods-value-banner]");
+  const shipGoodsTotalValue = document.querySelector<HTMLElement>("[data-ship-goods-total-value]");
+  const shipGoodsSummaryBox = document.querySelector<HTMLElement>("[data-ship-goods-summary-box]");
+  const shipGoodsSummaryText = document.querySelector<HTMLElement>("[data-ship-goods-summary-text]");
+  const shipGoodsDiscrepancyNote = document.querySelector<HTMLElement>("[data-ship-goods-discrepancy-note]");
+  const shipGoodsBadges = document.querySelector<HTMLElement>("[data-ship-goods-badges]");
+  const shipGoodsConsigneesNote = document.querySelector<HTMLElement>("[data-ship-goods-consignees-note]");
+  const shipGoodsConsigneesText = document.querySelector<HTMLElement>("[data-ship-goods-consignees-text]");
+  const shipGoodsMeasureNote = document.querySelector<HTMLElement>("[data-ship-goods-measure-note]");
+  const shipGoodsMeasureText = document.querySelector<HTMLElement>("[data-ship-goods-measure-text]");
+  const shipGoodsEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-ship-goods-evidence-btn]");
+
   const viewEvent = document.querySelector<HTMLElement>("[data-view-event]");
   const eventDate = document.querySelector<HTMLElement>("[data-event-date]");
   const eventKind = document.querySelector<HTMLElement>("[data-event-kind]");
@@ -474,6 +515,8 @@
         return "Port city";
       case "port_town":
         return "Port town";
+      case "province_or_region":
+        return "Province / Region reference";
       case "modern_navigation_reference_coordinate":
         return "Modern coordinate reference";
       case "modern_generalized_navigation_reference":
@@ -833,6 +876,144 @@
         }
       } else {
         shipFleetContext.hidden = true;
+      }
+    }
+
+    // Recorded Goods Section (Packet 6)
+    if (shipGoodsSection) {
+      const linkedGoods = (entitiesCache as any).goods_occurrences?.filter(
+        (g: any) => g.ship_occurrence_id === occId
+      ) || [];
+
+      if (linkedGoods.length > 0 || shipOcc?.recorded_goods_summary) {
+        shipGoodsSection.hidden = false;
+
+        // Goods value banner (e.g. 4501 prize valuation)
+        if (shipGoodsValueBanner && shipGoodsTotalValue) {
+          if (shipOcc?.recorded_goods_value_text) {
+            shipGoodsValueBanner.hidden = false;
+            shipGoodsTotalValue.textContent = shipOcc.recorded_goods_value_text;
+          } else {
+            shipGoodsValueBanner.hidden = true;
+          }
+        }
+
+        // Goods summary box
+        if (shipGoodsSummaryBox && shipGoodsSummaryText) {
+          if (shipOcc?.recorded_goods_summary) {
+            shipGoodsSummaryBox.hidden = false;
+            shipGoodsSummaryText.textContent = shipOcc.recorded_goods_summary;
+            if (shipGoodsDiscrepancyNote) {
+              shipGoodsDiscrepancyNote.hidden = (ship.id !== "ship_crespo_5890");
+            }
+          } else {
+            shipGoodsSummaryBox.hidden = true;
+          }
+        }
+
+        // Render Grouped Badges
+        if (shipGoodsBadges) {
+          shipGoodsBadges.replaceChildren();
+
+          if (ship.id === "ship_crespo_5890") {
+            const card = document.createElement("div");
+            card.className = "inspector-goods-card";
+            card.innerHTML = `
+              <div class="inspector-goods-card__header">
+                <span class="inspector-goods-facet-tag">cacao</span>
+                <strong class="inspector-goods-title">Cacao</strong>
+              </div>
+              <div class="inspector-goods-card__stats">
+                <span class="inspector-goods-line-count">135 recorded goods lines</span>
+                <span class="inspector-goods-quantities">(3,930 Fanegas, 2,026 Libras itemized)</span>
+              </div>
+            `;
+            shipGoodsBadges.appendChild(card);
+
+            const distinctConsignees = Array.from(new Set(
+              linkedGoods.map((g: any) => g.recorded_consignee?.trim()).filter(Boolean)
+            ));
+            if (shipGoodsConsigneesNote && shipGoodsConsigneesText) {
+              shipGoodsConsigneesNote.hidden = false;
+              const preview = distinctConsignees.slice(0, 5).join(", ");
+              const remaining = distinctConsignees.length - 5;
+              shipGoodsConsigneesText.textContent = `${distinctConsignees.length} distinct nonblank consignees recorded in Seville, including: ${preview}, and ${remaining} others.`;
+            }
+            if (shipGoodsMeasureNote) shipGoodsMeasureNote.hidden = true;
+
+          } else if (ship.id === "ship_crespo_4493") {
+            const byCommodity: Record<string, any[]> = {};
+            for (const g of linkedGoods) {
+              const label = g.recorded_commodity_label;
+              if (!byCommodity[label]) byCommodity[label] = [];
+              byCommodity[label].push(g);
+            }
+
+            for (const [label, items] of Object.entries(byCommodity)) {
+              const card = document.createElement("div");
+              card.className = "inspector-goods-card";
+              const facetTag = items[0].commodity_facet ? `<span class="inspector-goods-facet-tag">${items[0].commodity_facet}</span>` : "";
+              const measuresText = items.map((it: any) => `${it.raw_quantity.toLocaleString()} ${it.recorded_measure_label || "units"}`).join(", ");
+              card.innerHTML = `
+                <div class="inspector-goods-card__header">
+                  ${facetTag}
+                  <strong class="inspector-goods-title">${label}</strong>
+                </div>
+                <div class="inspector-goods-card__stats">
+                  <span class="inspector-goods-quantities">${measuresText}</span>
+                </div>
+              `;
+              shipGoodsBadges.appendChild(card);
+            }
+
+            if (shipGoodsConsigneesNote) shipGoodsConsigneesNote.hidden = true;
+            if (shipGoodsMeasureNote && shipGoodsMeasureText) {
+              shipGoodsMeasureNote.hidden = false;
+              shipGoodsMeasureText.textContent = "Source measurement caveat: Dutch container measure 'vat' in the vessel summary is keyed as ID 95 'Vara' in the source database measure reference table.";
+            }
+
+          } else if (ship.id === "ship_crespo_4501") {
+            for (const g of linkedGoods) {
+              const card = document.createElement("div");
+              card.className = "inspector-goods-card inspector-goods-card--unitemized";
+              const facetTag = g.commodity_facet ? `<span class="inspector-goods-facet-tag">${g.commodity_facet}</span>` : "";
+              card.innerHTML = `
+                <div class="inspector-goods-card__header">
+                  ${facetTag}
+                  <strong class="inspector-goods-title">${g.recorded_commodity_label}</strong>
+                </div>
+                <div class="inspector-goods-card__stats">
+                  <span class="inspector-goods-unitemized-note">Quantity unitemized</span>
+                </div>
+              `;
+              shipGoodsBadges.appendChild(card);
+            }
+            if (shipGoodsConsigneesNote) shipGoodsConsigneesNote.hidden = true;
+            if (shipGoodsMeasureNote && shipGoodsMeasureText) {
+              shipGoodsMeasureNote.hidden = false;
+              shipGoodsMeasureText.textContent = "Prize capture context: Goods seized off Puerto Rico by corsair Manuel Duarte. Valuation recorded as vessel lump sum.";
+            }
+          }
+        }
+
+        if (shipGoodsEvidenceBtn) {
+          const allGoodsAstIds = Array.from(new Set(
+            linkedGoods.flatMap((g: any) => g.assertion_ids || [])
+          ));
+          shipGoodsEvidenceBtn.onclick = () => {
+            window.dispatchEvent(
+              new CustomEvent("cc:open-source", {
+                detail: {
+                  sourceId: "src_crespo_dyncoopnet",
+                  assertionIds: allGoodsAstIds,
+                  triggerEl: shipGoodsEvidenceBtn,
+                },
+              })
+            );
+          };
+        }
+      } else {
+        shipGoodsSection.hidden = true;
       }
     }
 
@@ -1601,6 +1782,103 @@
 
   .inspector-crew-table tr:last-child td {
     border-bottom: none;
+  }
+
+  /* Recorded Goods Styles (Packet 6) */
+  .inspector-goods-value-banner {
+    padding: 0.55rem 0.75rem;
+    background: color-mix(in srgb, var(--cc-sand) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--cc-sand) 60%, transparent);
+    border-radius: var(--cc-radius-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .inspector-goods-value-label {
+    font-family: var(--cc-font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--cc-ink-muted);
+  }
+
+  .inspector-goods-value-amount {
+    font-family: var(--cc-font-serif);
+    font-size: var(--cc-text-sm);
+    font-weight: 600;
+    color: var(--cc-ink);
+  }
+
+  .inspector-goods-summary-box {
+    padding: 0.5rem 0.65rem;
+    background: color-mix(in srgb, var(--cc-paper-raised) 50%, transparent);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .inspector-goods-badges-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .inspector-goods-card {
+    padding: 0.5rem 0.65rem;
+    background: var(--cc-paper);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .inspector-goods-card__header {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .inspector-goods-facet-tag {
+    font-family: var(--cc-font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    padding: 0.1rem 0.35rem;
+    background: color-mix(in srgb, var(--cc-line) 40%, transparent);
+    border-radius: var(--cc-radius-xs);
+    color: var(--cc-ink-muted);
+  }
+
+  .inspector-goods-title {
+    font-family: var(--cc-font-serif);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink);
+  }
+
+  .inspector-goods-card__stats {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink-muted);
+  }
+
+  .inspector-goods-line-count {
+    font-weight: 500;
+    color: var(--cc-ink);
+  }
+
+  .inspector-goods-quantities {
+    font-family: var(--cc-font-mono);
+    font-size: 0.72rem;
+  }
+
+  .inspector-goods-unitemized-note {
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--cc-ink-muted);
   }
 
   @media (max-width: 767px) {

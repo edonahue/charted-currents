@@ -1,0 +1,71 @@
+{
+  "regression_id": "garrote_maestre_11357",
+  "description": "Exhaustive scan of TODOSNAVIOS for master name 'Garrote' or MAESTRE 11357",
+  "query_criteria": "master_name ILIKE '%garrote%' OR maestre_id = 11357",
+  "total_matches": 5,
+  "matching_rows": [
+    {
+      "navio_id": 6820,
+      "voyage_year": 1684,
+      "vessel_name": "La Concepción y las Animas",
+      "maestre_id": 11357,
+      "master_name": "Francisco Antonio Garrote",
+      "origin_port": "Sevilla",
+      "destination_port": "Tierra Firme",
+      "fuente_citation": "A.G.I.: CONTRATACION, 1619, N.5, R.2"
+    },
+    {
+      "navio_id": 6825,
+      "voyage_year": 1688,
+      "vessel_name": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+      "maestre_id": 11357,
+      "master_name": "Bartolomé Antonio Garrote",
+      "origin_port": "Sevilla",
+      "destination_port": "Tierra Firme",
+      "fuente_citation": "A.G.I.: CONTRATACION, 1619, N.9"
+    },
+    {
+      "navio_id": 6890,
+      "voyage_year": 1693,
+      "vessel_name": "Nuestra Señora del Rosario, San Antonio y Santo Domingo",
+      "maestre_id": 11357,
+      "master_name": "Bartolomé Antonio de Garrote",
+      "origin_port": "Sevilla",
+      "destination_port": "Nueva España",
+      "fuente_citation": "A.G.I.: CONTRATACION, 1477, N.4, R.1"
+    },
+    {
+      "navio_id": 6906,
+      "voyage_year": 1701,
+      "vessel_name": "Nuestra Señora de la Encarnación",
+      "maestre_id": 11357,
+      "master_name": "Bartolomé Antonio Garrote",
+      "origin_port": "Sevilla",
+      "destination_port": "Nueva España",
+      "fuente_citation": "A.G.I.: CONTRATACION, 1478, N.2, R.2"
+    },
+    {
+      "navio_id": 6627,
+      "voyage_year": 1706,
+      "vessel_name": "Jesús, Nazareno y Nuestra Señora de Guadalupe",
+      "maestre_id": 11357,
+      "master_name": "Bartolomé Antonio Garrote",
+      "origin_port": "Cádiz",
+      "destination_port": "La Habana",
+      "fuente_citation": "A.G.I.: CONTRATACION, 1266, N.5"
+    }
+  ],
+  "conflict_signal": {
+    "type": "SHARED_ID_CONFLICTING_GIVEN_NAMES",
+    "maestre_id": 11357,
+    "conflicting_names": [
+      "Bartolomé Antonio Garrote",
+      "Bartolomé Antonio de Garrote",
+      "Francisco Antonio Garrote"
+    ],
+    "contradiction_context": "PRUEBAAGENTES row 11357 records Francisco Antonio Garrote; TODOSNAVIOS 1688-1706 records Bartolomé Antonio Garrote."
+  },
+  "status": "CONFLICT_SIGNAL",
+  "policy_adjudication": "probable_match",
+  "conclusion": "No additional matching TODOSNAVIOS voyage rows were found under the tested Garrote name/native-ID criteria. PRUEBAAGENTES 11357 conflict remains documented in reconciliation_garrote.json."
+}

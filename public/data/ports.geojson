@@ -392,7 +392,7 @@
           "ast_crespo_6587_arr",
           "ast_crespo_6627_arr"
         ],
-        "notes": "Strategic Spanish Atlantic port city recorded as prize departure port in IMLM 1582 and arrival port for Carrera de Indias registers in Crespo 6156, 6587, 6627."
+        "notes": "Havana appears in the reviewed Carrera voyage records, the 1684 Bochart & Knollis chart, and as prize departure port in IMLM 1582."
       }
     },
     {
@@ -656,6 +656,186 @@
           "ast_crespo_6627_dep"
         ],
         "notes": "Primary transatlantic departure port for Spanish Carrera de Indias fleets calling at Havana."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_curacao",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -68.9333,
+          12.1167
+        ]
+      },
+      "properties": {
+        "id": "place_curacao",
+        "canonical_name": "Curaçao",
+        "raw_source_name": "Curazao",
+        "endonym": "Kòrsou",
+        "attestations": [
+          {
+            "raw_name": "Curazao",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "es",
+            "attestation_relationship": "source_transcription",
+            "source_record_id": "sr_crespo_navio_4493",
+            "normalized_search_key": "curazao"
+          },
+          {
+            "raw_name": "Curaçao",
+            "evidence_layer": "project_editorial_label",
+            "language": "nl",
+            "attestation_relationship": "modern_preferred_label",
+            "source_record_id": "sr_crespo_navio_4493",
+            "normalized_search_key": "curacao"
+          }
+        ],
+        "region": "Southern Caribbean",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_crespo_4493_dep",
+          "ast_crespo_4501_dep"
+        ],
+        "notes": "Southern Caribbean island recorded as departure territory for West Indische Gally (1706) and La Provincia de Zeelanda (1700)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_amsterdam",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.9041,
+          52.3676
+        ]
+      },
+      "properties": {
+        "id": "place_amsterdam",
+        "canonical_name": "Amsterdam",
+        "raw_source_name": "Amsterdam",
+        "endonym": "Amsterdam",
+        "attestations": [
+          {
+            "raw_name": "Amsterdam",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "nl",
+            "attestation_relationship": "source_transcription",
+            "source_record_id": "sr_crespo_navio_4493",
+            "normalized_search_key": "amsterdam"
+          }
+        ],
+        "region": "Netherlands",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_crespo_4493_arr",
+          "ast_crespo_4501_arr"
+        ],
+        "notes": "European destination port recorded in the Crespo dataset for West Indische Gally (1706) and La Provincia de Zeelanda (1700)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_seville",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -5.9845,
+          37.3891
+        ]
+      },
+      "properties": {
+        "id": "place_seville",
+        "canonical_name": "Sevilla",
+        "raw_source_name": "Sevilla",
+        "endonym": "Sevilla",
+        "attestations": [
+          {
+            "raw_name": "Sevilla",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "es",
+            "attestation_relationship": "source_transcription",
+            "source_record_id": "sr_crespo_navio_5890",
+            "normalized_search_key": "sevilla"
+          }
+        ],
+        "region": "Spain",
+        "geographic_precision": "port_city",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_crespo_5890_arr"
+        ],
+        "notes": "Spanish river port recorded with query notation ('Sevilla ?') as intended arrival destination for Nuestra Señora de la Estrella (1694)."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_venezuela",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.9036,
+          10.4806
+        ]
+      },
+      "properties": {
+        "id": "place_venezuela",
+        "canonical_name": "Venezuela",
+        "raw_source_name": "Venezuela",
+        "endonym": "Venezuela",
+        "attestations": [
+          {
+            "raw_name": "Venezuela",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "es",
+            "attestation_relationship": "source_transcription",
+            "source_record_id": "sr_crespo_navio_5890",
+            "normalized_search_key": "venezuela"
+          }
+        ],
+        "region": "Tierra Firme / Southern Caribbean",
+        "geographic_precision": "province_or_region",
+        "geometry_provenance": "modern_generalized_navigation_reference",
+        "source_assertion_ids": [
+          "ast_crespo_5890_dep"
+        ],
+        "notes": "Province of Venezuela recorded as departure territory for the cacao voyage of Nuestra Señora de la Estrella (1694). The source row identifies the territory as 'Venezuela' without specifying a specific embarkation port."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "place_puerto_rico",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -66.1057,
+          18.4655
+        ]
+      },
+      "properties": {
+        "id": "place_puerto_rico",
+        "canonical_name": "Puerto Rico",
+        "raw_source_name": "Puerto Rico",
+        "endonym": "Puerto Rico",
+        "attestations": [
+          {
+            "raw_name": "Puerto Rico",
+            "evidence_layer": "scholarly_dataset_value",
+            "language": "es",
+            "attestation_relationship": "source_transcription",
+            "source_record_id": "sr_crespo_navio_4501",
+            "normalized_search_key": "puerto rico"
+          }
+        ],
+        "region": "Greater Antilles",
+        "geographic_precision": "colony_or_island",
+        "geometry_provenance": "modern_navigation_reference_coordinate",
+        "source_assertion_ids": [
+          "ast_crespo_4501_capture"
+        ],
+        "notes": "Recorded vicinity of prize capture for La Provincia de Zeelanda (1700) by Spanish corsair Manuel Duarte."
       }
     }
   ]

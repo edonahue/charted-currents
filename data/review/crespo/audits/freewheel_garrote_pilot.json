@@ -1,0 +1,155 @@
+{
+  "audit_name": "garrote_maestre_11357_freewheel_pilot",
+  "harness": "freewheel",
+  "freewheel_version": "0.1.0",
+  "policy": "free-only",
+  "mode": "ask_no_tools",
+  "input_dossier": "data/review/crespo/reconciliation_garrote.json",
+  "regression_fixture": "data/review/crespo/contradictions/garrote_maestre_11357_regression.json",
+  "attempts": [
+    {
+      "attempt_index": 1,
+      "requested_model": "opencode/nemotron-3-ultra-free",
+      "actual_model_id": "opencode/nemotron-3-ultra-free",
+      "requested_provider": "opencode",
+      "actual_provider_id": "opencode",
+      "duration_seconds": 113.85,
+      "status": "success",
+      "finish_reason": "stop",
+      "token_usage": {
+        "input_tokens": 4881,
+        "output_tokens": 505,
+        "reasoning_tokens": 822,
+        "total_tokens": 6208
+      },
+      "tools_disabled": 14,
+      "model_evaluation": {
+        "verdict": "ACCEPT_AS_STATED",
+        "positive_evidence_noted": [
+          "Four Crespo TODOSNAVIOS rows (6627, 6906, 6890, 6825) consistently record 'Bartolomé Antonio  Garrote' as master across 18 years (1688–1706)",
+          "Identical professional role (Maestre) and compatible Carrera de Indias geography (Seville/Cádiz → Tierra Firme/Nueva España/La Habana) across all four occurrences"
+        ],
+        "contradictions_noted": [
+          "Upstream MAESTRE FK 11357 points to PRUEBAAGENTES row for 'Francisco Antonio Garrote' — a direct given-name conflict with the four Bartolomé rows",
+          "TODOSNAVIOS row 6820 (1684) records 'Francisco Antonio Garrote' sharing the same FK 11357, confirming the upstream link merges two distinct given names"
+        ],
+        "missing_discriminators": [
+          "Master's age, residence, and manuscript signatures unrecorded/unexamined in dataset",
+          "No independent external biographical identifier (notarial, parish, or household records) linking the four voyages",
+          "Underlying AGI Contratación manuscripts not independently inspected by Charted Currents"
+        ],
+        "source_layer_errors": [
+          "Crespo's PRUEBAAGENTES 11357 normalization erroneously conflates 'Francisco Antonio' and 'Bartolomé Antonio' under a single foreign key"
+        ],
+        "invented_or_unsupported_claims": [],
+        "resolution_reasoning": "Maintaining the four Bartolomé occurrences as a reversible probable_match is defensible. The four rows are internally consistent in given name, role, chronology, and geography. The contradictory upstream FK 11357 is correctly discounted as an internally inconsistent secondary index rather than primary evidence. Francisco 6820 is properly excluded as negative evidence due to the Francisco/Bartolomé given-name conflict. The resolution explicitly refuses to claim continuous career, acknowledges missing discriminators, and preserves occurrence-level reversibility — all consistent with Charted Currents policy. No unsupported claims are introduced.",
+        "confidence_or_uncertainty_note": "High confidence in the procedural correctness of the reconciliation as stated. Historical certainty remains low due to absent manuscript verification and missing biographical discriminators; the probable_match label accurately reflects this epistemic limit."
+      },
+      "normalized_verdict": "ACCEPT_AS_STATED"
+    },
+    {
+      "attempt_index": 2,
+      "requested_model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+      "actual_model_id": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+      "requested_provider": "openrouter",
+      "actual_provider_id": "openrouter",
+      "duration_seconds": 107.37,
+      "status": "success",
+      "finish_reason": "stop",
+      "token_usage": {
+        "input_tokens": 4905,
+        "output_tokens": 607,
+        "reasoning_tokens": 684,
+        "total_tokens": 6196
+      },
+      "tools_disabled": 14,
+      "model_evaluation": {
+        "verdict": "ACCEPT_AS_STATED",
+        "positive_evidence_noted": [
+          "Four independent Crespo TODOSNAVIOS rows (6627, 6906, 6890, 6825) each cite AGI Contratación manuscripts and record 'Bartolomé Antonio  Garrote' as master",
+          "Consistent professional rank (Maestre), Andalusian departure ports (Seville/Cádiz), and Spanish American destinations across an 18-year span (1688–1706)"
+        ],
+        "contradictions_noted": [
+          "Upstream PRUEBAAGENTES FK 11357 references 'Francisco Antonio Garrote' (1684) while linking the same four Bartolomé rows — an internal name contradiction in the Crespo database itself",
+          "Row 6820 (1684) explicitly records Francisco Antonio Garrote as master under the same FK 11357, creating a direct given-name conflict with the four Bartolomé occurrences"
+        ],
+        "missing_discriminators": [
+          "Master's age, residence, and manuscript signatures unrecorded in the Crespo dataset",
+          "No direct inspection of underlying AGI Contratación manuscripts by Charted Currents",
+          "No independent external biographical identifier (notarial, parish, passport, etc.) corroborating a single historical individual"
+        ],
+        "source_layer_errors": [
+          "Crespo's PRUEBAAGENTES table erroneously merged Francisco and Bartolomé under a single agent ID (11357), making the FK an internally contradictory secondary index rather than primary evidence"
+        ],
+        "invented_or_unsupported_claims": [
+          "None detected. The dossier explicitly disclaims continuous career, primary manuscript verification, and definitive identity — limiting the claim to 'probable recurring Carrera master identity' based on dataset-internal consistency"
+        ],
+        "resolution_reasoning": "Maintaining the four Bartolomé occurrences as a reversible probable_match is defensible as stated. The dossier correctly applies Charted Currents policies: (1) evidence (four consistent dataset rows with manuscript citations) precedes the upstream entity (FK 11357); (2) the Francisco/Bartolomé given-name conflict is treated as a direct contradiction signal, not a reconciliable variant; (3) the probable_match designation is an occurrence-level hypothesis that preserves each row independently and can be severed without data loss; (4) the upstream FK is discounted because it is internally name-inconsistent across the very rows it links. The exclusion of row 6820 as negative evidence and the explicit acknowledgment of missing discriminators prevent overstatement. No claim of continuous career or definitive biography is made.",
+        "confidence_or_uncertainty_note": "Moderate confidence in the dataset-internal coherence of the four Bartolomé rows; high uncertainty whether they represent one historical individual or multiple same-named masters. The verdict rests on Crespo dataset consistency alone — primary manuscript inspection or external biographical evidence could overturn the probable_match."
+      },
+      "normalized_verdict": "ACCEPT_AS_STATED"
+    },
+    {
+      "attempt_index": 3,
+      "requested_model": "opencode/muse-spark-1.3-contributor-free",
+      "requested_provider": "opencode",
+      "status": "FREEWHEEL_ROUTE_FAILED",
+      "returncode": 1,
+      "diagnostic_note": "Muse Spark 1.3 Free is available as a free OpenCode Zen model, but the Freewheel / Zen route attempted during this Packet 6 review failed at test time.",
+      "duration_seconds": 0.19,
+      "followup_note": "Investigate Freewheel ↔ OpenCode Zen Spark model-ID/catalog routing in a future 10% tooling cycle."
+    }
+  ],
+  "cross_model_comparison": {
+    "qwen_baseline": {
+      "model": "qwen2.5:14b-instruct-q4_K_M",
+      "verdict": "NEEDS_MORE_EVIDENCE",
+      "missing_discriminators": [
+        "Master age",
+        "Residence of master",
+        "Signatures unexamined"
+      ]
+    },
+    "freewheel_results": [
+      {
+        "model": "opencode/nemotron-3-ultra-free",
+        "provider": "opencode",
+        "verdict": "ACCEPT_AS_STATED",
+        "missing_discriminators": [
+          "Master's age, residence, and manuscript signatures unrecorded/unexamined in dataset",
+          "No independent external biographical identifier (notarial, parish, or household records) linking the four voyages",
+          "Underlying AGI Contratación manuscripts not independently inspected by Charted Currents"
+        ]
+      },
+      {
+        "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+        "provider": "openrouter",
+        "verdict": "ACCEPT_AS_STATED",
+        "missing_discriminators": [
+          "Master's age, residence, and manuscript signatures unrecorded in the Crespo dataset",
+          "No direct inspection of underlying AGI Contratación manuscripts by Charted Currents",
+          "No independent external biographical identifier (notarial, parish, passport, etc.) corroborating a single historical individual"
+        ]
+      }
+    ],
+    "reversibility_understanding": "Both reviewer harnesses operated under occurrence-level reversibility constraint.",
+    "verdict_synthesis": "PROCESS_REVIEW_DIVERGENCE",
+    "adjudication_conclusion": "Both independent LLM reviewer harnesses (local GPU Qwen 14B and Freewheel-routed Nemotron 3 Ultra models) evaluated the actual Class D decision. Both recognized the Francisco/Bartolomé given-name conflict and confirmed the discounting of MAESTRE 11357. Model reviews raised appropriate epistemic skepticism regarding linking occurrences across an 18-year span without primary signatures or age records. The Nemotron family perspective (ACCEPT_AS_STATED across OpenCode and OpenRouter routes) endorsed occurrence-level reversibility, while Qwen 14B (NEEDS_MORE_EVIDENCE) demanded primary signatures. Project adjudication notes reviewer rhetorical overstatements regarding archival manuscript inspection and compiler error. Charted Currents retains 'probable_match' as a provisional, occurrence-backed hypothesis that is strictly reversible without data loss. Neither review surfaced a genuinely new archival contradiction; no majority voting is performed and evidence state remains unchanged pending human scholarly review.",
+    "model_family_perspectives": {
+      "qwen_2.5_14b": "NEEDS_MORE_EVIDENCE",
+      "nemotron_3_ultra_family": "ACCEPT_AS_STATED"
+    },
+    "provider_routing_note": "The two successful Nemotron 3 Ultra calls (OpenCode and OpenRouter) represent provider and routing redundancy for a single model family, not two independent model judgments.",
+    "reviewer_source_layer_overstatements_noted": [
+      {
+        "model_assertion": "The four rows each cite AGI Contratación manuscripts",
+        "project_adjudication": "Crespo TODOSNAVIOS rows carry secondary AGI Contratación citations, but Charted Currents has not independently inspected the underlying archival manuscripts."
+      },
+      {
+        "model_assertion": "Crespo's PRUEBAAGENTES table normalization is definitively erroneous",
+        "project_adjudication": "MAESTRE 11357 is internally contradictory across rows in the Crespo dataset (merging Francisco and Bartolomé), which is sufficient to discount the foreign key as positive identity evidence without needing to assert how or why the upstream compiler produced the conflation."
+      }
+    ]
+  },
+  "execution_contract": "freewheel ask (fresh server-backed request; no tool execution)"
+}

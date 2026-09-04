@@ -1,0 +1,209 @@
+{
+  "audit_name": "crespo_goods_reconciliation_audit",
+  "reviewed_vessels": [
+    {
+      "navio_id": 5890,
+      "vessel_name": "Nuestra Señora de la Estrella",
+      "voyage_year": 1694,
+      "todosnavios_summary_text": "3698 fanegas y 95 libras de cacao.l",
+      "mercancias_line_count": 135,
+      "distinct_nonblank_consignees": 86,
+      "itemized_grouped_totals": [
+        {
+          "commodity": "Cacao",
+          "measure": "Fanega",
+          "line_count": 96,
+          "total_quantity": 3930.0
+        },
+        {
+          "commodity": "Cacao",
+          "measure": "Libra",
+          "line_count": 39,
+          "total_quantity": 2026.0
+        }
+      ],
+      "comparison_classification": "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE",
+      "finding": "TODOSNAVIOS summary states '3698 fanegas y 95 libras de cacao.l', while sum of 135 itemized MERCANCIAS lines yields 3,930 Fanegas (96 lines) and 2,026 Libras (39 lines). Both figures are preserved as evidence without speculative normalization."
+    },
+    {
+      "navio_id": 4493,
+      "vessel_name": "West Indische Gally",
+      "voyage_year": 1706,
+      "todosnavios_summary_text": "36000 libras de palo de Campeche ; 8768 libras de cacao y 7 vat y 1 zurron de cacao ; 26 canastas, 1 caja, 4 vat y 18 rollos de tabaco ; 1958  piezas y 12 paquetes de cuero ; 58055 libras de azúcar ; 47 balas de algodón ; 22 pipas y 15 vat.  de limón ; 2 vat. De rocú ; 6 vat. De gengibre",
+      "mercancias_line_count": 16,
+      "itemized_grouped_totals": [
+        {
+          "commodity": "Algodón",
+          "measure_fk": 6,
+          "measure_label": "Bala",
+          "line_count": 1,
+          "total_quantity": 47.0
+        },
+        {
+          "commodity": "Azúcar",
+          "measure_fk": 36,
+          "measure_label": "Libra",
+          "line_count": 1,
+          "total_quantity": 58055.0
+        },
+        {
+          "commodity": "Cacao",
+          "measure_fk": 36,
+          "measure_label": "Libra",
+          "line_count": 1,
+          "total_quantity": 8768.0
+        },
+        {
+          "commodity": "Cacao",
+          "measure_fk": 90,
+          "measure_label": "Zurrón",
+          "line_count": 1,
+          "total_quantity": 1.0
+        },
+        {
+          "commodity": "Cacao",
+          "measure_fk": 95,
+          "measure_label": "Vara",
+          "line_count": 1,
+          "total_quantity": 7.0
+        },
+        {
+          "commodity": "Cuero",
+          "measure_fk": 54,
+          "measure_label": "Pieza",
+          "line_count": 1,
+          "total_quantity": 1958.0
+        },
+        {
+          "commodity": "Cuero",
+          "measure_fk": 75,
+          "measure_label": "Paquete",
+          "line_count": 1,
+          "total_quantity": 12.0
+        },
+        {
+          "commodity": "Jengibre",
+          "measure_fk": 95,
+          "measure_label": "Vara",
+          "line_count": 1,
+          "total_quantity": 6.0
+        },
+        {
+          "commodity": "Limón",
+          "measure_fk": 55,
+          "measure_label": "Pipa",
+          "line_count": 1,
+          "total_quantity": 22.0
+        },
+        {
+          "commodity": "Limón",
+          "measure_fk": 95,
+          "measure_label": "Vara",
+          "line_count": 1,
+          "total_quantity": 15.0
+        },
+        {
+          "commodity": "Palo de Campeche",
+          "measure_fk": 36,
+          "measure_label": "Libra",
+          "line_count": 1,
+          "total_quantity": 36000.0
+        },
+        {
+          "commodity": "Rocú",
+          "measure_fk": 95,
+          "measure_label": "Vara",
+          "line_count": 1,
+          "total_quantity": 2.0
+        },
+        {
+          "commodity": "Tabaco",
+          "measure_fk": 16,
+          "measure_label": "Caja",
+          "line_count": 1,
+          "total_quantity": 1.0
+        },
+        {
+          "commodity": "Tabaco",
+          "measure_fk": 20,
+          "measure_label": "Canasta",
+          "line_count": 1,
+          "total_quantity": 26.0
+        },
+        {
+          "commodity": "Tabaco",
+          "measure_fk": 61,
+          "measure_label": "Rollo",
+          "line_count": 1,
+          "total_quantity": 18.0
+        },
+        {
+          "commodity": "Tabaco",
+          "measure_fk": 95,
+          "measure_label": "Vara",
+          "line_count": 1,
+          "total_quantity": 4.0
+        }
+      ],
+      "comparison_classification": "REFERENCE_TABLE_REPRESENTATION_CONFLICT",
+      "finding": "All 16 itemized lines correspond directly to the goods and counts in the summary text. However, where TODOSNAVIOS summary text uses Dutch container measure 'vat' (e.g. '7 vat... de cacao', '15 vat. de limón', '6 vat. De gengibre'), the linked TIPOMEDIDA table key 95 is labeled 'Vara'. Both exact values are preserved without conflating vat and vara."
+    },
+    {
+      "navio_id": 4501,
+      "vessel_name": "La Provincia de Zeelanda",
+      "voyage_year": 1700,
+      "todosnavios_summary_text": "Corambre ; Palo de Brasil ; cacao ; tabaco de Barinas ; añil ; cobre ; conchas de carey ; cascaras  de naranja ; monedas de plata españoles",
+      "todosnavios_total_value_text": "10491 pesos y 2 reales",
+      "mercancias_line_count": 9,
+      "itemized_goods": [
+        {
+          "commodity": "Añil",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Cacao",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Cobre",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Conchas de carey",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Corambre",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Cáscaras  de naranja",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Monedas de plata españolas",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Palo de Brasil",
+          "line_count": 1,
+          "total_quantity": 0.0
+        },
+        {
+          "commodity": "Tabaco de Barinas",
+          "line_count": 1,
+          "total_quantity": 0.0
+        }
+      ],
+      "comparison_classification": "MATCH",
+      "finding": "The 9 itemized commodity labels match the 9 goods named in the vessel summary text 1:1. The 9 selected MERCANCIAS rows preserve CANTIDAD=0. The linked vessel record separately records prize-capture context off Puerto Rico. The valuation ('10491 pesos y 2 reales') belongs to the goods-set context, not individual items."
+    }
+  ]
+}

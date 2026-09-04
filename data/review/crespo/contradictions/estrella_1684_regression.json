@@ -1,0 +1,51 @@
+{
+  "regression_id": "estrella_1684_comparison",
+  "description": "Comparison of contemporaneous 1684 New Spain fleet vessels named Nuestra Señora de la Estrella",
+  "rows": [
+    {
+      "navio_id": 6156,
+      "voyage_year": 1684,
+      "vessel_name": "Nuestra Señora de la Estrella",
+      "maestre_id": 10939,
+      "master_name": "Juan Bernardo de Heredia",
+      "origin_port": "Cádiz",
+      "destination_port": "La Habana",
+      "flota_id": 141,
+      "fuente_citation": "A.G.I.: CONTRATACION, 1240, N.6"
+    },
+    {
+      "navio_id": 6177,
+      "voyage_year": 1684,
+      "vessel_name": "Nuestra Señora de la Estrella",
+      "maestre_id": 10705,
+      "master_name": "Pedro Carrillo de Albornoz",
+      "origin_port": "Cádiz",
+      "destination_port": "Tierra Firme",
+      "flota_id": 141,
+      "fuente_citation": "A.G.I.: CONTRATACION, 1241, N. 1, R. 13"
+    }
+  ],
+  "conflict_analysis": {
+    "shared_attributes": {
+      "voyage_year": 1684,
+      "vessel_name": "Nuestra Señora de la Estrella",
+      "flota_id": 141,
+      "origin_port": "Cádiz"
+    },
+    "divergent_attributes": {
+      "row_6156": {
+        "master": "Juan Bernardo de Heredia",
+        "destination": "La Habana",
+        "fuente": "A.G.I.: CONTRATACION, 1240, N.6"
+      },
+      "row_6177": {
+        "master": "Pedro Carrillo de Albornoz",
+        "destination": "Tierra Firme",
+        "fuente": "A.G.I.: CONTRATACION, 1241, N. 1, R. 13"
+      }
+    }
+  },
+  "status": "UNRESOLVED",
+  "classification": "DISTINCT_OCCURRENCES_SAME_FLEET",
+  "conclusion": "Same-name vessels in same 1684 fleet sailed under different masters to different destinations with distinct AGI Contratación references. Automatic merge strictly blocked."
+}

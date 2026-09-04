@@ -26,6 +26,7 @@ data/raw/
 data/staging/
 data/working/
 data/cache/
+data/analytics/
 *.duckdb
 *.duckdb.wal
 *.sqlite
