@@ -156,7 +156,7 @@ Respond ONLY with a JSON object in this exact schema:
     has_reversibility_error = "not reversible" in reversibility_text or "irreversible" in reversibility_text
 
     adjudication = {
-        "adjudicator": "Charted Currents Project Editorial Board",
+        "adjudication_status": "external_review_pending",
         "pilot_goal": "Evaluate if local GPU Qwen 14B provides useful adversarial review",
         "model_verdict": verdict,
         "model_understood_resolution": True,
@@ -171,10 +171,13 @@ Respond ONLY with a JSON object in this exact schema:
         ),
         "useful_missing_discriminators_identified": model_output.get("missing_discriminators_noted", []),
         "adjudication_conclusion": (
-            f"Model returned '{verdict}'. It recognized the distinct given names and the internal contradiction in MAESTRE 11357. "
-            "The model's skepticism regarding the 18-year span without primary signatures validates the project's conservative decision "
-            "to restrict Bartolomé Antonio Garrote to 'probable_match' (prohibiting 'documented' certainty) and to exclude continuous career claims. "
-            "No automated promotion or downgrade is performed; the AI audit serves as process critique, not historical corroboration."
+            f"Model returned '{verdict}', reflecting an independent review stance more skeptical than the project's "
+            "provisional resolution threshold. It correctly understood the four-Bartolomé cohort, noticed the 11357 "
+            "Francisco/Bartolomé given-name conflict, identified useful missing discriminators (master age, residence, signatures), "
+            "and did not invent evidence. The model recommends stronger evidence before linking across an 18-year span. "
+            "Charted Currents nevertheless retains 'probable_match' because that state is explicitly provisional and reversible "
+            "without data loss, resting on consistent maritime role and route evidence across the four occurrences. "
+            "Model disagreement does not itself downgrade or upgrade evidence state; the pilot serves as an adversarial check."
         )
     }
 

@@ -203,7 +203,7 @@
         }
       ],
       "comparison_classification": "MATCH",
-      "finding": "The 9 itemized commodity labels match the 9 goods named in the vessel summary text 1:1. Quantities are unitemized (CANTIDAD=0) because the vessel was captured as a prize off Puerto Rico. The valuation ('10491 pesos y 2 reales') belongs to the goods-set context, not individual items."
+      "finding": "The 9 itemized commodity labels match the 9 goods named in the vessel summary text 1:1. The 9 selected MERCANCIAS rows preserve CANTIDAD=0. The linked vessel record separately records prize-capture context off Puerto Rico. The valuation ('10491 pesos y 2 reales') belongs to the goods-set context, not individual items."
     }
   ]
 }

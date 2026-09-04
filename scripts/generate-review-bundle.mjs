@@ -66,6 +66,12 @@ if (existsSync(gpuAuditPath)) {
   gpuAudit = JSON.parse(readFileSync(gpuAuditPath, "utf8"));
 }
 
+const freewheelAuditPath = "data/review/crespo/audits/freewheel_garrote_pilot.json";
+let freewheelAudit = null;
+if (existsSync(freewheelAuditPath)) {
+  freewheelAudit = JSON.parse(readFileSync(freewheelAuditPath, "utf8"));
+}
+
 // 3. Try loading base artifacts from git
 let baseSources = null;
 let baseEntities = null;
@@ -145,6 +151,7 @@ const changedProse = [];
 for (const place of currentEntities.places || []) {
   const basePlace = baseEntities?.places?.find((p) => p.id === place.id);
   if (!basePlace || basePlace.notes !== place.notes) {
+    const hasRefs = (place.source_assertion_ids || []).length > 0;
     changedProse.push({
       location: `places[id=${place.id}].notes`,
       entity_id: place.id,
@@ -153,8 +160,9 @@ for (const place of currentEntities.places || []) {
       new_text: place.notes,
       classification: "contextual_place_note",
       support_references: place.source_assertion_ids || [],
-      status: "VERIFIED_EVIDENCE_BOUNDED",
-      advisory: null,
+      support_references_present: hasRefs,
+      review_status: "REVIEW_PENDING",
+      advisory: hasRefs ? null : "MISSING_SUPPORT_REFERENCE",
     });
   }
 }
@@ -172,7 +180,8 @@ for (const ship of currentEntities.ships || []) {
         new_text: ship.capture_display,
         classification: "prize_capture_context",
         support_references: [],
-        status: "VERIFIED_EVIDENCE_BOUNDED",
+        support_references_present: false,
+        review_status: "REVIEW_PENDING",
         advisory: null,
       });
     }
@@ -257,17 +266,22 @@ const exceptionQueue = [
     category: "HISTORICAL_PROSE_EVALUATION",
     severity: "REVIEW_ADVISORY",
     subject: "place_amsterdam, place_seville, place_venezuela, place_curacao, place_puerto_rico",
-    summary: "Place descriptions revised to strict evidence-description wording.",
-    finding: "Institutional overclaims (e.g. 'Primary European destination port', Casa de la Contratación headquarters) removed in favor of direct source attribution.",
-    status: "VERIFIED_SUPPORTED",
+    summary: `${changedProse.length} changed historical prose items detected across places and ships.`,
+    finding: "Place descriptions revised to restrained evidence-description wording. Machine-generated detection complete; substantive prose review remains pending external review.",
+    status: "REVIEW_PENDING",
   },
   {
     id: "EXC-005",
-    category: "GPU_AUDITOR_FINDING",
+    category: "INDEPENDENT_MODEL_REVIEW",
     severity: "REVIEW_ADVISORY",
     subject: "MAESTRE 11357 / Garrote dossier",
-    summary: "Local Qwen 14B auditor evaluated Class-D maintenance of Bartolomé (1688-1706) as probable_match while keeping Francisco 6820 unmerged.",
-    finding: gpuAudit?.project_adjudication?.adjudication_conclusion || "Adversarial pilot audited with local Qwen 14B.",
+    summary: `Independent model audits conducted via local GPU (Qwen 14B: ${gpuAudit?.model_evaluation?.verdict || "NEEDS_MORE_EVIDENCE"}) and Freewheel harness (${freewheelAudit?.cross_model_comparison?.verdict_synthesis || "PROCESS_REVIEW_DIVERGENCE"}).`,
+    finding: (
+      "Both reviewer harnesses recognized the Francisco/Bartolomé given-name conflict and supported discounting 11357. " +
+      "Qwen took a more skeptical posture (NEEDS_MORE_EVIDENCE) requiring primary signatures across 18 years, while Freewheel models " +
+      "concluded that occurrence-level provisional 'probable_match' is defensible as stated. Disagreement is classified as " +
+      "PROCESS_REVIEW_DIVERGENCE without majority voting; 'probable_match' remains unchanged pending human scholarly review."
+    ),
     status: "ADJUDICATED",
   },
 ];

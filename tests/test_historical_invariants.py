@@ -370,6 +370,23 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(d4501["reconciliation_status"], "MATCH")
         self.assertIn("10491 pesos", d4501.get("goods_valuation_finding", ""))
 
+        # Non-causal wording invariant for vessel 4501
+        self.assertNotIn("because", d4501["reconciliation_finding"].lower())
+        self.assertIn("preserve CANTIDAD=0", d4501["reconciliation_finding"])
+        self.assertIn("separately records prize-capture context", d4501["reconciliation_finding"])
+
+        # Class E changed prose must be pending external review, never self-certified
+        changed_prose = bundle.get("epistemic_classes", {}).get("class_e_changed_prose", [])
+        self.assertTrue(len(changed_prose) > 0)
+        for item in changed_prose:
+            self.assertEqual(item.get("review_status"), "REVIEW_PENDING")
+            self.assertNotIn(item.get("status"), ["VERIFIED_SUPPORTED", "VERIFIED_EVIDENCE_BOUNDED"])
+
+        # Exception queue must feature generic independent model review
+        exc_005 = next((e for e in bundle.get("exception_queue", []) if e["id"] == "EXC-005"), None)
+        self.assertIsNotNone(exc_005)
+        self.assertEqual(exc_005["category"], "INDEPENDENT_MODEL_REVIEW")
+
         # Vessel 5890: Nuestra Señora de la Estrella (1694), Venezuela -> Sevilla ?
         d5890 = cohort[5890]
         self.assertEqual(d5890["vessel_name"], "Nuestra Señora de la Estrella")
@@ -379,6 +396,25 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertEqual(d5890["goods_lines_count"], 135)
         self.assertEqual(d5890["distinct_consignees_count"], 86)
         self.assertEqual(d5890["reconciliation_status"], "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE")
+
+    def test_freewheel_garrote_pilot_artifact(self):
+        """Freewheel adversarial pilot audit artifact must record multi-model execution in read-only mode."""
+        fw_path = Path(__file__).resolve().parent.parent / "data" / "review" / "crespo" / "audits" / "freewheel_garrote_pilot.json"
+        self.assertTrue(fw_path.exists(), "freewheel_garrote_pilot.json must exist")
+
+        with open(fw_path, encoding="utf-8") as f:
+            audit = json.load(f)
+
+        self.assertEqual(audit.get("audit_name"), "garrote_maestre_11357_freewheel_pilot")
+        self.assertEqual(audit.get("harness"), "freewheel")
+        self.assertEqual(audit.get("policy"), "free-only")
+        self.assertEqual(audit.get("mode"), "scout_read_only")
+        self.assertTrue(len(audit.get("attempts", [])) >= 2)
+
+        comparison = audit.get("cross_model_comparison", {})
+        self.assertTrue(comparison.get("both_noticed_11357_conflict"))
+        self.assertTrue(comparison.get("both_distinguished_francisco"))
+        self.assertFalse(comparison.get("either_invented_facts"))
 
     def test_packet6_places_precision_and_provenance(self):
         """Packet 6 place entities must declare source-bounded precision and navigation coordinate provenance."""
