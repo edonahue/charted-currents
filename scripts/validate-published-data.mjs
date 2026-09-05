@@ -314,6 +314,27 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     for (const astId of vis.assertion_ids || []) {
       assert(assertionIds.has(astId), `Visual ${vis.id} references nonexistent assertion ${astId}`);
     }
+
+    if (vis.asset_path) {
+      const fullPath = path.resolve(process.cwd(), "public", vis.asset_path);
+      assert(fs.existsSync(fullPath), `Visual asset file missing on disk: ${vis.asset_path}`);
+    }
+
+    if (vis.georeference) {
+      const geo = vis.georeference;
+      assert(Array.isArray(geo.coordinates) && geo.coordinates.length === 4, `Visual ${vis.id} georeference must have 4 corner coordinates`);
+      for (const pt of geo.coordinates) {
+        assert(Array.isArray(pt) && pt.length === 2, `Visual ${vis.id} coordinate must be [lng, lat]`);
+        assert(pt[0] >= -180 && pt[0] <= 180, `Visual ${vis.id} lng out of bounds: ${pt[0]}`);
+        assert(pt[1] >= -90 && pt[1] <= 90, `Visual ${vis.id} lat out of bounds: ${pt[1]}`);
+      }
+      assert(typeof geo.projection === "string" && geo.projection.length > 0, `Visual ${vis.id} georeference missing projection`);
+      assert(typeof geo.epistemic_disclaimer === "string" && geo.epistemic_disclaimer.length > 10, `Visual ${vis.id} georeference missing epistemic_disclaimer`);
+      if (vis.rectified_asset_path) {
+        const fullRectPath = path.resolve(process.cwd(), "public", vis.rectified_asset_path);
+        assert(fs.existsSync(fullRectPath), `Visual rectified asset missing on disk: ${vis.rectified_asset_path}`);
+      }
+    }
   }
 
   // 3. Ports GeoJSON

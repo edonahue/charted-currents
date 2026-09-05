@@ -1,0 +1,27 @@
+{
+  "item_id": "gm71005442",
+  "title": "A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning [sic] what belongs to Spain, England, France, Holland, &c. also ye trade winds, and ye several tracts made by ye galeons and flota from place to place",
+  "creators": [
+    "Herman Moll",
+    "Thomas Bowles (Publisher)",
+    "John Bowles (Publisher)"
+  ],
+  "date_display": "1715",
+  "year_recorded": 1715,
+  "is_uncertain": false,
+  "holding_institution": "Library of Congress Geography and Map Division",
+  "repository_detail": "Library of Congress Geography and Map Division Washington, D.C. 20540-4650 USA dcu",
+  "call_number": "G4390 1715 .M6",
+  "digital_id": "g4390.ct003986",
+  "canonical_permalink": "https://www.loc.gov/item/gm71005442/",
+  "iiif_image_service": "https://tile.loc.gov/image-services/iiif/service:gmd:gmd4:g4390:g4390:ct003986/",
+  "rights_state": "open_public_domain",
+  "rights_basis": "Library of Congress Geography and Map Division digitized collections are free to use and reuse; no copyright or donor restrictions recorded.",
+  "rights_advisory": null,
+  "credit_line": "Library of Congress, Geography and Map Division",
+  "download_url": "https://tile.loc.gov/image-services/iiif/service:gmd:gmd4:g4390:g4390:ct003986/full/pct:50/0/default.jpg",
+  "master_filename": "moll-1715-loc-master.jpg",
+  "master_size_bytes": 5161659,
+  "master_sha256": "5810c09c6c4185633be6f8b9cb1a19795d04cc0ac9a7f33ee90243395cf04f82",
+  "notes": "Acquired via LOC IIIF service at 50% resolution (6025x3636 px, ~22 megapixels) for high cartographic clarity and reproducible derivation."
+}

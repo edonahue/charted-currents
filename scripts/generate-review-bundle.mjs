@@ -424,6 +424,46 @@ const PACKET_CONFIGS = {
       };
     },
   },
+
+  packet8: {
+    id: "packet8",
+    title: "Packet 8 — First Period Map Reference Layer",
+    getEthicalCompliance: () => ({
+      status: "PASS",
+      enslaved_persons_exclusion_verified: true,
+      verification_note:
+        "Historical cartographic reference layer depicts regional geography, trade winds, and fleet tracks from Herman Moll's 1715 chart. No human beings or cargo lines are quantified or commodified.",
+    }),
+    getCartographicProvenance: (ctx) => {
+      const vis = ctx.currentEntities.visuals?.find((v) => v.id === "visual_moll_west_indies_1715");
+      return {
+        source_id: vis?.source_id || "src_loc_g4390_1715",
+        holding_institution: vis?.holding_institution,
+        call_number: vis?.call_number,
+        digital_id: vis?.digital_id,
+        item_url: vis?.item_url,
+        rights_state: vis?.rights_state,
+        credit_line: vis?.credit_line,
+        neatline_crop: { x: 20, y: 91, w: 5990, h: 2804 },
+        gcp_count: vis?.georeference?.gcp_count || 14,
+        rmse_approx_km: vis?.georeference?.rmse_approx_km || 94.4,
+        projection: vis?.georeference?.projection || "EPSG:3857",
+        epistemic_disclaimer: vis?.georeference?.epistemic_disclaimer,
+      };
+    },
+    getExceptionQueue: () => [
+      {
+        id: "EXC-P8-001",
+        category: "PRE_CHRONOMETER_LONGITUDINAL_DISTORTION",
+        severity: "INFORMATIONAL_ADVISORY",
+        subject: "Herman Moll ca. 1715 West-Indies Chart",
+        summary: "18th-century cartographic projection exhibits longitudinal distortion across the Gulf of Mexico and Caribbean basin prior to marine chronometer determination.",
+        finding: "Cartography is preserved as historical evidence and reference context over modern MapLibre geography, not modern survey ground truth. Epistemic disclaimer published in Source Drawer, layer control, and georeference report.",
+        status: "PRESERVED_AS_EVIDENCE",
+      },
+    ],
+    getDatasetContextSummary: () => null,
+  },
 };
 
 // 8. Determine Packet to Generate
@@ -481,6 +521,7 @@ const reviewBundle = {
   ...(bundleConfig.getPlaceMappingReview ? { place_mapping_review: bundleConfig.getPlaceMappingReview(contextForPackets) } : {}),
   ...(bundleConfig.getGarroteLookback ? { garrote_lookback: bundleConfig.getGarroteLookback(contextForPackets) } : {}),
   ...(bundleConfig.getDatasetContextSummary ? { dataset_context_summary: bundleConfig.getDatasetContextSummary(contextForPackets) } : {}),
+  ...(bundleConfig.getCartographicProvenance ? { cartographic_provenance: bundleConfig.getCartographicProvenance(contextForPackets) } : {}),
   added_source_records: addedSourceRecords.map((r) => ({
     id: r.id,
     source_id: r.source_id,
@@ -525,6 +566,9 @@ if (reviewBundle.place_mapping_review) {
 }
 if (reviewBundle.dataset_context_summary) {
   console.log(`  - Dataset Context Baseline:  ${reviewBundle.dataset_context_summary.total_records_in_baseline} records (${reviewBundle.dataset_context_summary.baseline_period}) across ${reviewBundle.dataset_context_summary.total_places} places`);
+}
+if (reviewBundle.cartographic_provenance) {
+  console.log(`  - Cartographic Provenance:   ${reviewBundle.cartographic_provenance.holding_institution} (${reviewBundle.cartographic_provenance.call_number}), ${reviewBundle.cartographic_provenance.gcp_count} GCPs, RMSE ~${reviewBundle.cartographic_provenance.rmse_approx_km} km`);
 }
 console.log(`  - Exception Queue Items:     ${reviewBundle.exception_queue.length}`);
 console.log(`  - Ethical Compliance:        ${reviewBundle.ethical_compliance.status}\n`);

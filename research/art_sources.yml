@@ -22,8 +22,8 @@ art_sources:
     rights: item_level; Geography and Map Division digitized collections are free to reuse unless an item Rights Advisory says otherwise
     preferred_use: Period maps, charts, port plans, printed books/manuscripts and primary-source imagery
     acquisition: resolve canonical LOC item -> inspect Rights & Access -> preserve item ID/call number/division/credit -> use IIIF or institutional download
-    action: Build targeted Caribbean map discovery adapter and curate rights-cleared item set
-    last_verified: 2026-08-31
+    action: Verified acquisition and production georeferenced deployment of Herman Moll 1715 West-Indies chart (gm71005442 / G4390 1715 .M6 / ct003986) in Packet 8
+    last_verified: 2026-09-05
 
   - id: greater_caribbean_mapping
     name: Greater Caribbean Mapping, 1450-1850

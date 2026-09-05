@@ -39,12 +39,16 @@ The visual-source strategy is:
 
 The Geography & Map Division has exactly the kind of visual material we want: seventeenth- and eighteenth-century West Indies charts, port plans, trade-route maps, and historical geography. LOC also has prints, books, manuscripts, and related material.
 
-Priority reference already identified:
+Priority reference acquired and deployed (Packet 8):
 
-- Herman Moll, *A map of the West-Indies... also ye trade winds, and ye several tracts made by ye galeons and flota...*, ca. 1715
-- https://www.loc.gov/item/gm71005442/
+- Herman Moll, *A map of the West-Indies... also ye trade winds, and ye several tracts made by ye galeons and flota...*, 1715
+- Library of Congress Geography and Map Division, Call number `G4390 1715 .M6`, Digital ID `g4390.ct003986`
+- Permalink: https://www.loc.gov/item/gm71005442/
+- Rights: Open public domain (Geography and Map Division, Library of Congress)
+- Production WebP derivative: `public/assets/visuals/moll-west-indies-1715-rectified.webp` (~908 KB, cropped to neatline, 14 GCPs, warped to EPSG:3857)
+- Georeferencing report: `data/source_acquisitions/loc_gm71005442/georeference_report.json`
 
-This is conceptually almost a visual manifesto for Charted Currents because it combines geography, political space, trade winds, and fleet tracks.
+This is conceptually a cartographic manifesto for Charted Currents because it depicts contemporary Carrera de Indias flota tracks, prevailing trade winds, and 18th-century imperial geography directly over modern MapLibre coordinates.
 
 **Programmatic access**
 

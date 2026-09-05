@@ -1796,7 +1796,320 @@ async function runReviewSuite() {
     });
     assert(shipIsolationCheck?.result?.value?.isPlaceViewHidden, "Place view and place dataset context are strictly hidden when a ship is selected");
 
-    // 27. Runtime Exceptions check
+    // 27. Packet 8: Historical Period Map Reference Layer Invariants & Behavioral Tests
+    console.log("\nTesting Packet 8 Historical Period Map Layer controls, opacity, and layer stack...");
+
+    // P8-007: Visual Layer Hierarchy check
+    const layerStackCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const m = window.__CC_MAP__;
+        if (!m) return { error: "Map not found" };
+        const layers = m.getStyle().layers.map((l) => l.id);
+        const mollIdx = layers.indexOf("historical-reference-moll-1715-layer");
+        const routesIdx = layers.indexOf("historical-routes-line");
+        const portsCoreIdx = layers.indexOf("historical-ports-core");
+        const portsOuterRingIdx = layers.indexOf("historical-ports-outer-ring");
+        const portsLabelIdx = layers.indexOf("historical-ports-label");
+
+        return {
+          mollIdx,
+          routesIdx,
+          portsCoreIdx,
+          portsOuterRingIdx,
+          portsLabelIdx,
+          mollBelowRoutes: mollIdx !== -1 && routesIdx !== -1 && mollIdx < routesIdx,
+          mollBelowPorts: mollIdx !== -1 && portsCoreIdx !== -1 && mollIdx < portsCoreIdx,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const layerStackVal = layerStackCheck?.result?.value;
+    assert(layerStackVal?.mollBelowRoutes, `Historical period raster layer (idx ${layerStackVal?.mollIdx}) is strictly below historical-routes-line (idx ${layerStackVal?.routesIdx})`);
+    assert(layerStackVal?.mollBelowPorts, `Historical period raster layer is strictly below historical-ports-core (idx ${layerStackVal?.portsCoreIdx})`);
+
+    // P8-003: Layer starts hidden (visibility: none)
+    const initialVisibilityCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const m = window.__CC_MAP__;
+        const layerVis = m?.getLayoutProperty("historical-reference-moll-1715-layer", "visibility");
+        const checkbox = document.querySelector("[data-layer-visibility-checkbox]");
+        const panel = document.querySelector("[data-layer-panel]");
+        const badge = document.querySelector("[data-layer-state-badge]");
+        return {
+          layerVis,
+          checkboxChecked: checkbox?.checked,
+          panelHidden: panel?.hasAttribute("hidden"),
+          badgeText: badge?.textContent?.trim(),
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const initVis = initialVisibilityCheck?.result?.value;
+    assert(initVis?.layerVis === "none", `Period map reference layer starts OFF by default (visibility: ${initVis?.layerVis})`);
+    assert(initVis?.checkboxChecked === false, "Period map visibility checkbox starts unchecked");
+    assert(initVis?.panelHidden === true, "Period map control panel starts collapsed/hidden");
+    assert(initVis?.badgeText === "Off", `Period map state badge displays "Off" (found: "${initVis?.badgeText}")`);
+
+    // P8-008: Open panel via toggle button
+    const openPanelResult = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector("[data-layer-toggle]");
+        toggle.click();
+        const panel = document.querySelector("[data-layer-panel]");
+        const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+        const panelHidden = panel.hasAttribute("hidden");
+        return { isExpanded, panelHidden };
+      })()`,
+      returnByValue: true,
+    });
+    assert(openPanelResult?.result?.value?.isExpanded && !openPanelResult?.result?.value?.panelHidden, "Clicking layer toggle expands control panel and sets aria-expanded=true");
+
+    // Mutual exclusivity: Opening locator menu closes layer panel
+    const mutualExclusivityCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const locatorToggle = document.querySelector("[data-locator-toggle]");
+        locatorToggle.click();
+        const layerPanel = document.querySelector("[data-layer-panel]");
+        const layerToggle = document.querySelector("[data-layer-toggle]");
+        const isLayerPanelHidden = layerPanel.hasAttribute("hidden");
+        const isLayerExpanded = layerToggle.getAttribute("aria-expanded") === "true";
+        // Close locator menu back
+        locatorToggle.click();
+        return { isLayerPanelHidden, isLayerExpanded };
+      })()`,
+      returnByValue: true,
+    });
+    assert(mutualExclusivityCheck?.result?.value?.isLayerPanelHidden, "Opening place locator menu automatically closes the period map control panel");
+
+    // Reopen layer panel
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector("[data-layer-toggle]").click();`,
+    });
+    await new Promise((r) => setTimeout(r, 200));
+
+    // P8-003: Toggle layer ON
+    const toggleOnResult = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const checkbox = document.querySelector("[data-layer-visibility-checkbox]");
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+        const m = window.__CC_MAP__;
+        const layerVis = m.getLayoutProperty("historical-reference-moll-1715-layer", "visibility");
+        const badge = document.querySelector("[data-layer-state-badge]");
+        const sliderGroup = document.querySelector("[data-layer-slider-group]");
+        return {
+          layerVis,
+          badgeText: badge?.textContent?.trim(),
+          badgeActiveClass: badge?.classList.contains("map-layer-control__badge--active"),
+          sliderGroupHidden: sliderGroup?.hasAttribute("hidden"),
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const toggleOnVal = toggleOnResult?.result?.value;
+    assert(toggleOnVal?.layerVis === "visible", `Toggling checkbox ON updates MapLibre layer visibility to "visible" (found: ${toggleOnVal?.layerVis})`);
+    assert(toggleOnVal?.badgeText === "On" && toggleOnVal?.badgeActiveClass, 'Badge updates to active "On" state');
+    assert(toggleOnVal?.sliderGroupHidden === false, "Opacity slider group is unhidden when layer is ON");
+
+    // P8-004: Continuous Opacity Adjustment (35%, 90%, 65%)
+    for (const testOpacity of [35, 90, 65]) {
+      const opacityResult = await send("Runtime.evaluate", {
+        expression: `(() => {
+          const slider = document.querySelector("[data-layer-opacity-slider]");
+          slider.value = "${testOpacity}";
+          slider.dispatchEvent(new Event("input", { bubbles: true }));
+          const m = window.__CC_MAP__;
+          const paintOpacity = m.getPaintProperty("historical-reference-moll-1715-layer", "raster-opacity");
+          const opacityValText = document.querySelector("[data-layer-opacity-val]")?.textContent?.trim();
+          const ariaValNow = slider.getAttribute("aria-valuenow");
+          return {
+            paintOpacity,
+            expectedOpacity: ${testOpacity / 100},
+            opacityValText,
+            ariaValNow,
+          };
+        })()`,
+        returnByValue: true,
+      });
+      const opVal = opacityResult?.result?.value;
+      const opacityMatch = Math.abs(opVal.paintOpacity - opVal.expectedOpacity) < 0.001;
+      assert(opacityMatch, `Opacity slider set to ${testOpacity}% sets MapLibre raster-opacity to ${testOpacity / 100} (found: ${opVal.paintOpacity})`);
+      assert(opVal.opacityValText === `${testOpacity}%`, `Opacity readout displays "${testOpacity}%"`);
+      assert(opVal.ariaValNow === `${testOpacity}`, `Slider aria-valuenow is "${testOpacity}"`);
+    }
+
+    if (!skipScreenshots) {
+      console.log("Capturing Packet 8 multi-viewport screenshots with Moll 1715 reference layer ON...");
+
+      // 1. Desktop 1440x900 with Layer ON
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await new Promise((r) => setTimeout(r, 600));
+      const mollDesktopShot = await send("Page.captureScreenshot", { format: "png" });
+      if (mollDesktopShot?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}desktop-moll-layer-on-1440x900.png`);
+        fs.writeFileSync(outPath, Buffer.from(mollDesktopShot.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}desktop-moll-layer-on-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}desktop-moll-layer-on-1440x900.png valid size (${size} bytes)`);
+      }
+
+      // 2. Desktop with Havana Selected + Inspector Docked + Layer ON
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_havana" } }));
+        })()`,
+      });
+      await new Promise((r) => setTimeout(r, 600));
+      const mollInspectorShot = await send("Page.captureScreenshot", { format: "png" });
+      if (mollInspectorShot?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}desktop-moll-layer-on-inspector-1440x900.png`);
+        fs.writeFileSync(outPath, Buffer.from(mollInspectorShot.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}desktop-moll-layer-on-inspector-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}desktop-moll-layer-on-inspector-1440x900.png valid size (${size} bytes)`);
+      }
+
+      // 3. Ultrawide 3440x1440 with Layer ON
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 3440,
+        height: 1440,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await new Promise((r) => setTimeout(r, 600));
+      const mollUltrawideShot = await send("Page.captureScreenshot", { format: "png" });
+      if (mollUltrawideShot?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}ultrawide-moll-layer-on-3440x1440.png`);
+        fs.writeFileSync(outPath, Buffer.from(mollUltrawideShot.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}ultrawide-moll-layer-on-3440x1440.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}ultrawide-moll-layer-on-3440x1440.png valid size (${size} bytes)`);
+      }
+
+      // 4. Mobile 390x844 with Layer ON
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 390,
+        height: 844,
+        deviceScaleFactor: 2,
+        mobile: true,
+      });
+      await new Promise((r) => setTimeout(r, 600));
+      const mollPhoneShot1 = await send("Page.captureScreenshot", { format: "png" });
+      if (mollPhoneShot1?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}phone-moll-layer-on-390x844.png`);
+        fs.writeFileSync(outPath, Buffer.from(mollPhoneShot1.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}phone-moll-layer-on-390x844.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}phone-moll-layer-on-390x844.png valid size (${size} bytes)`);
+      }
+
+      // 5. Mobile 430x932 with Layer ON
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 430,
+        height: 932,
+        deviceScaleFactor: 3,
+        mobile: true,
+      });
+      await new Promise((r) => setTimeout(r, 600));
+      const mollPhoneShot2 = await send("Page.captureScreenshot", { format: "png" });
+      if (mollPhoneShot2?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}phone-moll-layer-on-430x932.png`);
+        fs.writeFileSync(outPath, Buffer.from(mollPhoneShot2.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}phone-moll-layer-on-430x932.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}phone-moll-layer-on-430x932.png valid size (${size} bytes)`);
+      }
+
+      // Reset to Desktop for Source Drawer test
+      await send("Emulation.setDeviceMetricsOverride", {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      await new Promise((r) => setTimeout(r, 400));
+    }
+
+    // P8-005: Inspect Source & Provenance Path
+    // Reopen layer panel
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const toggle = document.querySelector("[data-layer-toggle]");
+        if (toggle.getAttribute("aria-expanded") !== "true") {
+          toggle.click();
+        }
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Click "Inspect Source & Provenance"
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const btn = document.querySelector("[data-layer-inspect-btn]");
+        btn.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 600));
+
+    const drawerInspectionCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById("source-drawer");
+        const isOpen = !drawer.hidden && drawer.getAttribute("aria-hidden") !== "true";
+        const text = drawer.innerText || "";
+        const hasMollTitle = text.includes("A map of the West-Indies");
+        const hasCallNumber = text.includes("G4390 1715 .M6");
+        const hasRights = text.includes("Library of Congress, Geography and Map Division");
+        const hasGeoreferenceAst = text.includes("georeference alignment") || text.includes("gdalwarp_polynomial_order_2") || text.includes("EPSG:3857");
+        return {
+          isOpen,
+          hasMollTitle,
+          hasCallNumber,
+          hasRights,
+          hasGeoreferenceAst,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const drawerVal = drawerInspectionCheck?.result?.value;
+    assert(drawerVal?.isOpen, "Clicking 'Inspect Source & Provenance' opens #source-drawer");
+    assert(drawerVal?.hasMollTitle, "Source Drawer contains Herman Moll 1715 title");
+    assert(drawerVal?.hasCallNumber, "Source Drawer displays LOC call number 'G4390 1715 .M6'");
+    assert(drawerVal?.hasRights, "Source Drawer displays verified LOC credit line");
+    assert(drawerVal?.hasGeoreferenceAst, "Source Drawer contains georeference alignment assertions");
+
+    if (!skipScreenshots) {
+      const mollDrawerShot = await send("Page.captureScreenshot", { format: "png" });
+      if (mollDrawerShot?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}desktop-moll-source-drawer-1440x900.png`);
+        fs.writeFileSync(outPath, Buffer.from(mollDrawerShot.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}desktop-moll-source-drawer-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}desktop-moll-source-drawer-1440x900.png valid size (${size} bytes)`);
+      }
+    }
+
+    // Close Source Drawer with Escape key
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    const drawerClosedCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById("source-drawer");
+        return { isHidden: drawer.hidden || drawer.getAttribute("aria-hidden") === "true" };
+      })()`,
+      returnByValue: true,
+    });
+    assert(drawerClosedCheck?.result?.value?.isHidden, "Pressing Escape closes #source-drawer");
+
+    // 28. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

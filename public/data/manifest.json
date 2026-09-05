@@ -5,9 +5,9 @@
   "publishedAt": "2026-09-04",
   "reviewStatus": "reviewed_for_publication",
   "counts": {
-    "sources": 7,
-    "source_records": 247,
-    "assertions": 1318,
+    "sources": 8,
+    "source_records": 248,
+    "assertions": 1323,
     "ship_occurrences": 21,
     "crew_occurrences": 26,
     "person_occurrences": 4,
@@ -19,7 +19,7 @@
     "routes": 21,
     "display_edges": 16,
     "events": 16,
-    "visuals": 1,
+    "visuals": 2,
     "source_coverages": 2,
     "dataset_context_places": 29
   }

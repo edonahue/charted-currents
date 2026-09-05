@@ -14,6 +14,8 @@ const PLACES = (entitiesData.places || []).map((p) => ({
   region: p.region,
   precision: p.geographic_precision.replace(/_/g, " "),
 }));
+
+const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_moll_west_indies_1715");
 ---
 
 <section class="map-viewport" aria-label="Greater Caribbean map" data-component="map-viewport">
@@ -72,6 +74,101 @@ const PLACES = (entitiesData.places || []).map((p) => ({
     </nav>
   </div>
 
+  <!-- Historical period map reference layer control (Packet 8) -->
+  <div
+    class="map-layer-control"
+    data-layer-control
+    data-rectified-url={MOLL_VISUAL?.rectified_asset_path ? `/${MOLL_VISUAL.rectified_asset_path}` : "/assets/visuals/moll-west-indies-1715-rectified.webp"}
+    data-coordinates={JSON.stringify(MOLL_VISUAL?.georeference?.coordinates || [])}
+    data-source-id={MOLL_VISUAL?.source_id || "src_loc_g4390_1715"}
+    data-assertion-ids={JSON.stringify(MOLL_VISUAL?.assertion_ids || [])}
+  >
+    <button
+      type="button"
+      class="map-layer-control__toggle"
+      aria-expanded="false"
+      aria-controls="map-layer-panel"
+      data-layer-toggle
+      title="Toggle 1715 Herman Moll reference map options"
+    >
+      <span class="map-layer-control__icon" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="10" height="10" rx="1" />
+          <path d="M2 5.5h10M5.5 2v10" />
+        </svg>
+      </span>
+      <span>Period Map</span>
+      <span class="map-layer-control__badge" data-layer-state-badge aria-hidden="true">Off</span>
+    </button>
+    <div
+      id="map-layer-panel"
+      class="map-layer-control__panel"
+      aria-label="Historical map reference layer options"
+      data-layer-panel
+      hidden
+    >
+      <div class="map-layer-control__header">
+        <div>
+          <p class="panel-kicker">Historical Reference</p>
+          <p class="map-layer-control__title">Herman Moll · ca. 1715</p>
+        </div>
+        <button
+          type="button"
+          class="map-layer-control__close"
+          aria-label="Close period map options"
+          data-layer-panel-close
+        >
+          <svg aria-hidden="true" width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 1l12 12M13 1L1 13" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="map-layer-control__body">
+        <label class="map-layer-control__switch">
+          <input
+            type="checkbox"
+            data-layer-visibility-checkbox
+            aria-label="Show Herman Moll 1715 reference map"
+          />
+          <span class="map-layer-control__switch-label">Show 1715 reference map</span>
+        </label>
+
+        <div class="map-layer-control__slider-group" data-layer-slider-group hidden>
+          <div class="map-layer-control__slider-header">
+            <label for="map-layer-opacity-slider" class="map-layer-control__slider-label">Opacity</label>
+            <span class="map-layer-control__opacity-val" data-layer-opacity-val aria-hidden="true">65%</span>
+          </div>
+          <input
+            type="range"
+            id="map-layer-opacity-slider"
+            data-layer-opacity-slider
+            min="10"
+            max="100"
+            value="65"
+            step="5"
+            aria-label="1715 map layer opacity"
+            aria-valuemin="10"
+            aria-valuemax="100"
+            aria-valuenow="65"
+          />
+        </div>
+
+        <p class="map-layer-control__epistemic-note">
+          18th-century chart projected over modern coordinates. Not observed ground truth.
+        </p>
+
+        <button
+          type="button"
+          class="map-layer-control__inspect-btn"
+          data-layer-inspect-btn
+        >
+          Inspect Source &amp; Provenance
+        </button>
+      </div>
+    </div>
+  </div>
+
   <p class="map-viewport__status sr-only" data-map-status role="status" aria-live="polite"></p>
 </section>
 
@@ -95,6 +192,17 @@ const PLACES = (entitiesData.places || []).map((p) => ({
   const locatorToggle = document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
   const locatorMenu = document.querySelector<HTMLElement>("[data-locator-menu]");
   const locatorItems = Array.from(document.querySelectorAll<HTMLButtonElement>(".map-locator-browser__item"));
+
+  const layerControl = document.querySelector<HTMLElement>("[data-layer-control]");
+  const layerToggle = document.querySelector<HTMLButtonElement>("[data-layer-toggle]");
+  const layerPanel = document.querySelector<HTMLElement>("[data-layer-panel]");
+  const layerPanelClose = document.querySelector<HTMLButtonElement>("[data-layer-panel-close]");
+  const layerBadge = document.querySelector<HTMLElement>("[data-layer-state-badge]");
+  const visibilityCheckbox = document.querySelector<HTMLInputElement>("[data-layer-visibility-checkbox]");
+  const sliderGroup = document.querySelector<HTMLElement>("[data-layer-slider-group]");
+  const opacitySlider = document.querySelector<HTMLInputElement>("[data-layer-opacity-slider]");
+  const opacityVal = document.querySelector<HTMLElement>("[data-layer-opacity-val]");
+  const inspectBtn = document.querySelector<HTMLButtonElement>("[data-layer-inspect-btn]");
 
   let map: Map | null = null;
   let previousSelectedFeatureId: string | null = null;
@@ -121,6 +229,8 @@ const PLACES = (entitiesData.places || []).map((p) => ({
         touchPitch: false,
         attributionControl: false,
       });
+
+      (window as any).__CC_MAP__ = map;
 
       map.addControl(
         new AttributionControl({
@@ -156,6 +266,7 @@ const PLACES = (entitiesData.places || []).map((p) => ({
       });
 
       initLocatorBrowser();
+      initLayerControl(map);
     } catch (err) {
       console.error("Map initialization failed:", err);
       if (status) status.textContent = "Map failed to initialize.";
@@ -194,6 +305,51 @@ const PLACES = (entitiesData.places || []).map((p) => ({
           "line-dasharray": [3, 2.5],
         },
       });
+
+      // Add period map reference source and raster layer (Packet 8)
+      // Placed before "historical-routes-line" so routes and ports render on top
+      const rectifiedUrl = layerControl?.dataset.rectifiedUrl || "/assets/visuals/moll-west-indies-1715-rectified.webp";
+      let coordinates: [[number, number], [number, number], [number, number], [number, number]] = [
+        [-113.151907, 44.449585],
+        [-39.198751, 44.449585],
+        [-39.198751, 1.629071],
+        [-113.151907, 1.629071],
+      ];
+      if (layerControl?.dataset.coordinates) {
+        try {
+          const parsed = JSON.parse(layerControl.dataset.coordinates);
+          if (Array.isArray(parsed) && parsed.length === 4) {
+            coordinates = parsed as [[number, number], [number, number], [number, number], [number, number]];
+          }
+        } catch (e) {
+          console.error("Failed to parse georeference coordinates:", e);
+        }
+      }
+
+      m.addSource("historical-reference-moll-1715", {
+        type: "image",
+        url: rectifiedUrl,
+        coordinates,
+      });
+
+      const isLayerVisible = visibilityCheckbox?.checked ?? false;
+      const initialOpacity = opacitySlider ? Number(opacitySlider.value) / 100 : 0.65;
+
+      m.addLayer(
+        {
+          id: "historical-reference-moll-1715-layer",
+          type: "raster",
+          source: "historical-reference-moll-1715",
+          layout: {
+            visibility: isLayerVisible ? "visible" : "none",
+          },
+          paint: {
+            "raster-opacity": initialOpacity,
+            "raster-resampling": "linear",
+          },
+        },
+        "historical-routes-line"
+      );
 
       // Hit-target layer for routes
       m.addLayer({
@@ -593,6 +749,7 @@ const PLACES = (entitiesData.places || []).map((p) => ({
 
   function openLocatorMenu(focusFirstItem = false): void {
     if (!locatorMenu || !locatorToggle || !locatorBrowser) return;
+    closeLayerPanel();
     locatorMenu.hidden = false;
     locatorToggle.setAttribute("aria-expanded", "true");
     locatorBrowser.classList.add("is-open");
@@ -606,6 +763,113 @@ const PLACES = (entitiesData.places || []).map((p) => ({
     locatorMenu.hidden = true;
     locatorToggle.setAttribute("aria-expanded", "false");
     locatorBrowser.classList.remove("is-open");
+  }
+
+  function openLayerPanel(): void {
+    if (!layerPanel || !layerToggle) return;
+    closeLocatorMenu();
+    layerPanel.removeAttribute("hidden");
+    layerToggle.setAttribute("aria-expanded", "true");
+    visibilityCheckbox?.focus();
+  }
+
+  function closeLayerPanel(): void {
+    if (!layerPanel || !layerToggle) return;
+    layerPanel.setAttribute("hidden", "");
+    layerToggle.setAttribute("aria-expanded", "false");
+  }
+
+  function initLayerControl(m: Map): void {
+    if (!layerControl || !layerToggle || !layerPanel) return;
+
+    layerToggle.addEventListener("click", () => {
+      const isExpanded = layerToggle.getAttribute("aria-expanded") === "true";
+      if (isExpanded) {
+        closeLayerPanel();
+      } else {
+        openLayerPanel();
+      }
+    });
+
+    layerPanelClose?.addEventListener("click", () => {
+      closeLayerPanel();
+      layerToggle.focus();
+    });
+
+    layerPanel.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        closeLayerPanel();
+        layerToggle.focus();
+      }
+    });
+
+    visibilityCheckbox?.addEventListener("change", () => {
+      const isVisible = visibilityCheckbox.checked;
+      if (m.getLayer("historical-reference-moll-1715-layer")) {
+        m.setLayoutProperty(
+          "historical-reference-moll-1715-layer",
+          "visibility",
+          isVisible ? "visible" : "none"
+        );
+      }
+      if (layerBadge) {
+        layerBadge.textContent = isVisible ? "On" : "Off";
+        layerBadge.classList.toggle("map-layer-control__badge--active", isVisible);
+      }
+      if (sliderGroup) {
+        if (isVisible) {
+          sliderGroup.removeAttribute("hidden");
+        } else {
+          sliderGroup.setAttribute("hidden", "");
+        }
+      }
+      if (status) {
+        status.textContent = isVisible
+          ? "1715 Herman Moll reference map layer enabled."
+          : "1715 Herman Moll reference map layer disabled.";
+      }
+    });
+
+    opacitySlider?.addEventListener("input", () => {
+      const val = Number(opacitySlider.value);
+      const opacity = val / 100;
+      if (opacityVal) {
+        opacityVal.textContent = `${val}%`;
+      }
+      opacitySlider.setAttribute("aria-valuenow", String(val));
+      if (m.getLayer("historical-reference-moll-1715-layer")) {
+        m.setPaintProperty("historical-reference-moll-1715-layer", "raster-opacity", opacity);
+      }
+    });
+
+    inspectBtn?.addEventListener("click", () => {
+      const sourceId = layerControl.dataset.sourceId || "src_loc_g4390_1715";
+      let assertionIds: string[] = [];
+      try {
+        assertionIds = JSON.parse(layerControl.dataset.assertionIds || "[]");
+      } catch (err) {
+        console.error("Failed to parse assertion IDs:", err);
+      }
+
+      window.dispatchEvent(
+        new CustomEvent("cc:open-source", {
+          detail: {
+            sourceId,
+            assertionIds,
+            triggerEl: inspectBtn,
+          },
+        })
+      );
+      closeLayerPanel();
+    });
+
+    window.addEventListener("click", (e) => {
+      if (!layerControl.contains(e.target as Node)) {
+        closeLayerPanel();
+      }
+    });
   }
 
   function initLocatorBrowser(): void {
@@ -864,10 +1128,226 @@ const PLACES = (entitiesData.places || []).map((p) => ({
     color: var(--cc-ink-muted);
   }
 
+  /* Historical period map reference layer control styles */
+  .map-layer-control {
+    position: absolute;
+    top: 1rem;
+    left: calc(1rem + 10.5rem);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .map-layer-control__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-sm);
+    color: var(--cc-ink);
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: background 150ms ease, border-color 150ms ease;
+  }
+
+  .map-layer-control__toggle:hover {
+    background: var(--cc-paper);
+    border-color: var(--cc-sand);
+  }
+
+  .map-layer-control__toggle:focus-visible {
+    outline: 2px solid var(--cc-atlantic);
+    outline-offset: 2px;
+  }
+
+  .map-layer-control__icon {
+    display: inline-flex;
+    color: var(--cc-sand);
+  }
+
+  .map-layer-control__badge {
+    padding: 0.1rem 0.35rem;
+    border-radius: var(--cc-radius-xs);
+    font-family: var(--cc-font-mono);
+    font-size: 0.65rem;
+    color: var(--cc-ink-muted);
+    background: var(--cc-paper);
+    border: 1px solid var(--cc-line);
+    transition: all 150ms ease;
+  }
+
+  .map-layer-control__badge--active {
+    color: var(--cc-caribbean-blue, #19526e);
+    background: color-mix(in srgb, var(--cc-caribbean-blue, #19526e) 12%, var(--cc-paper));
+    border-color: color-mix(in srgb, var(--cc-caribbean-blue, #19526e) 30%, transparent);
+    font-weight: 600;
+  }
+
+  .map-layer-control__panel {
+    margin-top: 0.35rem;
+    width: 270px;
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-sm);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .map-layer-control__panel[hidden] {
+    display: none;
+  }
+
+  .map-layer-control__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid var(--cc-line);
+  }
+
+  .map-layer-control__title {
+    margin: 0.15rem 0 0;
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    font-weight: 600;
+    color: var(--cc-ink);
+  }
+
+  .map-layer-control__close {
+    background: transparent;
+    border: none;
+    color: var(--cc-ink-muted);
+    cursor: pointer;
+    padding: 0.2rem;
+    border-radius: var(--cc-radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-layer-control__close:hover,
+  .map-layer-control__close:focus-visible {
+    color: var(--cc-ink);
+    background: var(--cc-paper);
+    outline: none;
+  }
+
+  .map-layer-control__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .map-layer-control__switch {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink);
+    user-select: none;
+  }
+
+  .map-layer-control__switch input[type="checkbox"] {
+    accent-color: var(--cc-caribbean-blue, #19526e);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+
+  .map-layer-control__switch-label {
+    font-weight: 500;
+  }
+
+  .map-layer-control__slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.5rem 0.65rem;
+    background: var(--cc-paper);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+  }
+
+  .map-layer-control__slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .map-layer-control__slider-label {
+    font-family: var(--cc-font-mono);
+    font-size: 0.65rem;
+    color: var(--cc-ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .map-layer-control__opacity-val {
+    font-family: var(--cc-font-mono);
+    font-size: 0.7rem;
+    color: var(--cc-ink);
+    font-weight: 500;
+  }
+
+  .map-layer-control__slider-group input[type="range"] {
+    width: 100%;
+    accent-color: var(--cc-caribbean-blue, #19526e);
+    cursor: pointer;
+  }
+
+  .map-layer-control__epistemic-note {
+    margin: 0;
+    font-family: var(--cc-font-sans);
+    font-size: 0.68rem;
+    line-height: 1.35;
+    color: var(--cc-ink-muted);
+    font-style: italic;
+  }
+
+  .map-layer-control__inspect-btn {
+    width: 100%;
+    padding: 0.4rem 0.65rem;
+    background: transparent;
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+    text-align: center;
+  }
+
+  .map-layer-control__inspect-btn:hover,
+  .map-layer-control__inspect-btn:focus-visible {
+    background: var(--cc-paper);
+    border-color: var(--cc-sand);
+    outline: none;
+  }
+
   @media (max-width: 767px) {
     .map-locator-browser {
       top: 0.75rem;
       left: 0.75rem;
+    }
+    .map-layer-control {
+      top: 0.75rem;
+      left: calc(0.75rem + 8.8rem);
+    }
+    .map-layer-control__panel {
+      right: 0.75rem;
+      left: auto;
+      max-width: calc(100vw - 1.5rem);
     }
     .map-epistemic-legend {
       bottom: 4.5rem;

@@ -33,6 +33,7 @@
     "review:capture-packet5": "node scripts/capture-reviews.mjs --packet=packet5",
     "review:capture-packet6": "node scripts/capture-reviews.mjs --packet=packet6",
     "review:capture-packet7": "node scripts/capture-reviews.mjs --packet=packet7",
+    "review:capture-packet8": "node scripts/capture-reviews.mjs --packet=packet8",
     "historical:review-bundle": "node scripts/generate-review-bundle.mjs",
     "packet:report": "node scripts/packet-report.mjs"
   },
