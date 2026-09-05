@@ -377,6 +377,15 @@ export interface PublishedEvent {
   assertion_ids: string[];
 }
 
+export interface PublishedVisualGeoreference {
+  coordinates: [[number, number], [number, number], [number, number], [number, number]];
+  projection: string;
+  method: string;
+  gcp_count: number;
+  rmse_approx_km?: number;
+  epistemic_disclaimer: string;
+}
+
 export interface PublishedVisual {
   id: string;
   title: string;
@@ -392,7 +401,10 @@ export interface PublishedVisual {
   rights_state: string;
   credit_line: string;
   asset_path: string;
+  rectified_asset_path?: string;
+  georeference?: PublishedVisualGeoreference;
   assertion_ids: string[];
+  notes?: string;
 }
 
 export interface PublishedEntities {

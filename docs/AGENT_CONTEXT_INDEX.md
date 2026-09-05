@@ -8,9 +8,10 @@ Use this file to load **the minimum useful context for the task**. Do not read t
 - Packet 2 historical corpus, provenance hardening, and deterministic publication pipeline are complete and hosted-verified.
 - Packet 3 public-beta quality, 15-vessel corpus expansion, period filtering, route aggregation, and open search indexing are complete and deployed on `main`.
 - Packet 4 source adapters, Crespo/PARES provenance hardening, multilingual attestations, and the first Spanish Atlantic sample are complete on `main`.
-- Packet 5 planning is the current next product phase: broader Greater Caribbean / deeper Carrera relationships, with a deliberately bounded source-integrity foundation gate.
-
-A short **scholarly-integrity interstitial** is planned between feature packets to establish scalable historical-review bundles, assertion-risk/review states, and parallel-auditor conventions without replacing or derailing the existing packet roadmap.
+- Packet 5 foundation, broader Greater Caribbean Carrera coverage, and scholarly integrity framework are complete, accepted, and merged on `main`.
+- Packet 6 recorded goods across Spanish Atlantic and Dutch Caribbean (MERCANCIAS itemization, commodity cross-tabulation, and contradiction reconciliation) are complete, accepted, and merged on `main`.
+- Packet 7 place-centered dataset context, TodosNavios analytical derivation, and deterministic place mapping are complete, accepted, and merged on `main`.
+- Packet 8 (First Period Map Reference Layer) is the active product phase: integrating Herman Moll's 1715 chart (*A map of the West-Indies...*, LOC `gm71005442`) as an inspectable, provenance-rich reference layer over modern MapLibre geography.
 
 The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–4 interaction/provenance architecture.
 

@@ -19,6 +19,8 @@
     "data:validate-dataset-context": "node scripts/validate-dataset-context.mjs",
     "data:summary": "node scripts/data-summary.mjs",
     "data:verify-crespo-acquisition": "python3 data/pipeline/adapters/crespo_profile.py --verify-only",
+    "data:verify-moll-acquisition": "python3 scripts/acquire-moll-1715.py --verify-only",
+    "data:verify-moll-georeference": "python3 scripts/georeference-moll-1715.py --verify-only",
     "data:profile-crespo": "python3 data/pipeline/adapters/crespo_profile.py",
     "data:extract-crespo": "python3 data/pipeline/adapters/crespo_extract.py",
     "data:audit-crespo-mdbtools": "python3 scripts/audit-crespo-mdbtools.py",
@@ -33,6 +35,7 @@
     "review:capture-packet5": "node scripts/capture-reviews.mjs --packet=packet5",
     "review:capture-packet6": "node scripts/capture-reviews.mjs --packet=packet6",
     "review:capture-packet7": "node scripts/capture-reviews.mjs --packet=packet7",
+    "review:capture-packet8": "node scripts/capture-reviews.mjs --packet=packet8",
     "historical:review-bundle": "node scripts/generate-review-bundle.mjs",
     "packet:report": "node scripts/packet-report.mjs"
   },
