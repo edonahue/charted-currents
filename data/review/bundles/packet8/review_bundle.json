@@ -1,0 +1,120 @@
+{
+  "bundle_type": "historical_review_bundle",
+  "packet": "Packet 8 — First Period Map Reference Layer",
+  "comparison": {
+    "base_ref": "origin/main",
+    "branch": "packet8-period-map-layer"
+  },
+  "summary_counts": {
+    "corpus_version": "0.7.0",
+    "total_added_assertions": 5,
+    "total_added_source_records": 1,
+    "total_added_ships": 0,
+    "total_goods_occurrences": 160,
+    "added_assertion_epistemic_classes": {
+      "class_a_direct_transcription": 4,
+      "class_b_deterministic_transformation": 0,
+      "class_c_relational_derivation": 0,
+      "class_d_identity_resolution": 0,
+      "class_e_changed_prose_count": 0,
+      "class_f_reconstructed_model": 1
+    },
+    "by_epistemic_class": {
+      "class_a_direct_transcription": 4,
+      "class_b_deterministic_transformation": 0,
+      "class_c_relational_derivation": 0,
+      "class_d_identity_resolution": 0,
+      "class_e_changed_prose_count": 0,
+      "class_f_reconstructed_model": 1
+    },
+    "analytical_derivation_contract_count": 0
+  },
+  "ethical_compliance": {
+    "status": "PASS",
+    "enslaved_persons_exclusion_verified": true,
+    "verification_note": "Historical cartographic reference layer depicts regional geography, trade winds, and fleet tracks from Herman Moll's 1715 chart. No human beings or cargo lines are quantified or commodified."
+  },
+  "exception_queue": [
+    {
+      "id": "EXC-P8-001",
+      "category": "HISTORICAL_PROJECTION_DISCREPANCY",
+      "severity": "INFORMATIONAL_ADVISORY",
+      "subject": "Herman Moll ca. 1715 West-Indies Chart",
+      "summary": "18th-century cartographic projection exhibits regional discrepancies against modern WGS84 coordinates across the Greater Caribbean basin.",
+      "finding": "Cartography is preserved as historical evidence and reference context over modern MapLibre geography, not modern survey ground truth. Epistemic disclaimer published in Source Drawer, layer control, and georeference report.",
+      "status": "PRESERVED_AS_EVIDENCE"
+    }
+  ],
+  "dataset_context_summary": null,
+  "cartographic_provenance": {
+    "source_id": "src_loc_g4390_1715",
+    "holding_institution": "Library of Congress Geography and Map Division",
+    "call_number": "G4390 1715 .M6",
+    "digital_id": "g4390.ct003986",
+    "item_url": "https://www.loc.gov/item/gm71005442/",
+    "rights_state": "open_public_domain",
+    "credit_line": "Library of Congress, Geography and Map Division",
+    "neatline_crop": {
+      "x": 20,
+      "y": 91,
+      "w": 5990,
+      "h": 2804
+    },
+    "gcp_count": 14,
+    "rmse_in_sample_km": 94.35,
+    "rmse_loocv_km": 237.89,
+    "projection": "EPSG:3857",
+    "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth."
+  },
+  "added_source_records": [
+    {
+      "id": "sr_loc_ct003986",
+      "source_id": "src_loc_g4390_1715",
+      "record_type": "historical_map",
+      "inspection_state": "digital_content_inspected",
+      "native_identifier": "gm71005442 / G4390 1715 .M6 / ct003986"
+    }
+  ],
+  "epistemic_classes": {
+    "class_a_sample": [
+      {
+        "id": "ast_loc_moll_map_title",
+        "field": "map_title",
+        "source_record_id": "sr_loc_ct003986"
+      },
+      {
+        "id": "ast_loc_moll_map_date",
+        "field": "map_date",
+        "source_record_id": "sr_loc_ct003986"
+      },
+      {
+        "id": "ast_loc_moll_map_trade_winds",
+        "field": "cartographic_feature_inscription",
+        "raw_value": "also ye trade winds",
+        "source_record_id": "sr_loc_ct003986"
+      },
+      {
+        "id": "ast_loc_moll_map_flota_tracks",
+        "field": "cartographic_feature_inscription",
+        "raw_value": "and ye several tracts made by ye galeons and flota from place to place",
+        "source_record_id": "sr_loc_ct003986"
+      }
+    ],
+    "class_b_all": [],
+    "class_c_sample": [],
+    "class_d_edges": [],
+    "class_e_changed_prose": [],
+    "class_f_all": [
+      {
+        "id": "ast_loc_moll_georeference",
+        "field": "georeference_alignment",
+        "derived_value": "EPSG:3857 second-order polynomial spatial alignment across 14 historical ground control points",
+        "derivation_method": "gdalwarp_polynomial_order_2",
+        "source_assertion_id": "ast_loc_moll_map_title",
+        "rmse_in_sample_km": 94.35,
+        "rmse_loocv_km": 237.89,
+        "notes": "Project-constructed spatial alignment. Second-order polynomial warp fitted against 14 recognizable Caribbean coastal and harbor features. Regional projection discrepancies preserved as empirical evidence."
+      }
+    ]
+  }
+}

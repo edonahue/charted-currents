@@ -62,6 +62,18 @@ sources:
   attribution_required: true
   credit_line: Library of Congress, Geography and Map Division
   notes: Engraved map created [1684?]; no known copyright restrictions in digitized collection.
+- id: src_loc_g4390_1715
+  title: 'A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning [sic] what belongs to Spain, England, France, Holland, &c. also ye trade winds, and ye several tracts made by ye galeons and flota from place to place'
+  creator: Herman Moll
+  publisher: Thomas Bowles; John Bowles
+  holding_institution: Library of Congress Geography and Map Division
+  stable_identifier: G4390 1715 .M6 / g4390.ct003986
+  item_url: https://www.loc.gov/item/gm71005442/
+  rights_posture: open_public_domain
+  public_use_basis: open_public_domain
+  attribution_required: true
+  credit_line: Library of Congress, Geography and Map Division
+  notes: 'Engraved regional chart of the Greater Caribbean, trade winds, and Spanish fleet tracks, [1715?]. Imprint: Printed for Tho. Bowles... and I. Bowles...'
 - id: src_crespo_dyncoopnet
   title: CrespoDynCoopNet DATA Collections / CrespoDATABASEAtlanticTrade
   creator: Crespo Solana, Ana (CSIC)
@@ -361,6 +373,11 @@ source_records:
   source_id: src_loc_g4960_1684
   record_type: catalog_map_item
   native_identifier: 99463761 / ct008911
+  inspection_state: digital_content_inspected
+- id: sr_loc_ct003986
+  source_id: src_loc_g4390_1715
+  record_type: historical_map
+  native_identifier: gm71005442 / G4390 1715 .M6 / ct003986
   inspection_state: digital_content_inspected
 - id: sr_crespo_navio_6156
   source_id: src_crespo_dyncoopnet
@@ -2526,6 +2543,38 @@ assertions:
   field: cartographic_place_label
   raw_value: Port Royall
   notes: Port Royal depicted and labeled on the 1684 Bochart & Knollis map of Jamaica (ct008911).
+- id: ast_loc_moll_map_title
+  source_record_id: sr_loc_ct003986
+  field: map_title
+  raw_title: 'A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning [sic] what belongs to Spain, England, France, Holland, &c. also ye trade winds, and ye several tracts made by ye galeons and flota from place to place'
+- id: ast_loc_moll_map_date
+  source_record_id: sr_loc_ct003986
+  field: map_date
+  year_recorded: 1715
+  date_display: '[1715?]'
+  is_uncertain: true
+  notes: Catalogued by Library of Congress as [1715?]. Imprint records publication by Thomas Bowles and John Bowles in London.
+- id: ast_loc_moll_map_trade_winds
+  source_record_id: sr_loc_ct003986
+  field: cartographic_feature_inscription
+  raw_value: also ye trade winds
+  notes: Engraved directional arrows and seasonal wind notations across the Caribbean basin and western North Atlantic.
+- id: ast_loc_moll_map_flota_tracks
+  source_record_id: sr_loc_ct003986
+  field: cartographic_feature_inscription
+  raw_value: and ye several tracts made by ye galeons and flota from place to place
+  notes: Engraved sailing tracks showing the return routes of the Spanish Galleons and Nueva España Flota via Havana and the Florida Strait.
+- id: ast_loc_moll_georeference
+  source_record_id: sr_loc_ct003986
+  field: georeference_alignment
+  source_assertion_id: ast_loc_moll_map_title
+  risk_class: F
+  epistemic_class: F
+  derived_value: EPSG:3857 second-order polynomial spatial alignment across 14 historical ground control points
+  derivation_method: gdalwarp_polynomial_order_2
+  rmse_in_sample_km: 94.35
+  rmse_loocv_km: 237.89
+  notes: Project-constructed spatial alignment. Second-order polynomial warp fitted against 14 recognizable Caribbean coastal and harbor features. Regional projection discrepancies preserved as empirical evidence.
 - id: ast_crespo_6156_name
   source_record_id: sr_crespo_navio_6156
   field: vessel_name
@@ -11809,6 +11858,42 @@ visuals:
   - ast_loc_map_title
   - ast_loc_map_date
   - ast_loc_map_port_royal
+- id: visual_moll_west_indies_1715
+  title: 'A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning [sic] what belongs to Spain, England, France, Holland, &c. also ye trade winds, and ye several tracts made by ye galeons and flota from place to place'
+  creators:
+  - Herman Moll
+  - Thomas Bowles (Publisher)
+  - John Bowles (Publisher)
+  date_display: '[1715?]'
+  year_recorded: 1715
+  is_uncertain: true
+  source_id: src_loc_g4390_1715
+  holding_institution: Library of Congress Geography and Map Division
+  call_number: G4390 1715 .M6
+  digital_id: g4390.ct003986
+  item_url: https://www.loc.gov/item/gm71005442/
+  rights_state: open_public_domain
+  credit_line: Library of Congress, Geography and Map Division
+  asset_path: assets/visuals/moll-west-indies-1715.jpg
+  rectified_asset_path: assets/visuals/moll-west-indies-1715-rectified.webp
+  georeference:
+    coordinates:
+    - [-113.151907, 44.449585]
+    - [-39.198751, 44.449585]
+    - [-39.198751, 1.629071]
+    - [-113.151907, 1.629071]
+    projection: EPSG:3857
+    method: gdalwarp_polynomial_order_2
+    gcp_count: 14
+    rmse_in_sample_km: 94.35
+    rmse_loocv_km: 237.89
+    epistemic_disclaimer: Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth.
+  assertion_ids:
+  - ast_loc_moll_map_title
+  - ast_loc_moll_map_date
+  - ast_loc_moll_map_trade_winds
+  - ast_loc_moll_map_flota_tracks
+  - ast_loc_moll_georeference
 source_coverages:
 - source_id: src_imlm_ukda_852135
   short_label: IMLM Prize Papers

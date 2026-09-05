@@ -6573,6 +6573,60 @@
         "ast_loc_map_date",
         "ast_loc_map_port_royal"
       ]
+    },
+    {
+      "id": "visual_moll_west_indies_1715",
+      "title": "A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning [sic] what belongs to Spain, England, France, Holland, &c. also ye trade winds, and ye several tracts made by ye galeons and flota from place to place",
+      "creators": [
+        "Herman Moll",
+        "Thomas Bowles (Publisher)",
+        "John Bowles (Publisher)"
+      ],
+      "date_display": "[1715?]",
+      "year_recorded": 1715,
+      "is_uncertain": true,
+      "source_id": "src_loc_g4390_1715",
+      "holding_institution": "Library of Congress Geography and Map Division",
+      "call_number": "G4390 1715 .M6",
+      "digital_id": "g4390.ct003986",
+      "item_url": "https://www.loc.gov/item/gm71005442/",
+      "rights_state": "open_public_domain",
+      "credit_line": "Library of Congress, Geography and Map Division",
+      "asset_path": "assets/visuals/moll-west-indies-1715.jpg",
+      "rectified_asset_path": "assets/visuals/moll-west-indies-1715-rectified.webp",
+      "georeference": {
+        "coordinates": [
+          [
+            -113.151907,
+            44.449585
+          ],
+          [
+            -39.198751,
+            44.449585
+          ],
+          [
+            -39.198751,
+            1.629071
+          ],
+          [
+            -113.151907,
+            1.629071
+          ]
+        ],
+        "projection": "EPSG:3857",
+        "method": "gdalwarp_polynomial_order_2",
+        "gcp_count": 14,
+        "rmse_in_sample_km": 94.35,
+        "rmse_loocv_km": 237.89,
+        "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth."
+      },
+      "assertion_ids": [
+        "ast_loc_moll_map_title",
+        "ast_loc_moll_map_date",
+        "ast_loc_moll_map_trade_winds",
+        "ast_loc_moll_map_flota_tracks",
+        "ast_loc_moll_georeference"
+      ]
     }
   ],
   "source_coverages": [

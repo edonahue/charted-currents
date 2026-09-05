@@ -162,6 +162,11 @@
     if (field === "map_title") return `"${ast.raw_title || ast.raw_value || ""}"`;
     if (field === "map_date") return `${ast.date_display || ast.year_recorded || ""}`;
     if (field === "cartographic_place_label") return `"${ast.raw_value}" depicted and labeled on contemporary chart`;
+    if (field === "cartographic_feature") return String(ast.raw_value || "");
+    if (field === "georeference_alignment") {
+      const method = ast.derivation_method ? ` · Method: ${ast.derivation_method.replace(/_/g, " ")}` : "";
+      return `${ast.derived_value || ast.raw_value || ""} [Project-derived${method}]`;
+    }
 
     // Fallback
     const kv = Object.entries(ast)
