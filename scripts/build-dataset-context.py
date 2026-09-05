@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = REPO_ROOT / "data" / "analytics" / "crespo.duckdb"
+DB_PATH = Path(os.environ.get("CRESPO_DUCKDB_PATH", str(REPO_ROOT / "data" / "analytics" / "crespo.duckdb")))
 MAPPING_PATH = REPO_ROOT / "data" / "mapping" / "crespo_places.yml"
 OUTPUT_PATH = REPO_ROOT / "public" / "data" / "dataset_context.json"
 
@@ -83,7 +83,10 @@ def load_mappings():
 
 def compute_dataset_context():
     if not DB_PATH.exists():
-        sys.stderr.write(f"Error: Crespo DuckDB mirror not found at {DB_PATH}.\nLocal build requires the analytical database mirror.\n")
+        if OUTPUT_PATH.exists():
+            print(f"[NOTE] Crespo DuckDB mirror not present at {DB_PATH}. Preserving committed {OUTPUT_PATH} (CI / mirrorless mode).")
+            return
+        sys.stderr.write(f"Error: Crespo DuckDB mirror not found at {DB_PATH} and precomputed artifact {OUTPUT_PATH} does not exist.\n")
         sys.exit(1)
 
     mapping_data = load_mappings()
