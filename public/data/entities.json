@@ -6582,9 +6582,9 @@
         "Thomas Bowles (Publisher)",
         "John Bowles (Publisher)"
       ],
-      "date_display": "1715",
+      "date_display": "[1715?]",
       "year_recorded": 1715,
-      "is_uncertain": false,
+      "is_uncertain": true,
       "source_id": "src_loc_g4390_1715",
       "holding_institution": "Library of Congress Geography and Map Division",
       "call_number": "G4390 1715 .M6",
@@ -6616,8 +6616,9 @@
         "projection": "EPSG:3857",
         "method": "gdalwarp_polynomial_order_2",
         "gcp_count": 14,
-        "rmse_approx_km": 94.4,
-        "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's 1715 engraved chart. Longitudinal and coastal distortions reflect pre-chronometer 18th-century cartographic practice and are preserved as empirical historical evidence, not modern survey ground truth."
+        "rmse_in_sample_km": 94.35,
+        "rmse_loocv_km": 237.89,
+        "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth."
       },
       "assertion_ids": [
         "ast_loc_moll_map_title",

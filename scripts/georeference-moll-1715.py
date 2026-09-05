@@ -17,9 +17,11 @@ Supports:
 import argparse
 import hashlib
 import json
+import math
 import os
 import subprocess
 import sys
+import numpy as np
 from PIL import Image
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -57,9 +59,10 @@ NEATLINE_CROP = {
 }
 
 EPISTEMIC_DISCLAIMER = (
-    "Modern georeferenced alignment of Herman Moll's 1715 engraved chart. "
-    "Longitudinal and coastal distortions reflect pre-chronometer 18th-century cartographic practice "
-    "and are preserved as empirical historical evidence, not modern survey ground truth."
+    "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) "
+    "using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. "
+    "Regional discrepancies between 18th-century cartography and modern WGS84 coordinates "
+    "are preserved as empirical historical evidence rather than modern survey ground truth."
 )
 
 
@@ -69,6 +72,74 @@ def compute_sha256(filepath: str) -> str:
         while chunk := f.read(65536):
             h.update(chunk)
     return h.hexdigest()
+
+
+def lnglat_to_merc(lng: float, lat: float):
+    R = 6378137.0
+    x = R * math.radians(lng)
+    y = R * math.log(math.tan(math.pi / 4.0 + math.radians(lat) / 2.0))
+    return x, y
+
+
+def build_poly2_matrix(pts):
+    rows = []
+    for px, py in pts:
+        rows.append([1.0, px, py, px**2, px * py, py**2])
+    return np.array(rows, dtype=np.float64)
+
+
+def compute_gcp_residuals():
+    crop_x = NEATLINE_CROP["x"]
+    crop_y = NEATLINE_CROP["y"]
+    pts_px = np.array([[g[0] - crop_x, g[1] - crop_y] for g in GCPS], dtype=np.float64)
+    target_merc = np.array([lnglat_to_merc(g[2], g[3]) for g in GCPS], dtype=np.float64)
+
+    A = build_poly2_matrix(pts_px)
+    cx, _, _, _ = np.linalg.lstsq(A, target_merc[:, 0], rcond=None)
+    cy, _, _, _ = np.linalg.lstsq(A, target_merc[:, 1], rcond=None)
+
+    pred_x = A @ cx
+    pred_y = A @ cy
+    dx = pred_x - target_merc[:, 0]
+    dy = pred_y - target_merc[:, 1]
+    in_sample_res_m = np.sqrt(dx**2 + dy**2)
+    rmse_in_sample_km = round(float(np.sqrt(np.mean(in_sample_res_m**2)) / 1000.0), 2)
+
+    n = len(GCPS)
+    loocv_res_m = []
+    for i in range(n):
+        mask = np.ones(n, dtype=bool)
+        mask[i] = False
+        A_train = A[mask]
+        target_train = target_merc[mask]
+        cxi, _, _, _ = np.linalg.lstsq(A_train, target_train[:, 0], rcond=None)
+        cyi, _, _, _ = np.linalg.lstsq(A_train, target_train[:, 1], rcond=None)
+
+        test_A = A[i : i + 1]
+        test_px = test_A @ cxi
+        test_py = test_A @ cyi
+        res_i = math.sqrt((test_px[0] - target_merc[i, 0]) ** 2 + (test_py[0] - target_merc[i, 1]) ** 2)
+        loocv_res_m.append(res_i)
+
+    rmse_loocv_km = round(float(math.sqrt(sum(r**2 for r in loocv_res_m) / n) / 1000.0), 2)
+
+    gcp_details = []
+    for idx, g in enumerate(GCPS):
+        gcp_details.append({
+            "name": g[4],
+            "role": g[5],
+            "master_pixel": [g[0], g[1]],
+            "crop_pixel": [g[0] - crop_x, g[1] - crop_y],
+            "geographic_coords": [g[2], g[3]],
+            "residual_in_sample_km": round(float(in_sample_res_m[idx] / 1000.0), 2),
+            "residual_loocv_km": round(float(loocv_res_m[idx] / 1000.0), 2),
+        })
+
+    return {
+        "rmse_in_sample_km": rmse_in_sample_km,
+        "rmse_loocv_km": rmse_loocv_km,
+        "gcp_details": gcp_details,
+    }
 
 
 def verify_report() -> bool:
@@ -93,6 +164,23 @@ def verify_report() -> bool:
 
     assert len(rep.get("epistemic_disclaimer", "")) > 20, "Epistemic disclaimer must be present"
 
+    # Mechanically verify polynomial least-squares residuals
+    residuals = compute_gcp_residuals()
+    expected_in_sample = residuals["rmse_in_sample_km"]
+    expected_loocv = residuals["rmse_loocv_km"]
+
+    actual_in_sample = rep.get("rmse_in_sample_km")
+    assert actual_in_sample is not None, "Report missing rmse_in_sample_km"
+    assert abs(actual_in_sample - expected_in_sample) <= 0.05, f"In-sample RMSE mismatch: expected {expected_in_sample}, got {actual_in_sample}"
+
+    actual_loocv = rep.get("rmse_loocv_km")
+    assert actual_loocv is not None, "Report missing rmse_loocv_km"
+    assert abs(actual_loocv - expected_loocv) <= 0.05, f"LOOCV RMSE mismatch: expected {expected_loocv}, got {actual_loocv}"
+
+    for gcp in rep.get("gcps", []):
+        assert "residual_in_sample_km" in gcp, f"GCP {gcp.get('name')} missing residual_in_sample_km"
+        assert "residual_loocv_km" in gcp, f"GCP {gcp.get('name')} missing residual_loocv_km"
+
     actual_size = os.path.getsize(OUTPUT_WEBP_PATH)
     actual_sha = compute_sha256(OUTPUT_WEBP_PATH)
     expected_sha = rep.get("derivative_sha256")
@@ -107,7 +195,7 @@ def verify_report() -> bool:
         print(f"[FAIL] Derivative SHA256 mismatch: expected {expected_sha}, got {actual_sha}", file=sys.stderr)
         return False
 
-    print(f"[PASS] Georeference report and derivative verified ({actual_size} bytes, {len(coords)} corners, SHA256 {actual_sha})")
+    print(f"[PASS] Georeference report and derivative verified ({actual_size} bytes, {len(coords)} corners, in-sample RMSE {actual_in_sample} km, LOOCV RMSE {actual_loocv} km, SHA256 {actual_sha})")
     return True
 
 
@@ -183,15 +271,7 @@ def run_georeference() -> None:
     print(f"[GEOREF] WebP derivative saved: {derivative_size} bytes ({derivative_size / 1024:.1f} KB), SHA256: {derivative_sha}")
 
     # 5. Build georeference report
-    gcp_records = []
-    for gcp in GCPS:
-        gcp_records.append({
-            "name": gcp[4],
-            "role": gcp[5],
-            "master_pixel": [gcp[0], gcp[1]],
-            "crop_pixel": [gcp[0] - crop_x, gcp[1] - crop_y],
-            "geographic_coords": [gcp[2], gcp[3]]
-        })
+    residuals = compute_gcp_residuals()
 
     report = {
         "target_visual_id": "visual_moll_west_indies_1715",
@@ -199,11 +279,12 @@ def run_georeference() -> None:
         "source_master": os.path.basename(RAW_MASTER),
         "neatline_crop": NEATLINE_CROP,
         "gcp_count": len(GCPS),
-        "gcps": gcp_records,
+        "gcps": residuals["gcp_details"],
         "projection": "EPSG:3857",
         "method": "gdalwarp_polynomial_order_2",
         "resampling": "bilinear",
-        "rmse_approx_km": 94.4,
+        "rmse_in_sample_km": residuals["rmse_in_sample_km"],
+        "rmse_loocv_km": residuals["rmse_loocv_km"],
         "coordinates": maplibre_corners,
         "derivative_path": "assets/visuals/moll-west-indies-1715-rectified.webp",
         "derivative_dimensions": [target_w, target_h],

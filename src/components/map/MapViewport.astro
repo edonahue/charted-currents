@@ -16,6 +16,11 @@ const PLACES = (entitiesData.places || []).map((p) => ({
 }));
 
 const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_moll_west_indies_1715");
+const hasMollLayer = Boolean(
+  MOLL_VISUAL?.rectified_asset_path &&
+  Array.isArray(MOLL_VISUAL?.georeference?.coordinates) &&
+  MOLL_VISUAL.georeference.coordinates.length === 4
+);
 ---
 
 <section class="map-viewport" aria-label="Greater Caribbean map" data-component="map-viewport">
@@ -75,99 +80,101 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
   </div>
 
   <!-- Historical period map reference layer control (Packet 8) -->
-  <div
-    class="map-layer-control"
-    data-layer-control
-    data-rectified-url={MOLL_VISUAL?.rectified_asset_path ? `/${MOLL_VISUAL.rectified_asset_path}` : "/assets/visuals/moll-west-indies-1715-rectified.webp"}
-    data-coordinates={JSON.stringify(MOLL_VISUAL?.georeference?.coordinates || [])}
-    data-source-id={MOLL_VISUAL?.source_id || "src_loc_g4390_1715"}
-    data-assertion-ids={JSON.stringify(MOLL_VISUAL?.assertion_ids || [])}
-  >
-    <button
-      type="button"
-      class="map-layer-control__toggle"
-      aria-expanded="false"
-      aria-controls="map-layer-panel"
-      data-layer-toggle
-      title="Toggle 1715 Herman Moll reference map options"
-    >
-      <span class="map-layer-control__icon" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="2" width="10" height="10" rx="1" />
-          <path d="M2 5.5h10M5.5 2v10" />
-        </svg>
-      </span>
-      <span>Period Map</span>
-      <span class="map-layer-control__badge" data-layer-state-badge aria-hidden="true">Off</span>
-    </button>
+  {hasMollLayer && (
     <div
-      id="map-layer-panel"
-      class="map-layer-control__panel"
-      aria-label="Historical map reference layer options"
-      data-layer-panel
-      hidden
+      class="map-layer-control"
+      data-layer-control
+      data-rectified-url={`/${MOLL_VISUAL!.rectified_asset_path}`}
+      data-coordinates={JSON.stringify(MOLL_VISUAL!.georeference!.coordinates)}
+      data-source-id={MOLL_VISUAL!.source_id}
+      data-assertion-ids={JSON.stringify(MOLL_VISUAL!.assertion_ids || [])}
     >
-      <div class="map-layer-control__header">
-        <div>
-          <p class="panel-kicker">Historical Reference</p>
-          <p class="map-layer-control__title">Herman Moll · ca. 1715</p>
-        </div>
-        <button
-          type="button"
-          class="map-layer-control__close"
-          aria-label="Close period map options"
-          data-layer-panel-close
-        >
-          <svg aria-hidden="true" width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 1l12 12M13 1L1 13" />
+      <button
+        type="button"
+        class="map-layer-control__toggle"
+        aria-expanded="false"
+        aria-controls="map-layer-panel"
+        data-layer-toggle
+        title="Toggle Herman Moll [1715?] reference map options"
+      >
+        <span class="map-layer-control__icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="10" height="10" rx="1" />
+            <path d="M2 5.5h10M5.5 2v10" />
           </svg>
-        </button>
-      </div>
-
-      <div class="map-layer-control__body">
-        <label class="map-layer-control__switch">
-          <input
-            type="checkbox"
-            data-layer-visibility-checkbox
-            aria-label="Show Herman Moll 1715 reference map"
-          />
-          <span class="map-layer-control__switch-label">Show 1715 reference map</span>
-        </label>
-
-        <div class="map-layer-control__slider-group" data-layer-slider-group hidden>
-          <div class="map-layer-control__slider-header">
-            <label for="map-layer-opacity-slider" class="map-layer-control__slider-label">Opacity</label>
-            <span class="map-layer-control__opacity-val" data-layer-opacity-val aria-hidden="true">65%</span>
+        </span>
+        <span>Period Map</span>
+        <span class="map-layer-control__badge" data-layer-state-badge aria-hidden="true">Off</span>
+      </button>
+      <div
+        id="map-layer-panel"
+        class="map-layer-control__panel"
+        aria-label="Historical map reference layer options"
+        data-layer-panel
+        hidden
+      >
+        <div class="map-layer-control__header">
+          <div>
+            <p class="panel-kicker">Historical Reference</p>
+            <p class="map-layer-control__title" title="Catalogued date [1715?] by Library of Congress">Herman Moll · [1715?]</p>
           </div>
-          <input
-            type="range"
-            id="map-layer-opacity-slider"
-            data-layer-opacity-slider
-            min="10"
-            max="100"
-            value="65"
-            step="5"
-            aria-label="1715 map layer opacity"
-            aria-valuemin="10"
-            aria-valuemax="100"
-            aria-valuenow="65"
-          />
+          <button
+            type="button"
+            class="map-layer-control__close"
+            aria-label="Close period map options"
+            data-layer-panel-close
+          >
+            <svg aria-hidden="true" width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 1l12 12M13 1L1 13" />
+            </svg>
+          </button>
         </div>
 
-        <p class="map-layer-control__epistemic-note">
-          18th-century chart projected over modern coordinates. Not observed ground truth.
-        </p>
+        <div class="map-layer-control__body">
+          <label class="map-layer-control__switch">
+            <input
+              type="checkbox"
+              data-layer-visibility-checkbox
+              aria-label="Show Herman Moll [1715?] reference map"
+            />
+            <span class="map-layer-control__switch-label">Show [1715?] reference map</span>
+          </label>
 
-        <button
-          type="button"
-          class="map-layer-control__inspect-btn"
-          data-layer-inspect-btn
-        >
-          Inspect Source &amp; Provenance
-        </button>
+          <div class="map-layer-control__slider-group" data-layer-slider-group hidden>
+            <div class="map-layer-control__slider-header">
+              <label for="map-layer-opacity-slider" class="map-layer-control__slider-label">Opacity</label>
+              <span class="map-layer-control__opacity-val" data-layer-opacity-val aria-hidden="true">65%</span>
+            </div>
+            <input
+              type="range"
+              id="map-layer-opacity-slider"
+              data-layer-opacity-slider
+              min="10"
+              max="100"
+              value="65"
+              step="5"
+              aria-label="1715 map layer opacity"
+              aria-valuemin="10"
+              aria-valuemax="100"
+              aria-valuenow="65"
+            />
+          </div>
+
+          <p class="map-layer-control__epistemic-note">
+            18th-century chart projected over modern coordinates. Not observed ground truth.
+          </p>
+
+          <button
+            type="button"
+            class="map-layer-control__inspect-btn"
+            data-layer-inspect-btn
+          >
+            Inspect Source &amp; Provenance
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  )}
 
   <p class="map-viewport__status sr-only" data-map-status role="status" aria-live="polite"></p>
 </section>
@@ -230,7 +237,9 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
         attributionControl: false,
       });
 
-      (window as any).__CC_MAP__ = map;
+      if (import.meta.env.DEV || (typeof window !== "undefined" && Boolean((window as any).__ENABLE_MAP_TEST_HARNESS__))) {
+        (window as any).__CC_MAP__ = map;
+      }
 
       map.addControl(
         new AttributionControl({
@@ -308,13 +317,8 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
 
       // Add period map reference source and raster layer (Packet 8)
       // Placed before "historical-routes-line" so routes and ports render on top
-      const rectifiedUrl = layerControl?.dataset.rectifiedUrl || "/assets/visuals/moll-west-indies-1715-rectified.webp";
-      let coordinates: [[number, number], [number, number], [number, number], [number, number]] = [
-        [-113.151907, 44.449585],
-        [-39.198751, 44.449585],
-        [-39.198751, 1.629071],
-        [-113.151907, 1.629071],
-      ];
+      const rectifiedUrl = layerControl?.dataset.rectifiedUrl;
+      let coordinates: [[number, number], [number, number], [number, number], [number, number]] | null = null;
       if (layerControl?.dataset.coordinates) {
         try {
           const parsed = JSON.parse(layerControl.dataset.coordinates);
@@ -322,34 +326,38 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
             coordinates = parsed as [[number, number], [number, number], [number, number], [number, number]];
           }
         } catch (e) {
-          console.error("Failed to parse georeference coordinates:", e);
+          console.warn("Failed to parse georeference coordinates:", e);
         }
       }
 
-      m.addSource("historical-reference-moll-1715", {
-        type: "image",
-        url: rectifiedUrl,
-        coordinates,
-      });
+      if (rectifiedUrl && coordinates) {
+        m.addSource("historical-reference-moll-1715", {
+          type: "image",
+          url: rectifiedUrl,
+          coordinates,
+        });
 
-      const isLayerVisible = visibilityCheckbox?.checked ?? false;
-      const initialOpacity = opacitySlider ? Number(opacitySlider.value) / 100 : 0.65;
+        const isLayerVisible = visibilityCheckbox?.checked ?? false;
+        const initialOpacity = opacitySlider ? Number(opacitySlider.value) / 100 : 0.65;
 
-      m.addLayer(
-        {
-          id: "historical-reference-moll-1715-layer",
-          type: "raster",
-          source: "historical-reference-moll-1715",
-          layout: {
-            visibility: isLayerVisible ? "visible" : "none",
+        m.addLayer(
+          {
+            id: "historical-reference-moll-1715-layer",
+            type: "raster",
+            source: "historical-reference-moll-1715",
+            layout: {
+              visibility: isLayerVisible ? "visible" : "none",
+            },
+            paint: {
+              "raster-opacity": initialOpacity,
+              "raster-resampling": "linear",
+            },
           },
-          paint: {
-            "raster-opacity": initialOpacity,
-            "raster-resampling": "linear",
-          },
-        },
-        "historical-routes-line"
-      );
+          "historical-routes-line"
+        );
+      } else if (layerControl) {
+        console.warn("Historical reference layer data missing or invalid; layer not initialized.");
+      }
 
       // Hit-target layer for routes
       m.addLayer({
@@ -791,6 +799,18 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
       }
     });
 
+    layerToggle.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        const isExpanded = layerToggle.getAttribute("aria-expanded") === "true";
+        if (isExpanded) {
+          closeLayerPanel();
+        } else {
+          openLayerPanel();
+        }
+      }
+    });
+
     layerPanelClose?.addEventListener("click", () => {
       closeLayerPanel();
       layerToggle.focus();
@@ -845,7 +865,8 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
     });
 
     inspectBtn?.addEventListener("click", () => {
-      const sourceId = layerControl.dataset.sourceId || "src_loc_g4390_1715";
+      const sourceId = layerControl.dataset.sourceId;
+      if (!sourceId) return;
       let assertionIds: string[] = [];
       try {
         assertionIds = JSON.parse(layerControl.dataset.assertionIds || "[]");
@@ -886,7 +907,15 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
     });
 
     locatorToggle.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowDown") {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        const isExpanded = locatorToggle.getAttribute("aria-expanded") === "true";
+        if (isExpanded) {
+          closeLocatorMenu();
+        } else {
+          openLocatorMenu(true);
+        }
+      } else if (e.key === "ArrowDown") {
         e.preventDefault();
         openLocatorMenu(true);
       }
@@ -1345,9 +1374,13 @@ const MOLL_VISUAL = (entitiesData.visuals || []).find((v) => v.id === "visual_mo
       left: calc(0.75rem + 8.8rem);
     }
     .map-layer-control__panel {
-      right: 0.75rem;
+      position: fixed;
+      top: 3.1rem;
       left: auto;
+      right: 0.75rem;
+      width: min(290px, calc(100vw - 1.5rem));
       max-width: calc(100vw - 1.5rem);
+      z-index: 50;
     }
     .map-epistemic-legend {
       bottom: 4.5rem;

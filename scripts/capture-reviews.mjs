@@ -210,12 +210,15 @@ async function runReviewSuite() {
       });
 
     const sendKey = async (key, code, windowsVirtualKeyCode, shiftKey = false) => {
+      const text = key === "Enter" ? "\r" : key === " " ? " " : undefined;
       await send("Input.dispatchKeyEvent", {
         type: "rawKeyDown",
         key,
         code,
         windowsVirtualKeyCode,
         modifiers: shiftKey ? 8 : 0,
+        text,
+        unmodifiedText: text,
       });
       await send("Input.dispatchKeyEvent", {
         type: "keyUp",
@@ -224,11 +227,17 @@ async function runReviewSuite() {
         windowsVirtualKeyCode,
         modifiers: shiftKey ? 8 : 0,
       });
+      await new Promise((r) => setTimeout(r, 80));
     };
 
     await send("Page.enable");
     await send("Runtime.enable");
     await send("Network.enable");
+
+    // Enable map test harness exclusively for headless review runs
+    await send("Page.addScriptToEvaluateOnNewDocument", {
+      source: "window.__ENABLE_MAP_TEST_HARNESS__ = true;",
+    });
 
     // Navigate to application
     await send("Page.navigate", { url: baseUrl });
@@ -1850,54 +1859,66 @@ async function runReviewSuite() {
     assert(initVis?.panelHidden === true, "Period map control panel starts collapsed/hidden");
     assert(initVis?.badgeText === "Off", `Period map state badge displays "Off" (found: "${initVis?.badgeText}")`);
 
-    // P8-008: Open panel via toggle button
-    const openPanelResult = await send("Runtime.evaluate", {
+    // P8-008: Open panel via native keyboard (Enter key)
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector("[data-layer-toggle]")?.focus();`,
+    });
+    await sendKey("Enter", "Enter", 13);
+    const activeElCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const toggle = document.querySelector("[data-layer-toggle]");
-        toggle.click();
         const panel = document.querySelector("[data-layer-panel]");
-        const isExpanded = toggle.getAttribute("aria-expanded") === "true";
-        const panelHidden = panel.hasAttribute("hidden");
-        return { isExpanded, panelHidden };
+        const isExpanded = toggle?.getAttribute("aria-expanded") === "true";
+        const panelHidden = panel?.hasAttribute("hidden");
+        const focusedOnCheckbox = document.activeElement === document.querySelector("[data-layer-visibility-checkbox]");
+        return { isExpanded, panelHidden, focusedOnCheckbox };
       })()`,
       returnByValue: true,
     });
-    assert(openPanelResult?.result?.value?.isExpanded && !openPanelResult?.result?.value?.panelHidden, "Clicking layer toggle expands control panel and sets aria-expanded=true");
+    const aVal = activeElCheck?.result?.value;
+    assert(aVal?.isExpanded && !aVal?.panelHidden, "Pressing Enter on layer toggle expands control panel and sets aria-expanded=true");
+    assert(aVal?.focusedOnCheckbox, "Opening panel automatically moves focus to the visibility checkbox");
 
-    // Mutual exclusivity: Opening locator menu closes layer panel
-    const mutualExclusivityCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const locatorToggle = document.querySelector("[data-locator-toggle]");
-        locatorToggle.click();
-        const layerPanel = document.querySelector("[data-layer-panel]");
-        const layerToggle = document.querySelector("[data-layer-toggle]");
-        const isLayerPanelHidden = layerPanel.hasAttribute("hidden");
-        const isLayerExpanded = layerToggle.getAttribute("aria-expanded") === "true";
-        // Close locator menu back
-        locatorToggle.click();
-        return { isLayerPanelHidden, isLayerExpanded };
-      })()`,
-      returnByValue: true,
-    });
-    assert(mutualExclusivityCheck?.result?.value?.isLayerPanelHidden, "Opening place locator menu automatically closes the period map control panel");
-
-    // Reopen layer panel
+    // Mutual exclusivity: Opening locator menu via native keyboard closes layer panel
     await send("Runtime.evaluate", {
-      expression: `document.querySelector("[data-layer-toggle]").click();`,
+      expression: `document.querySelector("[data-locator-toggle]")?.focus();`,
     });
-    await new Promise((r) => setTimeout(r, 200));
+    await sendKey("Enter", "Enter", 13);
+    const isLayerClosed = await send("Runtime.evaluate", {
+      expression: `document.querySelector("[data-layer-panel]")?.hasAttribute("hidden")`,
+      returnByValue: true,
+    });
+    assert(isLayerClosed?.result?.value, "Opening place locator menu automatically closes the period map control panel");
 
-    // P8-003: Toggle layer ON
-    const toggleOnResult = await send("Runtime.evaluate", {
+    // Close locator menu back with Escape key
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 150));
+
+    // Reopen layer panel via native keyboard (Space key)
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector("[data-layer-toggle]")?.focus();`,
+    });
+    await sendKey(" ", "Space", 32);
+    const reopenCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const panel = document.querySelector("[data-layer-panel]");
+        return !panel?.hasAttribute("hidden") && document.activeElement === document.querySelector("[data-layer-visibility-checkbox]");
+      })()`,
+      returnByValue: true,
+    });
+    assert(reopenCheck?.result?.value, "Pressing Space on layer toggle expands panel and focuses checkbox");
+
+    // P8-003: Toggle layer ON via native keyboard (Space key on focused checkbox)
+    await sendKey(" ", "Space", 32);
+    const toggleOnVal = await send("Runtime.evaluate", {
       expression: `(() => {
         const checkbox = document.querySelector("[data-layer-visibility-checkbox]");
-        checkbox.checked = true;
-        checkbox.dispatchEvent(new Event("change", { bubbles: true }));
         const m = window.__CC_MAP__;
-        const layerVis = m.getLayoutProperty("historical-reference-moll-1715-layer", "visibility");
+        const layerVis = m?.getLayoutProperty("historical-reference-moll-1715-layer", "visibility");
         const badge = document.querySelector("[data-layer-state-badge]");
         const sliderGroup = document.querySelector("[data-layer-slider-group]");
         return {
+          checked: checkbox?.checked,
           layerVis,
           badgeText: badge?.textContent?.trim(),
           badgeActiveClass: badge?.classList.contains("map-layer-control__badge--active"),
@@ -1906,37 +1927,156 @@ async function runReviewSuite() {
       })()`,
       returnByValue: true,
     });
-    const toggleOnVal = toggleOnResult?.result?.value;
-    assert(toggleOnVal?.layerVis === "visible", `Toggling checkbox ON updates MapLibre layer visibility to "visible" (found: ${toggleOnVal?.layerVis})`);
-    assert(toggleOnVal?.badgeText === "On" && toggleOnVal?.badgeActiveClass, 'Badge updates to active "On" state');
-    assert(toggleOnVal?.sliderGroupHidden === false, "Opacity slider group is unhidden when layer is ON");
+    const tVal = toggleOnVal?.result?.value;
+    assert(tVal?.checked, "Pressing Space toggles period map visibility checkbox to checked");
+    assert(tVal?.layerVis === "visible", `Toggling checkbox ON updates MapLibre layer visibility to "visible" (found: ${tVal?.layerVis})`);
+    assert(tVal?.badgeText === "On" && tVal?.badgeActiveClass, 'Badge updates to active "On" state');
+    assert(tVal?.sliderGroupHidden === false, "Opacity slider group is unhidden when layer is ON");
 
-    // P8-004: Continuous Opacity Adjustment (35%, 90%, 65%)
-    for (const testOpacity of [35, 90, 65]) {
-      const opacityResult = await send("Runtime.evaluate", {
-        expression: `(() => {
-          const slider = document.querySelector("[data-layer-opacity-slider]");
-          slider.value = "${testOpacity}";
-          slider.dispatchEvent(new Event("input", { bubbles: true }));
-          const m = window.__CC_MAP__;
-          const paintOpacity = m.getPaintProperty("historical-reference-moll-1715-layer", "raster-opacity");
-          const opacityValText = document.querySelector("[data-layer-opacity-val]")?.textContent?.trim();
-          const ariaValNow = slider.getAttribute("aria-valuenow");
-          return {
-            paintOpacity,
-            expectedOpacity: ${testOpacity / 100},
-            opacityValText,
-            ariaValNow,
-          };
-        })()`,
-        returnByValue: true,
-      });
-      const opVal = opacityResult?.result?.value;
-      const opacityMatch = Math.abs(opVal.paintOpacity - opVal.expectedOpacity) < 0.001;
-      assert(opacityMatch, `Opacity slider set to ${testOpacity}% sets MapLibre raster-opacity to ${testOpacity / 100} (found: ${opVal.paintOpacity})`);
-      assert(opVal.opacityValText === `${testOpacity}%`, `Opacity readout displays "${testOpacity}%"`);
-      assert(opVal.ariaValNow === `${testOpacity}`, `Slider aria-valuenow is "${testOpacity}"`);
+    // P8-004: Continuous Opacity Adjustment via native keyboard (Tab to slider, ArrowLeft/Right)
+    await sendKey("Tab", "Tab", 9);
+    const isSliderFocused = await send("Runtime.evaluate", {
+      expression: `document.activeElement === document.querySelector("[data-layer-opacity-slider]")`,
+      returnByValue: true,
+    });
+    assert(isSliderFocused?.result?.value, "Pressing Tab from checkbox moves focus to opacity slider");
+
+    // Decrement opacity slider: 65% -> 55% via ArrowLeft (2 steps of 5%)
+    await sendKey("ArrowLeft", "ArrowLeft", 37);
+    await sendKey("ArrowLeft", "ArrowLeft", 37);
+    const decRes = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const slider = document.querySelector("[data-layer-opacity-slider]");
+        const m = window.__CC_MAP__;
+        const paintOpacity = m?.getPaintProperty("historical-reference-moll-1715-layer", "raster-opacity");
+        const opacityValText = document.querySelector("[data-layer-opacity-val]")?.textContent?.trim();
+        const ariaValNow = slider?.getAttribute("aria-valuenow");
+        return { sliderVal: slider?.value, paintOpacity, opacityValText, ariaValNow };
+      })()`,
+      returnByValue: true,
+    });
+    const dVal = decRes?.result?.value;
+    assert(dVal?.sliderVal === "55", `ArrowLeft decrements opacity slider to 55 (found: ${dVal?.sliderVal})`);
+    assert(Math.abs(dVal?.paintOpacity - 0.55) < 0.001, `ArrowLeft sets MapLibre raster-opacity to 0.55 (found: ${dVal?.paintOpacity})`);
+    assert(dVal?.opacityValText === "55%", 'Opacity readout displays "55%"');
+    assert(dVal?.ariaValNow === "55", 'Slider aria-valuenow is "55"');
+
+    // Increment opacity slider: 55% -> 75% via ArrowRight (4 steps of 5%)
+    for (let k = 0; k < 4; k++) {
+      await sendKey("ArrowRight", "ArrowRight", 39);
     }
+    const incRes = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const slider = document.querySelector("[data-layer-opacity-slider]");
+        const m = window.__CC_MAP__;
+        const paintOpacity = m?.getPaintProperty("historical-reference-moll-1715-layer", "raster-opacity");
+        return { sliderVal: slider?.value, paintOpacity };
+      })()`,
+      returnByValue: true,
+    });
+    const iVal = incRes?.result?.value;
+    assert(iVal?.sliderVal === "75", `ArrowRight increments opacity slider to 75 (found: ${iVal?.sliderVal})`);
+    assert(Math.abs(iVal?.paintOpacity - 0.75) < 0.001, `ArrowRight sets raster-opacity to 0.75`);
+
+    // Reset opacity slider to 65% (2 steps of 5% via ArrowLeft)
+    for (let k = 0; k < 2; k++) {
+      await sendKey("ArrowLeft", "ArrowLeft", 37);
+    }
+
+    // Test Escape key closes panel and restores focus to layer toggle
+    await sendKey("Escape", "Escape", 27);
+    const escCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const panel = document.querySelector("[data-layer-panel]");
+        const toggle = document.querySelector("[data-layer-toggle]");
+        return {
+          panelHidden: panel?.hasAttribute("hidden"),
+          isExpanded: toggle?.getAttribute("aria-expanded") === "true",
+          focusedOnToggle: document.activeElement === toggle,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const eVal = escCheck?.result?.value;
+    assert(eVal?.panelHidden && !eVal?.isExpanded, "Pressing Escape closes the layer panel and sets aria-expanded=false");
+    assert(eVal?.focusedOnToggle, "Pressing Escape returns focus to the period map toggle button");
+
+    // P8-R8: Responsive layout & mobile bounding-box overflow checks (390px and 430px viewports)
+    // 1. Check 390px mobile viewport (iPhone 12/13/14)
+    await send("Emulation.setDeviceMetricsOverride", {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 2,
+      mobile: true,
+    });
+    await send("Runtime.evaluate", { expression: `document.querySelector("[data-layer-toggle]")?.click();` });
+    await new Promise((r) => setTimeout(r, 150));
+    const bbox390 = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const panel = document.querySelector("[data-layer-panel]");
+        const rect = panel?.getBoundingClientRect();
+        return {
+          left: rect?.left,
+          right: rect?.right,
+          width: rect?.width,
+          innerWidth: window.innerWidth,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const b390 = bbox390?.result?.value;
+    assert(b390?.left >= 0, `390px mobile viewport: panel left edge (${b390?.left}px) is within screen bounds`);
+    assert(
+      b390?.right <= b390?.innerWidth - 8,
+      `390px mobile viewport: panel right edge (${b390?.right}px) is within screen bounds with >= 8px padding (window width: ${b390?.innerWidth}px)`
+    );
+
+    // 2. Check 430px mobile viewport (iPhone 14/15 Pro Max)
+    await send("Emulation.setDeviceMetricsOverride", {
+      width: 430,
+      height: 932,
+      deviceScaleFactor: 3,
+      mobile: true,
+    });
+    const bbox430 = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const panel = document.querySelector("[data-layer-panel]");
+        const rect = panel?.getBoundingClientRect();
+        return {
+          left: rect?.left,
+          right: rect?.right,
+          width: rect?.width,
+          innerWidth: window.innerWidth,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const b430 = bbox430?.result?.value;
+    assert(b430?.left >= 0, `430px mobile viewport: panel left edge (${b430?.left}px) is within screen bounds`);
+    assert(
+      b430?.right <= b430?.innerWidth - 8,
+      `430px mobile viewport: panel right edge (${b430?.right}px) is within screen bounds with >= 8px padding (window width: ${b430?.innerWidth}px)`
+    );
+
+    // Close panel and restore desktop viewport for screenshot captures
+    await send("Runtime.evaluate", { expression: `document.querySelector("[data-layer-panel-close]")?.click();` });
+    await send("Emulation.setDeviceMetricsOverride", {
+      width: 1440,
+      height: 900,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Ensure layer is ON for review screenshots
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const checkbox = document.querySelector("[data-layer-visibility-checkbox]");
+        if (checkbox && !checkbox.checked) {
+          checkbox.click();
+        }
+      })()`,
+    });
 
     if (!skipScreenshots) {
       console.log("Capturing Packet 8 multi-viewport screenshots with Moll 1715 reference layer ON...");

@@ -2,13 +2,14 @@
   "item_id": "gm71005442",
   "title": "A map of the West-Indies or the islands of America in the North Sea; with ye adjacent countries; explaning [sic] what belongs to Spain, England, France, Holland, &c. also ye trade winds, and ye several tracts made by ye galeons and flota from place to place",
   "creators": [
-    "Herman Moll",
+    "Herman Moll (Cartographer)",
     "Thomas Bowles (Publisher)",
     "John Bowles (Publisher)"
   ],
-  "date_display": "1715",
+  "date_display": "[1715?]",
   "year_recorded": 1715,
-  "is_uncertain": false,
+  "is_uncertain": true,
+  "imprint": "Printed for Tho. Bowles next to the Chapter House in St. Pauls Church yard, and I. Bowles at the Mercers Chappell in Cheapside.",
   "holding_institution": "Library of Congress Geography and Map Division",
   "repository_detail": "Library of Congress Geography and Map Division Washington, D.C. 20540-4650 USA dcu",
   "call_number": "G4390 1715 .M6",

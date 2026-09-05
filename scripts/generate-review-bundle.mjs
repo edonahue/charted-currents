@@ -117,10 +117,11 @@ const epistemicBreakdown = {
   class_b_deterministic: [],
   class_c_relational: [],
   class_d_resolution: [],
+  class_f_reconstruction: [],
 };
 
 for (const ast of addedAssertions) {
-  const risk = ast.risk_class || (ast.derived_value ? "B" : "A");
+  const risk = ast.risk_class || ast.epistemic_class || (ast.derived_value ? "B" : "A");
   if (risk === "A") {
     epistemicBreakdown.class_a_transcription.push({
       id: ast.id,
@@ -150,6 +151,17 @@ for (const ast of addedAssertions) {
       field: ast.field,
       derived_value: ast.derived_value,
       derivation_method: ast.derivation_method,
+    });
+  } else if (risk === "F") {
+    epistemicBreakdown.class_f_reconstruction.push({
+      id: ast.id,
+      field: ast.field,
+      derived_value: ast.derived_value,
+      derivation_method: ast.derivation_method,
+      source_assertion_id: ast.source_assertion_id,
+      rmse_in_sample_km: ast.rmse_in_sample_km,
+      rmse_loocv_km: ast.rmse_loocv_km,
+      notes: ast.notes,
     });
   }
 }
@@ -446,7 +458,8 @@ const PACKET_CONFIGS = {
         credit_line: vis?.credit_line,
         neatline_crop: { x: 20, y: 91, w: 5990, h: 2804 },
         gcp_count: vis?.georeference?.gcp_count || 14,
-        rmse_approx_km: vis?.georeference?.rmse_approx_km || 94.4,
+        rmse_in_sample_km: vis?.georeference?.rmse_in_sample_km || 94.35,
+        rmse_loocv_km: vis?.georeference?.rmse_loocv_km || 237.89,
         projection: vis?.georeference?.projection || "EPSG:3857",
         epistemic_disclaimer: vis?.georeference?.epistemic_disclaimer,
       };
@@ -454,11 +467,13 @@ const PACKET_CONFIGS = {
     getExceptionQueue: () => [
       {
         id: "EXC-P8-001",
-        category: "PRE_CHRONOMETER_LONGITUDINAL_DISTORTION",
+        category: "HISTORICAL_PROJECTION_DISCREPANCY",
         severity: "INFORMATIONAL_ADVISORY",
         subject: "Herman Moll ca. 1715 West-Indies Chart",
-        summary: "18th-century cartographic projection exhibits longitudinal distortion across the Gulf of Mexico and Caribbean basin prior to marine chronometer determination.",
-        finding: "Cartography is preserved as historical evidence and reference context over modern MapLibre geography, not modern survey ground truth. Epistemic disclaimer published in Source Drawer, layer control, and georeference report.",
+        summary:
+          "18th-century cartographic projection exhibits regional discrepancies against modern WGS84 coordinates across the Greater Caribbean basin.",
+        finding:
+          "Cartography is preserved as historical evidence and reference context over modern MapLibre geography, not modern survey ground truth. Epistemic disclaimer published in Source Drawer, layer control, and georeference report.",
         status: "PRESERVED_AS_EVIDENCE",
       },
     ],
@@ -504,6 +519,7 @@ const reviewBundle = {
       class_c_relational_derivation: epistemicBreakdown.class_c_relational.length,
       class_d_identity_resolution: addedResolutionEdges.length,
       class_e_changed_prose_count: changedProse.length,
+      class_f_reconstructed_model: epistemicBreakdown.class_f_reconstruction.length,
     },
     by_epistemic_class: {
       class_a_direct_transcription: epistemicBreakdown.class_a_transcription.length,
@@ -511,6 +527,7 @@ const reviewBundle = {
       class_c_relational_derivation: epistemicBreakdown.class_c_relational.length,
       class_d_identity_resolution: addedResolutionEdges.length,
       class_e_changed_prose_count: changedProse.length,
+      class_f_reconstructed_model: epistemicBreakdown.class_f_reconstruction.length,
     },
     analytical_derivation_contract_count: bundleConfig.getAnalyticalContracts ? bundleConfig.getAnalyticalContracts(contextForPackets).length : 0,
   },
@@ -535,6 +552,7 @@ const reviewBundle = {
     class_c_sample: epistemicBreakdown.class_c_relational.slice(0, 10),
     class_d_edges: addedResolutionEdges,
     class_e_changed_prose: changedProse,
+    class_f_all: epistemicBreakdown.class_f_reconstruction,
   },
 };
 
@@ -556,6 +574,7 @@ console.log(`    * Class B (Deterministic): ${epistemicBreakdown.class_b_determi
 console.log(`    * Class C (Relational):    ${epistemicBreakdown.class_c_relational.length}`);
 console.log(`    * Class D (Resolution):    ${addedResolutionEdges.length}`);
 console.log(`    * Class E (Changed Prose): ${changedProse.length}`);
+console.log(`    * Class F (Reconstructed): ${epistemicBreakdown.class_f_reconstruction.length}`);
 if (reviewBundle.analytical_derivation_contracts) {
   const allAccepted = reviewBundle.analytical_derivation_contracts.every((c) => c.review_status === "ACCEPTED");
   const contractStatus = allAccepted ? "ACCEPTED" : "REVIEW_PENDING";
@@ -568,7 +587,7 @@ if (reviewBundle.dataset_context_summary) {
   console.log(`  - Dataset Context Baseline:  ${reviewBundle.dataset_context_summary.total_records_in_baseline} records (${reviewBundle.dataset_context_summary.baseline_period}) across ${reviewBundle.dataset_context_summary.total_places} places`);
 }
 if (reviewBundle.cartographic_provenance) {
-  console.log(`  - Cartographic Provenance:   ${reviewBundle.cartographic_provenance.holding_institution} (${reviewBundle.cartographic_provenance.call_number}), ${reviewBundle.cartographic_provenance.gcp_count} GCPs, RMSE ~${reviewBundle.cartographic_provenance.rmse_approx_km} km`);
+  console.log(`  - Cartographic Provenance:   ${reviewBundle.cartographic_provenance.holding_institution} (${reviewBundle.cartographic_provenance.call_number}), ${reviewBundle.cartographic_provenance.gcp_count} GCPs, in-sample RMSE ~${reviewBundle.cartographic_provenance.rmse_in_sample_km} km (LOOCV: ~${reviewBundle.cartographic_provenance.rmse_loocv_km} km)`);
 }
 console.log(`  - Exception Queue Items:     ${reviewBundle.exception_queue.length}`);
 console.log(`  - Ethical Compliance:        ${reviewBundle.ethical_compliance.status}\n`);
