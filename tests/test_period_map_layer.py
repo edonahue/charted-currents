@@ -47,9 +47,9 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         visuals = {v["id"]: v for v in self.entities.get("visuals", [])}
         self.assertIn("visual_moll_west_indies_1715", visuals)
         vis = visuals["visual_moll_west_indies_1715"]
-        self.assertEqual(vis["date_display"], "1715")
+        self.assertEqual(vis["date_display"], "[1715?]")
         self.assertEqual(vis["year_recorded"], 1715)
-        self.assertFalse(vis["is_uncertain"])
+        self.assertTrue(vis["is_uncertain"])
         self.assertEqual(vis["call_number"], "G4390 1715 .M6")
         self.assertEqual(vis["digital_id"], "g4390.ct003986")
 
@@ -70,6 +70,8 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertEqual(len(rep["gcps"]), 14)
         self.assertEqual(rep["projection"], "EPSG:3857")
         self.assertEqual(rep["method"], "gdalwarp_polynomial_order_2")
+        self.assertEqual(rep["rmse_in_sample_km"], 94.35)
+        self.assertEqual(rep["rmse_loocv_km"], 237.89)
 
         coords = rep["coordinates"]
         self.assertEqual(len(coords), 4)
@@ -85,7 +87,8 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertLess(bl[1], 5)
 
         disclaimer = rep["epistemic_disclaimer"]
-        self.assertIn("pre-chronometer", disclaimer)
+        self.assertNotIn("pre-chronometer", disclaimer)
+        self.assertIn("second-order polynomial", disclaimer)
         self.assertIn("historical evidence", disclaimer)
 
     def test_cartographic_assertions(self):
@@ -97,9 +100,19 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertIn("ast_loc_moll_map_flota_tracks", asts_by_id)
         self.assertIn("ast_loc_moll_georeference", asts_by_id)
 
+        self.assertEqual(asts_by_id["ast_loc_moll_map_trade_winds"]["raw_value"], "also ye trade winds")
+        self.assertEqual(
+            asts_by_id["ast_loc_moll_map_flota_tracks"]["raw_value"],
+            "and ye several tracts made by ye galeons and flota from place to place",
+        )
+
         georef_ast = asts_by_id["ast_loc_moll_georeference"]
         self.assertEqual(georef_ast["derivation_method"], "gdalwarp_polynomial_order_2")
         self.assertEqual(georef_ast["source_assertion_id"], "ast_loc_moll_map_title")
+        self.assertEqual(georef_ast["epistemic_class"], "F")
+        self.assertEqual(georef_ast["risk_class"], "F")
+        self.assertEqual(georef_ast["rmse_in_sample_km"], 94.35)
+        self.assertEqual(georef_ast["rmse_loocv_km"], 237.89)
 
 
 if __name__ == "__main__":
