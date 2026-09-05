@@ -52,7 +52,7 @@ def verify_acquisition() -> bool:
     assert meta.get("year_recorded") == 1715, "year_recorded must be 1715"
     assert meta.get("is_uncertain") is True, "is_uncertain must be True"
     assert any("Herman Moll" in c for c in meta.get("creators", [])), "Herman Moll must be among creators"
-    assert "Black Horse in Cornhill" in meta.get("imprint", ""), "imprint must record Black Horse in Cornhill"
+    assert meta.get("imprint") == "Printed for Tho: Bowles in St. Pauls Church Yard and Iohn Bowles at the Black Horse in Cornhill.", "imprint mismatch"
     assert meta.get("rights_state") == "open_public_domain", "rights_state must be open_public_domain"
     assert meta.get("credit_line") == "Library of Congress, Geography and Map Division", "credit_line mismatch"
 
@@ -115,7 +115,7 @@ def acquire_source() -> None:
         "date_display": "[1715?]",
         "year_recorded": 1715,
         "is_uncertain": True,
-        "imprint": "Printed for Tho. Bowles in St Pauls Church Yard and Iohn Bowles at the Black Horse in Cornhill",
+        "imprint": "Printed for Tho: Bowles in St. Pauls Church Yard and Iohn Bowles at the Black Horse in Cornhill.",
         "loc_created_published": created_published,
         "holding_institution": "Library of Congress Geography and Map Division",
         "repository_detail": repository,

@@ -121,8 +121,10 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertEqual(meta["item_id"], "gm71005442")
         self.assertEqual(meta["date_display"], "[1715?]")
         self.assertTrue(meta["is_uncertain"])
-        self.assertIn("Herman Moll (Cartographer)", meta["creators"])
-        self.assertIn("Black Horse in Cornhill", meta["imprint"])
+        self.assertEqual(
+            meta["imprint"],
+            "Printed for Tho: Bowles in St. Pauls Church Yard and Iohn Bowles at the Black Horse in Cornhill.",
+        )
         self.assertEqual(meta["rights_state"], "open_public_domain")
 
 
