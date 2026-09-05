@@ -24,6 +24,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install GDAL CLI tools
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gdal-bin
+          gdaltransform --version
+
       - name: Install Python dependencies from pyproject.toml
         run: python -m pip install .
 
@@ -41,6 +47,12 @@ jobs:
 
       - name: Run historical invariant unit tests
         run: npm run data:test
+
+      - name: Verify Packet 8 acquisition metadata invariants
+        run: npm run data:verify-moll-acquisition
+
+      - name: Verify Packet 8 period map georeferencing
+        run: npm run data:verify-moll-georeference
 
       - name: Run published data schema validation
         run: npm run data:validate

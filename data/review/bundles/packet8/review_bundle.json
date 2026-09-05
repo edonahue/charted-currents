@@ -37,10 +37,10 @@
   "exception_queue": [
     {
       "id": "EXC-P8-001",
-      "category": "HISTORICAL_PROJECTION_DISCREPANCY",
+      "category": "HISTORICAL_CARTOGRAPHIC_ALIGNMENT_DISCREPANCY",
       "severity": "INFORMATIONAL_ADVISORY",
       "subject": "Herman Moll ca. 1715 West-Indies Chart",
-      "summary": "18th-century cartographic projection exhibits regional discrepancies against modern WGS84 coordinates across the Greater Caribbean basin.",
+      "summary": "18th-century engraved cartography exhibits regional alignment discrepancies against modern WGS84 coordinates across the Greater Caribbean basin.",
       "finding": "Cartography is preserved as historical evidence and reference context over modern MapLibre geography, not modern survey ground truth. Epistemic disclaimer published in Source Drawer, layer control, and georeference report.",
       "status": "PRESERVED_AS_EVIDENCE"
     }
@@ -61,8 +61,8 @@
       "h": 2804
     },
     "gcp_count": 14,
-    "rmse_in_sample_km": 94.35,
-    "rmse_loocv_km": 237.89,
+    "rmse_in_sample_km": 85.78,
+    "rmse_loocv_km": 209.65,
     "projection": "EPSG:3857",
     "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth."
   },
@@ -111,8 +111,8 @@
         "derived_value": "EPSG:3857 second-order polynomial spatial alignment across 14 historical ground control points",
         "derivation_method": "gdalwarp_polynomial_order_2",
         "source_assertion_id": "ast_loc_moll_map_title",
-        "rmse_in_sample_km": 94.35,
-        "rmse_loocv_km": 237.89,
+        "rmse_in_sample_km": 85.78,
+        "rmse_loocv_km": 209.65,
         "notes": "Project-constructed spatial alignment. Second-order polynomial warp fitted against 14 recognizable Caribbean coastal and harbor features. Regional projection discrepancies preserved as empirical evidence."
       }
     ]

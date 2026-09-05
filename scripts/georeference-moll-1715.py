@@ -21,8 +21,6 @@ import math
 import os
 import subprocess
 import sys
-import numpy as np
-from PIL import Image
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RAW_MASTER = os.path.join(REPO_ROOT, "data/raw/loc_gm71005442/moll-1715-loc-master.jpg")
@@ -74,54 +72,71 @@ def compute_sha256(filepath: str) -> str:
     return h.hexdigest()
 
 
-def lnglat_to_merc(lng: float, lat: float):
-    R = 6378137.0
-    x = R * math.radians(lng)
-    y = R * math.log(math.tan(math.pi / 4.0 + math.radians(lat) / 2.0))
-    return x, y
+def haversine(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
+    R = 6371.0088  # Earth mean radius in km
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlam = math.radians(lon2 - lon1)
+    a = math.sin(dphi / 2.0) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlam / 2.0) ** 2
+    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
+    return R * c
 
 
-def build_poly2_matrix(pts):
-    rows = []
-    for px, py in pts:
-        rows.append([1.0, px, py, px**2, px * py, py**2])
-    return np.array(rows, dtype=np.float64)
+def get_gdal_version() -> str:
+    try:
+        res = subprocess.run(["gdaltransform", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        return res.stdout.strip()
+    except Exception as e:
+        return f"Unknown ({e})"
 
 
 def compute_gcp_residuals():
     crop_x = NEATLINE_CROP["x"]
     crop_y = NEATLINE_CROP["y"]
-    pts_px = np.array([[g[0] - crop_x, g[1] - crop_y] for g in GCPS], dtype=np.float64)
-    target_merc = np.array([lnglat_to_merc(g[2], g[3]) for g in GCPS], dtype=np.float64)
 
-    A = build_poly2_matrix(pts_px)
-    cx, _, _, _ = np.linalg.lstsq(A, target_merc[:, 0], rcond=None)
-    cy, _, _, _ = np.linalg.lstsq(A, target_merc[:, 1], rcond=None)
+    # 1. In-sample residuals via GDAL official GCP transformer (pixel/line -> EPSG:4326 polynomial)
+    cmd_all = ["gdaltransform", "-order", "2"]
+    for g in GCPS:
+        cmd_all.extend(["-gcp", str(g[0] - crop_x), str(g[1] - crop_y), str(g[2]), str(g[3])])
 
-    pred_x = A @ cx
-    pred_y = A @ cy
-    dx = pred_x - target_merc[:, 0]
-    dy = pred_y - target_merc[:, 1]
-    in_sample_res_m = np.sqrt(dx**2 + dy**2)
-    rmse_in_sample_km = round(float(np.sqrt(np.mean(in_sample_res_m**2)) / 1000.0), 2)
+    p_all = subprocess.Popen(cmd_all, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    input_all = "\n".join(f"{g[0] - crop_x} {g[1] - crop_y}" for g in GCPS)
+    out_all, err_all = p_all.communicate(input=input_all)
+    if p_all.returncode != 0:
+        raise RuntimeError(f"gdaltransform failed ({p_all.returncode}): {err_all}")
 
+    in_sample_dists = []
+    for idx, line in enumerate(out_all.strip().split("\n")):
+        parts = line.split()
+        pred_lon = float(parts[0])
+        pred_lat = float(parts[1])
+        d = haversine(GCPS[idx][2], GCPS[idx][3], pred_lon, pred_lat)
+        in_sample_dists.append(d)
+
+    rmse_in_sample_km = round(math.sqrt(sum(d ** 2 for d in in_sample_dists) / len(in_sample_dists)), 2)
+
+    # 2. Leave-One-Out Cross-Validation (LOOCV) via GDAL transformer
     n = len(GCPS)
-    loocv_res_m = []
+    loocv_dists = []
     for i in range(n):
-        mask = np.ones(n, dtype=bool)
-        mask[i] = False
-        A_train = A[mask]
-        target_train = target_merc[mask]
-        cxi, _, _, _ = np.linalg.lstsq(A_train, target_train[:, 0], rcond=None)
-        cyi, _, _, _ = np.linalg.lstsq(A_train, target_train[:, 1], rcond=None)
+        train_gcps = [g for j, g in enumerate(GCPS) if j != i]
+        test_gcp = GCPS[i]
+        cmd_loo = ["gdaltransform", "-order", "2"]
+        for g in train_gcps:
+            cmd_loo.extend(["-gcp", str(g[0] - crop_x), str(g[1] - crop_y), str(g[2]), str(g[3])])
 
-        test_A = A[i : i + 1]
-        test_px = test_A @ cxi
-        test_py = test_A @ cyi
-        res_i = math.sqrt((test_px[0] - target_merc[i, 0]) ** 2 + (test_py[0] - target_merc[i, 1]) ** 2)
-        loocv_res_m.append(res_i)
+        p_loo = subprocess.Popen(cmd_loo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        out_loo, err_loo = p_loo.communicate(input=f"{test_gcp[0] - crop_x} {test_gcp[1] - crop_y}\n")
+        if p_loo.returncode != 0:
+            raise RuntimeError(f"gdaltransform LOOCV failed for GCP {i} ({p_loo.returncode}): {err_loo}")
+        parts = out_loo.strip().split()
+        pred_lon = float(parts[0])
+        pred_lat = float(parts[1])
+        d = haversine(test_gcp[2], test_gcp[3], pred_lon, pred_lat)
+        loocv_dists.append(d)
 
-    rmse_loocv_km = round(float(math.sqrt(sum(r**2 for r in loocv_res_m) / n) / 1000.0), 2)
+    rmse_loocv_km = round(math.sqrt(sum(d ** 2 for d in loocv_dists) / n), 2)
 
     gcp_details = []
     for idx, g in enumerate(GCPS):
@@ -131,14 +146,15 @@ def compute_gcp_residuals():
             "master_pixel": [g[0], g[1]],
             "crop_pixel": [g[0] - crop_x, g[1] - crop_y],
             "geographic_coords": [g[2], g[3]],
-            "residual_in_sample_km": round(float(in_sample_res_m[idx] / 1000.0), 2),
-            "residual_loocv_km": round(float(loocv_res_m[idx] / 1000.0), 2),
+            "residual_in_sample_km": round(in_sample_dists[idx], 2),
+            "residual_loocv_km": round(loocv_dists[idx], 2),
         })
 
     return {
         "rmse_in_sample_km": rmse_in_sample_km,
         "rmse_loocv_km": rmse_loocv_km,
         "gcp_details": gcp_details,
+        "gdal_version": get_gdal_version(),
     }
 
 
@@ -259,6 +275,7 @@ def run_georeference() -> None:
 
     # 4. Compress to web-optimized WebP (2560px width)
     print("[GEOREF] Exporting web-optimized WebP derivative (2560px)... ")
+    from PIL import Image
     im = Image.open(warped_tif)
     target_w = 2560
     aspect = im.size[1] / im.size[0]
@@ -285,6 +302,8 @@ def run_georeference() -> None:
         "resampling": "bilinear",
         "rmse_in_sample_km": residuals["rmse_in_sample_km"],
         "rmse_loocv_km": residuals["rmse_loocv_km"],
+        "residual_distance_metric": "great_circle_haversine_km",
+        "gdal_version": residuals.get("gdal_version"),
         "coordinates": maplibre_corners,
         "derivative_path": "assets/visuals/moll-west-indies-1715-rectified.webp",
         "derivative_dimensions": [target_w, target_h],

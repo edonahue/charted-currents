@@ -77,7 +77,7 @@
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
       "credit_line": "Library of Congress, Geography and Map Division",
-      "notes": "Engraved regional chart of the Greater Caribbean, trade winds, and Spanish fleet tracks, [1715?]. Imprint: Printed for Tho. Bowles... and I. Bowles..."
+      "notes": "Engraved regional chart of the Greater Caribbean, trade winds, and Spanish fleet tracks, [1715?]. Imprint: Printed for Tho. Bowles in St Pauls Church Yard and Iohn Bowles at the Black Horse in Cornhill."
     },
     {
       "id": "src_crespo_dyncoopnet",
@@ -3329,14 +3329,14 @@
       "source_record_id": "sr_loc_ct003986",
       "field": "cartographic_feature_inscription",
       "raw_value": "also ye trade winds",
-      "notes": "Engraved directional arrows and seasonal wind notations across the Caribbean basin and western North Atlantic."
+      "notes": "Engraved directional arrows and wind notations across the maritime basin."
     },
     {
       "id": "ast_loc_moll_map_flota_tracks",
       "source_record_id": "sr_loc_ct003986",
       "field": "cartographic_feature_inscription",
       "raw_value": "and ye several tracts made by ye galeons and flota from place to place",
-      "notes": "Engraved sailing tracks showing the return routes of the Spanish Galleons and Nueva España Flota via Havana and the Florida Strait."
+      "notes": "Engraved sailing tracks labeled for the galleons and flota across the Caribbean and through the Florida Strait."
     },
     {
       "id": "ast_loc_moll_georeference",
@@ -3347,8 +3347,8 @@
       "epistemic_class": "F",
       "derived_value": "EPSG:3857 second-order polynomial spatial alignment across 14 historical ground control points",
       "derivation_method": "gdalwarp_polynomial_order_2",
-      "rmse_in_sample_km": 94.35,
-      "rmse_loocv_km": 237.89,
+      "rmse_in_sample_km": 85.78,
+      "rmse_loocv_km": 209.65,
       "notes": "Project-constructed spatial alignment. Second-order polynomial warp fitted against 14 recognizable Caribbean coastal and harbor features. Regional projection discrepancies preserved as empirical evidence."
     },
     {

@@ -48,6 +48,11 @@ def verify_acquisition() -> bool:
     assert meta.get("item_id") == "gm71005442", "item_id mismatch"
     assert "G4390 1715 .M6" in meta.get("call_number", ""), "call_number mismatch"
     assert meta.get("digital_id") == "g4390.ct003986", "digital_id mismatch"
+    assert meta.get("date_display") == "[1715?]", "date_display must be [1715?]"
+    assert meta.get("year_recorded") == 1715, "year_recorded must be 1715"
+    assert meta.get("is_uncertain") is True, "is_uncertain must be True"
+    assert any("Herman Moll" in c for c in meta.get("creators", [])), "Herman Moll must be among creators"
+    assert "Black Horse in Cornhill" in meta.get("imprint", ""), "imprint must record Black Horse in Cornhill"
     assert meta.get("rights_state") == "open_public_domain", "rights_state must be open_public_domain"
     assert meta.get("credit_line") == "Library of Congress, Geography and Map Division", "credit_line mismatch"
 
@@ -82,10 +87,10 @@ def acquire_source() -> None:
 
     item = loc_data.get("item", {})
     title = item.get("title", "A map of the West-Indies...")
-    date = item.get("date", "1715")
     call_number = item.get("call_number", ["G4390 1715 .M6"])[0]
     rights_advisory = item.get("rights_advisory")
     repository = item.get("repository", ["Library of Congress Geography and Map Division"])[0]
+    created_published = item.get("created_published", ["[London] Printed for Tho. Bowles [1715?]"])[0]
 
     print(f"[ACQUIRE] Downloading master image from {IIIF_IMAGE_URL}...")
     img_req = urllib.request.Request(IIIF_IMAGE_URL, headers={"User-Agent": USER_AGENT})
@@ -103,13 +108,15 @@ def acquire_source() -> None:
         "item_id": "gm71005442",
         "title": title,
         "creators": [
-            "Herman Moll",
+            "Herman Moll (Cartographer)",
             "Thomas Bowles (Publisher)",
             "John Bowles (Publisher)"
         ],
-        "date_display": date,
+        "date_display": "[1715?]",
         "year_recorded": 1715,
-        "is_uncertain": False,
+        "is_uncertain": True,
+        "imprint": "Printed for Tho. Bowles in St Pauls Church Yard and Iohn Bowles at the Black Horse in Cornhill",
+        "loc_created_published": created_published,
         "holding_institution": "Library of Congress Geography and Map Division",
         "repository_detail": repository,
         "call_number": call_number,

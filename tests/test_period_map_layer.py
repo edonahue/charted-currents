@@ -70,8 +70,9 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertEqual(len(rep["gcps"]), 14)
         self.assertEqual(rep["projection"], "EPSG:3857")
         self.assertEqual(rep["method"], "gdalwarp_polynomial_order_2")
-        self.assertEqual(rep["rmse_in_sample_km"], 94.35)
-        self.assertEqual(rep["rmse_loocv_km"], 237.89)
+        self.assertEqual(rep["rmse_in_sample_km"], 85.78)
+        self.assertEqual(rep["rmse_loocv_km"], 209.65)
+        self.assertEqual(rep.get("residual_distance_metric"), "great_circle_haversine_km")
 
         coords = rep["coordinates"]
         self.assertEqual(len(coords), 4)
@@ -111,8 +112,18 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertEqual(georef_ast["source_assertion_id"], "ast_loc_moll_map_title")
         self.assertEqual(georef_ast["epistemic_class"], "F")
         self.assertEqual(georef_ast["risk_class"], "F")
-        self.assertEqual(georef_ast["rmse_in_sample_km"], 94.35)
-        self.assertEqual(georef_ast["rmse_loocv_km"], 237.89)
+        self.assertEqual(georef_ast["rmse_in_sample_km"], 85.78)
+        self.assertEqual(georef_ast["rmse_loocv_km"], 209.65)
+
+    def test_acquisition_metadata_invariants(self):
+        """Acquisition metadata must preserve [1715?] uncertainty and verified Bowles imprint."""
+        meta = self.acquisition_meta
+        self.assertEqual(meta["item_id"], "gm71005442")
+        self.assertEqual(meta["date_display"], "[1715?]")
+        self.assertTrue(meta["is_uncertain"])
+        self.assertIn("Herman Moll (Cartographer)", meta["creators"])
+        self.assertIn("Black Horse in Cornhill", meta["imprint"])
+        self.assertEqual(meta["rights_state"], "open_public_domain")
 
 
 if __name__ == "__main__":

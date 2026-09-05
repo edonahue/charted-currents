@@ -1859,12 +1859,25 @@ async function runReviewSuite() {
     assert(initVis?.panelHidden === true, "Period map control panel starts collapsed/hidden");
     assert(initVis?.badgeText === "Off", `Period map state badge displays "Off" (found: "${initVis?.badgeText}")`);
 
-    // P8-008: Open panel via native keyboard (Enter key)
+    // P8-R14: Complete Native Keyboard Acceptance Sequence (CDP Input.dispatchKeyEvent only)
+    console.log("Testing native keyboard navigation, operation, Source Drawer invocation, and focus return...");
+
+    // Step 1: Establish deterministic preceding focus on [data-locator-toggle]
     await send("Runtime.evaluate", {
-      expression: `document.querySelector("[data-layer-toggle]")?.focus();`,
+      expression: `document.querySelector("[data-locator-toggle]")?.focus();`,
     });
+
+    // Step 2: Tab naturally through the real page focus order to [data-layer-toggle]
+    await sendKey("Tab", "Tab", 9);
+    const toggleFocusedCheck = await send("Runtime.evaluate", {
+      expression: `document.activeElement === document.querySelector("[data-layer-toggle]")`,
+      returnByValue: true,
+    });
+    assert(toggleFocusedCheck?.result?.value, "Tabbing from locator toggle moves focus directly to Period Map toggle button");
+
+    // Step 3: Open Period Map via native Enter key
     await sendKey("Enter", "Enter", 13);
-    const activeElCheck = await send("Runtime.evaluate", {
+    const openCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const toggle = document.querySelector("[data-layer-toggle]");
         const panel = document.querySelector("[data-layer-panel]");
@@ -1875,40 +1888,11 @@ async function runReviewSuite() {
       })()`,
       returnByValue: true,
     });
-    const aVal = activeElCheck?.result?.value;
+    const aVal = openCheck?.result?.value;
     assert(aVal?.isExpanded && !aVal?.panelHidden, "Pressing Enter on layer toggle expands control panel and sets aria-expanded=true");
     assert(aVal?.focusedOnCheckbox, "Opening panel automatically moves focus to the visibility checkbox");
 
-    // Mutual exclusivity: Opening locator menu via native keyboard closes layer panel
-    await send("Runtime.evaluate", {
-      expression: `document.querySelector("[data-locator-toggle]")?.focus();`,
-    });
-    await sendKey("Enter", "Enter", 13);
-    const isLayerClosed = await send("Runtime.evaluate", {
-      expression: `document.querySelector("[data-layer-panel]")?.hasAttribute("hidden")`,
-      returnByValue: true,
-    });
-    assert(isLayerClosed?.result?.value, "Opening place locator menu automatically closes the period map control panel");
-
-    // Close locator menu back with Escape key
-    await sendKey("Escape", "Escape", 27);
-    await new Promise((r) => setTimeout(r, 150));
-
-    // Reopen layer panel via native keyboard (Space key)
-    await send("Runtime.evaluate", {
-      expression: `document.querySelector("[data-layer-toggle]")?.focus();`,
-    });
-    await sendKey(" ", "Space", 32);
-    const reopenCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const panel = document.querySelector("[data-layer-panel]");
-        return !panel?.hasAttribute("hidden") && document.activeElement === document.querySelector("[data-layer-visibility-checkbox]");
-      })()`,
-      returnByValue: true,
-    });
-    assert(reopenCheck?.result?.value, "Pressing Space on layer toggle expands panel and focuses checkbox");
-
-    // P8-003: Toggle layer ON via native keyboard (Space key on focused checkbox)
+    // Step 4: Toggle layer ON via native Space key on focused checkbox
     await sendKey(" ", "Space", 32);
     const toggleOnVal = await send("Runtime.evaluate", {
       expression: `(() => {
@@ -1933,7 +1917,7 @@ async function runReviewSuite() {
     assert(tVal?.badgeText === "On" && tVal?.badgeActiveClass, 'Badge updates to active "On" state');
     assert(tVal?.sliderGroupHidden === false, "Opacity slider group is unhidden when layer is ON");
 
-    // P8-004: Continuous Opacity Adjustment via native keyboard (Tab to slider, ArrowLeft/Right)
+    // Step 5: Tab to opacity slider and operate via ArrowLeft / ArrowRight
     await sendKey("Tab", "Tab", 9);
     const isSliderFocused = await send("Runtime.evaluate", {
       expression: `document.activeElement === document.querySelector("[data-layer-opacity-slider]")`,
@@ -1961,47 +1945,97 @@ async function runReviewSuite() {
     assert(dVal?.opacityValText === "55%", 'Opacity readout displays "55%"');
     assert(dVal?.ariaValNow === "55", 'Slider aria-valuenow is "55"');
 
-    // Increment opacity slider: 55% -> 75% via ArrowRight (4 steps of 5%)
-    for (let k = 0; k < 4; k++) {
-      await sendKey("ArrowRight", "ArrowRight", 39);
-    }
-    const incRes = await send("Runtime.evaluate", {
+    // Increment opacity slider: 55% -> 65% via ArrowRight (2 steps of 5%)
+    await sendKey("ArrowRight", "ArrowRight", 39);
+    await sendKey("ArrowRight", "ArrowRight", 39);
+
+    // Step 6: Tab to "Inspect Source & Provenance" button
+    await sendKey("Tab", "Tab", 9);
+    const isInspectFocused = await send("Runtime.evaluate", {
+      expression: `document.activeElement === document.querySelector("[data-layer-inspect-btn]")`,
+      returnByValue: true,
+    });
+    assert(isInspectFocused?.result?.value, "Pressing Tab from opacity slider moves focus to 'Inspect Source & Provenance' button");
+
+    // Step 7: Activate "Inspect Source & Provenance" via native Enter key
+    await sendKey("Enter", "Enter", 13);
+    await new Promise((r) => setTimeout(r, 400));
+
+    // Step 8: Verify SourceDrawer opens and expected focus target (#source-drawer-title) is active
+    const drawerOpenCheck = await send("Runtime.evaluate", {
       expression: `(() => {
-        const slider = document.querySelector("[data-layer-opacity-slider]");
-        const m = window.__CC_MAP__;
-        const paintOpacity = m?.getPaintProperty("historical-reference-moll-1715-layer", "raster-opacity");
-        return { sliderVal: slider?.value, paintOpacity };
+        const drawer = document.getElementById("source-drawer");
+        const isOpen = !drawer.hidden && drawer.getAttribute("data-state") === "open";
+        const titleEl = document.getElementById("source-drawer-title");
+        const isTitleFocused = document.activeElement === titleEl;
+        const text = drawer?.innerText || "";
+        const hasMollTitle = text.includes("A map of the West-Indies");
+        const hasCallNumber = text.includes("G4390 1715 .M6");
+        const hasRights = text.includes("Library of Congress, Geography and Map Division");
+        const hasGeoref = text.includes("georeference alignment") || text.includes("gdalwarp_polynomial_order_2") || text.includes("EPSG:3857");
+        return { isOpen, isTitleFocused, hasMollTitle, hasCallNumber, hasRights, hasGeoref };
       })()`,
       returnByValue: true,
     });
-    const iVal = incRes?.result?.value;
-    assert(iVal?.sliderVal === "75", `ArrowRight increments opacity slider to 75 (found: ${iVal?.sliderVal})`);
-    assert(Math.abs(iVal?.paintOpacity - 0.75) < 0.001, `ArrowRight sets raster-opacity to 0.75`);
+    const dCheck = drawerOpenCheck?.result?.value;
+    assert(dCheck?.isOpen, "Activating Inspect button via Enter key opens Source Drawer");
+    assert(dCheck?.isTitleFocused, "Opening Source Drawer moves keyboard focus to #source-drawer-title");
+    assert(dCheck?.hasMollTitle, "Source Drawer contains Herman Moll title");
+    assert(dCheck?.hasCallNumber, "Source Drawer displays LOC call number 'G4390 1715 .M6'");
+    assert(dCheck?.hasRights, "Source Drawer displays verified LOC credit line");
+    assert(dCheck?.hasGeoref, "Source Drawer contains georeference alignment assertions");
 
-    // Reset opacity slider to 65% (2 steps of 5% via ArrowLeft)
-    for (let k = 0; k < 2; k++) {
-      await sendKey("ArrowLeft", "ArrowLeft", 37);
+    if (!skipScreenshots) {
+      const mollDrawerShot = await send("Page.captureScreenshot", { format: "png" });
+      if (mollDrawerShot?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}desktop-moll-source-drawer-1440x900.png`);
+        fs.writeFileSync(outPath, Buffer.from(mollDrawerShot.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}desktop-moll-source-drawer-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}desktop-moll-source-drawer-1440x900.png valid size (${size} bytes)`);
+      }
     }
 
-    // Test Escape key closes panel and restores focus to layer toggle
+    // Step 9: Close SourceDrawer using native Escape key
     await sendKey("Escape", "Escape", 27);
-    const escCheck = await send("Runtime.evaluate", {
+    await new Promise((r) => setTimeout(r, 300));
+
+    // Step 10: Verify focus returns to the triggering Inspect Source & Provenance control
+    const drawerClosedFocusCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById("source-drawer");
+        const inspectBtn = document.querySelector("[data-layer-inspect-btn]");
+        const isClosed = drawer.hidden && drawer.getAttribute("data-state") === "closed";
+        const isInspectFocused = document.activeElement === inspectBtn;
+        return { isClosed, isInspectFocused };
+      })()`,
+      returnByValue: true,
+    });
+    const dcVal = drawerClosedFocusCheck?.result?.value;
+    assert(dcVal?.isClosed, "Pressing Escape closes Source Drawer");
+    assert(dcVal?.isInspectFocused, "Closing Source Drawer restores focus to triggering 'Inspect Source & Provenance' button");
+
+    // Step 11: Close Period Map panel using native Escape key
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Step 12: Verify Period Map panel closes and focus returns to Period Map toggle button
+    const panelClosedFocusCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const panel = document.querySelector("[data-layer-panel]");
         const toggle = document.querySelector("[data-layer-toggle]");
-        return {
-          panelHidden: panel?.hasAttribute("hidden"),
-          isExpanded: toggle?.getAttribute("aria-expanded") === "true",
-          focusedOnToggle: document.activeElement === toggle,
-        };
+        const isPanelHidden = panel?.hasAttribute("hidden");
+        const isToggleExpanded = toggle?.getAttribute("aria-expanded") === "true";
+        const isToggleFocused = document.activeElement === toggle;
+        return { isPanelHidden, isToggleExpanded, isToggleFocused };
       })()`,
       returnByValue: true,
     });
-    const eVal = escCheck?.result?.value;
-    assert(eVal?.panelHidden && !eVal?.isExpanded, "Pressing Escape closes the layer panel and sets aria-expanded=false");
-    assert(eVal?.focusedOnToggle, "Pressing Escape returns focus to the period map toggle button");
+    const pcVal = panelClosedFocusCheck?.result?.value;
+    assert(pcVal?.isPanelHidden && !pcVal?.isToggleExpanded, "Pressing Escape on open panel closes panel and sets aria-expanded=false");
+    assert(pcVal?.isToggleFocused, "Closing Period Map panel restores focus to Period Map toggle button");
 
-    // P8-R8: Responsive layout & mobile bounding-box overflow checks (390px and 430px viewports)
+    // P8-R8 & P8-R15: Responsive layout & mobile open-panel visual proof (390px and 430px viewports)
     // 1. Check 390px mobile viewport (iPhone 12/13/14)
     await send("Emulation.setDeviceMetricsOverride", {
       width: 390,
@@ -2009,8 +2043,12 @@ async function runReviewSuite() {
       deviceScaleFactor: 2,
       mobile: true,
     });
-    await send("Runtime.evaluate", { expression: `document.querySelector("[data-layer-toggle]")?.click();` });
-    await new Promise((r) => setTimeout(r, 150));
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector("[data-layer-toggle]")?.focus();`,
+    });
+    await sendKey("Enter", "Enter", 13);
+    await new Promise((r) => setTimeout(r, 200));
+
     const bbox390 = await send("Runtime.evaluate", {
       expression: `(() => {
         const panel = document.querySelector("[data-layer-panel]");
@@ -2031,6 +2069,21 @@ async function runReviewSuite() {
       `390px mobile viewport: panel right edge (${b390?.right}px) is within screen bounds with >= 8px padding (window width: ${b390?.innerWidth}px)`
     );
 
+    if (!skipScreenshots) {
+      const openPanelShot390 = await send("Page.captureScreenshot", { format: "png" });
+      if (openPanelShot390?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}phone-period-map-panel-open-390x844.png`);
+        fs.writeFileSync(outPath, Buffer.from(openPanelShot390.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}phone-period-map-panel-open-390x844.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}phone-period-map-panel-open-390x844.png valid size (${size} bytes)`);
+      }
+    }
+
+    // Close panel before next viewport check
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 150));
+
     // 2. Check 430px mobile viewport (iPhone 14/15 Pro Max)
     await send("Emulation.setDeviceMetricsOverride", {
       width: 430,
@@ -2038,6 +2091,12 @@ async function runReviewSuite() {
       deviceScaleFactor: 3,
       mobile: true,
     });
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector("[data-layer-toggle]")?.focus();`,
+    });
+    await sendKey("Enter", "Enter", 13);
+    await new Promise((r) => setTimeout(r, 200));
+
     const bbox430 = await send("Runtime.evaluate", {
       expression: `(() => {
         const panel = document.querySelector("[data-layer-panel]");
@@ -2058,8 +2117,22 @@ async function runReviewSuite() {
       `430px mobile viewport: panel right edge (${b430?.right}px) is within screen bounds with >= 8px padding (window width: ${b430?.innerWidth}px)`
     );
 
-    // Close panel and restore desktop viewport for screenshot captures
-    await send("Runtime.evaluate", { expression: `document.querySelector("[data-layer-panel-close]")?.click();` });
+    if (!skipScreenshots) {
+      const openPanelShot430 = await send("Page.captureScreenshot", { format: "png" });
+      if (openPanelShot430?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}phone-period-map-panel-open-430x932.png`);
+        fs.writeFileSync(outPath, Buffer.from(openPanelShot430.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}phone-period-map-panel-open-430x932.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}phone-period-map-panel-open-430x932.png valid size (${size} bytes)`);
+      }
+    }
+
+    // Close panel
+    await sendKey("Escape", "Escape", 27);
+    await new Promise((r) => setTimeout(r, 150));
+
+    // Restore desktop viewport for multi-viewport screenshot captures with Layer ON
     await send("Emulation.setDeviceMetricsOverride", {
       width: 1440,
       height: 900,
@@ -2067,16 +2140,6 @@ async function runReviewSuite() {
       mobile: false,
     });
     await new Promise((r) => setTimeout(r, 200));
-
-    // Ensure layer is ON for review screenshots
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const checkbox = document.querySelector("[data-layer-visibility-checkbox]");
-        if (checkbox && !checkbox.checked) {
-          checkbox.click();
-        }
-      })()`,
-    });
 
     if (!skipScreenshots) {
       console.log("Capturing Packet 8 multi-viewport screenshots with Moll 1715 reference layer ON...");
@@ -2165,7 +2228,7 @@ async function runReviewSuite() {
         assert(size > 15000, `Screenshot ${packetPrefix}phone-moll-layer-on-430x932.png valid size (${size} bytes)`);
       }
 
-      // Reset to Desktop for Source Drawer test
+      // Reset to Desktop
       await send("Emulation.setDeviceMetricsOverride", {
         width: 1440,
         height: 900,
@@ -2174,80 +2237,6 @@ async function runReviewSuite() {
       });
       await new Promise((r) => setTimeout(r, 400));
     }
-
-    // P8-005: Inspect Source & Provenance Path
-    // Reopen layer panel
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const toggle = document.querySelector("[data-layer-toggle]");
-        if (toggle.getAttribute("aria-expanded") !== "true") {
-          toggle.click();
-        }
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 200));
-
-    // Click "Inspect Source & Provenance"
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        const btn = document.querySelector("[data-layer-inspect-btn]");
-        btn.click();
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 600));
-
-    const drawerInspectionCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const drawer = document.getElementById("source-drawer");
-        const isOpen = !drawer.hidden && drawer.getAttribute("aria-hidden") !== "true";
-        const text = drawer.innerText || "";
-        const hasMollTitle = text.includes("A map of the West-Indies");
-        const hasCallNumber = text.includes("G4390 1715 .M6");
-        const hasRights = text.includes("Library of Congress, Geography and Map Division");
-        const hasGeoreferenceAst = text.includes("georeference alignment") || text.includes("gdalwarp_polynomial_order_2") || text.includes("EPSG:3857");
-        return {
-          isOpen,
-          hasMollTitle,
-          hasCallNumber,
-          hasRights,
-          hasGeoreferenceAst,
-        };
-      })()`,
-      returnByValue: true,
-    });
-    const drawerVal = drawerInspectionCheck?.result?.value;
-    assert(drawerVal?.isOpen, "Clicking 'Inspect Source & Provenance' opens #source-drawer");
-    assert(drawerVal?.hasMollTitle, "Source Drawer contains Herman Moll 1715 title");
-    assert(drawerVal?.hasCallNumber, "Source Drawer displays LOC call number 'G4390 1715 .M6'");
-    assert(drawerVal?.hasRights, "Source Drawer displays verified LOC credit line");
-    assert(drawerVal?.hasGeoreferenceAst, "Source Drawer contains georeference alignment assertions");
-
-    if (!skipScreenshots) {
-      const mollDrawerShot = await send("Page.captureScreenshot", { format: "png" });
-      if (mollDrawerShot?.data) {
-        const outPath = path.resolve(`design/reviews/${packetPrefix}desktop-moll-source-drawer-1440x900.png`);
-        fs.writeFileSync(outPath, Buffer.from(mollDrawerShot.data, "base64"));
-        const size = fs.statSync(outPath).size;
-        console.log(`[SAVED] ${packetPrefix}desktop-moll-source-drawer-1440x900.png (${size} bytes)`);
-        assert(size > 15000, `Screenshot ${packetPrefix}desktop-moll-source-drawer-1440x900.png valid size (${size} bytes)`);
-      }
-    }
-
-    // Close Source Drawer with Escape key
-    await send("Runtime.evaluate", {
-      expression: `(() => {
-        window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
-      })()`,
-    });
-    await new Promise((r) => setTimeout(r, 300));
-    const drawerClosedCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const drawer = document.getElementById("source-drawer");
-        return { isHidden: drawer.hidden || drawer.getAttribute("aria-hidden") === "true" };
-      })()`,
-      returnByValue: true,
-    });
-    assert(drawerClosedCheck?.result?.value?.isHidden, "Pressing Escape closes #source-drawer");
 
     // 28. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);

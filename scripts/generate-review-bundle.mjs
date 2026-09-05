@@ -458,8 +458,8 @@ const PACKET_CONFIGS = {
         credit_line: vis?.credit_line,
         neatline_crop: { x: 20, y: 91, w: 5990, h: 2804 },
         gcp_count: vis?.georeference?.gcp_count || 14,
-        rmse_in_sample_km: vis?.georeference?.rmse_in_sample_km || 94.35,
-        rmse_loocv_km: vis?.georeference?.rmse_loocv_km || 237.89,
+        rmse_in_sample_km: vis?.georeference?.rmse_in_sample_km || 85.78,
+        rmse_loocv_km: vis?.georeference?.rmse_loocv_km || 209.65,
         projection: vis?.georeference?.projection || "EPSG:3857",
         epistemic_disclaimer: vis?.georeference?.epistemic_disclaimer,
       };
@@ -467,11 +467,11 @@ const PACKET_CONFIGS = {
     getExceptionQueue: () => [
       {
         id: "EXC-P8-001",
-        category: "HISTORICAL_PROJECTION_DISCREPANCY",
+        category: "HISTORICAL_CARTOGRAPHIC_ALIGNMENT_DISCREPANCY",
         severity: "INFORMATIONAL_ADVISORY",
         subject: "Herman Moll ca. 1715 West-Indies Chart",
         summary:
-          "18th-century cartographic projection exhibits regional discrepancies against modern WGS84 coordinates across the Greater Caribbean basin.",
+          "18th-century engraved cartography exhibits regional alignment discrepancies against modern WGS84 coordinates across the Greater Caribbean basin.",
         finding:
           "Cartography is preserved as historical evidence and reference context over modern MapLibre geography, not modern survey ground truth. Epistemic disclaimer published in Source Drawer, layer control, and georeference report.",
         status: "PRESERVED_AS_EVIDENCE",

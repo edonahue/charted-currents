@@ -6616,8 +6616,8 @@
         "projection": "EPSG:3857",
         "method": "gdalwarp_polynomial_order_2",
         "gcp_count": 14,
-        "rmse_in_sample_km": 94.35,
-        "rmse_loocv_km": 237.89,
+        "rmse_in_sample_km": 85.78,
+        "rmse_loocv_km": 209.65,
         "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth."
       },
       "assertion_ids": [

@@ -153,7 +153,7 @@ const hasMollLayer = Boolean(
               max="100"
               value="65"
               step="5"
-              aria-label="1715 map layer opacity"
+              aria-label="[1715?] map layer opacity"
               aria-valuemin="10"
               aria-valuemax="100"
               aria-valuenow="65"
@@ -847,8 +847,8 @@ const hasMollLayer = Boolean(
       }
       if (status) {
         status.textContent = isVisible
-          ? "1715 Herman Moll reference map layer enabled."
-          : "1715 Herman Moll reference map layer disabled.";
+          ? "[1715?] Herman Moll reference map layer enabled."
+          : "[1715?] Herman Moll reference map layer disabled.";
       }
     });
 
@@ -864,7 +864,7 @@ const hasMollLayer = Boolean(
       }
     });
 
-    inspectBtn?.addEventListener("click", () => {
+    const triggerInspect = () => {
       const sourceId = layerControl.dataset.sourceId;
       if (!sourceId) return;
       let assertionIds: string[] = [];
@@ -883,7 +883,15 @@ const hasMollLayer = Boolean(
           },
         })
       );
-      closeLayerPanel();
+      // Do not call closeLayerPanel() so inspectBtn remains the active returnElement in the DOM
+    };
+
+    inspectBtn?.addEventListener("click", triggerInspect);
+    inspectBtn?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        triggerInspect();
+      }
     });
 
     window.addEventListener("click", (e) => {
