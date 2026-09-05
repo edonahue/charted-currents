@@ -129,6 +129,8 @@
 
           <div data-place-dataset-context-content>
             <p class="inspector-dataset-context-summary" data-place-context-summary></p>
+            <p class="inspector-dataset-context-roles" data-place-context-roles hidden></p>
+            <p class="inspector-dataset-context-overlap-note" data-place-context-overlap-note hidden></p>
             <p class="inspector-dataset-context-baseline-note" data-place-context-baseline-note hidden></p>
 
             <div data-place-context-counterparts-wrap hidden>
@@ -414,6 +416,8 @@
   // Dataset Context Selectors (Packet 7)
   const placeDatasetContextWrap = document.querySelector<HTMLElement>("[data-place-dataset-context-wrap]");
   const placeContextSummary = document.querySelector<HTMLElement>("[data-place-context-summary]");
+  const placeContextRoles = document.querySelector<HTMLElement>("[data-place-context-roles]");
+  const placeContextOverlapNote = document.querySelector<HTMLElement>("[data-place-context-overlap-note]");
   const placeContextBaselineNote = document.querySelector<HTMLElement>("[data-place-context-baseline-note]");
   const placeContextCounterpartsWrap = document.querySelector<HTMLElement>("[data-place-context-counterparts-wrap]");
   const placeContextPeriodLabel = document.querySelector<HTMLElement>("[data-place-context-period-label]");
@@ -763,14 +767,16 @@
 
     placeDatasetContextWrap.hidden = false;
 
-    if (ctx.status === "unrecorded" || !ctx.crespo_lugar_id) {
+    if (ctx.status === "unmapped" || !ctx.crespo_lugar_id || !ctx.periods) {
       if (placeContextSummary) {
-        placeContextSummary.textContent = "No matching Crespo vessel records in this scoped dataset.";
+        placeContextSummary.textContent = "No reviewed Crespo place mapping is currently established for this place. Dataset context is unavailable.";
       }
+      if (placeContextRoles) placeContextRoles.hidden = true;
+      if (placeContextOverlapNote) placeContextOverlapNote.hidden = true;
       if (placeContextBaselineNote) placeContextBaselineNote.hidden = true;
       if (placeContextCounterpartsWrap) placeContextCounterpartsWrap.hidden = true;
       if (placeContextCaveat) {
-        placeContextCaveat.textContent = ctx.coverage_caveat || "Dataset context summarizes records in CrespoDynCoopNet; counts describe source records, not complete historical traffic.";
+        placeContextCaveat.textContent = ctx.coverage_caveat || "No reviewed Crespo place mapping is currently established for this place. Dataset context is unavailable.";
       }
       return;
     }
@@ -782,9 +788,26 @@
     if (placeContextSummary) {
       if (periodData.total_records === 0) {
         placeContextSummary.textContent = `No Crespo vessel records record ${ctx.canonical_name} as an endpoint in ${periodLabel}.`;
+        if (placeContextRoles) placeContextRoles.hidden = true;
+        if (placeContextOverlapNote) placeContextOverlapNote.hidden = true;
       } else {
-        const recordWord = periodData.total_records === 1 ? "Crespo vessel record records" : "Crespo vessel records record";
-        placeContextSummary.textContent = `${periodData.total_records.toLocaleString()} ${recordWord} ${ctx.canonical_name} as an endpoint in ${periodLabel} (${periodData.departure_records.toLocaleString()} departure, ${periodData.arrival_records.toLocaleString()} arrival).`;
+        const recordWord = periodData.total_records === 1 ? "Crespo vessel record documents" : "Crespo vessel records document";
+        placeContextSummary.textContent = `${periodData.total_records.toLocaleString()} ${recordWord} ${ctx.canonical_name} as an endpoint in ${periodLabel}.`;
+
+        if (placeContextRoles) {
+          placeContextRoles.hidden = false;
+          placeContextRoles.textContent = `Recorded as departure: ${periodData.records_with_origin.toLocaleString()} · arrival: ${periodData.records_with_destination.toLocaleString()}.`;
+        }
+
+        if (placeContextOverlapNote) {
+          if (periodData.both_endpoint_records > 0) {
+            placeContextOverlapNote.hidden = false;
+            const recWord = periodData.both_endpoint_records === 1 ? "record lists" : "records list";
+            placeContextOverlapNote.textContent = `${periodData.both_endpoint_records.toLocaleString()} ${recWord} ${ctx.canonical_name} at both endpoints; role counts therefore overlap.`;
+          } else {
+            placeContextOverlapNote.hidden = true;
+          }
+        }
       }
     }
 
@@ -793,8 +816,9 @@
       if (filterState.id !== "all") {
         const allData = ctx.periods["all"];
         const allTotal = allData ? allData.total_records : 0;
+        const recWord = allTotal === 1 ? "record" : "records";
         placeContextBaselineNote.hidden = false;
-        placeContextBaselineNote.textContent = `Overall dataset baseline (1650–1730): ${allTotal.toLocaleString()} Crespo vessel records.`;
+        placeContextBaselineNote.textContent = `Overall dataset baseline (1650–1730): ${allTotal.toLocaleString()} Crespo vessel ${recWord}.`;
       } else {
         placeContextBaselineNote.hidden = true;
       }
@@ -825,8 +849,6 @@
             roleDetails = " (outbound destination)";
           } else if (cp.recorded_as_origin > 0) {
             roleDetails = " (inbound origin)";
-          } else if (cp.same_port_return > 0) {
-            roleDetails = " (same-port return)";
           }
 
           const recWord = cp.total_records === 1 ? "record" : "records";
@@ -2034,6 +2056,28 @@
     line-height: 1.45;
     color: var(--cc-ink);
     margin: 0;
+  }
+
+  .inspector-dataset-context-roles {
+    font-size: var(--cc-text-xs);
+    line-height: 1.45;
+    color: var(--cc-ink-muted);
+    margin: 0.25rem 0 0;
+  }
+
+  .inspector-dataset-context-roles[hidden] {
+    display: none !important;
+  }
+
+  .inspector-dataset-context-overlap-note {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--cc-ink-muted);
+    margin: 0.25rem 0 0;
+  }
+
+  .inspector-dataset-context-overlap-note[hidden] {
+    display: none !important;
   }
 
   .inspector-dataset-context-baseline-note {

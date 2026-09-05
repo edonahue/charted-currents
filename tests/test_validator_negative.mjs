@@ -316,5 +316,67 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
+// Test 24: Dataset context place with invalid status ('unrecorded') fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const dsContext = JSON.parse(fs.readFileSync(path.join(tmpDir, "dataset_context.json"), "utf8"));
+  dsContext.places["place_port_royal"].status = "unrecorded";
+  fs.writeFileSync(path.join(tmpDir, "dataset_context.json"), JSON.stringify(dsContext));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when dataset context place has obsolete status ('unrecorded')");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 25: Unmapped place with non-null periods fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const dsContext = JSON.parse(fs.readFileSync(path.join(tmpDir, "dataset_context.json"), "utf8"));
+  dsContext.places["place_port_royal"].periods = { ...dsContext.places["place_havana"].periods };
+  fs.writeFileSync(path.join(tmpDir, "dataset_context.json"), JSON.stringify(dsContext));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when unmapped place has non-null periods object");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 26: Mapped place with union arithmetic mismatch fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const dsContext = JSON.parse(fs.readFileSync(path.join(tmpDir, "dataset_context.json"), "utf8"));
+  // Break arithmetic: total = 29 instead of 28
+  dsContext.places["place_havana"].periods["all"].total_records = 29;
+  fs.writeFileSync(path.join(tmpDir, "dataset_context.json"), JSON.stringify(dsContext));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when mapped place violates union arithmetic");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 27: Mapped place with counterpart self-reference fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const dsContext = JSON.parse(fs.readFileSync(path.join(tmpDir, "dataset_context.json"), "utf8"));
+  dsContext.places["place_havana"].periods["all"].top_counterparts.push({
+    crespo_lugar_id: 498,
+    source_label: "La Habana",
+    total_records: 1,
+    recorded_as_destination: 1,
+    recorded_as_origin: 0,
+  });
+  fs.writeFileSync(path.join(tmpDir, "dataset_context.json"), JSON.stringify(dsContext));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when counterpart references the place itself");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 28: Prohibited phrase ('same_port_return') fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const dsContext = JSON.parse(fs.readFileSync(path.join(tmpDir, "dataset_context.json"), "utf8"));
+  dsContext.places["place_havana"].coverage_caveat = "Same_port_return observed.";
+  fs.writeFileSync(path.join(tmpDir, "dataset_context.json"), JSON.stringify(dsContext));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when prohibited phrase ('same_port_return') is present");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
 console.log(`\nNegative Test Summary: ${passedTests} passed, ${failedTests} failed.`);
 process.exit(failedTests > 0 ? 1 : 0);

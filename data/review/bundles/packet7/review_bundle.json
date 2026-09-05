@@ -1,6 +1,6 @@
 {
   "bundle_type": "historical_review_bundle",
-  "packet": "Packet 6 — Recorded Goods Across the Spanish Atlantic and Dutch Caribbean",
+  "packet": "Packet 7 — Place-Centered Dataset Context & Maritime Connectivity",
   "comparison": {
     "base_ref": "origin/main",
     "branch": "packet7-dataset-context"
@@ -22,97 +22,86 @@
   "ethical_compliance": {
     "status": "PASS",
     "enslaved_persons_exclusion_verified": true,
-    "verification_note": "Audited all 160 goods occurrences; commodity_ref_key !== 11 ('Esclavo') across all records. Human beings are never treated as commercial cargo."
+    "verification_note": "Dataset context is derived purely from vessel voyage endpoint metadata (TODOSNAVIOS). No enslaved persons or cargo lines are commercialized or quantified."
   },
-  "cohort_dossiers": [
-    {
-      "navio_id": 5890,
-      "vessel_name": "Nuestra Señora de la Estrella",
-      "year": 1694,
-      "route": "Venezuela -> Sevilla ?",
-      "occurrence_id": "occ_ship_crespo_5890",
-      "entity_id": "ship_crespo_5890",
-      "goods_lines_count": 135,
-      "vessel_goods_summary": "3698 fanegas y 95 libras de cacao.l",
-      "reconciliation_status": "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE",
-      "reconciliation_finding": "TODOSNAVIOS summary states '3698 fanegas y 95 libras de cacao.l', while sum of 135 itemized MERCANCIAS lines yields 3,930 Fanegas (96 lines) and 2,026 Libras (39 lines). Both figures are preserved as evidence without speculative normalization.",
-      "distinct_consignees_count": 86,
-      "estrella_lookback_status": "DISTINCT_OCCURRENCE",
-      "estrella_lookback_finding": "No positive evidence of physical continuity with the reviewed 1684 Estrella occurrences was found in the available Crespo discriminators. Treated as a separate occurrence. Physical hull identity remains unresolved."
-    },
-    {
-      "navio_id": 4493,
-      "vessel_name": "West Indische Gally",
-      "year": 1706,
-      "route": "Curaçao -> Amsterdam",
-      "occurrence_id": "occ_ship_crespo_4493",
-      "entity_id": "ship_crespo_4493",
-      "goods_lines_count": 16,
-      "vessel_goods_summary": "36000 libras de palo de Campeche ; 8768 libras de cacao y 7 vat y 1 zurron de cacao ; 26 canastas, 1 caja, 4 vat y 18 rollos de tabaco ; 1958  piezas y 12 paquetes de cuero ; 58055 libras de azúcar ; 47 balas de algodón ; 22 pipas y 15 vat.  de limón ; 2 vat. De rocú ; 6 vat. De gengibre",
-      "reconciliation_status": "REFERENCE_TABLE_REPRESENTATION_CONFLICT",
-      "reconciliation_finding": "All 16 itemized lines correspond directly to the goods and counts in the summary text. However, where TODOSNAVIOS summary text uses Dutch container measure 'vat' (e.g. '7 vat... de cacao', '15 vat. de limón', '6 vat. De gengibre'), the linked TIPOMEDIDA table key 95 is labeled 'Vara'. Both exact values are preserved without conflating vat and vara."
-    },
-    {
-      "navio_id": 4501,
-      "vessel_name": "La Provincia de Zeelanda",
-      "year": 1700,
-      "route": "Curaçao -> Amsterdam",
-      "occurrence_id": "occ_ship_crespo_4501",
-      "entity_id": "ship_crespo_4501",
-      "goods_lines_count": 9,
-      "vessel_goods_summary": "Corambre ; Palo de Brasil ; cacao ; tabaco de Barinas ; añil ; cobre ; conchas de carey ; cascaras  de naranja ; monedas de plata españoles",
-      "reconciliation_status": "MATCH",
-      "reconciliation_finding": "The 9 itemized commodity labels match the 9 goods named in the vessel summary text 1:1. The 9 selected MERCANCIAS rows preserve CANTIDAD=0. The linked vessel record separately records prize-capture context off Puerto Rico. The valuation ('10491 pesos y 2 reales') belongs to the goods-set context, not individual items.",
-      "goods_valuation_finding": "Total valuation recorded as \"10491 pesos y 2 reales de valor total\" at vessel goods set level; individual commodity lines are unitemized."
-    }
-  ],
   "exception_queue": [
     {
-      "id": "EXC-001",
-      "category": "QUANTITY_DISCREPANCY",
+      "id": "EXC-P7-001",
+      "category": "GEOGRAPHIC_RESOLUTION_AMBIGUITY",
       "severity": "REVIEW_ADVISORY",
-      "subject": "TODOSNAVIOS 5890 (Nuestra Señora de la Estrella, 1694)",
-      "summary": "Itemized MERCANCIAS sum (3,930 Fanegas + 2,026 Libras) exceeds TODOSNAVIOS summary (3,698 Fanegas + 95 Libras).",
-      "finding": "PARTIAL_MATCH_WITH_UNEXPLAINED_QUANTITY_DIFFERENCE preserved in primary display and data without synthetic reconciliation.",
-      "status": "PRESERVED_AS_EVIDENCE"
-    },
-    {
-      "id": "EXC-002",
-      "category": "UNIT_REPRESENTATION_CONFLICT",
-      "severity": "REVIEW_ADVISORY",
-      "subject": "TODOSNAVIOS 4493 (West Indische Gally, 1706)",
-      "summary": "Dutch cargo container 'vat' in vessel summary is keyed as ID 95 'Vara' in TIPOMEDIDA reference table.",
-      "finding": "REFERENCE_TABLE_REPRESENTATION_CONFLICT preserved in notes without equating Dutch barrel volume to Spanish cloth length.",
-      "status": "PRESERVED_AS_EVIDENCE"
-    },
-    {
-      "id": "EXC-003",
-      "category": "GEOGRAPHIC_PRECISION_LIMITATION",
-      "severity": "REVIEW_ADVISORY",
-      "subject": "place_venezuela",
-      "summary": "Source row records broad territory 'Venezuela' without specific port of embarkation.",
-      "finding": "Place canonicalized as 'Venezuela' with precision 'province_or_region' and generalized regional navigation reference. Departure port is not inferred as La Guaira.",
-      "status": "RESOLVED_CONSERVATIVELY"
-    },
-    {
-      "id": "EXC-004",
-      "category": "HISTORICAL_PROSE_EVALUATION",
-      "severity": "REVIEW_ADVISORY",
-      "subject": "place_amsterdam, place_seville, place_venezuela, place_curacao, place_puerto_rico, place_havana",
-      "summary": "0 changed historical prose items detected across places and ships.",
-      "finding": "Place descriptions revised to restrained evidence-description wording (Havana evidence-description, Curaçao departure territory, Amsterdam destination port without 'primary' overclaim, Sevilla query notation preserved, Venezuela province without La Guaira assumption, Puerto Rico prize capture vicinity, ship capture prose within linked assertion). External review inspected and accepted the restrained prose.",
-      "status": "ACCEPTED"
-    },
-    {
-      "id": "EXC-005",
-      "category": "INDEPENDENT_MODEL_REVIEW",
-      "severity": "REVIEW_ADVISORY",
-      "subject": "MAESTRE 11357 / Garrote dossier",
-      "summary": "Independent model audits conducted via local GPU (Qwen 14B: NEEDS_MORE_EVIDENCE) and Freewheel harness (Nemotron 3 Ultra family: ACCEPT_AS_STATED).",
-      "finding": "Both reviewer harnesses recognized the Francisco/Bartolomé given-name conflict and supported discounting 11357. Qwen took a more skeptical posture (NEEDS_MORE_EVIDENCE) requiring primary signatures across 18 years, while the Nemotron family (ACCEPT_AS_STATED across OpenCode and OpenRouter provider routes) concluded that occurrence-level provisional 'probable_match' is defensible as stated. Project adjudication notes reviewer rhetorical overstatements regarding archival manuscript inspection and compiler error. Disagreement is classified as PROCESS_REVIEW_DIVERGENCE without majority voting; 'probable_match' remains unchanged pending human scholarly review.",
-      "status": "ADJUDICATED"
+      "subject": "place_st_domingo (Saint-Domingue / Santo Domingo)",
+      "summary": "Place unmapped pending historical adjudication between colonial French Saint-Domingue and Spanish Santo Domingo.",
+      "finding": "Published status is unmapped with periods: null and neutral unavailable caveat. Zero Crespo records published. Preserved as exception queue entry without speculative mapping.",
+      "status": "PRESERVED_AS_EXCEPTION"
     }
   ],
+  "analytical_derivation_contracts": [
+    {
+      "id": "C-001",
+      "title": "Crespo TODOSNAVIOS record aggregation per place and period preset",
+      "risk_class": "C",
+      "derivation_method": "Relational aggregation on raw_todosnavios filtered by date ranges and mapped Lugar IDs",
+      "review_status": "REVIEW_PENDING",
+      "verification_invariant": "Baseline total matches 1,928 scoped records (1650–1730); exact counts match per place."
+    },
+    {
+      "id": "C-002",
+      "title": "Endpoint role classification (departure vs arrival)",
+      "risk_class": "C",
+      "derivation_method": "Counting voyage occurrences as origin (records_with_origin) versus destination (records_with_destination)",
+      "review_status": "REVIEW_PENDING",
+      "verification_invariant": "Non-negative integers for records_with_origin and records_with_destination."
+    },
+    {
+      "id": "C-003",
+      "title": "Dual-endpoint overlap and union arithmetic",
+      "risk_class": "C",
+      "derivation_method": "Set intersection of origin and destination within single voyage record (both_endpoint_records)",
+      "review_status": "REVIEW_PENDING",
+      "verification_invariant": "total_records == records_with_origin + records_with_destination - both_endpoint_records; Cádiz overlap = 24 records."
+    },
+    {
+      "id": "C-004",
+      "title": "Directed counterpart pair ranking with self-counterpart exclusion",
+      "risk_class": "C",
+      "derivation_method": "Frequency ranking of opposite-endpoint Lugar IDs strictly excluding the examined place's own Lugar ID",
+      "review_status": "REVIEW_PENDING",
+      "verification_invariant": "Examined place never appears in its own top_counterparts list."
+    },
+    {
+      "id": "C-005",
+      "title": "Canonical place mapping lookup and unmapped sentinel handling",
+      "risk_class": "C",
+      "derivation_method": "Explicit YAML lookup with 19 mapped and 10 unmapped places; unmapped places emit periods: null and neutral unavailable copy",
+      "review_status": "REVIEW_PENDING",
+      "verification_invariant": "Audit confirms exactly 19 mapped, 10 unmapped places; unmapped places have periods: null; no synthetic zeroes."
+    }
+  ],
+  "place_mapping_review": {
+    "status": "AUDITED_LOCAL_MIRROR",
+    "total_canonical_places": 29,
+    "mapped_places_count": 19,
+    "unmapped_places_count": 10,
+    "all_mapped_ids_verified": true,
+    "all_labels_verified": true,
+    "unmapped_sentinels_summary": "10 canonical places unmapped in Crespo dataset (including Port Royal, Nevis, Dartmouth, Saint-Domingue). Emitted with periods: null."
+  },
+  "garrote_lookback": {
+    "subject": "Maestre Bartolomé Garrote (11357)",
+    "status": "UNCHANGED_PENDING_HUMAN_REVIEW",
+    "summary": "Occurrence-level probable match preserved from Packet 6 without regressions or unreviewed identity promotions."
+  },
+  "dataset_context_summary": {
+    "baseline_period": "1650-1730",
+    "total_records_in_baseline": 1928,
+    "counting_unit": "one Crespo TODOSNAVIOS row / Crespo vessel record",
+    "total_places": 29,
+    "mapped_places": 19,
+    "unmapped_places": 10,
+    "source_mdb_sha256": "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5",
+    "mapping_file_sha256": "0f14f1fa943969c24a09e6db888f283f4b9e9aa3a794f876b95bc826b0d96663",
+    "generator_sha256": "c960a795297eecb56440c902bdeb23118871ee69e3d5fda50a01937a98d4099e"
+  },
   "added_source_records": [],
   "epistemic_classes": {
     "class_a_sample": [],
@@ -120,13 +109,5 @@
     "class_c_sample": [],
     "class_d_edges": [],
     "class_e_changed_prose": []
-  },
-  "dataset_context_summary": {
-    "baseline_period": "1650-1730",
-    "total_records_in_baseline": 1928,
-    "counting_unit": "one Crespo TODOSNAVIOS row / Crespo vessel record",
-    "total_places": 29,
-    "mapped_places": 20,
-    "unrecorded_places": 9
   }
 }

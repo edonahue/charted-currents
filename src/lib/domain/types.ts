@@ -434,7 +434,6 @@ export interface DatasetContextCounterpart {
   total_records: number;
   recorded_as_destination: number;
   recorded_as_origin: number;
-  same_port_return: number;
 }
 
 export interface DatasetContextPeriodData {
@@ -443,20 +442,23 @@ export interface DatasetContextPeriodData {
   start_year: number;
   end_year: number;
   total_records: number;
-  departure_records: number;
-  arrival_records: number;
+  records_with_origin: number;
+  records_with_destination: number;
+  both_endpoint_records: number;
+  departure_records?: number;
+  arrival_records?: number;
   top_counterparts: DatasetContextCounterpart[];
 }
 
 export interface PublishedPlaceDatasetContext {
   canonical_place_id: string;
   canonical_name: string;
-  status: "mapped" | "unrecorded";
+  status: "mapped" | "unmapped";
   crespo_lugar_id: number | null;
   source_native_label: string | null;
   geographic_precision?: string;
   coverage_caveat: string;
-  periods: Record<string, DatasetContextPeriodData>;
+  periods: Record<string, DatasetContextPeriodData> | null;
 }
 
 export interface PublishedDatasetContext {
@@ -464,6 +466,11 @@ export interface PublishedDatasetContext {
     version: string;
     source_dataset: string;
     source_tables: string[];
+    source_mdb_sha256: string;
+    mapping_version: string;
+    mapping_file_sha256: string;
+    generator_version: string;
+    generator_sha256: string;
     counting_unit: string;
     baseline_period: string;
     total_records_in_baseline: number;
