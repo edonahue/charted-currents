@@ -15,6 +15,7 @@ export const PUBLISHED_ARTIFACTS = {
   entities: "entities.json",
   events: "events.json",
   sources: "sources.json",
+  dataset_context: "dataset_context.json",
 } as const;
 
 export type PublishedArtifact = keyof typeof PUBLISHED_ARTIFACTS;

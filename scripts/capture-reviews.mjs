@@ -1565,7 +1565,238 @@ async function runReviewSuite() {
     assert(vzCheck?.result?.value?.prec === "Province / Region reference", "Venezuela precision is 'Province / Region reference'");
     assert(!vzCheck?.result?.value?.note?.includes("La Guaira"), "Venezuela place notes do not inject La Guaira port resolution");
 
-    // 23. Runtime Exceptions check
+    // 23. Packet 7: Test Havana Dataset Context Baseline (1650-1730)
+    console.log("Testing Packet 7 Havana Dataset Context baseline...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: "all" }));
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_havana" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const havanaContextCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const wrap = document.querySelector('[data-place-dataset-context-wrap]');
+        const isWrapVisible = Boolean(wrap && !wrap.hidden && getComputedStyle(wrap).display !== 'none');
+        const summaryText = document.querySelector('[data-place-context-summary]')?.textContent || '';
+        const rolesText = document.querySelector('[data-place-context-roles]')?.textContent || '';
+        const baselineNote = document.querySelector('[data-place-context-baseline-note]');
+        const isBaselineNoteHidden = Boolean(!baselineNote || baselineNote.hidden || getComputedStyle(baselineNote).display === 'none');
+        const counterpartsWrap = document.querySelector('[data-place-context-counterparts-wrap]');
+        const isCounterpartsVisible = Boolean(counterpartsWrap && !counterpartsWrap.hidden && getComputedStyle(counterpartsWrap).display !== 'none');
+        const counterpartItems = Array.from(document.querySelectorAll('[data-place-context-counterparts-list] .inspector-dataset-context-item')).map(el => el.textContent);
+        const caveatText = document.querySelector('[data-place-context-caveat]')?.textContent || '';
+        return { isWrapVisible, summaryText, rolesText, isBaselineNoteHidden, isCounterpartsVisible, counterpartItems, caveatText };
+      })()`,
+      returnByValue: true,
+    });
+    assert(havanaContextCheck?.result?.value?.isWrapVisible, "Havana Dataset Context section is visible");
+    assert(havanaContextCheck?.result?.value?.summaryText?.includes("28 Crespo vessel records document"), "Havana displays 28 Crespo vessel records document grammar for all (1650-1730)");
+    assert(havanaContextCheck?.result?.value?.rolesText?.includes("Recorded as departure: 7 · arrival: 21."), "Havana displays departure 7 arrival 21 breakdown");
+    assert(havanaContextCheck?.result?.value?.isBaselineNoteHidden, "Baseline note is hidden when period filter is 'all'");
+    assert(havanaContextCheck?.result?.value?.isCounterpartsVisible, "Havana counterparts list is visible");
+    assert(havanaContextCheck?.result?.value?.caveatText?.includes("CrespoDynCoopNet"), "Havana displays Dataset Context coverage caveat");
+    assert(!havanaContextCheck?.result?.value?.summaryText?.includes("Prize Papers Sample"), "Dataset Context does not contain 'Prize Papers Sample'");
+    assert(!havanaContextCheck?.result?.value?.summaryText?.includes("Early / Disaster Context"), "Dataset Context does not contain 'Early / Disaster Context'");
+
+    // Capture Packet 7 Havana Dataset Context screenshot
+    if (!skipScreenshots) {
+      const havanaScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (havanaScreenshot?.data) {
+        const havanaOutPath = path.resolve(`design/reviews/${packetPrefix}havana-dataset-context-1440x900.png`);
+        fs.writeFileSync(havanaOutPath, Buffer.from(havanaScreenshot.data, "base64"));
+        const size = fs.statSync(havanaOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}havana-dataset-context-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}havana-dataset-context-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+    }
+
+    // 24. Packet 7: Test Havana Dataset Context with Period Filter (1684-1695)
+    console.log("Testing Packet 7 Havana Dataset Context under Period Filter (1684-1695)...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: { id: "1684-1695", startYear: 1684, endYear: 1695, label: "1684–1695" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const havanaFilteredCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const summaryText = document.querySelector('[data-place-context-summary]')?.textContent || '';
+        const rolesText = document.querySelector('[data-place-context-roles]')?.textContent || '';
+        const baselineNote = document.querySelector('[data-place-context-baseline-note]');
+        const isBaselineNoteVisible = Boolean(baselineNote && !baselineNote.hidden && getComputedStyle(baselineNote).display !== 'none');
+        const baselineNoteText = baselineNote?.textContent || '';
+        const counterpartItems = Array.from(document.querySelectorAll('[data-place-context-counterparts-list] .inspector-dataset-context-item')).map(el => el.textContent);
+        return { summaryText, rolesText, isBaselineNoteVisible, baselineNoteText, counterpartItems };
+      })()`,
+      returnByValue: true,
+    });
+    assert(havanaFilteredCheck?.result?.value?.summaryText?.includes("5 Crespo vessel records document"), "Havana displays 5 Crespo vessel records document grammar during 1684-1695");
+    assert(havanaFilteredCheck?.result?.value?.rolesText?.includes("Recorded as departure: 1 · arrival: 4."), "Havana displays 1 departure, 4 arrival breakdown");
+    assert(havanaFilteredCheck?.result?.value?.isBaselineNoteVisible, "Baseline note is visible under active period filter");
+    assert(havanaFilteredCheck?.result?.value?.baselineNoteText?.includes("Overall dataset baseline (1650–1730): 28 Crespo vessel records."), "Baseline note displays overall 28 records");
+    assert(havanaFilteredCheck?.result?.value?.counterpartItems?.some(t => t.includes("Cádiz") && t.includes("3 records")), "Havana lists Cádiz counterpart with 3 records for 1684-1695");
+
+    // Reset period filter
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-filter-time", { detail: "all" }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    // 25. Packet 7: Test Unmapped Place (Port Royal) Context & Neutral Copy
+    console.log("Testing Packet 7 Unmapped Place Context for Port Royal...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_port_royal" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const portRoyalCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const summaryText = document.querySelector('[data-place-context-summary]')?.textContent || '';
+        const counterpartsWrap = document.querySelector('[data-place-context-counterparts-wrap]');
+        const isCounterpartsHidden = Boolean(!counterpartsWrap || counterpartsWrap.hidden || getComputedStyle(counterpartsWrap).display === 'none');
+        const caveatText = document.querySelector('[data-place-context-caveat]')?.textContent || '';
+        return { summaryText, isCounterpartsHidden, caveatText };
+      })()`,
+      returnByValue: true,
+    });
+    assert(portRoyalCheck?.result?.value?.summaryText === "No reviewed Crespo place mapping is currently established for this place. Dataset context is unavailable.", "Port Royal displays locked neutral unmapped message");
+    assert(portRoyalCheck?.result?.value?.isCounterpartsHidden, "Port Royal counterparts list is strictly hidden");
+    assert(portRoyalCheck?.result?.value?.caveatText === "No reviewed Crespo place mapping is currently established for this place. Dataset context is unavailable.", "Port Royal displays locked neutral unmapped caveat");
+    assert(!portRoyalCheck?.result?.value?.caveatText?.includes("imperial archival partition"), "Port Royal does not claim zero matches illuminate an imperial archival partition");
+    assert(!portRoyalCheck?.result?.value?.caveatText?.includes("archival partition"), "Port Royal does not mention archival partition");
+
+    if (!skipScreenshots) {
+      const prScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (prScreenshot?.data) {
+        const prOutPath = path.resolve(`design/reviews/${packetPrefix}port-royal-unmapped-1440x900.png`);
+        fs.writeFileSync(prOutPath, Buffer.from(prScreenshot.data, "base64"));
+        const size = fs.statSync(prOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}port-royal-unmapped-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}port-royal-unmapped-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+    }
+
+    // 25b. Packet 7: Test Unmapped Place (Saint-Domingue)
+    console.log("Testing Packet 7 Unmapped Place Context for Saint-Domingue...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_st_domingo" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const stDomingueCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const summaryText = document.querySelector('[data-place-context-summary]')?.textContent || '';
+        const counterpartsWrap = document.querySelector('[data-place-context-counterparts-wrap]');
+        const isCounterpartsHidden = Boolean(!counterpartsWrap || counterpartsWrap.hidden || getComputedStyle(counterpartsWrap).display === 'none');
+        const caveatText = document.querySelector('[data-place-context-caveat]')?.textContent || '';
+        return { summaryText, isCounterpartsHidden, caveatText };
+      })()`,
+      returnByValue: true,
+    });
+    assert(stDomingueCheck?.result?.value?.summaryText === "No reviewed Crespo place mapping is currently established for this place. Dataset context is unavailable.", "Saint-Domingue displays locked neutral unmapped message");
+    assert(stDomingueCheck?.result?.value?.isCounterpartsHidden, "Saint-Domingue counterparts list is strictly hidden");
+
+    // 25c. Packet 7: Test Mapped-Zero Place (London)
+    console.log("Testing Packet 7 Mapped-Zero Place Context for London...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_london" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const londonCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const summaryText = document.querySelector('[data-place-context-summary]')?.textContent || '';
+        const counterpartsWrap = document.querySelector('[data-place-context-counterparts-wrap]');
+        const isCounterpartsHidden = Boolean(!counterpartsWrap || counterpartsWrap.hidden || getComputedStyle(counterpartsWrap).display === 'none');
+        const caveatText = document.querySelector('[data-place-context-caveat]')?.textContent || '';
+        return { summaryText, isCounterpartsHidden, caveatText };
+      })()`,
+      returnByValue: true,
+    });
+    assert(londonCheck?.result?.value?.summaryText === "No Crespo vessel records record London as an endpoint in 1650–1730.", "London displays mapped-zero message");
+    assert(londonCheck?.result?.value?.isCounterpartsHidden, "London counterparts list is strictly hidden");
+    assert(londonCheck?.result?.value?.caveatText?.includes("No Crespo vessel records record London as an endpoint in 1650–1730."), "London displays mapped-zero caveat");
+
+    if (!skipScreenshots) {
+      const londonScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (londonScreenshot?.data) {
+        const londonOutPath = path.resolve(`design/reviews/${packetPrefix}london-mapped-zero-1440x900.png`);
+        fs.writeFileSync(londonOutPath, Buffer.from(londonScreenshot.data, "base64"));
+        const size = fs.statSync(londonOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}london-mapped-zero-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}london-mapped-zero-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+    }
+
+    // 25d. Packet 7: Test Cádiz Both-Endpoints Overlap and Self-Exclusion
+    console.log("Testing Packet 7 Cádiz Both-Endpoints Overlap and Self-Exclusion...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_cadiz" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const cadizCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const summaryText = document.querySelector('[data-place-context-summary]')?.textContent || '';
+        const rolesText = document.querySelector('[data-place-context-roles]')?.textContent || '';
+        const overlapNote = document.querySelector('[data-place-context-overlap-note]');
+        const isOverlapVisible = Boolean(overlapNote && !overlapNote.hidden && getComputedStyle(overlapNote).display !== 'none');
+        const overlapText = overlapNote?.textContent || '';
+        const counterpartItems = Array.from(document.querySelectorAll('[data-place-context-counterparts-list] .inspector-dataset-context-item')).map(el => el.textContent);
+        return { summaryText, rolesText, isOverlapVisible, overlapText, counterpartItems };
+      })()`,
+      returnByValue: true,
+    });
+    assert(cadizCheck?.result?.value?.summaryText?.includes("1,093 Crespo vessel records document Cádiz as an endpoint"), "Cádiz displays 1,093 records document grammar");
+    assert(cadizCheck?.result?.value?.rolesText?.includes("Recorded as departure: 985 · arrival: 132."), "Cádiz displays 985 departure and 132 arrival roles");
+    assert(cadizCheck?.result?.value?.isOverlapVisible, "Cádiz overlap note is visible");
+    assert(cadizCheck?.result?.value?.overlapText?.includes("24 records list Cádiz at both endpoints; role counts therefore overlap."), "Cádiz displays exact 24 overlap note");
+    assert(!cadizCheck?.result?.value?.counterpartItems?.some(t => t.includes("Cádiz")), "Cádiz is strictly excluded from its own counterparts list");
+
+    if (!skipScreenshots) {
+      const cadizScreenshot = await send("Page.captureScreenshot", { format: "png" });
+      if (cadizScreenshot?.data) {
+        const cadizOutPath = path.resolve(`design/reviews/${packetPrefix}cadiz-overlap-context-1440x900.png`);
+        fs.writeFileSync(cadizOutPath, Buffer.from(cadizScreenshot.data, "base64"));
+        const size = fs.statSync(cadizOutPath).size;
+        console.log(`[SAVED] ${packetPrefix}cadiz-overlap-context-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}cadiz-overlap-context-1440x900.png generated with valid raster size (${size} bytes)`);
+      }
+    }
+
+    // 26. Packet 7: Negative Isolation on Ship View
+    console.log("Testing Packet 7 Place Dataset Context negative isolation on Ship selection...");
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_crespo_4493" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const shipIsolationCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const placeView = document.querySelector('[data-view-place]');
+        const isPlaceViewHidden = Boolean(!placeView || placeView.hidden || getComputedStyle(placeView).display === 'none');
+        return { isPlaceViewHidden };
+      })()`,
+      returnByValue: true,
+    });
+    assert(shipIsolationCheck?.result?.value?.isPlaceViewHidden, "Place view and place dataset context are strictly hidden when a ship is selected");
+
+    // 27. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

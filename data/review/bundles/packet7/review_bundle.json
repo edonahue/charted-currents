@@ -1,0 +1,126 @@
+{
+  "bundle_type": "historical_review_bundle",
+  "packet": "Packet 7 — Place-Centered Dataset Context & Maritime Connectivity",
+  "comparison": {
+    "base_ref": "origin/main",
+    "branch": "packet7-dataset-context"
+  },
+  "summary_counts": {
+    "corpus_version": "0.7.0",
+    "total_added_assertions": 0,
+    "total_added_source_records": 0,
+    "total_added_ships": 0,
+    "total_goods_occurrences": 160,
+    "added_assertion_epistemic_classes": {
+      "class_a_direct_transcription": 0,
+      "class_b_deterministic_transformation": 0,
+      "class_c_relational_derivation": 0,
+      "class_d_identity_resolution": 0,
+      "class_e_changed_prose_count": 0
+    },
+    "by_epistemic_class": {
+      "class_a_direct_transcription": 0,
+      "class_b_deterministic_transformation": 0,
+      "class_c_relational_derivation": 0,
+      "class_d_identity_resolution": 0,
+      "class_e_changed_prose_count": 0
+    },
+    "analytical_derivation_contract_count": 5
+  },
+  "ethical_compliance": {
+    "status": "PASS",
+    "enslaved_persons_exclusion_verified": true,
+    "verification_note": "Dataset context is derived purely from vessel voyage endpoint metadata (TODOSNAVIOS). No enslaved persons or cargo lines are commercialized or quantified."
+  },
+  "exception_queue": [
+    {
+      "id": "EXC-P7-001",
+      "category": "GEOGRAPHIC_RESOLUTION_AMBIGUITY",
+      "severity": "REVIEW_ADVISORY",
+      "subject": "place_st_domingo (Saint-Domingue / Santo Domingo)",
+      "summary": "Place unmapped pending historical adjudication between colonial French Saint-Domingue and Spanish Santo Domingo.",
+      "finding": "Published status is unmapped with periods: null and neutral unavailable caveat. Zero Crespo records published. Preserved as exception queue entry without speculative mapping.",
+      "status": "PRESERVED_AS_EXCEPTION"
+    }
+  ],
+  "analytical_derivation_contracts": [
+    {
+      "id": "C-001",
+      "title": "Crespo TODOSNAVIOS record aggregation per place and period preset",
+      "risk_class": "C",
+      "derivation_method": "Relational aggregation on raw_todosnavios filtered by date ranges and mapped Lugar IDs",
+      "review_status": "ACCEPTED",
+      "verification_invariant": "Baseline total matches 1,928 scoped records (1650–1730); exact counts match per place; accepted by Packet 7 external review."
+    },
+    {
+      "id": "C-002",
+      "title": "Endpoint role classification (departure vs arrival)",
+      "risk_class": "C",
+      "derivation_method": "Counting voyage occurrences as origin (records_with_origin) versus destination (records_with_destination)",
+      "review_status": "ACCEPTED",
+      "verification_invariant": "Non-negative integers for records_with_origin and records_with_destination; accepted by Packet 7 external review."
+    },
+    {
+      "id": "C-003",
+      "title": "Dual-endpoint overlap and union arithmetic",
+      "risk_class": "C",
+      "derivation_method": "Set intersection of origin and destination within single voyage record (both_endpoint_records)",
+      "review_status": "ACCEPTED",
+      "verification_invariant": "total_records == records_with_origin + records_with_destination - both_endpoint_records; Cádiz overlap = 24 records; accepted by Packet 7 external review."
+    },
+    {
+      "id": "C-004",
+      "title": "Directed counterpart pair ranking with self-counterpart exclusion",
+      "risk_class": "C",
+      "derivation_method": "Frequency ranking of opposite-endpoint Lugar IDs strictly excluding the examined place's own Lugar ID with stable deterministic tie-breaking",
+      "review_status": "ACCEPTED",
+      "verification_invariant": "Examined place never appears in its own top_counterparts list; deterministic ordering on ties (record count desc, source label asc, ID asc); accepted by Packet 7 external review."
+    },
+    {
+      "id": "C-005",
+      "title": "Canonical place mapping lookup and unmapped sentinel handling",
+      "risk_class": "C",
+      "derivation_method": "Explicit YAML lookup with 19 mapped and 10 unmapped places; source-row verification confirmed via deterministic local mirror audit; 19 editorial place resolutions and 10 unmapped sentinels accepted by Packet 7 external review",
+      "review_status": "ACCEPTED",
+      "verification_invariant": "Audit confirms exactly 19 mapped, 10 unmapped places; unmapped places have periods: null; no synthetic zeroes; Saint-Domingue remains unmapped; accepted by Packet 7 external review."
+    }
+  ],
+  "place_mapping_review": {
+    "source_qa_status": "PASS",
+    "editorial_resolution_status": "ACCEPTED_BY_EXTERNAL_REVIEW",
+    "total_canonical_places": 29,
+    "mapped_places_count": 19,
+    "unmapped_places_count": 10,
+    "all_mapped_ids_verified": true,
+    "all_labels_verified": true,
+    "source_qa_summary": "All 19 mapped native Crespo LUGARES IDs verified against raw DuckDB tables with 0 label mismatches and 0 workstation leaks.",
+    "editorial_resolution_summary": "19 canonical place linkages and 10 unmapped sentinels accepted by external review. Saint-Domingue remains explicitly unmapped."
+  },
+  "garrote_lookback": {
+    "subject": "Bartolomé Antonio Garrote probable_match dossier",
+    "target_entity_id": "person_bartolome_antonio_garrote",
+    "upstream_contradiction_reference": "MAESTRE 11357 = contradictory upstream/source-native linkage involving Francisco Antonio Garrote and Bartolomé-form rows.",
+    "status": "ACCEPTED_AS_MODELED",
+    "resolution_posture": "probable_match (reversible occurrence-level linkage, not identity authority)",
+    "summary": "Occurrence-level probable match preserved from Packet 6 without regressions, identity upgrades, or unreviewed entity promotions."
+  },
+  "dataset_context_summary": {
+    "baseline_period": "1650-1730",
+    "total_records_in_baseline": 1928,
+    "counting_unit": "one Crespo TODOSNAVIOS row / Crespo vessel record",
+    "total_places": 29,
+    "mapped_places": 19,
+    "unmapped_places": 10,
+    "source_mdb_sha256": "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5",
+    "mapping_file_sha256": "ed105dc97b59a98f98a9079e8484f4f14b9c7078e2608794777bd213449a10af",
+    "generator_sha256": "2af5f3cd1cc2a4921dc7d3fa60392646556e9aa2fa1ca13cc03046f686123dec"
+  },
+  "added_source_records": [],
+  "epistemic_classes": {
+    "class_a_sample": [],
+    "class_b_all": [],
+    "class_c_sample": [],
+    "class_d_edges": [],
+    "class_e_changed_prose": []
+  }
+}
