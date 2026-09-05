@@ -121,7 +121,7 @@
         </section>
 
         <!-- Dataset Context Section (Packet 7) -->
-        <section class="inspector-section" data-place-dataset-context-wrap aria-label="Dataset context">
+        <section class="inspector-section" data-place-dataset-context-wrap hidden aria-label="Dataset context">
           <div class="inspector-dataset-context-header">
             <p class="panel-kicker">Dataset Context</p>
             <span class="inspector-dataset-context-badge">CrespoDynCoopNet analytical context</span>
@@ -531,7 +531,15 @@
         eventsCache = Array.isArray(evData) ? evData : evData.events || [];
       }
       if (srcRes.ok) sourcesCache = await srcRes.json();
-      if (ctxRes.ok) datasetContextCache = await ctxRes.json();
+      if (ctxRes.ok) {
+        try {
+          datasetContextCache = await ctxRes.json();
+        } catch {
+          datasetContextCache = null;
+        }
+      } else {
+        datasetContextCache = null;
+      }
       const curr = selectionStore.get();
       if (curr) syncInspector(curr);
     } catch (e) {
@@ -758,7 +766,11 @@
   }
 
   function renderDatasetContext(placeId: string, filterState: TimeFilterState) {
-    if (!datasetContextCache || !placeDatasetContextWrap) return;
+    if (!placeDatasetContextWrap) return;
+    if (!datasetContextCache || !datasetContextCache.places) {
+      placeDatasetContextWrap.hidden = true;
+      return;
+    }
     const ctx = datasetContextCache.places[placeId];
     if (!ctx) {
       placeDatasetContextWrap.hidden = true;

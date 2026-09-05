@@ -11,7 +11,7 @@
 version: "1.0.0"
 source_dataset: "Crespo DynCoopNet (CSIC ODC-DbCL)"
 source_table: "raw_lugares"
-review_status: "reviewed_for_packet7"
+review_status: "accepted_by_external_review"
 
 mappings:
   - canonical_place_id: "place_cadiz"
@@ -21,7 +21,7 @@ mappings:
     crespo_source_label: "Cádiz"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Cádiz' ↔ Crespo 'Cádiz' LUGARES 195."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_seville"
     canonical_name: "Sevilla"
@@ -30,7 +30,7 @@ mappings:
     crespo_source_label: "Sevilla"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Sevilla' ↔ Crespo 'Sevilla' LUGARES 873."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_havana"
     canonical_name: "Havana"
@@ -39,7 +39,7 @@ mappings:
     crespo_source_label: "La Habana"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Havana' ↔ Crespo 'La Habana' LUGARES 498; excludes LUGARES 1657 'Cabo de Corrientes'."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_curacao"
     canonical_name: "Curaçao"
@@ -48,7 +48,7 @@ mappings:
     crespo_source_label: "Curaçao"
     geographic_precision: "colony_or_island"
     rationale: "Direct reviewed toponym resolution: canonical 'Curaçao' ↔ Crespo 'Curaçao' LUGARES 282."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_amsterdam"
     canonical_name: "Amsterdam"
@@ -57,7 +57,7 @@ mappings:
     crespo_source_label: "Amsterdam"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Amsterdam' ↔ Crespo 'Amsterdam' LUGARES 41."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_cartagena"
     canonical_name: "Cartagena"
@@ -66,7 +66,7 @@ mappings:
     crespo_source_label: "Cartagena de Indias"
     geographic_precision: "port_city"
     rationale: "Selected Crespo 'Cartagena de Indias' LUGARES 219; Crespo LUGARES 218 'Cartagena' (Murcia) is not used."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_puerto_rico"
     canonical_name: "Puerto Rico"
@@ -75,7 +75,7 @@ mappings:
     crespo_source_label: "Puerto Rico"
     geographic_precision: "colony_or_island"
     rationale: "Direct reviewed toponym resolution: canonical 'Puerto Rico' ↔ Crespo 'Puerto Rico' LUGARES 767."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_venezuela"
     canonical_name: "Venezuela"
@@ -84,7 +84,7 @@ mappings:
     crespo_source_label: "Venezuela"
     geographic_precision: "province_or_region"
     rationale: "Direct reviewed toponym resolution: canonical 'Venezuela' ↔ Crespo 'Venezuela' LUGARES 985; preserves regional precision without municipal port inference."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_bristol"
     canonical_name: "Bristol"
@@ -93,7 +93,7 @@ mappings:
     crespo_source_label: "Bristol"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Bristol' ↔ Crespo 'Bristol' LUGARES 177."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_london"
     canonical_name: "London"
@@ -102,7 +102,7 @@ mappings:
     crespo_source_label: "Londres"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'London' ↔ Crespo 'Londres' LUGARES 559."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_barbados"
     canonical_name: "Barbados"
@@ -111,7 +111,7 @@ mappings:
     crespo_source_label: "Barbados"
     geographic_precision: "colony_or_island"
     rationale: "Direct reviewed toponym resolution: canonical 'Barbados' ↔ Crespo 'Barbados' LUGARES 109."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_jamaica"
     canonical_name: "Jamaica"
@@ -120,7 +120,7 @@ mappings:
     crespo_source_label: "Jamaica"
     geographic_precision: "colony_or_island"
     rationale: "Direct reviewed toponym resolution: canonical 'Jamaica' ↔ Crespo 'Jamaica' LUGARES 486."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_martinique"
     canonical_name: "Martinique"
@@ -129,7 +129,7 @@ mappings:
     crespo_source_label: "Martinica"
     geographic_precision: "colony_or_island"
     rationale: "Direct reviewed toponym resolution: canonical 'Martinique' ↔ Crespo 'Martinica' LUGARES 596."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_st_augustine"
     canonical_name: "St Augustine"
@@ -138,7 +138,7 @@ mappings:
     crespo_source_label: "San Agustín de Florida"
     geographic_precision: "populated_place"
     rationale: "Direct reviewed toponym resolution: canonical 'St Augustine' ↔ Crespo 'San Agustín de Florida' LUGARES 1344."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_marseille"
     canonical_name: "Marseille"
@@ -147,7 +147,7 @@ mappings:
     crespo_source_label: "Marsella"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Marseille' ↔ Crespo 'Marsella' LUGARES 595."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_plymouth"
     canonical_name: "Plymouth, Devon"
@@ -156,7 +156,7 @@ mappings:
     crespo_source_label: "Plymouth"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Plymouth, Devon' ↔ Crespo 'Plymouth' LUGARES 736."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_rochelle"
     canonical_name: "La Rochelle"
@@ -165,7 +165,7 @@ mappings:
     crespo_source_label: "La Rochelle"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'La Rochelle' ↔ Crespo 'La Rochelle' LUGARES 503."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_nantes"
     canonical_name: "Nantes"
@@ -174,7 +174,7 @@ mappings:
     crespo_source_label: "Nantes"
     geographic_precision: "port_city"
     rationale: "Direct reviewed toponym resolution: canonical 'Nantes' ↔ Crespo 'Nantes' LUGARES 654."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_port_mahon"
     canonical_name: "Port Mahon, Minorca"
@@ -183,7 +183,7 @@ mappings:
     crespo_source_label: "Port Mahon"
     geographic_precision: "port_town"
     rationale: "Direct reviewed toponym resolution: canonical 'Port Mahon, Minorca' ↔ Crespo 'Port Mahon' LUGARES 749."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   # Unmapped places lacking established Crespo LUGARES resolution
   - canonical_place_id: "place_st_domingo"
@@ -193,7 +193,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "colony_or_island"
     rationale: "No reviewed Crespo LUGARES resolution established; potential collision between French Saint-Domingue and Spanish colonial Santo Domingo (LUGARES 858) requires source-specific historical reconciliation."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_port_royal"
     canonical_name: "Port Royal"
@@ -202,7 +202,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "populated_place"
     rationale: "No reviewed Crespo LUGARES resolution established for English commercial port Port Royal."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_dartmouth"
     canonical_name: "Dartmouth, Devon"
@@ -211,7 +211,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "port_town"
     rationale: "No reviewed Crespo LUGARES resolution established for English Devon port Dartmouth."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_antigua"
     canonical_name: "Antigua"
@@ -220,7 +220,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "colony_or_island"
     rationale: "No reviewed Crespo LUGARES resolution established for Antigua."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_nevis"
     canonical_name: "Nevis"
@@ -229,7 +229,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "colony_or_island"
     rationale: "No reviewed Crespo LUGARES resolution established for Nevis."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_st_christopher"
     canonical_name: "St Christopher (St Kitts)"
@@ -238,7 +238,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "colony_or_island"
     rationale: "No reviewed Crespo LUGARES resolution established for St Christopher (St Kitts)."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_montserrat"
     canonical_name: "Montserrat"
@@ -247,7 +247,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "colony_or_island"
     rationale: "No reviewed Crespo LUGARES resolution established for Montserrat."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_south_carolina"
     canonical_name: "South Carolina"
@@ -256,7 +256,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "colony_or_island"
     rationale: "No reviewed Crespo LUGARES resolution established for South Carolina."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_biddeford"
     canonical_name: "Bideford, Devon"
@@ -265,7 +265,7 @@ mappings:
     crespo_source_label: null
     geographic_precision: "port_town"
     rationale: "No reviewed Crespo LUGARES resolution established for Bideford, Devon."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"
 
   - canonical_place_id: "place_guernsey"
     canonical_name: "Guernsey"
@@ -274,4 +274,4 @@ mappings:
     crespo_source_label: null
     geographic_precision: "colony_or_island"
     rationale: "No reviewed Crespo LUGARES resolution established for Channel Island Guernsey."
-    editorial_review: "reviewed"
+    editorial_review: "accepted_by_external_review"

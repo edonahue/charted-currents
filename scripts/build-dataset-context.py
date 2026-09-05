@@ -29,9 +29,20 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = Path(os.environ.get("CRESPO_DUCKDB_PATH", str(REPO_ROOT / "data" / "analytics" / "crespo.duckdb")))
 MAPPING_PATH = REPO_ROOT / "data" / "mapping" / "crespo_places.yml"
 OUTPUT_PATH = REPO_ROOT / "public" / "data" / "dataset_context.json"
+ACQUISITION_PATH = REPO_ROOT / "data" / "acquisition" / "crespo.json"
 
 GENERATOR_VERSION = "1.1.0"
-SOURCE_MDB_SHA256 = "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5"
+
+
+def get_source_mdb_sha256() -> str:
+    if not ACQUISITION_PATH.exists():
+        raise FileNotFoundError(f"Acquisition manifest not found: {ACQUISITION_PATH}")
+    with open(ACQUISITION_PATH, "r", encoding="utf-8") as f:
+        acq = json.load(f)
+    files = acq.get("files", [])
+    if not files or "sha256" not in files[0]:
+        raise ValueError(f"Malformed acquisition manifest {ACQUISITION_PATH}: missing files[0].sha256")
+    return files[0]["sha256"]
 
 try:
     import duckdb
@@ -46,19 +57,19 @@ import yaml
 PERIOD_PRESETS = [
     {
         "id": "all",
-        "label": "All (1650–1730)",
+        "label": "1650–1730",
         "start_year": 1650,
         "end_year": 1730
     },
     {
         "id": "1684-1695",
-        "label": "1684–1695 (Early / Disaster Context)",
+        "label": "1684–1695",
         "start_year": 1684,
         "end_year": 1695
     },
     {
         "id": "1702-1712",
-        "label": "1702–1712 (Prize Papers Sample)",
+        "label": "1702–1712",
         "start_year": 1702,
         "end_year": 1712
     }
@@ -188,9 +199,21 @@ def compute_dataset_context():
                 elif role == "inbound":
                     counterparts_map[cp_id]["inbound"] += 1
 
-            # Format top counterparts (up to 5)
+            # Format top counterparts (up to 5) with deterministic tie-breaker:
+            # 1. total_records descending
+            # 2. source_label ascending
+            # 3. native LUGARES ID ascending
+            def counterpart_sort_key(item):
+                cid, counts = item
+                if cid == 0:
+                    cp_name = "Unspecified Endpoint"
+                else:
+                    cp_name = lugar_dict.get(cid, f"Unknown Lugar ({cid})")
+                return (-counts["total"], cp_name.lower(), cid)
+
+            sorted_cps = sorted(counterparts_map.items(), key=counterpart_sort_key)[:5]
             top_cps = []
-            for cid, counts in sorted(counterparts_map.items(), key=lambda x: x[1]["total"], reverse=True)[:5]:
+            for cid, counts in sorted_cps:
                 if cid == 0:
                     cp_name = "Unspecified Endpoint"
                 else:
@@ -221,7 +244,7 @@ def compute_dataset_context():
         # Format place-level caveat
         all_period = periods_data.get("all")
         if all_period and all_period["total_records"] == 0:
-            coverage_caveat = f"No Crespo vessel records record {mapping['canonical_name']} as an endpoint in All (1650–1730)."
+            coverage_caveat = f"No Crespo vessel records record {mapping['canonical_name']} as an endpoint in 1650–1730."
         else:
             coverage_caveat = "Dataset context summarizes records in the CrespoDynCoopNet scholarly dataset; counts describe source records, not complete historical traffic."
 
@@ -244,7 +267,7 @@ def compute_dataset_context():
                 "raw_todosnavios",
                 "raw_lugares"
             ],
-            "source_mdb_sha256": SOURCE_MDB_SHA256,
+            "source_mdb_sha256": get_source_mdb_sha256(),
             "mapping_version": mapping_version,
             "mapping_file_sha256": mapping_sha,
             "generator_version": GENERATOR_VERSION,

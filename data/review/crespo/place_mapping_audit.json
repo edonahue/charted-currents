@@ -5,11 +5,14 @@
   "source_table": "raw_lugares",
   "source_mdb_sha256": "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5",
   "mapping_version": "1.0.0",
+  "mapping_file_sha256": "ed105dc97b59a98f98a9079e8484f4f14b9c7078e2608794777bd213449a10af",
   "total_places_audited": 29,
   "mapped_places_count": 19,
   "unmapped_places_count": 10,
   "all_mapped_ids_verified": true,
   "all_labels_verified": true,
+  "source_qa_scope": "SOURCE QA verifies native Crespo LUGARES ID existence and raw table label match against declared source label. Does not independently establish canonical entity resolution.",
+  "editorial_resolution_scope": "EDITORIAL RESOLUTION intentionally links Charted Currents canonical places to verified native IDs, accepted by Packet 7 external review. Saint-Domingue remains explicitly unmapped.",
   "results": [
     {
       "canonical_place_id": "place_cadiz",
@@ -19,7 +22,8 @@
       "declared_source_label": "Cádiz",
       "raw_table_label": "Cádiz",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_seville",
@@ -29,7 +33,8 @@
       "declared_source_label": "Sevilla",
       "raw_table_label": "Sevilla",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_havana",
@@ -39,7 +44,8 @@
       "declared_source_label": "La Habana",
       "raw_table_label": "La Habana",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_curacao",
@@ -49,7 +55,8 @@
       "declared_source_label": "Curaçao",
       "raw_table_label": "Curaçao",
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_amsterdam",
@@ -59,7 +66,8 @@
       "declared_source_label": "Amsterdam",
       "raw_table_label": "Amsterdam",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_cartagena",
@@ -69,7 +77,8 @@
       "declared_source_label": "Cartagena de Indias",
       "raw_table_label": "Cartagena de Indias",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_puerto_rico",
@@ -79,7 +88,8 @@
       "declared_source_label": "Puerto Rico",
       "raw_table_label": "Puerto Rico",
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_venezuela",
@@ -89,7 +99,8 @@
       "declared_source_label": "Venezuela",
       "raw_table_label": "Venezuela",
       "geographic_precision": "province_or_region",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_bristol",
@@ -99,7 +110,8 @@
       "declared_source_label": "Bristol",
       "raw_table_label": "Bristol",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_london",
@@ -109,7 +121,8 @@
       "declared_source_label": "Londres",
       "raw_table_label": "Londres",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_barbados",
@@ -119,7 +132,8 @@
       "declared_source_label": "Barbados",
       "raw_table_label": "Barbados",
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_jamaica",
@@ -129,7 +143,8 @@
       "declared_source_label": "Jamaica",
       "raw_table_label": "Jamaica",
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_martinique",
@@ -139,7 +154,8 @@
       "declared_source_label": "Martinica",
       "raw_table_label": "Martinica",
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_st_augustine",
@@ -149,7 +165,8 @@
       "declared_source_label": "San Agustín de Florida",
       "raw_table_label": "San Agustín de Florida",
       "geographic_precision": "populated_place",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_marseille",
@@ -159,7 +176,8 @@
       "declared_source_label": "Marsella",
       "raw_table_label": "Marsella",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_plymouth",
@@ -169,7 +187,8 @@
       "declared_source_label": "Plymouth",
       "raw_table_label": "Plymouth",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_rochelle",
@@ -179,7 +198,8 @@
       "declared_source_label": "La Rochelle",
       "raw_table_label": "La Rochelle",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_nantes",
@@ -189,7 +209,8 @@
       "declared_source_label": "Nantes",
       "raw_table_label": "Nantes",
       "geographic_precision": "port_city",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_port_mahon",
@@ -199,7 +220,8 @@
       "declared_source_label": "Port Mahon",
       "raw_table_label": "Port Mahon",
       "geographic_precision": "port_town",
-      "comparison_result": "EXACT_MATCH"
+      "source_qa_status": "SOURCE_LABEL_VERIFIED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_st_domingo",
@@ -209,7 +231,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_port_royal",
@@ -219,7 +242,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "populated_place",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_dartmouth",
@@ -229,7 +253,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "port_town",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_antigua",
@@ -239,7 +264,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_nevis",
@@ -249,7 +275,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_st_christopher",
@@ -259,7 +286,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_montserrat",
@@ -269,7 +297,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_south_carolina",
@@ -279,7 +308,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_biddeford",
@@ -289,7 +319,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "port_town",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     },
     {
       "canonical_place_id": "place_guernsey",
@@ -299,7 +330,8 @@
       "declared_source_label": null,
       "raw_table_label": null,
       "geographic_precision": "colony_or_island",
-      "comparison_result": "EXPLICIT_UNMAPPED"
+      "source_qa_status": "EXPLICIT_UNMAPPED",
+      "editorial_resolution_status": "accepted_by_external_review"
     }
   ]
 }

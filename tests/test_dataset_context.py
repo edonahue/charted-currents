@@ -120,7 +120,7 @@ class TestDatasetContext(unittest.TestCase):
         self.assertEqual(london["source_native_label"], "Londres")
         self.assertEqual(london["periods"]["all"]["total_records"], 0)
         self.assertEqual(len(london["periods"]["all"]["top_counterparts"]), 0)
-        self.assertIn("No Crespo vessel records record London as an endpoint in All (1650–1730).", london["coverage_caveat"])
+        self.assertIn("No Crespo vessel records record London as an endpoint in 1650–1730.", london["coverage_caveat"])
 
     def test_unmapped_places_handling(self):
         """Unmapped places must have status 'unmapped', periods: null, and neutral unavailable copy."""
@@ -152,6 +152,38 @@ class TestDatasetContext(unittest.TestCase):
                     for cp in per["top_counterparts"]:
                         self.assertNotEqual(cp["crespo_lugar_id"], place["crespo_lugar_id"], f"Self-counterpart leak in {pid}")
                         self.assertNotIn("same_port_return", cp)
+
+    def test_neutral_period_labels_and_no_thematic_qualifiers(self):
+        """Dataset context must use neutral date spans and strictly omit thematic project labels."""
+        raw_text = json.dumps(self.context)
+        self.assertNotIn("Prize Papers Sample", raw_text)
+        self.assertNotIn("Early / Disaster Context", raw_text)
+
+        for pid, place in self.context["places"].items():
+            if place["status"] == "mapped" and place["periods"]:
+                self.assertEqual(place["periods"]["all"]["period_label"], "1650–1730")
+                self.assertEqual(place["periods"]["1684-1695"]["period_label"], "1684–1695")
+                self.assertEqual(place["periods"]["1702-1712"]["period_label"], "1702–1712")
+
+    def test_counterpart_ranking_deterministic_tiebreaker(self):
+        """Counterpart ranking must break ties deterministically by source label asc, then ID asc."""
+        # Check real Plymouth tie: Canarias (1) and Gibraltar (1) -> Canarias first alphabetically
+        plymouth = self.context["places"].get("place_plymouth")
+        self.assertIsNotNone(plymouth)
+        cps = plymouth["periods"]["all"]["top_counterparts"]
+        tied_labels = [c["source_label"] for c in cps if c["total_records"] == 1]
+        self.assertEqual(tied_labels, sorted(tied_labels, key=str.lower))
+
+        # Synthetic tie-breaker test demonstrating strict sort behavior
+        items = [
+            (397, {"total": 1, "outbound": 1, "inbound": 0}),  # Gibraltar
+            (204, {"total": 1, "outbound": 1, "inbound": 0}),  # Canarias
+            (195, {"total": 10, "outbound": 5, "inbound": 5}), # Cádiz
+        ]
+        lugar_dict = {397: "Gibraltar", 204: "Canarias", 195: "Cádiz"}
+        sorted_items = sorted(items, key=lambda x: (-x[1]["total"], lugar_dict[x[0]].lower(), x[0]))
+        sorted_names = [lugar_dict[x[0]] for x in sorted_items]
+        self.assertEqual(sorted_names, ["Cádiz", "Canarias", "Gibraltar"])
 
     def test_no_prohibited_semantic_phrases(self):
         """Raw JSON output must not contain prohibited casual, obsolete, or overclaiming phrases."""

@@ -8,9 +8,9 @@
     ],
     "source_mdb_sha256": "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5",
     "mapping_version": "1.0.0",
-    "mapping_file_sha256": "0f14f1fa943969c24a09e6db888f283f4b9e9aa3a794f876b95bc826b0d96663",
+    "mapping_file_sha256": "ed105dc97b59a98f98a9079e8484f4f14b9c7078e2608794777bd213449a10af",
     "generator_version": "1.1.0",
-    "generator_sha256": "c7998073c73c808cc9f0505416f30ba361e70b6c20d9144672902e3260870d3c",
+    "generator_sha256": "2af5f3cd1cc2a4921dc7d3fa60392646556e9aa2fa1ca13cc03046f686123dec",
     "counting_unit": "one Crespo TODOSNAVIOS row / Crespo vessel record",
     "baseline_period": "1650-1730",
     "total_records_in_baseline": 1928,
@@ -34,7 +34,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 1093,
@@ -83,7 +83,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 164,
@@ -132,7 +132,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 69,
@@ -192,7 +192,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 143,
@@ -224,15 +224,15 @@
               "recorded_as_origin": 1
             },
             {
-              "crespo_lugar_id": 497,
-              "source_label": "La Guaira",
+              "crespo_lugar_id": 462,
+              "source_label": "Indias",
               "total_records": 1,
-              "recorded_as_destination": 0,
-              "recorded_as_origin": 1
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0
             },
             {
-              "crespo_lugar_id": 985,
-              "source_label": "Venezuela",
+              "crespo_lugar_id": 497,
+              "source_label": "La Guaira",
               "total_records": 1,
               "recorded_as_destination": 0,
               "recorded_as_origin": 1
@@ -241,7 +241,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 28,
@@ -266,13 +266,6 @@
               "recorded_as_origin": 0
             },
             {
-              "crespo_lugar_id": 985,
-              "source_label": "Venezuela",
-              "total_records": 1,
-              "recorded_as_destination": 0,
-              "recorded_as_origin": 1
-            },
-            {
               "crespo_lugar_id": 462,
               "source_label": "Indias",
               "total_records": 1,
@@ -285,12 +278,19 @@
               "total_records": 1,
               "recorded_as_destination": 1,
               "recorded_as_origin": 0
+            },
+            {
+              "crespo_lugar_id": 985,
+              "source_label": "Venezuela",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1
             }
           ]
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 16,
@@ -329,7 +329,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 28,
@@ -368,17 +368,17 @@
               "recorded_as_origin": 0
             },
             {
-              "crespo_lugar_id": 990,
-              "source_label": "Veracruz",
+              "crespo_lugar_id": 202,
+              "source_label": "Campeche",
               "total_records": 1,
-              "recorded_as_destination": 0,
-              "recorded_as_origin": 1
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0
             }
           ]
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 5,
@@ -396,24 +396,24 @@
               "recorded_as_origin": 3
             },
             {
-              "crespo_lugar_id": 1280,
-              "source_label": "Puerto Trujillo (Honduras)",
-              "total_records": 1,
-              "recorded_as_destination": 0,
-              "recorded_as_origin": 1
-            },
-            {
               "crespo_lugar_id": 341,
               "source_label": "España",
               "total_records": 1,
               "recorded_as_destination": 1,
               "recorded_as_origin": 0
+            },
+            {
+              "crespo_lugar_id": 1280,
+              "source_label": "Puerto Trujillo (Honduras)",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1
             }
           ]
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 2,
@@ -445,7 +445,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 138,
@@ -494,7 +494,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 23,
@@ -519,13 +519,6 @@
               "recorded_as_origin": 2
             },
             {
-              "crespo_lugar_id": 413,
-              "source_label": "Groot Popo",
-              "total_records": 1,
-              "recorded_as_destination": 0,
-              "recorded_as_origin": 1
-            },
-            {
               "crespo_lugar_id": 13,
               "source_label": "Aja",
               "total_records": 1,
@@ -538,12 +531,19 @@
               "total_records": 1,
               "recorded_as_destination": 0,
               "recorded_as_origin": 1
+            },
+            {
+              "crespo_lugar_id": 358,
+              "source_label": "Fida",
+              "total_records": 1,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 1
             }
           ]
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 32,
@@ -603,7 +603,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 144,
@@ -652,7 +652,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -665,7 +665,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 7,
@@ -697,7 +697,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 35,
@@ -715,18 +715,18 @@
               "recorded_as_origin": 27
             },
             {
-              "crespo_lugar_id": null,
-              "source_label": "Unspecified Endpoint",
-              "total_records": 2,
-              "recorded_as_destination": 2,
-              "recorded_as_origin": 0
-            },
-            {
               "crespo_lugar_id": 9,
               "source_label": "Africa West Coast",
               "total_records": 2,
               "recorded_as_destination": 0,
               "recorded_as_origin": 2
+            },
+            {
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 2,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 0
             },
             {
               "crespo_lugar_id": 41,
@@ -746,7 +746,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -759,7 +759,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -783,7 +783,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 16,
@@ -801,13 +801,6 @@
               "recorded_as_origin": 6
             },
             {
-              "crespo_lugar_id": null,
-              "source_label": "Unspecified Endpoint",
-              "total_records": 2,
-              "recorded_as_destination": 2,
-              "recorded_as_origin": 0
-            },
-            {
               "crespo_lugar_id": 498,
               "source_label": "La Habana",
               "total_records": 2,
@@ -815,24 +808,31 @@
               "recorded_as_origin": 1
             },
             {
-              "crespo_lugar_id": 994,
-              "source_label": "Vigo (Pontevedra)",
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
+              "total_records": 2,
+              "recorded_as_destination": 2,
+              "recorded_as_origin": 0
+            },
+            {
+              "crespo_lugar_id": 202,
+              "source_label": "Campeche",
               "total_records": 1,
               "recorded_as_destination": 1,
               "recorded_as_origin": 0
             },
             {
-              "crespo_lugar_id": 796,
-              "source_label": "Río de la Plata",
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
               "total_records": 1,
-              "recorded_as_destination": 0,
-              "recorded_as_origin": 1
+              "recorded_as_destination": 1,
+              "recorded_as_origin": 0
             }
           ]
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 1,
@@ -853,7 +853,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -877,7 +877,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 5,
@@ -895,15 +895,15 @@
               "recorded_as_origin": 3
             },
             {
-              "crespo_lugar_id": null,
-              "source_label": "Unspecified Endpoint",
+              "crespo_lugar_id": 873,
+              "source_label": "Sevilla",
               "total_records": 1,
               "recorded_as_destination": 1,
               "recorded_as_origin": 0
             },
             {
-              "crespo_lugar_id": 873,
-              "source_label": "Sevilla",
+              "crespo_lugar_id": null,
+              "source_label": "Unspecified Endpoint",
               "total_records": 1,
               "recorded_as_destination": 1,
               "recorded_as_origin": 0
@@ -912,7 +912,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 1,
@@ -933,7 +933,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -957,7 +957,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 43,
@@ -1006,7 +1006,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1019,7 +1019,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 18,
@@ -1044,13 +1044,6 @@
               "recorded_as_origin": 3
             },
             {
-              "crespo_lugar_id": 204,
-              "source_label": "Canarias",
-              "total_records": 2,
-              "recorded_as_destination": 0,
-              "recorded_as_origin": 2
-            },
-            {
               "crespo_lugar_id": 149,
               "source_label": "Bilbao",
               "total_records": 2,
@@ -1058,8 +1051,15 @@
               "recorded_as_origin": 1
             },
             {
-              "crespo_lugar_id": null,
-              "source_label": "Unspecified Endpoint",
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
+              "total_records": 2,
+              "recorded_as_destination": 0,
+              "recorded_as_origin": 2
+            },
+            {
+              "crespo_lugar_id": 114,
+              "source_label": "Barry",
               "total_records": 1,
               "recorded_as_destination": 0,
               "recorded_as_origin": 1
@@ -1075,11 +1075,11 @@
       "crespo_lugar_id": 559,
       "source_native_label": "Londres",
       "geographic_precision": "port_city",
-      "coverage_caveat": "No Crespo vessel records record London as an endpoint in All (1650–1730).",
+      "coverage_caveat": "No Crespo vessel records record London as an endpoint in 1650–1730.",
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 0,
@@ -1092,7 +1092,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1105,7 +1105,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1129,7 +1129,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 1,
@@ -1150,7 +1150,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 1,
@@ -1171,7 +1171,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1195,7 +1195,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 1,
@@ -1216,7 +1216,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1229,7 +1229,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1253,7 +1253,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 1,
@@ -1274,7 +1274,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1287,7 +1287,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1307,11 +1307,11 @@
       "crespo_lugar_id": 1344,
       "source_native_label": "San Agustín de Florida",
       "geographic_precision": "populated_place",
-      "coverage_caveat": "No Crespo vessel records record St Augustine as an endpoint in All (1650–1730).",
+      "coverage_caveat": "No Crespo vessel records record St Augustine as an endpoint in 1650–1730.",
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 0,
@@ -1324,7 +1324,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1337,7 +1337,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1357,11 +1357,11 @@
       "crespo_lugar_id": 595,
       "source_native_label": "Marsella",
       "geographic_precision": "port_city",
-      "coverage_caveat": "No Crespo vessel records record Marseille as an endpoint in All (1650–1730).",
+      "coverage_caveat": "No Crespo vessel records record Marseille as an endpoint in 1650–1730.",
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 0,
@@ -1374,7 +1374,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1387,7 +1387,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1411,7 +1411,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 10,
@@ -1436,15 +1436,15 @@
               "recorded_as_origin": 0
             },
             {
-              "crespo_lugar_id": 397,
-              "source_label": "Gibraltar",
+              "crespo_lugar_id": 204,
+              "source_label": "Canarias",
               "total_records": 1,
               "recorded_as_destination": 1,
               "recorded_as_origin": 0
             },
             {
-              "crespo_lugar_id": 204,
-              "source_label": "Canarias",
+              "crespo_lugar_id": 397,
+              "source_label": "Gibraltar",
               "total_records": 1,
               "recorded_as_destination": 1,
               "recorded_as_origin": 0
@@ -1453,7 +1453,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1466,7 +1466,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 4,
@@ -1501,11 +1501,11 @@
       "crespo_lugar_id": 503,
       "source_native_label": "La Rochelle",
       "geographic_precision": "port_city",
-      "coverage_caveat": "No Crespo vessel records record La Rochelle as an endpoint in All (1650–1730).",
+      "coverage_caveat": "No Crespo vessel records record La Rochelle as an endpoint in 1650–1730.",
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 0,
@@ -1518,7 +1518,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1531,7 +1531,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1555,7 +1555,7 @@
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 1,
@@ -1576,7 +1576,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1589,7 +1589,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,
@@ -1609,11 +1609,11 @@
       "crespo_lugar_id": 749,
       "source_native_label": "Port Mahon",
       "geographic_precision": "port_town",
-      "coverage_caveat": "No Crespo vessel records record Port Mahon, Minorca as an endpoint in All (1650–1730).",
+      "coverage_caveat": "No Crespo vessel records record Port Mahon, Minorca as an endpoint in 1650–1730.",
       "periods": {
         "all": {
           "period_id": "all",
-          "period_label": "All (1650–1730)",
+          "period_label": "1650–1730",
           "start_year": 1650,
           "end_year": 1730,
           "total_records": 0,
@@ -1626,7 +1626,7 @@
         },
         "1684-1695": {
           "period_id": "1684-1695",
-          "period_label": "1684–1695 (Early / Disaster Context)",
+          "period_label": "1684–1695",
           "start_year": 1684,
           "end_year": 1695,
           "total_records": 0,
@@ -1639,7 +1639,7 @@
         },
         "1702-1712": {
           "period_id": "1702-1712",
-          "period_label": "1702–1712 (Prize Papers Sample)",
+          "period_label": "1702–1712",
           "start_year": 1702,
           "end_year": 1712,
           "total_records": 0,

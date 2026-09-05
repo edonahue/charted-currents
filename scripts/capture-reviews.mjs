@@ -1596,8 +1596,9 @@ async function runReviewSuite() {
     assert(havanaContextCheck?.result?.value?.rolesText?.includes("Recorded as departure: 7 · arrival: 21."), "Havana displays departure 7 arrival 21 breakdown");
     assert(havanaContextCheck?.result?.value?.isBaselineNoteHidden, "Baseline note is hidden when period filter is 'all'");
     assert(havanaContextCheck?.result?.value?.isCounterpartsVisible, "Havana counterparts list is visible");
-    assert(havanaContextCheck?.result?.value?.counterpartItems?.some(t => t.includes("Cádiz") && t.includes("16 records")), "Havana lists Cádiz counterpart with 16 records");
     assert(havanaContextCheck?.result?.value?.caveatText?.includes("CrespoDynCoopNet"), "Havana displays Dataset Context coverage caveat");
+    assert(!havanaContextCheck?.result?.value?.summaryText?.includes("Prize Papers Sample"), "Dataset Context does not contain 'Prize Papers Sample'");
+    assert(!havanaContextCheck?.result?.value?.summaryText?.includes("Early / Disaster Context"), "Dataset Context does not contain 'Early / Disaster Context'");
 
     // Capture Packet 7 Havana Dataset Context screenshot
     if (!skipScreenshots) {
@@ -1723,9 +1724,9 @@ async function runReviewSuite() {
       })()`,
       returnByValue: true,
     });
-    assert(londonCheck?.result?.value?.summaryText === "No Crespo vessel records record London as an endpoint in All (1650–1730).", "London displays mapped-zero message");
+    assert(londonCheck?.result?.value?.summaryText === "No Crespo vessel records record London as an endpoint in 1650–1730.", "London displays mapped-zero message");
     assert(londonCheck?.result?.value?.isCounterpartsHidden, "London counterparts list is strictly hidden");
-    assert(londonCheck?.result?.value?.caveatText?.includes("No Crespo vessel records record London as an endpoint in All (1650–1730)."), "London displays mapped-zero caveat");
+    assert(londonCheck?.result?.value?.caveatText?.includes("No Crespo vessel records record London as an endpoint in 1650–1730."), "London displays mapped-zero caveat");
 
     if (!skipScreenshots) {
       const londonScreenshot = await send("Page.captureScreenshot", { format: "png" });

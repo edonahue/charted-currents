@@ -77,12 +77,26 @@ assert(
 );
 console.log(`[PASS] Input provenance hashes verified for mapping (${meta.mapping_file_sha256.slice(0, 16)}...) and generator (${meta.generator_sha256.slice(0, 16)}...)`);
 
-// 4. Validate against Place Mapping Audit
+// 4. Validate against Place Mapping Audit & Exact Inputs
 assert(audit.all_mapped_ids_verified === true, "place_mapping_audit.json must confirm all_mapped_ids_verified");
 assert(audit.all_labels_verified === true, "place_mapping_audit.json must confirm all_labels_verified");
 assert(audit.mapped_places_count === 19, `Audit must report exactly 19 mapped places (got ${audit.mapped_places_count})`);
 assert(audit.unmapped_places_count === 10, `Audit must report exactly 10 unmapped places (got ${audit.unmapped_places_count})`);
-console.log(`[PASS] Place mapping source-QA audit verified: 19 mapped, 10 unmapped.`);
+
+// Bind audit to exact inputs
+assert(
+  audit.source_mdb_sha256 === trackedMdbSha,
+  `Audit source_mdb_sha256 (${audit.source_mdb_sha256}) must match tracked acquisition SHA256 (${trackedMdbSha})`
+);
+assert(
+  audit.mapping_file_sha256 === expectedMappingSha,
+  `Audit mapping_file_sha256 (${audit.mapping_file_sha256}) must match computed SHA256 of current ${MAPPING_PATH} (${expectedMappingSha})`
+);
+assert(
+  audit.mapping_version === meta.mapping_version,
+  `Audit mapping_version (${audit.mapping_version}) must match artifact mapping_version (${meta.mapping_version})`
+);
+console.log(`[PASS] Place mapping source-QA audit verified: 19 mapped, 10 unmapped, bound to exact inputs.`);
 
 // 5. Mapped vs. Unmapped & Arithmetic Validation
 const places = datasetContext.places || {};
@@ -159,13 +173,29 @@ const forbiddenPhrases = [
   "handled 28 voyages",
   "imperial archival partition",
   "archival partition",
-  "unrecorded"
+  "unrecorded",
+  "Prize Papers Sample",
+  "Early / Disaster Context"
 ];
 
 for (const phrase of forbiddenPhrases) {
   assert(!rawJson.includes(phrase), `Prohibited phrase '${phrase}' detected in published dataset_context.json`);
 }
 console.log(`[PASS] Prohibited phrase check passed (zero forbidden terminology occurrences).`);
+
+// Verify period labels across mapped places
+for (const [canId, place] of Object.entries(places)) {
+  if (place.periods) {
+    for (const [presetId, per] of Object.entries(place.periods)) {
+      const expectedLabel = presetId === "all" ? "1650–1730" : presetId === "1684-1695" ? "1684–1695" : "1702–1712";
+      assert(
+        per.period_label === expectedLabel,
+        `Place ${canId} preset ${presetId} must have neutral date label '${expectedLabel}' (got '${per.period_label}')`
+      );
+    }
+  }
+}
+console.log(`[PASS] Period labels verified as neutral date spans without thematic qualifiers.`);
 
 // 7. Explicit Fixtures Verification
 // A. Cádiz: large counts, both_endpoint_records = 24
@@ -182,7 +212,7 @@ const london = places.place_london;
 assert(london.status === "mapped", "London must be status 'mapped'");
 assert(london.periods.all.total_records === 0, "London baseline total_records must be 0");
 assert(london.periods.all.top_counterparts.length === 0, "London baseline top_counterparts must be empty");
-assert(london.coverage_caveat.includes("No Crespo vessel records record London as an endpoint in All (1650–1730)."), "London must use mapped-zero caveat");
+assert(london.coverage_caveat.includes("No Crespo vessel records record London as an endpoint in 1650–1730."), "London must use mapped-zero caveat");
 console.log(`[PASS] Fixture London (mapped-zero) verified.`);
 
 // C. Port Royal: unmapped

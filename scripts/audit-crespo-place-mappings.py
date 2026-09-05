@@ -9,6 +9,7 @@ asserts mapping uniqueness and precision integrity, and outputs a public-safe,
 path-free durable audit artifact at data/review/crespo/place_mapping_audit.json.
 """
 
+import hashlib
 import json
 import os
 import sys
@@ -29,7 +30,26 @@ except ImportError:
 DUCKDB_PATH = Path("data/analytics/crespo.duckdb")
 MAPPING_PATH = Path("data/mapping/crespo_places.yml")
 OUTPUT_AUDIT_PATH = Path("data/review/crespo/place_mapping_audit.json")
-SOURCE_MDB_SHA256 = "4418df290114fd9131f2b5b22e99c33e1f9ac0665046ac8616e44bf8ea5fa9e5"
+ACQUISITION_PATH = Path("data/acquisition/crespo.json")
+
+
+def compute_sha256(file_path: Path) -> str:
+    h = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        while chunk := f.read(65536):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def get_source_mdb_sha256() -> str:
+    if not ACQUISITION_PATH.exists():
+        raise FileNotFoundError(f"Acquisition manifest not found at {ACQUISITION_PATH}")
+    with open(ACQUISITION_PATH, "r", encoding="utf-8") as f:
+        acq = json.load(f)
+    files = acq.get("files", [])
+    if not files or "sha256" not in files[0]:
+        raise ValueError(f"Malformed acquisition manifest {ACQUISITION_PATH}: missing files[0].sha256")
+    return files[0]["sha256"]
 
 def audit_mappings():
     if not DUCKDB_PATH.exists():
@@ -84,7 +104,8 @@ def audit_mappings():
                 "declared_source_label": None,
                 "raw_table_label": None,
                 "geographic_precision": precision,
-                "comparison_result": "EXPLICIT_UNMAPPED"
+                "source_qa_status": "EXPLICIT_UNMAPPED",
+                "editorial_resolution_status": "accepted_by_external_review"
             })
         elif status == "mapped":
             mapped_count += 1
@@ -111,7 +132,8 @@ def audit_mappings():
                     "declared_source_label": declared_label,
                     "raw_table_label": None,
                     "geographic_precision": precision,
-                    "comparison_result": "NATIVE_ID_NOT_FOUND"
+                    "source_qa_status": "NATIVE_ID_NOT_FOUND",
+                    "editorial_resolution_status": "unresolved"
                 })
                 all_mapped_valid = False
             else:
@@ -126,7 +148,8 @@ def audit_mappings():
                         "declared_source_label": declared_label,
                         "raw_table_label": raw_label,
                         "geographic_precision": precision,
-                        "comparison_result": "LABEL_MISMATCH"
+                        "source_qa_status": "LABEL_MISMATCH",
+                        "editorial_resolution_status": "unresolved"
                     })
                     all_mapped_valid = False
                 else:
@@ -138,24 +161,32 @@ def audit_mappings():
                         "declared_source_label": declared_label,
                         "raw_table_label": raw_label,
                         "geographic_precision": precision,
-                        "comparison_result": "EXACT_MATCH"
+                        "source_qa_status": "SOURCE_LABEL_VERIFIED",
+                        "editorial_resolution_status": "accepted_by_external_review"
                     })
         else:
             sys.stderr.write(f"Error: Invalid mapping status '{status}' for place '{can_id}'. Must be 'mapped' or 'unmapped'.\n")
             all_mapped_valid = False
+
+    source_mdb_sha = get_source_mdb_sha256()
+    mapping_sha = compute_sha256(MAPPING_PATH)
+    mapping_version = mapping_data.get("version", "1.0.0")
 
     audit_payload = {
         "audit_id": "crespo_place_mapping_source_qa",
         "description": "Deterministic local source-QA audit for canonical <-> Crespo LUGARES place mappings",
         "source_dataset": "Crespo DynCoopNet (CSIC ODC-DbCL)",
         "source_table": "raw_lugares",
-        "source_mdb_sha256": SOURCE_MDB_SHA256,
-        "mapping_version": mapping_data.get("version", "1.0.0"),
+        "source_mdb_sha256": source_mdb_sha,
+        "mapping_version": mapping_version,
+        "mapping_file_sha256": mapping_sha,
         "total_places_audited": len(mappings),
         "mapped_places_count": mapped_count,
         "unmapped_places_count": unmapped_count,
         "all_mapped_ids_verified": all_mapped_valid and (mapped_count > 0),
         "all_labels_verified": all_mapped_valid,
+        "source_qa_scope": "SOURCE QA verifies native Crespo LUGARES ID existence and raw table label match against declared source label. Does not independently establish canonical entity resolution.",
+        "editorial_resolution_scope": "EDITORIAL RESOLUTION intentionally links Charted Currents canonical places to verified native IDs, accepted by Packet 7 external review. Saint-Domingue remains explicitly unmapped.",
         "results": results
     }
 

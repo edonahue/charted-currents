@@ -333,59 +333,67 @@ const PACKET_CONFIGS = {
         title: "Crespo TODOSNAVIOS record aggregation per place and period preset",
         risk_class: "C",
         derivation_method: "Relational aggregation on raw_todosnavios filtered by date ranges and mapped Lugar IDs",
-        review_status: "REVIEW_PENDING",
-        verification_invariant: "Baseline total matches 1,928 scoped records (1650–1730); exact counts match per place.",
+        review_status: "ACCEPTED",
+        verification_invariant: "Baseline total matches 1,928 scoped records (1650–1730); exact counts match per place; accepted by Packet 7 external review.",
       },
       {
         id: "C-002",
         title: "Endpoint role classification (departure vs arrival)",
         risk_class: "C",
         derivation_method: "Counting voyage occurrences as origin (records_with_origin) versus destination (records_with_destination)",
-        review_status: "REVIEW_PENDING",
-        verification_invariant: "Non-negative integers for records_with_origin and records_with_destination.",
+        review_status: "ACCEPTED",
+        verification_invariant: "Non-negative integers for records_with_origin and records_with_destination; accepted by Packet 7 external review.",
       },
       {
         id: "C-003",
         title: "Dual-endpoint overlap and union arithmetic",
         risk_class: "C",
         derivation_method: "Set intersection of origin and destination within single voyage record (both_endpoint_records)",
-        review_status: "REVIEW_PENDING",
-        verification_invariant: "total_records == records_with_origin + records_with_destination - both_endpoint_records; Cádiz overlap = 24 records.",
+        review_status: "ACCEPTED",
+        verification_invariant: "total_records == records_with_origin + records_with_destination - both_endpoint_records; Cádiz overlap = 24 records; accepted by Packet 7 external review.",
       },
       {
         id: "C-004",
         title: "Directed counterpart pair ranking with self-counterpart exclusion",
         risk_class: "C",
-        derivation_method: "Frequency ranking of opposite-endpoint Lugar IDs strictly excluding the examined place's own Lugar ID",
-        review_status: "REVIEW_PENDING",
-        verification_invariant: "Examined place never appears in its own top_counterparts list.",
+        derivation_method: "Frequency ranking of opposite-endpoint Lugar IDs strictly excluding the examined place's own Lugar ID with stable deterministic tie-breaking",
+        review_status: "ACCEPTED",
+        verification_invariant: "Examined place never appears in its own top_counterparts list; deterministic ordering on ties (record count desc, source label asc, ID asc); accepted by Packet 7 external review.",
       },
       {
         id: "C-005",
         title: "Canonical place mapping lookup and unmapped sentinel handling",
         risk_class: "C",
-        derivation_method: "Explicit YAML lookup with 19 mapped and 10 unmapped places; unmapped places emit periods: null and neutral unavailable copy",
-        review_status: "REVIEW_PENDING",
-        verification_invariant: "Audit confirms exactly 19 mapped, 10 unmapped places; unmapped places have periods: null; no synthetic zeroes.",
+        derivation_method: "Explicit YAML lookup with 19 mapped and 10 unmapped places; source-row verification confirmed via deterministic local mirror audit; 19 editorial place resolutions and 10 unmapped sentinels accepted by Packet 7 external review",
+        review_status: "ACCEPTED",
+        verification_invariant: "Audit confirms exactly 19 mapped, 10 unmapped places; unmapped places have periods: null; no synthetic zeroes; Saint-Domingue remains unmapped; accepted by Packet 7 external review.",
       },
     ],
     getPlaceMappingReview: (ctx) => {
       const audit = ctx.placeMappingAudit;
       return {
-        status: audit?.all_mapped_ids_verified && audit?.all_labels_verified ? "AUDITED_LOCAL_MIRROR" : "UNAUDITED",
+        source_qa_status: audit?.all_mapped_ids_verified && audit?.all_labels_verified ? "PASS" : "FAIL",
+        editorial_resolution_status: "ACCEPTED_BY_EXTERNAL_REVIEW",
         total_canonical_places: 29,
         mapped_places_count: audit?.mapped_places_count ?? 19,
         unmapped_places_count: audit?.unmapped_places_count ?? 10,
         all_mapped_ids_verified: audit?.all_mapped_ids_verified ?? true,
         all_labels_verified: audit?.all_labels_verified ?? true,
-        unmapped_sentinels_summary:
-          "10 canonical places unmapped in Crespo dataset (including Port Royal, Nevis, Dartmouth, Saint-Domingue). Emitted with periods: null.",
+        source_qa_summary:
+          "All 19 mapped native Crespo LUGARES IDs verified against raw DuckDB tables with 0 label mismatches and 0 workstation leaks.",
+        editorial_resolution_summary:
+          "19 canonical place linkages and 10 unmapped sentinels accepted by external review. Saint-Domingue remains explicitly unmapped.",
       };
     },
     getGarroteLookback: () => ({
-      subject: "Maestre Bartolomé Garrote (11357)",
-      status: "UNCHANGED_PENDING_HUMAN_REVIEW",
-      summary: "Occurrence-level probable match preserved from Packet 6 without regressions or unreviewed identity promotions.",
+      subject: "Bartolomé Antonio Garrote probable_match dossier",
+      target_entity_id: "person_bartolome_antonio_garrote",
+      upstream_contradiction_reference:
+        "MAESTRE 11357 = contradictory upstream/source-native linkage involving Francisco Antonio Garrote and Bartolomé-form rows.",
+      status: "ACCEPTED_AS_MODELED",
+      resolution_posture: "probable_match (reversible occurrence-level linkage, not identity authority)",
+      summary:
+        "Occurrence-level probable match preserved from Packet 6 without regressions, identity upgrades, or unreviewed entity promotions.",
     }),
     getExceptionQueue: () => [
       {
@@ -450,6 +458,13 @@ const reviewBundle = {
     total_added_source_records: addedSourceRecords.length,
     total_added_ships: addedShips.length,
     total_goods_occurrences: goodsOccurrences.length,
+    added_assertion_epistemic_classes: {
+      class_a_direct_transcription: epistemicBreakdown.class_a_transcription.length,
+      class_b_deterministic_transformation: epistemicBreakdown.class_b_deterministic.length,
+      class_c_relational_derivation: epistemicBreakdown.class_c_relational.length,
+      class_d_identity_resolution: addedResolutionEdges.length,
+      class_e_changed_prose_count: changedProse.length,
+    },
     by_epistemic_class: {
       class_a_direct_transcription: epistemicBreakdown.class_a_transcription.length,
       class_b_deterministic_transformation: epistemicBreakdown.class_b_deterministic.length,
@@ -457,6 +472,7 @@ const reviewBundle = {
       class_d_identity_resolution: addedResolutionEdges.length,
       class_e_changed_prose_count: changedProse.length,
     },
+    analytical_derivation_contract_count: bundleConfig.getAnalyticalContracts ? bundleConfig.getAnalyticalContracts(contextForPackets).length : 0,
   },
   ethical_compliance: bundleConfig.getEthicalCompliance(contextForPackets),
   exception_queue: bundleConfig.getExceptionQueue(contextForPackets),
@@ -500,10 +516,12 @@ console.log(`    * Class C (Relational):    ${epistemicBreakdown.class_c_relatio
 console.log(`    * Class D (Resolution):    ${addedResolutionEdges.length}`);
 console.log(`    * Class E (Changed Prose): ${changedProse.length}`);
 if (reviewBundle.analytical_derivation_contracts) {
-  console.log(`  - Analytical Contracts:      ${reviewBundle.analytical_derivation_contracts.length} (all REVIEW_PENDING)`);
+  const allAccepted = reviewBundle.analytical_derivation_contracts.every((c) => c.review_status === "ACCEPTED");
+  const contractStatus = allAccepted ? "ACCEPTED" : "REVIEW_PENDING";
+  console.log(`  - Analytical Contracts:      ${reviewBundle.analytical_derivation_contracts.length} (${contractStatus})`);
 }
 if (reviewBundle.place_mapping_review) {
-  console.log(`  - Place Mapping Review:      ${reviewBundle.place_mapping_review.mapped_places_count} mapped, ${reviewBundle.place_mapping_review.unmapped_places_count} unmapped (${reviewBundle.place_mapping_review.status})`);
+  console.log(`  - Place Mapping Review:      ${reviewBundle.place_mapping_review.mapped_places_count} mapped, ${reviewBundle.place_mapping_review.unmapped_places_count} unmapped (source QA: ${reviewBundle.place_mapping_review.source_qa_status}, editorial: ${reviewBundle.place_mapping_review.editorial_resolution_status})`);
 }
 if (reviewBundle.dataset_context_summary) {
   console.log(`  - Dataset Context Baseline:  ${reviewBundle.dataset_context_summary.total_records_in_baseline} records (${reviewBundle.dataset_context_summary.baseline_period}) across ${reviewBundle.dataset_context_summary.total_places} places`);
