@@ -6788,28 +6788,28 @@
       "georeference": {
         "coordinates": [
           [
-            -103.446484,
-            34.081101
+            -103.504252,
+            34.004028
           ],
           [
-            -54.856667,
-            34.081101
+            -54.900389,
+            34.004028
           ],
           [
-            -54.856667,
-            9.002197
+            -54.900389,
+            9.146624
           ],
           [
-            -103.446484,
-            9.002197
+            -103.504252,
+            9.146624
           ]
         ],
         "projection": "EPSG:3857",
         "method": "gdalwarp_affine_order_1",
         "gcp_count": 13,
-        "rmse_in_sample_km": 94.91,
-        "rmse_loocv_km": 123.76,
-        "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved cylindrical graticule. Harbor and city inset panels are excluded from the geographic coordinate frame."
+        "rmse_in_sample_km": 79.57,
+        "rmse_loocv_km": 107.68,
+        "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved linear cylindrical graticule. The five catalogued harbor and city inset panels inside the neatline are excluded from the geographic coordinate frame via alpha transparency, while Bermuda is preserved as continuous main-chart geography."
       },
       "assertion_ids": [
         "ast_loc_moll_map_title",

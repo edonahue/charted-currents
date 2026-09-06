@@ -2603,9 +2603,9 @@ assertions:
   epistemic_class: F
   derived_value: "EPSG:3857 affine (order 1) spatial alignment across 13 historical ground control points on main chart field"
   derivation_method: gdalwarp_affine_order_1
-  rmse_in_sample_km: 94.91
-  rmse_loocv_km: 123.76
-  notes: "Project-constructed spatial alignment. First-order affine transform fitted against 13 recognizable Caribbean and Atlantic coastal and harbor features on the main chart field. Harbor insets excluded from coordinate frame."
+  rmse_in_sample_km: 79.57
+  rmse_loocv_km: 107.68
+  notes: "Project-constructed spatial alignment. First-order affine transform fitted against 13 recognizable coastal and harbor features on the main chart field. The five catalogued harbor insets inside the neatline are excluded via alpha transparency, while Bermuda is preserved in the continuous main chart."
 - id: ast_crespo_6156_name
   source_record_id: sr_crespo_navio_6156
   field: vessel_name
@@ -12115,16 +12115,16 @@ visuals:
   rectified_asset_path: assets/visuals/moll-west-indies-1715-rectified.webp
   georeference:
     coordinates:
-    - [-103.446484, 34.081101]
-    - [-54.856667, 34.081101]
-    - [-54.856667, 9.002197]
-    - [-103.446484, 9.002197]
+    - [-103.504252, 34.004028]
+    - [-54.900389, 34.004028]
+    - [-54.900389, 9.146624]
+    - [-103.504252, 9.146624]
     projection: EPSG:3857
     method: gdalwarp_affine_order_1
     gcp_count: 13
-    rmse_in_sample_km: 94.91
-    rmse_loocv_km: 123.76
-    epistemic_disclaimer: Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved cylindrical graticule. Harbor and city inset panels are excluded from the geographic coordinate frame.
+    rmse_in_sample_km: 79.57
+    rmse_loocv_km: 107.68
+    epistemic_disclaimer: Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved linear cylindrical graticule. The five catalogued harbor and city inset panels inside the neatline are excluded from the geographic coordinate frame via alpha transparency, while Bermuda is preserved as continuous main-chart geography.
   assertion_ids:
   - ast_loc_moll_map_title
   - ast_loc_moll_map_date

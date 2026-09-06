@@ -1,0 +1,190 @@
+{
+  "source_item": "gm71005442",
+  "master_scan": "moll-1715-loc-master.jpg",
+  "neatline_geometry": {
+    "master_dimensions": [
+      6025,
+      3636
+    ],
+    "outer_neatline": {
+      "left": 19,
+      "right": 6012,
+      "top": 91,
+      "bottom": 3555
+    },
+    "main_chart_inner_neatline": {
+      "left": 72,
+      "right": 5963,
+      "top": 96,
+      "bottom": 2895
+    },
+    "pipeline_neatline_crop": {
+      "x": 20,
+      "y": 91,
+      "width": 5990,
+      "height": 2804
+    },
+    "neatline_orthogonality": {
+      "top_neatline_y": [
+        96,
+        96
+      ],
+      "left_neatline_x": [
+        72,
+        72
+      ],
+      "skew_degrees": 0.0,
+      "scan_tilt": "< 0.05 degrees (orthogonal)"
+    }
+  },
+  "latitude_regression": {
+    "model": "linear_equidistant_cylindrical",
+    "equation": "y = -122.00 * deg_N + 4159.70",
+    "pixels_per_degree_lat": 122.0,
+    "r_squared": 0.999951,
+    "max_residual_px": 10.3,
+    "points": [
+      {
+        "deg_n": 30,
+        "observed_y_px": 496.0,
+        "notes": "Measured across open Atlantic/Florida margin"
+      },
+      {
+        "deg_n": 25,
+        "observed_y_px": 1120.0,
+        "notes": "Measured across Gulf of Mexico and Atlantic"
+      },
+      {
+        "deg_n": 20,
+        "observed_y_px": 1712.0,
+        "notes": "Measured across Yucatan / Caribbean basin"
+      },
+      {
+        "deg_n": 15,
+        "observed_y_px": 2329.0,
+        "notes": "Measured across Central America / Caribbean Sea"
+      },
+      {
+        "deg_n": 10,
+        "observed_y_px": 2941.5,
+        "notes": "Measured along Panama / Darien / Spanish Main parallel"
+      }
+    ]
+  },
+  "mercator_regression_comparison": {
+    "model": "conformal_mercator",
+    "r_squared": 0.999594,
+    "max_residual_px": 27.21
+  },
+  "longitude_spacing": {
+    "pixels_per_degree_lon": 120.22,
+    "grid_aspect_ratio_lon_to_lat": 0.985,
+    "notes": "Aspect ratio 0.985 is approximately 1.0 (square degree graticule)"
+  },
+  "projection_conclusion": "Herman Moll's engraved chart was constructed on a regular linear/equidistant cylindrical-style graticule (approximately 122.0 px/deg latitude by 120.2 px/deg longitude, aspect ratio ~0.985). An affine (order 1) transformation represents the mathematically faithful model for rotating, scaling, and translating this linear plate without introducing synthetic polynomial curvature.",
+  "catalogued_insets": [
+    {
+      "in_catalogue_order": 1,
+      "title": "La Vera Cruz",
+      "master_bounds": {
+        "x1": 4481,
+        "y1": 233,
+        "x2": 4831,
+        "y2": 439,
+        "width": 350,
+        "height": 206
+      },
+      "location_relative_to_crop": "inside_neatline_crop",
+      "treatment": "alpha_masked_in_derivative (Box B)",
+      "rationale": "Harbor draught engraved at independent non-geographic scale; excluded from main chart coordinate frame"
+    },
+    {
+      "in_catalogue_order": 2,
+      "title": "A draught of ye bay & citty of Havana",
+      "master_bounds": {
+        "x1": 4831,
+        "y1": 91,
+        "x2": 5425,
+        "y2": 625,
+        "width": 594,
+        "height": 534
+      },
+      "location_relative_to_crop": "inside_neatline_crop",
+      "treatment": "alpha_masked_in_derivative (Box A)",
+      "rationale": "Harbor draught engraved at independent non-geographic scale; excluded from main chart coordinate frame"
+    },
+    {
+      "in_catalogue_order": 3,
+      "title": "The bay of Porto Bella",
+      "master_bounds": {
+        "x1": 5425,
+        "y1": 91,
+        "x2": 5963,
+        "y2": 625,
+        "width": 538,
+        "height": 534
+      },
+      "location_relative_to_crop": "inside_neatline_crop",
+      "treatment": "alpha_masked_in_derivative (Box A)",
+      "rationale": "Harbor draught engraved at independent non-geographic scale; excluded from main chart coordinate frame"
+    },
+    {
+      "in_catalogue_order": 4,
+      "title": "A draught of St. Augustin and its harbour",
+      "master_bounds": {
+        "x1": 4188,
+        "y1": 439,
+        "x2": 4831,
+        "y2": 850,
+        "width": 643,
+        "height": 411
+      },
+      "location_relative_to_crop": "inside_neatline_crop",
+      "treatment": "alpha_masked_in_derivative (Box C)",
+      "rationale": "Harbor draught engraved at independent non-geographic scale; excluded from main chart coordinate frame"
+    },
+    {
+      "in_catalogue_order": 5,
+      "title": "A draught of ye citty of Cartagena its harbour & forts",
+      "master_bounds": {
+        "x1": 4831,
+        "y1": 625,
+        "x2": 5963,
+        "y2": 1234,
+        "width": 1132,
+        "height": 609
+      },
+      "location_relative_to_crop": "inside_neatline_crop",
+      "treatment": "alpha_masked_in_derivative (Box A)",
+      "rationale": "Harbor draught engraved at independent non-geographic scale; excluded from main chart coordinate frame"
+    },
+    {
+      "in_catalogue_order": 6,
+      "title": "The city of Mexico in New Spain",
+      "master_bounds": {
+        "x1": 20,
+        "y1": 2905,
+        "x2": 2120,
+        "y2": 3555,
+        "width": 2100,
+        "height": 650
+      },
+      "location_relative_to_crop": "outside_neatline_crop",
+      "treatment": "cropped_by_neatline_crop (y <= 2895)",
+      "rationale": "Large architectural panorama in bottom-left margin; strictly outside neatline crop, zero internal masking required"
+    }
+  ],
+  "bermuda_status": {
+    "feature": "Bermuda ('Barmudas Isl. English')",
+    "is_loc_catalogue_inset": false,
+    "master_bounds": {
+      "x1": 4400,
+      "y1": 95,
+      "x2": 4830,
+      "y2": 230
+    },
+    "location_relative_to_crop": "inside_neatline_crop",
+    "treatment": "preserved_unmasked_in_main_chart",
+    "rationale": "Per LOC authoritative record and R15 directive, Bermuda is NOT one of the six catalogued insets. It has no inset compartment border and is engraved as continuous main-chart geography in the North Atlantic. It sits at y in [95, 230], strictly north of the Vera Cruz inset box (y >= 233), and is fully preserved in the derivative."
+  }
+}

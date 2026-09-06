@@ -3384,9 +3384,9 @@
       "epistemic_class": "F",
       "derived_value": "EPSG:3857 affine (order 1) spatial alignment across 13 historical ground control points on main chart field",
       "derivation_method": "gdalwarp_affine_order_1",
-      "rmse_in_sample_km": 94.91,
-      "rmse_loocv_km": 123.76,
-      "notes": "Project-constructed spatial alignment. First-order affine transform fitted against 13 recognizable Caribbean and Atlantic coastal and harbor features on the main chart field. Harbor insets excluded from coordinate frame."
+      "rmse_in_sample_km": 79.57,
+      "rmse_loocv_km": 107.68,
+      "notes": "Project-constructed spatial alignment. First-order affine transform fitted against 13 recognizable coastal and harbor features on the main chart field. The five catalogued harbor insets inside the neatline are excluded via alpha transparency, while Bermuda is preserved in the continuous main chart."
     },
     {
       "id": "ast_crespo_6156_name",

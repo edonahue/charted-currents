@@ -2,12 +2,13 @@
 """
 scripts/georeference-moll-1715.py
 
-Neatline cropping, 14-point Ground Control Point (GCP) georeferencing,
+Neatline cropping, 13-point Ground Control Point (GCP) georeferencing,
 and WebP export for Herman Moll's 1715 West Indies map (LOC gm71005442).
 
 Rectifies the inner nautical chart to Web Mercator (EPSG:3857) via GDAL,
-excluding lower margin harbor insets, and outputs a web-optimized WebP derivative
-and a detailed georeference report with GCP residuals and epistemic caveats.
+excluding the 5 catalogued harbor draught insets via alpha transparency while
+preserving Bermuda as continuous main-chart geography (R15), and outputs a
+web-optimized WebP derivative and a detailed georeference report.
 
 Supports:
   python3 scripts/georeference-moll-1715.py               # Run full GDAL rectification
@@ -24,31 +25,14 @@ import sys
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RAW_MASTER = os.path.join(REPO_ROOT, "data/raw/loc_gm71005442/moll-1715-loc-master.jpg")
+GCP_AUDIT_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/gcp_audit.json")
 REPORT_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/georeference_report.json")
 PUBLIC_VISUALS_DIR = os.path.join(REPO_ROOT, "public/assets/visuals")
 OUTPUT_WEBP_PATH = os.path.join(PUBLIC_VISUALS_DIR, "moll-west-indies-1715-rectified.webp")
 TMP_DIR = os.path.join(REPO_ROOT, "data/raw/loc_gm71005442/tmp")
 
-# 13 Documented Historical Ground Control Points (GCPs) on Main Chart Field
-# Format: [master_x, master_y, lng, lat, feature_label, role]
-# Excludes off-sheet Cape Hatteras (sheet cuts off at 33°N) and inset-panel Bermuda (R3)
-GCPS = [
-    [2550, 1360, -82.35, 23.14, "Havana, Cuba", "Harbor entrance / Castillo del Morro"],
-    [3420, 1960, -76.84, 17.94, "Port Royal, Jamaica", "Palisadoes spit / harbor anchorage"],
-    [795,  1665, -96.13, 19.20, "Veracruz, Mexico", "San Juan de Ulua island fort"],
-    [3200, 2780, -75.54, 10.40, "Cartagena, Colombia", "Boca Chica entrance / bay forts"],
-    [2840, 2830, -79.66,  9.55, "Portobelo, Panama", "Bahia de Portobelo / Chagres approach"],
-    [2860,  570, -81.31, 29.89, "Saint Augustine, Florida", "Inlet / Castillo de San Marcos"],
-    [4680, 1825, -66.12, 18.47, "San Juan, Puerto Rico", "Castillo San Felipe del Morro"],
-    [4130, 1880, -69.88, 18.47, "Santo Domingo, Hispaniola", "Ozama River harbor entrance"],
-    [5325, 2430, -59.62, 13.09, "Bridgetown, Barbados", "Carlisle Bay anchorage"],
-    [4450, 2540, -68.93, 12.11, "Willemstad, Curacao", "Santa Anna Bay harbor entrance"],
-    [2280, 1495, -84.95, 21.86, "Cabo San Antonio, Cuba", "Westernmost promontory of Cuba"],
-    [3520, 1690, -74.14, 20.25, "Cabo Maisi, Cuba", "Easternmost promontory of Cuba"],
-    [3080,  150, -79.93, 32.78, "Charles Town, South Carolina", "Charleston Harbor / Ashley River entrance"]
-]
-
-# Neatline crop of the main nautical chart field (excluding lower harbor insets and outer margins)
+# Neatline crop of the main nautical chart field on 6025x3636 master
+# Excludes lower margin containing LOC Inset #6 (Mexico City)
 NEATLINE_CROP = {
     "x": 20,
     "y": 91,
@@ -56,23 +40,81 @@ NEATLINE_CROP = {
     "height": 2804
 }
 
-# R3 Inset Exclusion: The upper-right quadrant contains 5 harbor draught insets (St. Augustine,
-# Vera Cruz, Havana, Cartagena, Porto Bella) engraved at independent scales. They are excluded
-# from the main chart coordinate frame via alpha transparency so they do not masquerade as geography.
-EXCLUDED_INSETS_BOX = {
-    "master_x": 4190,
-    "master_y": 95,
-    "master_width": 1750,
-    "master_height": 1080
-}
+# The 5 catalogued LOC harbor insets inside the neatline crop are masked with alpha transparency:
+# Box A: Havana (Inset 2), Porto Bella (Inset 3), Cartagena (Inset 5)
+# Box B: La Vera Cruz (Inset 1)
+# Box C: St. Augustin (Inset 4)
+# Per R15, Bermuda (x: 4400..4830, y: 95..230) is NOT an inset and remains fully preserved in the main chart.
+MASKED_INSET_BOXES = [
+    {
+        "name": "Box A (Havana, Porto Bella, Cartagena)",
+        "insets": ["LOC Inset 2: Havana", "LOC Inset 3: Porto Bella", "LOC Inset 5: Cartagena"],
+        "master_x": 4831,
+        "master_y": 91,
+        "master_width": 1132,
+        "master_height": 1143
+    },
+    {
+        "name": "Box B (La Vera Cruz)",
+        "insets": ["LOC Inset 1: La Vera Cruz"],
+        "master_x": 4481,
+        "master_y": 233,
+        "master_width": 350,
+        "master_height": 206
+    },
+    {
+        "name": "Box C (St. Augustin)",
+        "insets": ["LOC Inset 4: St. Augustin"],
+        "master_x": 4188,
+        "master_y": 439,
+        "master_width": 643,
+        "master_height": 411
+    }
+]
 
 EPISTEMIC_DISCLAIMER = (
-    "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) "
-    "using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. "
+    "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) "
+    "transformation across 13 historical coastal and harbor ground control points on the main chart field. "
     "The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; "
-    "residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, "
-    "and the chart's engraved cylindrical graticule. Harbor and city inset panels are excluded from the geographic coordinate frame."
+    "residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, "
+    "generalization, and the chart's engraved linear cylindrical graticule. The five catalogued harbor and city inset panels "
+    "inside the neatline are excluded from the geographic coordinate frame via alpha transparency, while Bermuda is preserved "
+    "as continuous main-chart geography."
 )
+
+
+def load_canonical_gcps():
+    """Load canonical GCPs from gcp_audit.json single source of truth."""
+    if os.path.exists(GCP_AUDIT_PATH):
+        with open(GCP_AUDIT_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return [
+                [
+                    g["master_pixel"][0],
+                    g["master_pixel"][1],
+                    g["target_coords_wgs84"][0],
+                    g["target_coords_wgs84"][1],
+                    g["name"],
+                    g["feature"]
+                ]
+                for g in data["canonical_gcps"]
+            ]
+    # Fallback static table if gcp_audit.json not yet generated
+    return [
+        [2550, 1360, -82.35, 23.14, "Havana, Cuba", "Harbor entrance / Castillo del Morro"],
+        [3420, 1960, -76.84, 17.94, "Port Royal, Jamaica", "Palisadoes spit / harbor anchorage"],
+        [795,  1665, -96.13, 19.20, "Veracruz, Mexico", "San Juan de Ulua island fort"],
+        [3410, 2835, -75.54, 10.40, "Cartagena, Colombia", "Boca Chica entrance / bay forts"],
+        [2840, 2830, -79.66,  9.55, "Portobelo, Panama", "Bahia de Portobelo / Chagres approach"],
+        [2860,  570, -81.31, 29.89, "Saint Augustine, Florida", "Inlet / Castillo de San Marcos"],
+        [4680, 1825, -66.12, 18.47, "San Juan, Puerto Rico", "Castillo San Felipe del Morro"],
+        [4130, 1880, -69.88, 18.47, "Santo Domingo, Hispaniola", "Ozama River harbor entrance"],
+        [5325, 2430, -59.62, 13.09, "Bridgetown, Barbados", "Carlisle Bay anchorage"],
+        [4365, 2588, -68.93, 12.11, "Willemstad, Curacao", "Santa Anna Bay harbor entrance"],
+        [2280, 1495, -84.95, 21.86, "Cabo San Antonio, Cuba", "Westernmost promontory of Cuba"],
+        [3520, 1690, -74.14, 20.25, "Cabo Maisi, Cuba", "Easternmost promontory of Cuba"],
+        [3080,  150, -79.93, 32.78, "Charles Town, South Carolina", "Charleston Harbor / Ashley River entrance"]
+    ]
 
 
 def compute_sha256(filepath: str) -> str:
@@ -84,7 +126,7 @@ def compute_sha256(filepath: str) -> str:
 
 
 def haversine(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
-    R = 6371.0088  # Earth mean radius in km
+    R = 6371.0088
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
@@ -103,16 +145,17 @@ def get_gdal_version() -> str:
 
 
 def compute_gcp_residuals():
+    gcps = load_canonical_gcps()
     crop_x = NEATLINE_CROP["x"]
     crop_y = NEATLINE_CROP["y"]
 
-    # 1. In-sample residuals via GDAL official GCP transformer (pixel/line -> EPSG:4326 affine)
+    # 1. In-sample residuals via GDAL official GCP transformer
     cmd_all = ["gdaltransform", "-order", "1"]
-    for g in GCPS:
+    for g in gcps:
         cmd_all.extend(["-gcp", str(g[0] - crop_x), str(g[1] - crop_y), str(g[2]), str(g[3])])
 
     p_all = subprocess.Popen(cmd_all, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    input_all = "\n".join(f"{g[0] - crop_x} {g[1] - crop_y}" for g in GCPS)
+    input_all = "\n".join(f"{g[0] - crop_x} {g[1] - crop_y}" for g in gcps)
     out_all, err_all = p_all.communicate(input=input_all)
     if p_all.returncode != 0:
         raise RuntimeError(f"gdaltransform failed ({p_all.returncode}): {err_all}")
@@ -122,17 +165,17 @@ def compute_gcp_residuals():
         parts = line.split()
         pred_lon = float(parts[0])
         pred_lat = float(parts[1])
-        d = haversine(GCPS[idx][2], GCPS[idx][3], pred_lon, pred_lat)
+        d = haversine(gcps[idx][2], gcps[idx][3], pred_lon, pred_lat)
         in_sample_dists.append(d)
 
     rmse_in_sample_km = round(math.sqrt(sum(d ** 2 for d in in_sample_dists) / len(in_sample_dists)), 2)
 
     # 2. Leave-One-Out Cross-Validation (LOOCV) via GDAL transformer
-    n = len(GCPS)
+    n = len(gcps)
     loocv_dists = []
     for i in range(n):
-        train_gcps = [g for j, g in enumerate(GCPS) if j != i]
-        test_gcp = GCPS[i]
+        train_gcps = [g for j, g in enumerate(gcps) if j != i]
+        test_gcp = gcps[i]
         cmd_loo = ["gdaltransform", "-order", "1"]
         for g in train_gcps:
             cmd_loo.extend(["-gcp", str(g[0] - crop_x), str(g[1] - crop_y), str(g[2]), str(g[3])])
@@ -153,9 +196,11 @@ def compute_gcp_residuals():
     p90_idx = int(math.ceil(0.90 * n)) - 1
     loocv_p90_km = round(sorted_loo[p90_idx], 2)
     loocv_max_km = round(max(loocv_dists), 2)
+    max_idx = loocv_dists.index(max(loocv_dists))
+    loocv_max_feature = gcps[max_idx][4]
 
     gcp_details = []
-    for idx, g in enumerate(GCPS):
+    for idx, g in enumerate(gcps):
         gcp_details.append({
             "name": g[4],
             "role": g[5],
@@ -172,6 +217,7 @@ def compute_gcp_residuals():
         "loocv_median_km": loocv_median_km,
         "loocv_p90_km": loocv_p90_km,
         "loocv_max_km": loocv_max_km,
+        "loocv_max_feature": loocv_max_feature,
         "gcp_details": gcp_details,
         "gdal_version": get_gdal_version(),
     }
@@ -188,7 +234,8 @@ def verify_report() -> bool:
     with open(REPORT_PATH, "r", encoding="utf-8") as f:
         rep = json.load(f)
 
-    assert rep.get("gcp_count") == len(GCPS), f"Expected {len(GCPS)} GCPs in report"
+    gcps = load_canonical_gcps()
+    assert rep.get("gcp_count") == len(gcps), f"Expected {len(gcps)} GCPs in report"
     assert rep.get("projection") == "EPSG:3857", "Expected EPSG:3857 projection"
     assert rep.get("method") == "gdalwarp_affine_order_1", f"Expected gdalwarp_affine_order_1, got {rep.get('method')}"
     coords = rep.get("coordinates", [])
@@ -212,6 +259,15 @@ def verify_report() -> bool:
     actual_loocv = rep.get("rmse_loocv_km")
     assert actual_loocv is not None, "Report missing rmse_loocv_km"
     assert abs(actual_loocv - expected_loocv) <= 0.05, f"LOOCV RMSE mismatch: expected {expected_loocv}, got {actual_loocv}"
+
+    # Verify quality gates
+    assert actual_in_sample <= 100.0, f"In-sample RMSE {actual_in_sample} exceeds 100 km gate"
+    assert actual_loocv <= 130.0, f"LOOCV RMSE {actual_loocv} exceeds 130 km gate"
+
+    # Verify individual Willemstad gate (R11)
+    willemstad = next((g for g in rep.get("gcps", []) if "Willemstad" in g.get("name", "")), None)
+    assert willemstad is not None, "Willemstad missing from GCP details"
+    assert willemstad["residual_loocv_km"] <= 190.0, f"Willemstad LOOCV {willemstad['residual_loocv_km']} exceeds 190 km gate"
 
     for gcp in rep.get("gcps", []):
         assert "residual_in_sample_km" in gcp, f"GCP {gcp.get('name')} missing residual_in_sample_km"
@@ -248,37 +304,37 @@ def run_georeference() -> None:
     crop_w = NEATLINE_CROP["width"]
     crop_h = NEATLINE_CROP["height"]
 
-    # 1. Prepare neatline crop with R3 Inset Exclusion
-    # Load master scan, crop to neatline, and apply alpha transparency over the 5 harbor draught insets
+    # 1. Prepare neatline crop with multi-box LOC Inset Exclusion (preserving Bermuda per R15)
     from PIL import Image
     im_master = Image.open(RAW_MASTER).convert("RGBA")
     crop_im = im_master.crop((crop_x, crop_y, crop_x + crop_w, crop_y + crop_h))
 
-    # Mask excluded harbor insets box in crop coordinates:
-    insets_x1 = max(0, EXCLUDED_INSETS_BOX["master_x"] - crop_x)
-    insets_y1 = max(0, EXCLUDED_INSETS_BOX["master_y"] - crop_y)
-    insets_x2 = min(crop_w, insets_x1 + EXCLUDED_INSETS_BOX["master_width"])
-    insets_y2 = min(crop_h, insets_y1 + EXCLUDED_INSETS_BOX["master_height"])
-
-    transparent_rect = Image.new("RGBA", (insets_x2 - insets_x1, insets_y2 - insets_y1), (0, 0, 0, 0))
-    crop_im.paste(transparent_rect, (insets_x1, insets_y1))
+    for box in MASKED_INSET_BOXES:
+        bx1 = max(0, box["master_x"] - crop_x)
+        by1 = max(0, box["master_y"] - crop_y)
+        bx2 = min(crop_w, bx1 + box["master_width"])
+        by2 = min(crop_h, by1 + box["master_height"])
+        transparent_rect = Image.new("RGBA", (bx2 - bx1, by2 - by1), (0, 0, 0, 0))
+        crop_im.paste(transparent_rect, (bx1, by1))
+        print(f"[GEOREF] Alpha-masked {box['name']} at crop ({bx1}, {by1}) to ({bx2}, {by2})")
 
     masked_tif = os.path.join(TMP_DIR, "moll_masked_crop.tif")
     crop_im.save(masked_tif, format="TIFF")
 
     # 2. gdal_translate: assign GCPs to masked neatline crop
+    gcps = load_canonical_gcps()
     gcp_tif = os.path.join(TMP_DIR, "moll_gcp.tif")
     cmd_translate = [
         "gdal_translate",
         "-a_srs", "EPSG:4326",
     ]
-    for gcp in GCPS:
+    for gcp in gcps:
         cx = gcp[0] - crop_x
         cy = gcp[1] - crop_y
         cmd_translate.extend(["-gcp", str(cx), str(cy), str(gcp[2]), str(gcp[3])])
     cmd_translate.extend([masked_tif, gcp_tif])
 
-    print(f"[GEOREF] Running gdal_translate with {len(GCPS)} main-chart GCPs (harbor insets alpha-masked)...")
+    print(f"[GEOREF] Running gdal_translate with {len(gcps)} main-chart GCPs (harbor insets alpha-masked)...")
     subprocess.run(cmd_translate, check=True)
 
     # 3. gdalwarp: warp to EPSG:3857 using 1st-order affine transformation with alpha transparency
@@ -293,7 +349,7 @@ def run_georeference() -> None:
         gcp_tif,
         warped_tif
     ]
-    print("[GEOREF] Warping to EPSG:3857 via gdalwarp (affine order 1)... ")
+    print("[GEOREF] Warping to EPSG:3857 via gdalwarp (affine order 1)...")
     subprocess.run(cmd_warp, check=True)
 
     # 4. Query gdalinfo to extract exact 4-corner coordinates in EPSG:4326
@@ -311,8 +367,9 @@ def run_georeference() -> None:
     maplibre_corners = [tl, tr, br, bl]
 
     # 5. Compress to web-optimized WebP (2560px width)
-    print("[GEOREF] Exporting web-optimized WebP derivative (2560px)... ")
+    print("[GEOREF] Exporting web-optimized WebP derivative (2560px)...")
     im = Image.open(warped_tif)
+    inter_w, inter_h = im.size
     target_w = 2560
     aspect = im.size[1] / im.size[0]
     target_h = int(target_w * aspect)
@@ -331,8 +388,12 @@ def run_georeference() -> None:
         "source_item": "gm71005442",
         "source_master": os.path.basename(RAW_MASTER),
         "neatline_crop": NEATLINE_CROP,
-        "excluded_insets_box": EXCLUDED_INSETS_BOX,
-        "gcp_count": len(GCPS),
+        "masked_inset_boxes": MASKED_INSET_BOXES,
+        "catalogued_insets_count": 6,
+        "insets_inside_crop": 5,
+        "insets_outside_crop": 1,
+        "bermuda_status": "preserved_in_main_chart_unmasked",
+        "gcp_count": len(gcps),
         "gcps": residuals["gcp_details"],
         "projection": "EPSG:3857",
         "method": "gdalwarp_affine_order_1",
@@ -342,11 +403,13 @@ def run_georeference() -> None:
         "loocv_median_km": residuals["loocv_median_km"],
         "loocv_p90_km": residuals["loocv_p90_km"],
         "loocv_max_km": residuals["loocv_max_km"],
+        "loocv_max_feature": residuals["loocv_max_feature"],
         "residual_distance_metric": "great_circle_haversine_km",
         "gdal_version": residuals.get("gdal_version"),
         "coordinates": maplibre_corners,
         "derivative_path": "assets/visuals/moll-west-indies-1715-rectified.webp",
         "derivative_dimensions": [target_w, target_h],
+        "intermediate_warped_dimensions": [inter_w, inter_h],
         "derivative_size_bytes": derivative_size,
         "derivative_sha256": derivative_sha,
         "epistemic_disclaimer": EPISTEMIC_DISCLAIMER
@@ -354,7 +417,7 @@ def run_georeference() -> None:
 
     with open(REPORT_PATH, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
-        f.write(chr(10))
+        f.write("\n")
 
     print(f"[GEOREF] Georeference report written to {REPORT_PATH}")
 

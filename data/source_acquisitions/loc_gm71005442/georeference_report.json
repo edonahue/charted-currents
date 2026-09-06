@@ -8,12 +8,44 @@
     "width": 5990,
     "height": 2804
   },
-  "excluded_insets_box": {
-    "master_x": 4190,
-    "master_y": 95,
-    "master_width": 1750,
-    "master_height": 1080
-  },
+  "masked_inset_boxes": [
+    {
+      "name": "Box A (Havana, Porto Bella, Cartagena)",
+      "insets": [
+        "LOC Inset 2: Havana",
+        "LOC Inset 3: Porto Bella",
+        "LOC Inset 5: Cartagena"
+      ],
+      "master_x": 4831,
+      "master_y": 91,
+      "master_width": 1132,
+      "master_height": 1143
+    },
+    {
+      "name": "Box B (La Vera Cruz)",
+      "insets": [
+        "LOC Inset 1: La Vera Cruz"
+      ],
+      "master_x": 4481,
+      "master_y": 233,
+      "master_width": 350,
+      "master_height": 206
+    },
+    {
+      "name": "Box C (St. Augustin)",
+      "insets": [
+        "LOC Inset 4: St. Augustin"
+      ],
+      "master_x": 4188,
+      "master_y": 439,
+      "master_width": 643,
+      "master_height": 411
+    }
+  ],
+  "catalogued_insets_count": 6,
+  "insets_inside_crop": 5,
+  "insets_outside_crop": 1,
+  "bermuda_status": "preserved_in_main_chart_unmasked",
   "gcp_count": 13,
   "gcps": [
     {
@@ -31,8 +63,8 @@
         -82.35,
         23.14
       ],
-      "residual_in_sample_km": 72.34,
-      "residual_loocv_km": 82.46
+      "residual_in_sample_km": 76.25,
+      "residual_loocv_km": 86.99
     },
     {
       "name": "Port Royal, Jamaica",
@@ -49,8 +81,8 @@
         -76.84,
         17.94
       ],
-      "residual_in_sample_km": 139.12,
-      "residual_loocv_km": 151.42
+      "residual_in_sample_km": 124.9,
+      "residual_loocv_km": 135.87
     },
     {
       "name": "Veracruz, Mexico",
@@ -67,26 +99,26 @@
         -96.13,
         19.2
       ],
-      "residual_in_sample_km": 75.64,
-      "residual_loocv_km": 148.7
+      "residual_in_sample_km": 85.28,
+      "residual_loocv_km": 171.41
     },
     {
       "name": "Cartagena, Colombia",
       "role": "Boca Chica entrance / bay forts",
       "master_pixel": [
-        3200,
-        2780
+        3410,
+        2835
       ],
       "crop_pixel": [
-        3180,
-        2689
+        3390,
+        2744
       ],
       "geographic_coords": [
         -75.54,
         10.4
       ],
-      "residual_in_sample_km": 119.79,
-      "residual_loocv_km": 155.98
+      "residual_in_sample_km": 60.97,
+      "residual_loocv_km": 79.22
     },
     {
       "name": "Portobelo, Panama",
@@ -103,8 +135,8 @@
         -79.66,
         9.55
       ],
-      "residual_in_sample_km": 41.01,
-      "residual_loocv_km": 57.42
+      "residual_in_sample_km": 42.71,
+      "residual_loocv_km": 59.7
     },
     {
       "name": "Saint Augustine, Florida",
@@ -121,8 +153,8 @@
         -81.31,
         29.89
       ],
-      "residual_in_sample_km": 30.83,
-      "residual_loocv_km": 42.39
+      "residual_in_sample_km": 43.96,
+      "residual_loocv_km": 60.28
     },
     {
       "name": "San Juan, Puerto Rico",
@@ -139,8 +171,8 @@
         -66.12,
         18.47
       ],
-      "residual_in_sample_km": 30.39,
-      "residual_loocv_km": 37.95
+      "residual_in_sample_km": 41.26,
+      "residual_loocv_km": 51.63
     },
     {
       "name": "Santo Domingo, Hispaniola",
@@ -157,8 +189,8 @@
         -69.88,
         18.47
       ],
-      "residual_in_sample_km": 46.4,
-      "residual_loocv_km": 52.61
+      "residual_in_sample_km": 42.67,
+      "residual_loocv_km": 48.38
     },
     {
       "name": "Bridgetown, Barbados",
@@ -175,26 +207,26 @@
         -59.62,
         13.09
       ],
-      "residual_in_sample_km": 106.91,
-      "residual_loocv_km": 159.32
+      "residual_in_sample_km": 115.49,
+      "residual_loocv_km": 171.68
     },
     {
       "name": "Willemstad, Curacao",
       "role": "Santa Anna Bay harbor entrance",
       "master_pixel": [
-        4450,
-        2540
+        4365,
+        2588
       ],
       "crop_pixel": [
-        4430,
-        2449
+        4345,
+        2497
       ],
       "geographic_coords": [
         -68.93,
         12.11
       ],
-      "residual_in_sample_km": 192.29,
-      "residual_loocv_km": 238.49
+      "residual_in_sample_km": 106.85,
+      "residual_loocv_km": 131.69
     },
     {
       "name": "Cabo San Antonio, Cuba",
@@ -211,8 +243,8 @@
         -84.95,
         21.86
       ],
-      "residual_in_sample_km": 44.96,
-      "residual_loocv_km": 52.47
+      "residual_in_sample_km": 39.66,
+      "residual_loocv_km": 46.38
     },
     {
       "name": "Cabo Maisi, Cuba",
@@ -229,8 +261,8 @@
         -74.14,
         20.25
       ],
-      "residual_in_sample_km": 109.07,
-      "residual_loocv_km": 118.85
+      "residual_in_sample_km": 110.26,
+      "residual_loocv_km": 120.15
     },
     {
       "name": "Charles Town, South Carolina",
@@ -247,44 +279,49 @@
         -79.93,
         32.78
       ],
-      "residual_in_sample_km": 66.37,
-      "residual_loocv_km": 120.45
+      "residual_in_sample_km": 64.29,
+      "residual_loocv_km": 115.89
     }
   ],
   "projection": "EPSG:3857",
   "method": "gdalwarp_affine_order_1",
   "resampling": "bilinear",
-  "rmse_in_sample_km": 94.91,
-  "rmse_loocv_km": 123.76,
-  "loocv_median_km": 118.85,
-  "loocv_p90_km": 159.32,
-  "loocv_max_km": 238.49,
+  "rmse_in_sample_km": 79.57,
+  "rmse_loocv_km": 107.68,
+  "loocv_median_km": 86.99,
+  "loocv_p90_km": 171.41,
+  "loocv_max_km": 171.68,
+  "loocv_max_feature": "Bridgetown, Barbados",
   "residual_distance_metric": "great_circle_haversine_km",
   "gdal_version": "GDAL 3.8.4, released 2024/02/08",
   "coordinates": [
     [
-      -103.446484,
-      34.081101
+      -103.504252,
+      34.004028
     ],
     [
-      -54.856667,
-      34.081101
+      -54.900389,
+      34.004028
     ],
     [
-      -54.856667,
-      9.002197
+      -54.900389,
+      9.146624
     ],
     [
-      -103.446484,
-      9.002197
+      -103.504252,
+      9.146624
     ]
   ],
   "derivative_path": "assets/visuals/moll-west-indies-1715-rectified.webp",
   "derivative_dimensions": [
     2560,
-    1435
+    1422
   ],
-  "derivative_size_bytes": 820024,
-  "derivative_sha256": "0670b44343e22067769b7a8e77e23515c8d87b3fea35cf421ae24f24323ce972",
-  "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved cylindrical graticule. Harbor and city inset panels are excluded from the geographic coordinate frame."
+  "intermediate_warped_dimensions": [
+    5832,
+    3241
+  ],
+  "derivative_size_bytes": 830286,
+  "derivative_sha256": "1250d8864beb684357f3e3ec7dc066be1e49d39160ad6297cf4004115befb0d5",
+  "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved linear cylindrical graticule. The five catalogued harbor and city inset panels inside the neatline are excluded from the geographic coordinate frame via alpha transparency, while Bermuda is preserved as continuous main-chart geography."
 }
