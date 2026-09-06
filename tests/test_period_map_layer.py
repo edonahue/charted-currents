@@ -63,15 +63,13 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         size_bytes = os.path.getsize(rect_full)
         self.assertLessEqual(size_bytes, 1572864, f"Derivative too large: {size_bytes} bytes")
 
-    def test_georeferencing_mathematics_and_epistemic_honesty(self):
-        """Georeferencing report must have 14 GCPs, valid 4-corner coordinates, and non-empty disclaimer."""
+    def test_georeferencing_deterministic_reproduction(self):
+        """Georeferencing report must have 13 main-chart GCPs, valid affine derivation, and pinned report values."""
         rep = self.georef_report
-        self.assertEqual(rep["gcp_count"], 14)
-        self.assertEqual(len(rep["gcps"]), 14)
+        self.assertEqual(rep["gcp_count"], 13)
+        self.assertEqual(len(rep["gcps"]), 13)
         self.assertEqual(rep["projection"], "EPSG:3857")
-        self.assertEqual(rep["method"], "gdalwarp_polynomial_order_2")
-        self.assertEqual(rep["rmse_in_sample_km"], 85.78)
-        self.assertEqual(rep["rmse_loocv_km"], 209.65)
+        self.assertEqual(rep["method"], "gdalwarp_affine_order_1")
         self.assertEqual(rep.get("residual_distance_metric"), "great_circle_haversine_km")
 
         coords = rep["coordinates"]
@@ -79,18 +77,55 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         # Top-left, top-right, bottom-right, bottom-left
         tl, tr, br, bl = coords
         self.assertLess(tl[0], -100)
-        self.assertGreater(tl[1], 40)
-        self.assertGreater(tr[0], -45)
-        self.assertGreater(tr[1], 40)
-        self.assertGreater(br[0], -45)
-        self.assertLess(br[1], 5)
+        self.assertGreater(tl[1], 30)
+        self.assertGreater(tr[0], -60)
+        self.assertGreater(tr[1], 30)
+        self.assertGreater(br[0], -60)
+        self.assertLess(br[1], 15)
         self.assertLess(bl[0], -100)
-        self.assertLess(bl[1], 5)
+        self.assertLess(bl[1], 15)
 
-        disclaimer = rep["epistemic_disclaimer"]
+    def test_georeferencing_quality_acceptance_thresholds(self):
+        """Quality acceptance gate: LOOCV RMSE must beat baseline, core ports must meet tolerances, and insets excluded."""
+        rep = self.georef_report
+
+        # Global quality thresholds
+        self.assertLessEqual(rep["rmse_loocv_km"], 160.0, f"LOOCV RMSE too high: {rep['rmse_loocv_km']} km")
+        self.assertLessEqual(rep["rmse_in_sample_km"], 115.0, f"In-sample RMSE too high: {rep['rmse_in_sample_km']} km")
+        self.assertLessEqual(rep.get("loocv_max_km", 999.0), 275.0, f"Max LOOCV error too high: {rep.get('loocv_max_km')} km")
+
+        # Significant improvement over Packet 8 baseline (was 209.65 km LOOCV)
+        self.assertLess(rep["rmse_loocv_km"], 150.0, "Corrected LOOCV RMSE must materially improve over Packet 8 baseline")
+
+        # Individual priority port tolerances
+        gcp_map = {g["name"]: g for g in rep["gcps"]}
+        self.assertIn("Havana, Cuba", gcp_map)
+        self.assertLessEqual(gcp_map["Havana, Cuba"]["residual_loocv_km"], 100.0)
+        self.assertIn("Santo Domingo, Hispaniola", gcp_map)
+        self.assertLessEqual(gcp_map["Santo Domingo, Hispaniola"]["residual_loocv_km"], 75.0)
+        self.assertIn("San Juan, Puerto Rico", gcp_map)
+        self.assertLessEqual(gcp_map["San Juan, Puerto Rico"]["residual_loocv_km"], 75.0)
+        self.assertIn("Port Royal, Jamaica", gcp_map)
+        self.assertLessEqual(gcp_map["Port Royal, Jamaica"]["residual_loocv_km"], 180.0)
+        self.assertIn("Portobelo, Panama", gcp_map)
+        self.assertLessEqual(gcp_map["Portobelo, Panama"]["residual_loocv_km"], 80.0)
+        self.assertIn("Cartagena, Colombia", gcp_map)
+        self.assertLessEqual(gcp_map["Cartagena, Colombia"]["residual_loocv_km"], 200.0)
+
+        # R3 Harbor Insets Exclusion check
+        self.assertIn("excluded_insets_box", rep, "Report must document excluded harbor insets box")
+        insets = rep["excluded_insets_box"]
+        self.assertEqual(insets["master_x"], 4190)
+        self.assertEqual(insets["master_y"], 95)
+
+    def test_georeferencing_epistemic_honesty(self):
+        """Epistemic disclaimer must be honest regarding affine alignment and source-map cartographic limitations."""
+        disclaimer = self.georef_report.get("epistemic_disclaimer", "")
+        self.assertIn("affine", disclaimer)
+        self.assertIn("13 historical coastal and harbor ground control points", disclaimer)
+        self.assertIn("residual disagreement", disclaimer)
+        self.assertIn("Harbor and city inset panels are excluded", disclaimer)
         self.assertNotIn("pre-chronometer", disclaimer)
-        self.assertIn("second-order polynomial", disclaimer)
-        self.assertIn("historical evidence", disclaimer)
 
     def test_cartographic_assertions(self):
         """Map features (trade winds, flota tracks, and georeference) must be published assertions."""
@@ -108,12 +143,12 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         )
 
         georef_ast = asts_by_id["ast_loc_moll_georeference"]
-        self.assertEqual(georef_ast["derivation_method"], "gdalwarp_polynomial_order_2")
+        self.assertEqual(georef_ast["derivation_method"], "gdalwarp_affine_order_1")
         self.assertEqual(georef_ast["source_assertion_id"], "ast_loc_moll_map_title")
         self.assertEqual(georef_ast["epistemic_class"], "F")
         self.assertEqual(georef_ast["risk_class"], "F")
-        self.assertEqual(georef_ast["rmse_in_sample_km"], 85.78)
-        self.assertEqual(georef_ast["rmse_loocv_km"], 209.65)
+        self.assertEqual(georef_ast["rmse_in_sample_km"], 94.91)
+        self.assertEqual(georef_ast["rmse_loocv_km"], 123.76)
 
     def test_acquisition_metadata_invariants(self):
         """Acquisition metadata must preserve [1715?] uncertainty and verified Bowles imprint."""

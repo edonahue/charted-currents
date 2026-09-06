@@ -6788,28 +6788,28 @@
       "georeference": {
         "coordinates": [
           [
-            -113.151907,
-            44.449585
+            -103.446484,
+            34.081101
           ],
           [
-            -39.198751,
-            44.449585
+            -54.856667,
+            34.081101
           ],
           [
-            -39.198751,
-            1.629071
+            -54.856667,
+            9.002197
           ],
           [
-            -113.151907,
-            1.629071
+            -103.446484,
+            9.002197
           ]
         ],
         "projection": "EPSG:3857",
-        "method": "gdalwarp_polynomial_order_2",
-        "gcp_count": 14,
-        "rmse_in_sample_km": 85.78,
-        "rmse_loocv_km": 209.65,
-        "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth."
+        "method": "gdalwarp_affine_order_1",
+        "gcp_count": 13,
+        "rmse_in_sample_km": 94.91,
+        "rmse_loocv_km": 123.76,
+        "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved cylindrical graticule. Harbor and city inset panels are excluded from the geographic coordinate frame."
       },
       "assertion_ids": [
         "ast_loc_moll_map_title",

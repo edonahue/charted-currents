@@ -8,292 +8,283 @@
     "width": 5990,
     "height": 2804
   },
-  "gcp_count": 14,
+  "excluded_insets_box": {
+    "master_x": 4190,
+    "master_y": 95,
+    "master_width": 1750,
+    "master_height": 1080
+  },
+  "gcp_count": 13,
   "gcps": [
     {
       "name": "Havana, Cuba",
       "role": "Harbor entrance / Castillo del Morro",
       "master_pixel": [
-        2310,
-        1490
+        2550,
+        1360
       ],
       "crop_pixel": [
-        2290,
-        1399
+        2530,
+        1269
       ],
       "geographic_coords": [
         -82.35,
         23.14
       ],
-      "residual_in_sample_km": 86.95,
-      "residual_loocv_km": 110.41
+      "residual_in_sample_km": 72.34,
+      "residual_loocv_km": 82.46
     },
     {
       "name": "Port Royal, Jamaica",
       "role": "Palisadoes spit / harbor anchorage",
       "master_pixel": [
-        2930,
-        1945
+        3420,
+        1960
       ],
       "crop_pixel": [
-        2910,
-        1854
+        3400,
+        1869
       ],
       "geographic_coords": [
         -76.84,
         17.94
       ],
-      "residual_in_sample_km": 181.71,
-      "residual_loocv_km": 226.31
+      "residual_in_sample_km": 139.12,
+      "residual_loocv_km": 151.42
     },
     {
       "name": "Veracruz, Mexico",
       "role": "San Juan de Ulua island fort",
       "master_pixel": [
-        1210,
-        1760
+        795,
+        1665
       ],
       "crop_pixel": [
-        1190,
-        1669
+        775,
+        1574
       ],
       "geographic_coords": [
         -96.13,
         19.2
       ],
-      "residual_in_sample_km": 78.64,
-      "residual_loocv_km": 446.76
+      "residual_in_sample_km": 75.64,
+      "residual_loocv_km": 148.7
     },
     {
       "name": "Cartagena, Colombia",
       "role": "Boca Chica entrance / bay forts",
       "master_pixel": [
-        2630,
-        2390
+        3200,
+        2780
       ],
       "crop_pixel": [
-        2610,
-        2299
+        3180,
+        2689
       ],
       "geographic_coords": [
         -75.54,
         10.4
       ],
-      "residual_in_sample_km": 92.86,
-      "residual_loocv_km": 134.28
+      "residual_in_sample_km": 119.79,
+      "residual_loocv_km": 155.98
     },
     {
       "name": "Portobelo, Panama",
       "role": "Bahia de Portobelo / Chagres approach",
       "master_pixel": [
-        2210,
-        2490
+        2840,
+        2830
       ],
       "crop_pixel": [
-        2190,
-        2399
+        2820,
+        2739
       ],
       "geographic_coords": [
         -79.66,
         9.55
       ],
-      "residual_in_sample_km": 15.68,
-      "residual_loocv_km": 37.0
+      "residual_in_sample_km": 41.01,
+      "residual_loocv_km": 57.42
     },
     {
       "name": "Saint Augustine, Florida",
       "role": "Inlet / Castillo de San Marcos",
       "master_pixel": [
-        2420,
-        1030
+        2860,
+        570
       ],
       "crop_pixel": [
-        2400,
-        939
+        2840,
+        479
       ],
       "geographic_coords": [
         -81.31,
         29.89
       ],
-      "residual_in_sample_km": 56.87,
-      "residual_loocv_km": 97.87
+      "residual_in_sample_km": 30.83,
+      "residual_loocv_km": 42.39
     },
     {
       "name": "San Juan, Puerto Rico",
       "role": "Castillo San Felipe del Morro",
       "master_pixel": [
-        3820,
-        1910
+        4680,
+        1825
       ],
       "crop_pixel": [
-        3800,
-        1819
+        4660,
+        1734
       ],
       "geographic_coords": [
         -66.12,
         18.47
       ],
-      "residual_in_sample_km": 50.65,
-      "residual_loocv_km": 67.35
+      "residual_in_sample_km": 30.39,
+      "residual_loocv_km": 37.95
     },
     {
       "name": "Santo Domingo, Hispaniola",
       "role": "Ozama River harbor entrance",
       "master_pixel": [
-        3480,
-        1930
+        4130,
+        1880
       ],
       "crop_pixel": [
-        3460,
-        1839
+        4110,
+        1789
       ],
       "geographic_coords": [
         -69.88,
         18.47
       ],
-      "residual_in_sample_km": 71.97,
-      "residual_loocv_km": 89.91
+      "residual_in_sample_km": 46.4,
+      "residual_loocv_km": 52.61
     },
     {
       "name": "Bridgetown, Barbados",
       "role": "Carlisle Bay anchorage",
       "master_pixel": [
-        4460,
-        2280
+        5325,
+        2430
       ],
       "crop_pixel": [
-        4440,
-        2189
+        5305,
+        2339
       ],
       "geographic_coords": [
         -59.62,
         13.09
       ],
-      "residual_in_sample_km": 33.11,
-      "residual_loocv_km": 206.0
+      "residual_in_sample_km": 106.91,
+      "residual_loocv_km": 159.32
     },
     {
       "name": "Willemstad, Curacao",
       "role": "Santa Anna Bay harbor entrance",
       "master_pixel": [
-        3340,
-        2360
+        4450,
+        2540
       ],
       "crop_pixel": [
-        3320,
-        2269
+        4430,
+        2449
       ],
       "geographic_coords": [
         -68.93,
         12.11
       ],
-      "residual_in_sample_km": 37.45,
-      "residual_loocv_km": 52.16
+      "residual_in_sample_km": 192.29,
+      "residual_loocv_km": 238.49
     },
     {
       "name": "Cabo San Antonio, Cuba",
       "role": "Westernmost promontory of Cuba",
       "master_pixel": [
-        2060,
-        1560
+        2280,
+        1495
       ],
       "crop_pixel": [
-        2040,
-        1469
+        2260,
+        1404
       ],
       "geographic_coords": [
         -84.95,
         21.86
       ],
-      "residual_in_sample_km": 109.42,
-      "residual_loocv_km": 140.51
+      "residual_in_sample_km": 44.96,
+      "residual_loocv_km": 52.47
     },
     {
       "name": "Cabo Maisi, Cuba",
       "role": "Easternmost promontory of Cuba",
       "master_pixel": [
-        3150,
-        1720
+        3520,
+        1690
       ],
       "crop_pixel": [
-        3130,
-        1629
+        3500,
+        1599
       ],
       "geographic_coords": [
         -74.14,
         20.25
       ],
-      "residual_in_sample_km": 71.05,
-      "residual_loocv_km": 94.14
+      "residual_in_sample_km": 109.07,
+      "residual_loocv_km": 118.85
     },
     {
-      "name": "Cape Hatteras, North Carolina",
-      "role": "Outer Banks barrier island cusp",
+      "name": "Charles Town, South Carolina",
+      "role": "Charleston Harbor / Ashley River entrance",
       "master_pixel": [
-        2980,
-        740
+        3080,
+        150
       ],
       "crop_pixel": [
-        2960,
-        649
+        3060,
+        59
       ],
       "geographic_coords": [
-        -75.5,
-        35.25
+        -79.93,
+        32.78
       ],
-      "residual_in_sample_km": 111.98,
-      "residual_loocv_km": 274.29
-    },
-    {
-      "name": "Bermuda",
-      "role": "Main Bermuda island cluster",
-      "master_pixel": [
-        3880,
-        890
-      ],
-      "crop_pixel": [
-        3860,
-        799
-      ],
-      "geographic_coords": [
-        -64.75,
-        32.3
-      ],
-      "residual_in_sample_km": 65.95,
-      "residual_loocv_km": 402.15
+      "residual_in_sample_km": 66.37,
+      "residual_loocv_km": 120.45
     }
   ],
   "projection": "EPSG:3857",
-  "method": "gdalwarp_polynomial_order_2",
+  "method": "gdalwarp_affine_order_1",
   "resampling": "bilinear",
+  "rmse_in_sample_km": 94.91,
+  "rmse_loocv_km": 123.76,
+  "loocv_median_km": 118.85,
+  "loocv_p90_km": 159.32,
+  "loocv_max_km": 238.49,
+  "residual_distance_metric": "great_circle_haversine_km",
+  "gdal_version": "GDAL 3.8.4, released 2024/02/08",
   "coordinates": [
     [
-      -113.151907,
-      44.449585
+      -103.446484,
+      34.081101
     ],
     [
-      -39.198751,
-      44.449585
+      -54.856667,
+      34.081101
     ],
     [
-      -39.198751,
-      1.629071
+      -54.856667,
+      9.002197
     ],
     [
-      -113.151907,
-      1.629071
+      -103.446484,
+      9.002197
     ]
   ],
   "derivative_path": "assets/visuals/moll-west-indies-1715-rectified.webp",
   "derivative_dimensions": [
     2560,
-    1664
+    1435
   ],
-  "derivative_size_bytes": 929866,
-  "derivative_sha256": "eacb77d3ed5efed0435459ba82ec8cdaa36b95f827cddacf78270052e2626a4c",
-  "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using a second-order polynomial transformation across 14 historical coastal and harbor ground control points. Regional discrepancies between 18th-century cartography and modern WGS84 coordinates are preserved as empirical historical evidence rather than modern survey ground truth.",
-  "rmse_in_sample_km": 85.78,
-  "rmse_loocv_km": 209.65,
-  "residual_distance_metric": "great_circle_haversine_km",
-  "gdal_version": "GDAL 3.8.4, released 2024/02/08"
+  "derivative_size_bytes": 820024,
+  "derivative_sha256": "0670b44343e22067769b7a8e77e23515c8d87b3fea35cf421ae24f24323ce972",
+  "epistemic_disclaimer": "Modern georeferenced alignment of Herman Moll's engraved chart ([1715?]) using an affine (order 1) transformation across 13 historical coastal and harbor ground control points on the main chart field. The gross visual misalignment of earlier derivatives was dominated by erroneous GCP placement and nonlinear over-warping; residual disagreement after correction reflects legitimate historical cartographic distortion, feature ambiguity, generalization, and the chart's engraved cylindrical graticule. Harbor and city inset panels are excluded from the geographic coordinate frame."
 }
