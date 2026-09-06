@@ -217,6 +217,9 @@ export interface PublishedSourceRecord {
   upstream_archive_source_id?: string;
   upstream_archive_reference?: string;
   parent_ship_record_id?: string;
+  persistent_handle?: string;
+  mets_manifest_url?: string;
+  scan_count?: number;
 }
 
 export interface PublishedAssertion {

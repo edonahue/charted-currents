@@ -97,6 +97,17 @@ sources:
   attribution_required: true
   credit_line: Ministerio de Cultura / Archivo General de Indias / Portal de Archivos Españoles (PARES)
   notes: Upstream Spanish archival holding preserving Casa de la Contratación fleet registers and dispatch records.
+- id: src_na_2_22_24_sailing_letters
+  title: 'Inventaris van het archief van de High Court of Admiralty: Prize Papers (Sailing Letters), ca. 1564-1830'
+  creator: Nationaal Archief, Den Haag / High Court of Admiralty
+  holding_institution: Nationaal Archief, Den Haag
+  stable_identifier: NL-HaNA 2.22.24
+  item_url: https://www.nationaalarchief.nl/onderzoeken/archief/2.22.24
+  rights_posture: open_public_domain
+  public_use_basis: cc0_and_public_domain
+  attribution_required: true
+  credit_line: 'Nationaal Archief, Den Haag / The National Archives, Kew, Archive 2.22.24 (High Court of Admiralty: Prize Papers / Sailing Letters)'
+  notes: Digital photographic duplicate collection and finding aid created by Nationaal Archief in cooperation with The National Archives (UK). Underlying manuscripts are 17th-century High Court of Admiralty records seized in prize causes.
 source_records:
 - id: sr_imlm_ship_2052
   source_id: src_imlm_ukda_852135
@@ -1767,6 +1778,26 @@ source_records:
   native_identifier: '4785'
   parent_ship_record_id: sr_crespo_navio_5890
   inspection_state: dataset_record_inspected
+- id: sr_na_hca32_11_380
+  source_id: src_na_2_22_24_sailing_letters
+  record_type: prize_cause_ship_papers
+  native_identifier: HCA 32-11.380
+  inspection_state: digital_content_inspected
+  upstream_archive_source_id: src_tna_hca_32
+  upstream_archive_reference: TNA HCA 32/11/380
+  persistent_handle: http://hdl.handle.net/10648/aa19a57e-e115-094f-e053-09f0900ae341
+  mets_manifest_url: https://service.archief.nl/gaf/api/mets/v1/df622bda-e85e-473b-94b4-ab1f6e2d225d
+  scan_count: 15
+- id: sr_na_hca32_11_391
+  source_id: src_na_2_22_24_sailing_letters
+  record_type: prize_cause_ship_papers
+  native_identifier: HCA 32-11.391
+  inspection_state: digital_content_inspected
+  upstream_archive_source_id: src_tna_hca_32
+  upstream_archive_reference: TNA HCA 32/11/391
+  persistent_handle: http://hdl.handle.net/10648/aa19a57e-e120-094f-e053-09f0900ae341
+  mets_manifest_url: https://service.archief.nl/gaf/api/mets/v1/6de4c794-c8b3-4712-8f8a-cd510c8c86bd
+  scan_count: 21
 assertions:
 - id: ast_2052_name
   source_record_id: sr_imlm_ship_2052
@@ -9378,6 +9409,55 @@ assertions:
   derivation_method: deterministic_facet_mapping
   source_assertion_id: ast_crespo_merc_4785_commodity
   risk_class: B
+- id: ast_na_380_title
+  source_record_id: sr_na_hca32_11_380
+  field: archival_finding_aid_title
+  raw_value: 'Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666'
+  risk_class: A
+- id: ast_na_380_ship_name
+  source_record_id: sr_na_hca32_11_380
+  field: ship_name
+  raw_value: Nostra Seniora Concepcion y St Joseph
+  language: es
+  normalized_search_key: nostra seniora concepcion y st joseph
+  risk_class: A
+- id: ast_na_380_master
+  source_record_id: sr_na_hca32_11_380
+  field: master
+  raw_value: Antonio de Witte
+  risk_class: A
+- id: ast_na_380_year
+  source_record_id: sr_na_hca32_11_380
+  field: event_date
+  year: 1666
+  date_as_recorded: '1666'
+  risk_class: A
+- id: ast_na_380_dep_cadiz
+  source_record_id: sr_na_hca32_11_380
+  field: voyage
+  origin_raw: Cadiz
+  place_id: place_cadiz
+  risk_class: B
+- id: ast_na_380_prize_context
+  source_record_id: sr_na_hca32_11_380
+  field: prize_cause
+  raw_value: Seized in the Second Anglo-Dutch War (1666); papers impounded by the High Court of Admiralty.
+  risk_class: B
+- id: ast_na_391_title
+  source_record_id: sr_na_hca32_11_391
+  field: archival_finding_aid_title
+  raw_value: 'Schip Nostra Seniora Concepcion y St Joseph onder leiding van Antonio de Witte; 1666'
+  risk_class: A
+- id: ast_na_391_ship_name
+  source_record_id: sr_na_hca32_11_391
+  field: ship_name
+  raw_value: Nostra Seniora Concepcion y St Joseph
+  risk_class: A
+- id: ast_na_391_master
+  source_record_id: sr_na_hca32_11_391
+  field: master
+  raw_value: Antonio de Witte
+  risk_class: A
 places:
 - id: place_jamaica
   canonical_name: Jamaica
@@ -9710,6 +9790,12 @@ places:
     attestation_relationship: source_transcription
     source_record_id: sr_crespo_navio_6156
     normalized_search_key: cadiz
+  - raw_name: Cadiz
+    evidence_layer: archival_catalogue_metadata
+    language: nl
+    attestation_relationship: catalogue_title_variant
+    source_record_id: sr_na_hca32_11_380
+    normalized_search_key: cadiz
   region: Spain
   geographic_precision: port_city
   coordinates:
@@ -9721,6 +9807,7 @@ places:
   - ast_crespo_6156_dep
   - ast_crespo_6587_dep
   - ast_crespo_6627_dep
+  - ast_na_380_dep_cadiz
 - id: place_curacao
   canonical_name: Curaçao
   raw_source_name: Curazao
@@ -10477,6 +10564,33 @@ ship_occurrences:
     fleet_destination: Amsterdam
     year: 1700
   fleet_convoy_display: Barco Holandés (Dutch Transatlantic Trade)
+- id: occ_ship_nostra_seniora_concepcion_380
+  source_record_id: sr_na_hca32_11_380
+  record_context: prize_capture
+  raw_name: Nostra Seniora Concepcion y St Joseph
+  attestations:
+  - raw_name: Nostra Seniora Concepcion y St Joseph
+    evidence_layer: archival_catalogue_metadata
+    language: es
+    attestation_relationship: source_transcription
+    source_record_id: sr_na_hca32_11_380
+    normalized_search_key: nostra seniora concepcion y st joseph
+  recorded_master: Antonio de Witte
+  recorded_year: 1666
+  date_precision: year
+  recorded_voyage_origin: Cadiz
+  recorded_voyage_destination: null
+  archival_register_reference: NL-HaNA 2.22.24 / HCA 32-11.380 & 11.391
+  assertion_ids:
+  - ast_na_380_title
+  - ast_na_380_ship_name
+  - ast_na_380_master
+  - ast_na_380_year
+  - ast_na_380_dep_cadiz
+  - ast_na_380_prize_context
+  - ast_na_391_title
+  - ast_na_391_ship_name
+  - ast_na_391_master
 person_occurrences:
 - id: occ_person_crespo_6627_master
   source_record_id: sr_crespo_navio_6627
@@ -10532,6 +10646,17 @@ person_occurrences:
   - ast_crespo_6825_year
   - ast_crespo_6825_vessel
   - ast_crespo_6825_route
+- id: occ_person_antonio_de_witte_380
+  source_record_id: sr_na_hca32_11_380
+  raw_name: Antonio de Witte
+  role: master
+  ship_occurrence_id: occ_ship_nostra_seniora_concepcion_380
+  vessel_name_raw: Nostra Seniora Concepcion y St Joseph
+  year_as_recorded: 1666
+  departure_place_raw: Cadiz
+  assertion_ids:
+  - ast_na_380_master
+  - ast_na_391_master
 crew_occurrences:
 - id: occ_crew_5035
   source_record_id: sr_imlm_crew_5035
@@ -11097,6 +11222,17 @@ ships:
   goods_summary_display: Corambre ; Palo de Brasil ; cacao ; tabaco de Barinas ; añil ; cobre ; conchas de carey ; cascaras  de
     naranja ; monedas de plata españoles
   goods_value_display: 10491 pesos y 2 reales de valor total
+- id: ship_nostra_seniora_concepcion_1666
+  canonical_name: Nostra Seniora Concepcion y St Joseph
+  disambiguation_display: (1666, Master Antonio de Witte)
+  evidence_state: documented
+  occurrence_ids:
+  - occ_ship_nostra_seniora_concepcion_380
+  reported_burden_display: Burden unrecorded in Dutch inventory
+  voyage_display: Cádiz → Unrecorded destination (1666)
+  capture_display: Prize Papers seized 1666 (Second Anglo-Dutch War, HCA 32-11.380)
+  master_display: Antonio de Witte
+  register_display: NL-HaNA 2.22.24, inv. nr. HCA 32-11.380 / 11.391
 persons:
 - id: person_bartolome_antonio_garrote
   canonical_name: Bartolomé Antonio Garrote
@@ -11140,6 +11276,33 @@ persons:
     normalized_search_key: bartolome antonio de garrote
   notes: Probable recurring Carrera master across 4 Crespo voyage records departing Andalusian ports between 1688 and 1706.
     Upstream agent ID 11357 in PRUEBAAGENTES conflates this master with Francisco Antonio Garrote (1684) and is discounted.
+- id: person_antonio_de_witte_1666
+  canonical_name: Antonio de Witte
+  raw_source_name: Antonio de Witte
+  roles:
+  - master
+  evidence_state: documented
+  recorded_year_range:
+  - 1666
+  - 1666
+  member_occurrence_years:
+  - 1666
+  active_year_range:
+  - 1666
+  - 1666
+  occurrence_ids:
+  - occ_person_antonio_de_witte_380
+  source_record_ids:
+  - sr_na_hca32_11_380
+  - sr_na_hca32_11_391
+  attestations:
+  - raw_name: Antonio de Witte
+    evidence_layer: archival_catalogue_metadata
+    language: nl
+    attestation_relationship: source_transcription
+    source_record_id: sr_na_hca32_11_380
+    normalized_search_key: antonio de witte
+  notes: Master of the Nostra Seniora Concepcion y St Joseph departing Cádiz in 1666; papers seized in English prize proceedings (HCA 32-11.380/391).
 entity_resolution_edges:
 - occurrence_id: occ_ship_imlm_2052
   target_entity_id: ship_richard_and_sarah_1705
@@ -11338,6 +11501,24 @@ entity_resolution_edges:
   resolver: crespo_adapter
   evidence_assertions:
   - ast_crespo_4501_name
+- occurrence_id: occ_ship_nostra_seniora_concepcion_380
+  target_entity_id: ship_nostra_seniora_concepcion_1666
+  resolution_state: documented_identity
+  resolver: project_archival_intake_na_2_22_24
+  evidence_assertions:
+  - ast_na_380_ship_name
+  - ast_na_380_master
+  - ast_na_380_year
+  - ast_na_391_ship_name
+  - ast_na_391_master
+- occurrence_id: occ_person_antonio_de_witte_380
+  target_entity_id: person_antonio_de_witte_1666
+  resolution_state: documented_identity
+  resolver: project_archival_intake_na_2_22_24
+  evidence_assertions:
+  - ast_na_380_master
+  - ast_na_380_year
+  - ast_na_380_ship_name
 routes:
 - id: route_richard_and_sarah_1705
   vessel_id: ship_richard_and_sarah_1705
@@ -11894,6 +12075,26 @@ visuals:
   - ast_loc_moll_map_trade_winds
   - ast_loc_moll_map_flota_tracks
   - ast_loc_moll_georeference
+- id: vis_na_hca32_11_380_facsimile
+  title: Ship Papers of the Nostra Seniora Concepcion y St Joseph (HCA 32-11.380)
+  creators:
+  - High Court of Admiralty
+  - Antonio de Witte
+  date_display: '1666'
+  year_recorded: 1666
+  is_uncertain: false
+  source_id: src_na_2_22_24_sailing_letters
+  holding_institution: Nationaal Archief, Den Haag
+  call_number: 2.22.24, inv. nr. HCA 32-11.380
+  digital_id: 5802eb91-4b6b-4f87-9b95-70ac88438e40
+  item_url: http://hdl.handle.net/10648/aa19a57e-e115-094f-e053-09f0900ae341
+  rights_state: open_public_domain
+  credit_line: 'Nationaal Archief, Den Haag / The National Archives, Kew, Archive 2.22.24, inv. nr. HCA 32-11.380'
+  asset_path: assets/visuals/na_hca32_11_380_facsimile.jpg
+  assertion_ids:
+  - ast_na_380_title
+  - ast_na_380_ship_name
+  notes: Representative facsimile scan of impounded ship papers seized in 1666 prize cause. Digital surrogate provided under Public Domain declaration by Nationaal Archief.
 source_coverages:
 - source_id: src_imlm_ukda_852135
   short_label: IMLM Prize Papers

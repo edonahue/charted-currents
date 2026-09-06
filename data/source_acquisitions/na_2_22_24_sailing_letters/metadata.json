@@ -45,7 +45,7 @@
     }
   ],
   "representative_facsimile": {
-    "asset_path": "/assets/visuals/na_hca32_11_380_facsimile.jpg",
+    "asset_path": "assets/visuals/na_hca32_11_380_facsimile.jpg",
     "source_scan_uuid": "5802eb91-4b6b-4f87-9b95-70ac88438e40",
     "sha256": "9fb9b17fc859ec23d2572ef90aaa05f2208441f2740aa07297a967796de59e76",
     "size_bytes": 527273,

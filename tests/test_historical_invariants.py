@@ -190,9 +190,9 @@ class TestHistoricalInvariants(unittest.TestCase):
         self.assertIn("Library of Congress", vis["holding_institution"])
 
     def test_vessels_in_public_corpus(self):
-        """Corpus must contain exactly 21 verified vessels (18 baseline + 3 Packet 6) and 21 archival routes across 16 display edges."""
+        """Corpus must contain exactly 22 verified vessels (18 baseline + 3 Packet 6 + 1 Packet 9) and 21 archival routes across 16 display edges."""
         ships = self.entities["ships"]
-        self.assertEqual(len(ships), 21, f"Expected 21 vessels, found {len(ships)}")
+        self.assertEqual(len(ships), 22, f"Expected 22 vessels, found {len(ships)}")
         archival_routes = self.entities.get("routes", [])
         self.assertEqual(len(archival_routes), 21, f"Expected 21 archival routes, found {len(archival_routes)}")
         display_edges = self.routes_geojson["features"]

@@ -645,6 +645,14 @@
             "attestation_relationship": "source_transcription",
             "source_record_id": "sr_crespo_navio_6156",
             "normalized_search_key": "cadiz"
+          },
+          {
+            "raw_name": "Cadiz",
+            "evidence_layer": "archival_catalogue_metadata",
+            "language": "nl",
+            "attestation_relationship": "catalogue_title_variant",
+            "source_record_id": "sr_na_hca32_11_380",
+            "normalized_search_key": "cadiz"
           }
         ],
         "region": "Spain",
@@ -653,7 +661,8 @@
         "source_assertion_ids": [
           "ast_crespo_6156_dep",
           "ast_crespo_6587_dep",
-          "ast_crespo_6627_dep"
+          "ast_crespo_6627_dep",
+          "ast_na_380_dep_cadiz"
         ],
         "notes": "Primary transatlantic departure port for Spanish Carrera de Indias fleets calling at Havana."
       }
