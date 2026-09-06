@@ -2238,7 +2238,192 @@ async function runReviewSuite() {
       await new Promise((r) => setTimeout(r, 400));
     }
 
-    // 28. Runtime Exceptions check
+    // 28. Packet 9: Dutch Atlantic Documentary Thread (Nationaal Archief 2.22.24) Invariants & Behavioral Tests
+    console.log("\nTesting Packet 9 Dutch Atlantic Documentary Thread (Nationaal Archief 2.22.24) & HCA 32...");
+
+    // Close any open panels / drawers first
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const closeBtn = document.querySelector('[data-inspector-close]');
+        closeBtn?.click();
+        const drawerClose = document.querySelector('[data-drawer-close]');
+        drawerClose?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    // A. Verify Cádiz place connections include Documented Vessel Departure for Nostra Seniora Concepcion
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_cadiz" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const cadizConcepcionCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const placeTitle = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const connectionsWrap = document.querySelector('[data-place-connections-wrap]');
+        const connectionsList = document.querySelector('[data-place-connections-list]')?.textContent || '';
+        const hasConcepcionDeparture = connectionsList.includes("Nostra Seniora Concepcion y St Joseph (1666)") && connectionsList.includes("Documented Departure");
+        return { placeTitle, isWrapVisible: connectionsWrap && !connectionsWrap.hidden, hasConcepcionDeparture };
+      })()`,
+      returnByValue: true,
+    });
+    assert(cadizConcepcionCheck?.result?.value?.placeTitle === "Cádiz", "Cádiz place selected in inspector");
+    assert(cadizConcepcionCheck?.result?.value?.isWrapVisible, "Cádiz connections wrap is visible");
+    assert(cadizConcepcionCheck?.result?.value?.hasConcepcionDeparture, "Cádiz connections list contains Documented Departure for Nostra Seniora Concepcion y St Joseph (1666)");
+
+    // B. Select Nostra Seniora Concepcion y St Joseph
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_nostra_seniora_concepcion_1666" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const concepcionCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
+        const master = document.querySelector('[data-ship-master]')?.textContent || '';
+        const voyage = document.querySelector('[data-ship-voyage]')?.textContent || '';
+        const capture = document.querySelector('[data-ship-capture]')?.textContent || '';
+        const badge = document.querySelector('[data-inspector-badge]')?.textContent || '';
+        const register = document.querySelector('[data-ship-register]')?.textContent || '';
+        const connectionsText = document.querySelector('[data-ship-connections-list]')?.textContent || '';
+        const hasMasterRel = connectionsText.includes("Antonio de Witte") && connectionsText.includes("Master");
+        const hasOriginRel = connectionsText.includes("Cádiz") && connectionsText.includes("Voyage Origin");
+        return { title, subtitle, master, voyage, capture, badge, register, hasMasterRel, hasOriginRel };
+      })()`,
+      returnByValue: true,
+    });
+    const shipVal = concepcionCheck?.result?.value;
+    assert(shipVal?.title === "Nostra Seniora Concepcion y St Joseph", "Nostra Seniora Concepcion vessel title is accurately displayed");
+    assert(shipVal?.subtitle.includes("(1666, Master Antonio de Witte)"), "Vessel subtitle notes 1666 and master Antonio de Witte");
+    assert(shipVal?.capture.includes("Prize Papers seized 1666"), "Vessel capture notes Prize Papers seized 1666 (HCA 32-11.380)");
+    assert(shipVal?.badge === "Documented", "Vessel evidence state badge displays 'Documented'");
+    assert(shipVal?.master.includes("Antonio de Witte"), "Vessel displays documented master Antonio de Witte");
+    assert(shipVal?.voyage.includes("Cádiz → Unrecorded destination (1666)"), "Vessel voyage displays truthful Cádiz origin and unrecorded destination");
+    assert(shipVal?.register.includes("NL-HaNA 2.22.24"), "Vessel register notes Nationaal Archief finding aid citation");
+    assert(shipVal?.hasMasterRel, "Vessel connections list displays Master relationship to Antonio de Witte");
+    assert(shipVal?.hasOriginRel, "Vessel connections list displays Voyage Origin relationship to Cádiz");
+
+    // Screenshot of Vessel in Inspector
+    if (!skipScreenshots) {
+      const concepcionShot = await send("Page.captureScreenshot", { format: "png" });
+      if (concepcionShot?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}nostra-seniora-inspector-1440x900.png`);
+        fs.writeFileSync(outPath, Buffer.from(concepcionShot.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}nostra-seniora-inspector-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}nostra-seniora-inspector-1440x900.png valid size (${size} bytes)`);
+      }
+    }
+
+    // C. Select Person: Antonio de Witte
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "person", id: "person_antonio_de_witte_1666" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    const deWitteCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const title = document.querySelector('[data-inspector-title]')?.textContent || '';
+        const badge = document.querySelector('[data-inspector-badge]')?.textContent || '';
+        const role = document.querySelector('[data-person-role]')?.textContent || '';
+        const activeYears = document.querySelector('[data-person-active-years]')?.textContent || '';
+        const resolution = document.querySelector('[data-person-resolution-status]')?.textContent || '';
+        const voyagesText = document.querySelector('[data-person-voyages-list]')?.textContent || '';
+        const hasVesselLink = voyagesText.includes("Nostra Seniora Concepcion y St Joseph") && voyagesText.includes("Cadiz departure");
+        return { title, badge, role, activeYears, resolution, hasVesselLink };
+      })()`,
+      returnByValue: true,
+    });
+    const deWitteVal = deWitteCheck?.result?.value;
+    assert(deWitteVal?.title === "Antonio de Witte", "Person inspector displays Antonio de Witte");
+    assert(deWitteVal?.badge === "Documented", "Person badge displays 'Documented'");
+    assert(deWitteVal?.role === "Master", "Person role displays Master");
+    assert(deWitteVal?.activeYears.includes("1666"), "Person active years includes 1666");
+    assert(deWitteVal?.resolution.includes("Nationaal Archief 2.22.24"), "Person resolution status attributes Nationaal Archief 2.22.24 / HCA 32");
+    assert(deWitteVal?.hasVesselLink, "Person voyages list links Nostra Seniora Concepcion y St Joseph departure");
+
+    // D. Open Source Drawer from ship and verify Dutch archival metadata & primary facsimile
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_nostra_seniora_concepcion_1666" } }));
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 400));
+
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const btn = document.querySelector('[data-ship-evidence-btn]');
+        btn?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 500));
+
+    const drawerCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawer = document.getElementById("source-drawer");
+        const isOpen = drawer && !drawer.hidden && drawer.getAttribute("data-state") === "open";
+        const container = document.querySelector("[data-source-cards-container]");
+        const text = container?.textContent || "";
+        const handleLink = container?.querySelector('a[href*="10648/aa19a57e-e115-094f-e053-09f0900ae341"]');
+        const facImg = container?.querySelector('img.inspector-facsimile-img');
+        const facLink = container?.querySelector('a[href*="10648/aa19a57e-e115-094f-e053-09f0900ae341"].inspector-link:not(.inspector-mono)');
+        return {
+          isOpen,
+          hasTitle: text.includes("High Court of Admiralty: Prize Papers (Sailing Letters)"),
+          hasInstitution: text.includes("Nationaal Archief, Den Haag"),
+          hasRights: text.includes("Open public domain"),
+          hasScansCount: text.includes("15 scans (Public Domain)"),
+          hasHandleLink: Boolean(handleLink),
+          handleText: handleLink?.textContent?.trim(),
+          hasFacImg: Boolean(facImg),
+          facImgSrc: facImg?.getAttribute("src"),
+          hasFacLink: Boolean(facLink),
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const naDrawerVal = drawerCheck?.result?.value;
+    assert(naDrawerVal?.isOpen, "Source drawer is open for Nostra Seniora Concepcion");
+    assert(naDrawerVal?.hasTitle, "Source drawer displays Nationaal Archief 2.22.24 Sailing Letters title");
+    assert(naDrawerVal?.hasInstitution, "Source drawer displays holding institution Nationaal Archief, Den Haag");
+    assert(naDrawerVal?.hasRights, "Source drawer displays Open public domain rights posture");
+    assert(naDrawerVal?.hasScansCount, "Source drawer displays 15 scans (Public Domain) readout");
+    assert(naDrawerVal?.hasHandleLink, "Source drawer includes persistent handle link to Nationaal Archief");
+    assert(naDrawerVal?.handleText?.startsWith("hdl:10648/"), `Persistent handle is formatted as hdl:... (got: "${naDrawerVal?.handleText}")`);
+    assert(naDrawerVal?.hasFacImg, "Source drawer renders primary archival facsimile image");
+    assert(naDrawerVal?.facImgSrc === "/assets/visuals/na_hca32_11_380_facsimile.jpg", `Archival facsimile image src matches local asset path (got: "${naDrawerVal?.facImgSrc}")`);
+    assert(naDrawerVal?.hasFacLink, "Source drawer provides direct viewer link to Nationaal Archief digital viewer");
+
+    // Screenshot of Source Drawer with Archival Facsimile
+    if (!skipScreenshots) {
+      const drawerShot = await send("Page.captureScreenshot", { format: "png" });
+      if (drawerShot?.data) {
+        const outPath = path.resolve(`design/reviews/${packetPrefix}nostra-seniora-source-drawer-1440x900.png`);
+        fs.writeFileSync(outPath, Buffer.from(drawerShot.data, "base64"));
+        const size = fs.statSync(outPath).size;
+        console.log(`[SAVED] ${packetPrefix}nostra-seniora-source-drawer-1440x900.png (${size} bytes)`);
+        assert(size > 15000, `Screenshot ${packetPrefix}nostra-seniora-source-drawer-1440x900.png valid size (${size} bytes)`);
+      }
+    }
+
+    // Close drawer
+    await send("Runtime.evaluate", {
+      expression: `(() => {
+        const drawerClose = document.querySelector('[data-drawer-close]');
+        drawerClose?.click();
+      })()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+
+    // 29. Runtime Exceptions check
     assert(uncaughtExceptions.length === 0, `No uncaught runtime exceptions observed (count: ${uncaughtExceptions.length})`);
 
     ws.close();

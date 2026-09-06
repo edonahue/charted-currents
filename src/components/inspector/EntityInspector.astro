@@ -711,7 +711,19 @@
       ) || [];
       const connectedEvents = eventsCache?.filter((ev) => ev.place_id === place.id) || [];
 
-      if (connectedRoutes.length > 0 || connectedEvents.length > 0) {
+      // Also check for documented vessels departing/recorded at this place without aggregated routes
+      const directVesselOccs = entitiesCache.ship_occurrences.filter((occ) => {
+        const isAtPlace =
+          occ.recorded_voyage_origin === place.canonical_name ||
+          occ.recorded_voyage_origin === place.raw_source_name ||
+          (place.id === "place_cadiz" && occ.recorded_voyage_origin === "Cadiz");
+        if (!isAtPlace) return false;
+        const edge = entitiesCache?.entity_resolution_edges.find((e) => e.occurrence_id === occ.id);
+        const targetShipId = edge?.target_entity_id;
+        return !connectedRoutes.some((r) => r.properties.constituent_vessel_ids.includes(targetShipId || ""));
+      });
+
+      if (connectedRoutes.length > 0 || connectedEvents.length > 0 || directVesselOccs.length > 0) {
         placeConnectionsWrap.hidden = false;
 
         for (const r of connectedRoutes) {
@@ -728,6 +740,18 @@
             const vesselYear = archivalRoute?.associated_record_year || r.properties.associated_record_year;
             placeConnectionsList.appendChild(
               createRelationshipRow("VESSEL", role, `${shipName} (${vesselYear})`, "ship", vid)
+            );
+          }
+        }
+
+        for (const occ of directVesselOccs) {
+          const edge = entitiesCache.entity_resolution_edges.find((e) => e.occurrence_id === occ.id);
+          if (edge) {
+            const ship = entitiesCache.ships.find((s) => s.id === edge.target_entity_id);
+            const shipName = ship ? ship.canonical_name : occ.raw_name;
+            const yearStr = occ.recorded_year ? ` (${occ.recorded_year})` : "";
+            placeConnectionsList.appendChild(
+              createRelationshipRow("VESSEL", "Documented Departure", `${shipName}${yearStr}`, "ship", edge.target_entity_id)
             );
           }
         }
@@ -936,11 +960,28 @@
       if (ship.master_display) {
         shipMasterRow.hidden = false;
         shipMaster.replaceChildren();
-        if (shipOcc?.recorded_master === "Bartolomé Antonio Garrote") {
+
+        // Check if master resolves to a canonical person
+        const masterOcc = entitiesCache.person_occurrences?.find(
+          (po) =>
+            (occId && po.ship_occurrence_id === occId) ||
+            (po.raw_name && shipOcc?.recorded_master && po.raw_name === shipOcc.recorded_master)
+        );
+        const personEdge = masterOcc
+          ? entitiesCache.entity_resolution_edges.find((e) => e.occurrence_id === masterOcc.id)
+          : null;
+        const linkedPerson = personEdge
+          ? entitiesCache.persons?.find((p) => p.id === personEdge.target_entity_id)
+          : (shipOcc?.recorded_master === "Bartolomé Antonio Garrote"
+              ? entitiesCache.persons?.find((p) => p.id === "person_bartolome_antonio_garrote")
+              : null);
+
+        if (linkedPerson) {
           const personBtn = document.createElement("button");
           personBtn.type = "button";
           personBtn.className = "inspector-link-btn";
-          personBtn.textContent = "Master: Bartolomé Antonio Garrote (Probable Match ↗)";
+          const stateLabel = linkedPerson.evidence_state === "probable_match" ? " (Probable Match ↗)" : " (Documented ↗)";
+          personBtn.textContent = `Master: ${linkedPerson.canonical_name}${stateLabel}`;
           personBtn.addEventListener("click", () => {
             const modality = lastInspectorModality;
             recordSelectionTrigger({
@@ -949,7 +990,7 @@
               returnTarget: personBtn,
             });
             lastInspectorModality = "pointer";
-            selectionStore.set({ kind: "person", id: "person_bartolome_antonio_garrote" });
+            selectionStore.set({ kind: "person", id: linkedPerson.id });
           });
           shipMaster.appendChild(personBtn);
         } else {
@@ -1180,8 +1221,10 @@
     }
 
     if (shipUpstreamRef) {
-      if (sr?.upstream_archive_source_id === "src_pares_agi") {
+      if (sr?.source_id === "src_crespo_dyncoopnet") {
         shipUpstreamRef.textContent = `Upstream Archive: Archivo General de Indias (${sr.upstream_archive_reference || "PARES"})`;
+      } else if (sr?.source_id === "src_na_2_22_24_sailing_letters") {
+        shipUpstreamRef.textContent = `Upstream Archive: TNA High Court of Admiralty Prize Papers (via Nationaal Archief)`;
       } else {
         shipUpstreamRef.textContent = `Upstream Archive: TNA High Court of Admiralty Prize Papers`;
       }
@@ -1194,7 +1237,30 @@
       ) || [];
       const connectedEvents = eventsCache?.filter((ev) => ev.vessel_id === ship.id) || [];
 
-      if (connectedEdges.length > 0 || connectedEvents.length > 0) {
+      // Connected persons (e.g. master, crew)
+      const shipPersonOccs = entitiesCache.person_occurrences?.filter((po) => occId && po.ship_occurrence_id === occId) || [];
+      const connectedPersons: { person: any; role: string }[] = [];
+      for (const po of shipPersonOccs) {
+        const edge = entitiesCache.entity_resolution_edges.find((e) => e.occurrence_id === po.id);
+        if (edge) {
+          const person = entitiesCache.persons?.find((p) => p.id === edge.target_entity_id);
+          if (person && !connectedPersons.some((cp) => cp.person.id === person.id)) {
+            connectedPersons.push({ person, role: po.role || "Master" });
+          }
+        }
+      }
+
+      // Check if voyage origin place exists without an aggregated route edge
+      const unroutedOrigin = !connectedEdges.length && shipOcc?.recorded_voyage_origin
+        ? entitiesCache.places.find(
+            (p) =>
+              p.canonical_name === shipOcc.recorded_voyage_origin ||
+              p.raw_source_name === shipOcc.recorded_voyage_origin ||
+              (p.id === "place_cadiz" && shipOcc.recorded_voyage_origin === "Cadiz")
+          )
+        : null;
+
+      if (connectedEdges.length > 0 || connectedEvents.length > 0 || connectedPersons.length > 0 || unroutedOrigin) {
         shipConnectionsWrap.hidden = false;
 
         for (const edge of connectedEdges) {
@@ -1210,6 +1276,19 @@
               createRelationshipRow("LOCATION", "Voyage Destination", destPlace.canonical_name, "port", destPlace.id)
             );
           }
+        }
+
+        if (unroutedOrigin) {
+          shipConnectionsList.appendChild(
+            createRelationshipRow("LOCATION", "Voyage Origin", unroutedOrigin.canonical_name, "port", unroutedOrigin.id)
+          );
+        }
+
+        for (const cp of connectedPersons) {
+          const roleTitle = cp.role.charAt(0).toUpperCase() + cp.role.slice(1);
+          shipConnectionsList.appendChild(
+            createRelationshipRow("PERSON", roleTitle, cp.person.canonical_name, "person", cp.person.id)
+          );
         }
 
         for (const ev of connectedEvents) {
@@ -1408,26 +1487,44 @@
     );
 
     if (kickerEl) kickerEl.textContent = "Maritime Actor";
+    const state = person.evidence_state || "documented";
     if (badgeWrap && badgeEl) {
       badgeWrap.hidden = false;
-      badgeEl.textContent = "Probable Match";
-      badgeEl.setAttribute("data-evidence-state", "probable_match");
+      const stateLabel = state === "probable_match" ? "Probable Match" : "Documented";
+      badgeEl.textContent = stateLabel;
+      badgeEl.setAttribute("data-evidence-state", state);
     }
     if (titleEl) titleEl.textContent = person.canonical_name;
 
     const yr = person.recorded_year_range || person.active_year_range;
     if (subtitleEl) {
-      const yrStr = yr ? ` · ${yr[0]}–${yr[1]}` : "";
-      subtitleEl.textContent = `Probable recurring Carrera master${yrStr}`;
+      const yrStr = yr ? (yr[0] === yr[1] ? ` · ${yr[0]}` : ` · ${yr[0]}–${yr[1]}`) : "";
+      if (person.id === "person_bartolome_antonio_garrote") {
+        subtitleEl.textContent = `Probable recurring Carrera master${yrStr}`;
+      } else {
+        const rolesDisplay = person.roles?.map((r) => r.charAt(0).toUpperCase() + r.slice(1)).join(", ") || "Documented Person";
+        subtitleEl.textContent = `${rolesDisplay}${yrStr}`;
+      }
     }
 
-    if (personRole) personRole.textContent = "Master (Carrera de Indias)";
+    if (personRole) {
+      if (person.id === "person_bartolome_antonio_garrote") {
+        personRole.textContent = "Master (Carrera de Indias)";
+      } else {
+        personRole.textContent = person.roles?.map((r) => r.charAt(0).toUpperCase() + r.slice(1)).join(", ") || "Documented Role";
+      }
+    }
     if (personActiveYears) {
-      const occCount = person.occurrence_ids ? person.occurrence_ids.length : 4;
-      personActiveYears.textContent = yr ? `${yr[0]}–${yr[1]} (${occCount} recorded voyages)` : "";
+      const occCount = person.occurrence_ids ? person.occurrence_ids.length : 1;
+      const yrLabel = yr ? (yr[0] === yr[1] ? `${yr[0]}` : `${yr[0]}–${yr[1]}`) : "";
+      personActiveYears.textContent = yrLabel ? `${yrLabel} (${occCount} recorded ${occCount === 1 ? "voyage/appearance" : "voyages"})` : "";
     }
     if (personResolutionStatus) {
-      personResolutionStatus.textContent = "Probable match across four Crespo voyage records";
+      if (person.id === "person_bartolome_antonio_garrote") {
+        personResolutionStatus.textContent = "Probable match across four Crespo voyage records";
+      } else {
+        personResolutionStatus.textContent = "Documented archival occurrence (Nationaal Archief 2.22.24 / HCA 32)";
+      }
     }
     if (personNotes) {
       personNotes.textContent = person.notes || "";
@@ -1443,8 +1540,12 @@
       personOccs.sort((a, b) => (b.year_as_recorded || 0) - (a.year_as_recorded || 0));
 
       for (const occ of personOccs) {
-        const roleStr = `${occ.year_as_recorded} Master`;
-        const labelStr = `${occ.vessel_name_raw} (${occ.departure_place_raw} → ${occ.arrival_place_raw})`;
+        const roleTitle = (occ.role || "master").charAt(0).toUpperCase() + (occ.role || "master").slice(1);
+        const roleStr = `${occ.year_as_recorded} ${roleTitle}`;
+        const routeLabel = occ.arrival_place_raw
+          ? `${occ.departure_place_raw} → ${occ.arrival_place_raw}`
+          : (occ.departure_place_raw ? `${occ.departure_place_raw} departure` : "Unrecorded voyage");
+        const labelStr = `${occ.vessel_name_raw} (${routeLabel})`;
 
         if (occ.ship_occurrence_id) {
           const ship = entitiesCache.ships.find((s) => s.occurrence_ids.includes(occ.ship_occurrence_id!));
@@ -1507,10 +1608,13 @@
           person.occurrence_ids.includes(po.id)
         ) || [];
         const allAsts = Array.from(new Set(personOccs.flatMap((po) => po.assertion_ids)));
+        const primarySource = person.source_record_ids?.[0]
+          ? sourcesCache?.source_records.find((sr) => sr.id === person.source_record_ids[0])?.source_id
+          : "src_crespo_dyncoopnet";
         window.dispatchEvent(
           new CustomEvent("cc:open-source", {
             detail: {
-              sourceId: "src_crespo_dyncoopnet",
+              sourceId: primarySource,
               assertionIds: allAsts,
               triggerEl: personEvidenceBtn,
             },

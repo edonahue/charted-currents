@@ -101,6 +101,8 @@
         return "Open access · No registration required";
       case "open_public_domain":
         return "Open public domain";
+      case "cc0_and_public_domain":
+        return "CC0 1.0 Universal / Public Domain";
       case "cc_by_4_0":
         return "Creative Commons Attribution 4.0 (CC BY 4.0)";
       case "uk_open_government_licence":
@@ -119,6 +121,8 @@
     }
 
     if (field === "ship_name") return String(ast.raw_value || "");
+    if (field === "archival_finding_aid_title") return `"${ast.raw_value}" [Archival Finding Aid]`;
+    if (field === "prize_cause") return String(ast.raw_value || "");
     if (field === "tonnage") return `${ast.raw_value} tons reported burden`;
     if (field === "construction_place") {
       const ageStr = ast.reported_age_years ? ` (reported age: ${ast.reported_age_years})` : "";
@@ -272,7 +276,71 @@
       dl.appendChild(rowLink);
     }
 
+    // Persistent Handle Row
+    if (record?.persistent_handle) {
+      const rowHandle = document.createElement("div");
+      rowHandle.className = "inspector-meta__row";
+      const dtHandle = document.createElement("dt");
+      dtHandle.textContent = "Persistent Handle";
+      const ddHandle = document.createElement("dd");
+      const aHandle = document.createElement("a");
+      aHandle.href = record.persistent_handle;
+      aHandle.target = "_blank";
+      aHandle.rel = "noopener noreferrer";
+      aHandle.className = "inspector-link inspector-mono";
+      aHandle.textContent = record.persistent_handle.replace(/^https?:\/\/hdl\.handle\.net\//, "hdl:") + " ↗";
+      ddHandle.appendChild(aHandle);
+      rowHandle.append(dtHandle, ddHandle);
+      dl.appendChild(rowHandle);
+    }
+
+    // Digitized Scans Row
+    if (record?.scan_count) {
+      const rowScans = document.createElement("div");
+      rowScans.className = "inspector-meta__row";
+      const dtScans = document.createElement("dt");
+      dtScans.textContent = "Digitized Scans";
+      const ddScans = document.createElement("dd");
+      ddScans.textContent = `${record.scan_count} scans (Public Domain)`;
+      rowScans.append(dtScans, ddScans);
+      dl.appendChild(rowScans);
+    }
+
     card.appendChild(dl);
+
+    // Primary Archival Facsimile Preview (if available for this record)
+    if (record?.id === "sr_na_hca32_11_380") {
+      const facSection = document.createElement("div");
+      facSection.className = "source-card__facsimile";
+
+      const facKicker = document.createElement("p");
+      facKicker.className = "panel-kicker";
+      facKicker.textContent = "Primary Archival Facsimile";
+
+      const facFig = document.createElement("figure");
+      facFig.className = "inspector-facsimile-figure";
+
+      const facImg = document.createElement("img");
+      facImg.src = "/assets/visuals/na_hca32_11_380_facsimile.jpg";
+      facImg.alt = "Facsimile scan of impounded ship papers for Nostra Seniora Concepcion y St Joseph (HCA 32-11.380)";
+      facImg.className = "inspector-facsimile-img";
+      facImg.loading = "lazy";
+
+      const facCap = document.createElement("figcaption");
+      facCap.className = "inspector-note";
+      facCap.textContent = "Digitized surrogate from Nationaal Archief, Den Haag (15 scans in unit). Public Domain.";
+
+      const facLink = document.createElement("a");
+      facLink.href = record.persistent_handle || "http://hdl.handle.net/10648/aa19a57e-e115-094f-e053-09f0900ae341";
+      facLink.target = "_blank";
+      facLink.rel = "noopener noreferrer";
+      facLink.className = "inspector-link";
+      facLink.textContent = "Open Complete 15-Scan Digital Viewer at Nationaal Archief ↗";
+
+      facFig.append(facImg, facCap, facLink);
+      facSection.append(facKicker, facFig);
+      card.appendChild(facSection);
+    }
 
     // Upstream Archival Reference (if cited via dataset)
     const effectiveUpstream = upstreamRef || record?.upstream_archive_reference;
@@ -303,6 +371,9 @@
       if (record?.upstream_archive_source_id === "src_pares_agi") {
         upNote.textContent =
           "Cited in dataset extract from Archivo General de Indias (Sevilla). Portal de Archivos Españoles (PARES) · Ministerio de Cultura.";
+      } else if (record?.source_id === "src_na_2_22_24_sailing_letters") {
+        upNote.textContent =
+          "Physical manuscripts held at The National Archives, Kew (series HCA 32). Photographic duplicate collection and finding aid examined at Nationaal Archief, Den Haag.";
       } else {
         upNote.textContent =
           "Cited in dataset extract from High Court of Admiralty prize papers. The physical 17th/18th-century manuscript at Kew was not independently examined.";
@@ -616,9 +687,11 @@
   }
 
   .source-drawer-panel :global(.source-card__upstream),
+  .source-drawer-panel :global(.source-card__facsimile),
   .source-drawer-panel :global(.source-card__assertions),
   .source-drawer-panel :global(.source-card__citation),
   .source-card__upstream,
+  .source-card__facsimile,
   .source-card__assertions,
   .source-card__citation {
     display: flex;
@@ -626,6 +699,24 @@
     gap: 0.5rem;
     padding-top: 0.75rem;
     border-top: 1px solid color-mix(in srgb, var(--cc-line) 65%, transparent);
+  }
+
+  .source-drawer-panel :global(.inspector-facsimile-figure),
+  .inspector-facsimile-figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .source-drawer-panel :global(.inspector-facsimile-img),
+  .inspector-facsimile-img {
+    width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
   }
 
   .source-drawer-panel :global(.inspector-table-wrap),
