@@ -1,6 +1,6 @@
 # Charted Currents — Historical Corrections Log
 
-This log records substantive historical, provenance, and cartographic corrections in accordance with [`docs/CORRECTIONS_POLICY.md`](file:///home/erich/projects/charted-currents/docs/CORRECTIONS_POLICY.md). Every entry provides an auditable trail of what was previously claimed, the nature and root cause of the error, the empirical evidence prompting the change, the updated state, and machine-checkable invariants.
+This log records substantive historical, provenance, and cartographic corrections in accordance with [`docs/CORRECTIONS_POLICY.md`](CORRECTIONS_POLICY.md). Every entry provides an auditable trail of what was previously claimed, the nature and root cause of the error, the empirical evidence prompting the change, the updated state, and machine-checkable invariants.
 
 ---
 
@@ -11,12 +11,12 @@ This log records substantive historical, provenance, and cartographic correction
 * **First Corrected Branch / Release**: `correction-moll-georeference` (targeting next corpus release after `0.7.0`)
 * **Category**: Cartographic georeference / Class F (spatial alignment) and Class B (transformation parameter) assertion correction
 * **Impacted Objects**:
-  * Assertion: `ast_loc_moll_georeference` in [`public/data/sources.json`](file:///home/erich/projects/charted-currents/public/data/sources.json)
-  * Entity: `visual_moll_west_indies_1715` in [`public/data/entities.json`](file:///home/erich/projects/charted-currents/public/data/entities.json)
-  * Acquisition Report: [`data/source_acquisitions/loc_gm71005442/georeference_report.json`](file:///home/erich/projects/charted-currents/data/source_acquisitions/loc_gm71005442/georeference_report.json)
-  * Derivative Image: [`public/assets/visuals/moll-west-indies-1715-rectified.webp`](file:///home/erich/projects/charted-currents/public/assets/visuals/moll-west-indies-1715-rectified.webp)
-  * User Interface Component: [`src/components/map/MapViewport.astro`](file:///home/erich/projects/charted-currents/src/components/map/MapViewport.astro)
-  * Test Suite: [`tests/test_period_map_layer.py`](file:///home/erich/projects/charted-currents/tests/test_period_map_layer.py)
+  * Assertion: `ast_loc_moll_georeference` in `public/data/sources.json`
+  * Entity: `visual_moll_west_indies_1715` in `public/data/entities.json`
+  * Acquisition Report: `data/source_acquisitions/loc_gm71005442/georeference_report.json`
+  * Derivative Image: `public/assets/visuals/moll-west-indies-1715-rectified.webp`
+  * User Interface Component: `src/components/map/MapViewport.astro`
+  * Test Suite: `tests/test_period_map_layer.py`
 
 ### 1. Previous Claimed State (Packet 8)
 * **Transformation Method**: Second-order polynomial warp (`gdalwarp_tps_order_2`).
@@ -51,7 +51,7 @@ This log records substantive historical, provenance, and cartographic correction
   - Geographic Bounding Box: `[[-103.446484, 34.081101], [-54.856667, 34.081101], [-54.856667, 9.002197], [-103.446484, 9.002197]]`
 
 ### 4. Machine-Checkable Regression Invariants
-* Unit test suite [`tests/test_period_map_layer.py`](file:///home/erich/projects/charted-currents/tests/test_period_map_layer.py) enforces:
+* Unit test suite `tests/test_period_map_layer.py` enforces:
   - `test_georeference_metrics_quality_gates`: Enforces in-sample RMSE $\le 115\text{ km}$ and LOOCV RMSE $\le 160\text{ km}$.
   - `test_reproducible_warp_parameters`: Enforces Order 1 affine warp, exactly 13 GCPs, and verified raster dimensions (`4352 x 2248`).
   - `test_reproduction_with_gdal_available`: Verifies identical corner coordinates to 4 decimal places when run against pipeline derivatives.
