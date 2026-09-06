@@ -1566,11 +1566,17 @@
       for (const occ of personOccs) {
         const roleTitle = (occ.role || "master").charAt(0).toUpperCase() + (occ.role || "master").slice(1);
         const roleStr = `${occ.year_as_recorded} ${roleTitle}`;
+        let originDisplay = "Origin not recorded in finding aid";
+        if (occ.origin_descriptor_raw) {
+          originDisplay = occ.origin_descriptor_raw === "van Cadiz"
+            ? "Recorded origin: Cádiz"
+            : `Recorded origin: ${occ.origin_descriptor_raw}`;
+        }
         const routeLabel = occ.arrival_place_raw
           ? `${occ.departure_place_raw || "Unrecorded"} → ${occ.arrival_place_raw}`
           : (occ.departure_place_raw
               ? `${occ.departure_place_raw} departure`
-              : (occ.origin_descriptor_raw ? `Origin: ${occ.origin_descriptor_raw}` : "Unrecorded voyage"));
+              : originDisplay);
         const labelStr = `${occ.vessel_name_raw} (${routeLabel})`;
 
         if (occ.ship_occurrence_id) {

@@ -19,6 +19,7 @@ const {
   description = "A provenance-aware exploration of the maritime Greater Caribbean, 1650–1730.",
   indexable = true,
 } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -33,6 +34,11 @@ const {
       <meta name="robots" content="noindex,nofollow,noarchive" />
     )}
     <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
     <title>{title}</title>
   </head>
   <body>

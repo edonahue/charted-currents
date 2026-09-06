@@ -11,7 +11,7 @@
 
 ## 1. Archival Provenance & Ingestion Context
 
-Packet 9 introduces a direct Dutch archival documentary thread to Charted Currents, connecting Dutch archival finding aids with English prize court proceedings and the Spanish Atlantic maritime world.
+Packet 9 introduces the Direct Prize Papers Documentary Thread via Nationaal Archief to Charted Currents, connecting Dutch archival finding aids (series 2.22.24) — functioning as an institutional digital-surrogate and finding-aid layer over original seventeenth-century High Court of Admiralty prize papers held at The National Archives (UK), Kew — with English prize court proceedings and the Spanish Atlantic maritime world.
 
 * **Holding Institution**: Nationaal Archief, Den Haag, Netherlands (`NL-HaNA`)
 * **Archival Series**: Archive `2.22.24` — *Inventaris van het archief van de High Court of Admiralty: Prize Papers (Sailing Letters), ca. 1564-1830*
@@ -32,7 +32,7 @@ In accordance with `docs/HISTORICAL_ASSERTION_POLICY.md` and `docs/HISTORICAL_RE
 * `ast_na_380_title`: Finding aid title transcribed verbatim from Nationaal Archief EAD component `HCA 32-11.380` (`"Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666"`).
 * `ast_na_380_ship_name`: Vessel name transcribed verbatim as recorded (`"Nostra Seniora Concepcion y St Joseph"`).
 * `ast_na_380_master`: Master name transcribed as recorded (`"Antonio de Witte"`).
-* `ast_na_380_year`: Seizure / record year transcribed as recorded (`1666`).
+* `ast_na_380_year`: Record year transcribed as recorded (`1666`).
 * `ast_na_380_origin_descriptor`: Recorded provenance prepositional phrase transcribed verbatim (`"van Cadiz"`).
 * `ast_na_391_title`: Finding aid title transcribed verbatim from component `HCA 32-11.391` (`"Schip Nostra Seniora Concepcion y St Joseph onder leiding van Antonio de Witte; 1666"`).
 * `ast_na_391_ship_name`: Vessel name transcribed verbatim as recorded (`"Nostra Seniora Concepcion y St Joseph"`).
@@ -59,7 +59,7 @@ In accordance with `docs/HISTORICAL_ASSERTION_POLICY.md` and `docs/HISTORICAL_RE
   * **Canonical Resolution**: Both occurrences are resolved to `person_antonio_de_witte_1666` (`evidence_state: probable_match`).
   * **Resolution Edges**: 2 resolution edges, each explicitly marked `resolution_state: probable_match`.
   * **Scholarly Resolution Rationale**: The exact match in master name (*Antonio de Witte*), identical ship command (*Nostra Seniora Concepcion y St Joseph*), identical year (*1666*), and common archival inventory sequence (HCA 32-11) support the identity of this maritime actor across the two occurrences.
-  * **Conflation Prevention**: Antonio de Witte is recorded as master of this specific 1666 vessel. He is strictly segregated from any other merchants or mariners named De Witte in Dutch or Flemish Atlantic records.
+  * **Conflation Prevention**: Antonio de Witte is recorded as master of this specific 1666 vessel. Packet 9 does not resolve this Antonio de Witte against other De Witte actors outside these two inventory occurrences.
 
 ### Class E — Project Display Labels & Disambiguation
 * Subtitle display: `"(1666, Master Antonio de Witte)"`
@@ -96,10 +96,10 @@ All verifications executed cleanly against local runtime and Chrome DevTools Pro
 * **Corpus Pipeline Compilation**: `python3 data/pipeline/build_corpus.py && python3 scripts/build-dataset-context.py` (PASS)
 * **Artifact Schema & Relational Validation**: `node scripts/validate-published-data.mjs && node scripts/validate-dataset-context.mjs` (PASS, 0 errors across 8 published files)
 * **Python Domain Invariants**: `python3 -m unittest discover tests` (PASS, 55 tests passed)
-* **Negative Mutation Testing**: `node tests/test_validator_negative.mjs` (PASS, 28 negative invariants passed)
+* **Negative Mutation Testing**: `node tests/test_validator_negative.mjs` (PASS, 30 / 30 negative invariants passed)
 * **TypeScript & Static Production Build**: `npm run check && npm run build` (PASS, 34 files checked with 0 errors, static build completed)
 * **Historical Review Bundle**: `node scripts/generate-review-bundle.mjs` (PASS, `data/review/bundles/packet9/review_bundle.json`, 0 exception queue items)
-* **CDP Behavioral Test & Multi-Viewport Review**: `node scripts/capture-reviews.mjs --packet=packet9` (PASS, 257 passed, 0 failed, 0 runtime exceptions)
+* **CDP Behavioral Test & Multi-Viewport Review**: `node scripts/capture-reviews.mjs --packet=packet9` (PASS, 267 passed, 0 failed, 0 runtime exceptions)
 * **Packet Closeout Reporting**: `npm run packet:report` (PASS, data-derived facts synchronized)
 
 ---

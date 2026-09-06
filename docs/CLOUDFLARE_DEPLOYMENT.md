@@ -1,10 +1,14 @@
 # Cloudflare Pages deployment
 
-**Status: Established and Live**
-- **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+**Current Production State:**
+- **Canonical Production Domain**: [`https://charted-currents.com/`](https://charted-currents.com/)
+- **Cloudflare Pages Service Hostname**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+- **Production Branch**: `main`
+- **Automatic Pages Deployments**: Enabled
+- **Custom Domain Status**: Active / SSL enabled (attached on Cloudflare Pages `charted-currents` project)
+- **Current Indexing Posture**: Public (`<meta name="robots" content="index,follow" />`, `robots.txt` `Allow: /`)
 - **Git Integration**: Active from `edonahue/charted-currents` branch `main`
-- **Hosted Verification**: Verified on 2026-09-01 (see [`design/reviews/packet1-hosted-review.md`](../design/reviews/packet1-hosted-review.md))
-- **Indexing Posture**: Prototype `noindex` and `robots.txt` disallow active
+- **Historical Milestone**: Initial deployment verified on 2026-09-01 (see [`design/reviews/packet1-hosted-review.md`](../design/reviews/packet1-hosted-review.md))
 
 **Goal:** keep the verified Charted Currents shell deployable directly from `main` without requiring complex server/adapter overhead.
 
@@ -71,30 +75,18 @@ The first public shell proves several risks cheaply:
 - deployment permissions/integration;
 - whether the product already reads as intentional rather than generic.
 
-It does **not** prove the historical corpus. The Packet 1 UI should say so honestly and remain in an early/noindex posture until Packet 2 provides real evidence-backed content.
+*(Historical note: During the initial Packet 1 prototype, `BaseLayout.astro` emitted noindex metadata and `public/robots.txt` disallowed crawling. Starting with Packet 3 and public beta, the project moved to public indexing: `<meta name="robots" content="index,follow" />` and `robots.txt Allow: /`.)*
 
-Both defenses are intentional during this phase:
+## Canonical domain attachment
 
-- `BaseLayout.astro` emits noindex metadata by default;
-- `public/robots.txt` disallows crawling.
+*(Historical note: During early packets, the deployment operated directly on the `*.pages.dev` service origin while custom domain attachment was deferred.)*
 
-Packet 3 owns the deliberate decision to remove those protections.
+The maintainer has attached `https://charted-currents.com/` as an active custom domain with SSL enabled on the Cloudflare Pages project.
 
-## Do not block on `/labs/charted-currents/`
-
-The existing personal website is a separate Cloudflare Pages project. Cloudflare Pages custom domains attach at the hostname level; a separate Pages application cannot simply claim only the path `erichdonahue.com/labs/charted-currents/` as though it were a hostname.
-
-Therefore the initial deployment should remain independent.
-
-Later options include:
-
-1. keep the Pages hostname;
-2. attach a project subdomain such as `charted-currents.erichdonahue.com`;
-3. link/redirect from a `/labs/charted-currents/` page on the main site;
-4. deliberately integrate the built project into the main site's build/output;
-5. add an edge routing/proxy solution only if the path-shaped canonical URL is worth the extra infrastructure.
-
-Do not add a Worker/proxy during Packet 1 merely to preserve the original path idea.
+- **Canonical URL**: `https://charted-currents.com/`
+- **Astro Config**: `site: "https://charted-currents.com"`
+- **Canonical Metadata**: Emitted via `<link rel="canonical" href="https://charted-currents.com/" />` on root and corresponding paths
+- **Preview Origins**: Feature and pull-request preview URLs (`*.pages.dev`) remain functional and resolve canonical tags to `https://charted-currents.com/` without redirect loops
 
 ## Base-path rule
 
@@ -141,9 +133,9 @@ A local `npm run build` or `npm run verify` is necessary but is not evidence tha
 Addressed / mature:
 - GitHub Actions CI / local verification parity is implemented via `.github/workflows/ci.yml`.
 - Headless browser verification and review capture harness is implemented via `npm run review:capture`.
+- Canonical metadata and public production indexing (`https://charted-currents.com/`, `index,follow`).
+- Custom domain active with SSL on Cloudflare Pages (`https://charted-currents.com/`).
 
 Remaining as the public slice matures:
 - security headers appropriate to the final asset/runtime needs;
-- canonical metadata and production indexing decision;
-- custom domain/subdomain routing;
 - build-watch optimization.

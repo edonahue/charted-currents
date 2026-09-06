@@ -522,6 +522,50 @@ async function runReviewSuite() {
     assert(attributionCheck?.result?.value?.hasMapLibre, "MapLibre / OpenStreetMap attribution control present in DOM");
     assert(attributionCheck?.result?.value?.hasWHG, "WHG authority attribution link present in DOM");
 
+    // 1b. Canonical Domain & Social Metadata (New Domain D1, D2, D5)
+    console.log("Testing canonical site origin and social metadata (charted-currents.com)...");
+    const canonicalCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const canonicalLink = document.querySelector('link[rel="canonical"]');
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        const ogType = document.querySelector('meta[property="og:type"]');
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+
+        return {
+          canonicalHref: canonicalLink?.getAttribute('href') || null,
+          ogUrlContent: ogUrl?.getAttribute('content') || null,
+          ogTypeContent: ogType?.getAttribute('content') || null,
+          ogTitleContent: ogTitle?.getAttribute('content') || null,
+          ogDescContent: ogDesc?.getAttribute('content') || null,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const cVal = canonicalCheck?.result?.value;
+    assert(cVal?.canonicalHref === "https://charted-currents.com/", `Canonical URL in DOM is 'https://charted-currents.com/' (got: '${cVal?.canonicalHref}')`);
+    assert(cVal?.ogUrlContent === "https://charted-currents.com/", `og:url is 'https://charted-currents.com/' (got: '${cVal?.ogUrlContent}')`);
+    assert(cVal?.ogTypeContent === "website", `og:type is 'website' (got: '${cVal?.ogTypeContent}')`);
+    assert(cVal?.ogTitleContent?.includes("Charted Currents"), `og:title contains 'Charted Currents' (got: '${cVal?.ogTitleContent}')`);
+    assert(Boolean(cVal?.ogDescContent), "og:description is populated");
+    assert(!cVal?.canonicalHref?.includes(".pages.dev"), "Canonical URL does not use preview .pages.dev hostname");
+
+    // Static index.html check
+    const distHtmlPath = path.resolve("dist/index.html");
+    if (fs.existsSync(distHtmlPath)) {
+      const distHtml = fs.readFileSync(distHtmlPath, "utf-8");
+      assert(
+        (distHtml.includes('rel="canonical"') && distHtml.includes('href="https://charted-currents.com/"')) ||
+        distHtml.includes('<link rel="canonical" href="https://charted-currents.com/'),
+        "Static dist/index.html contains canonical tag pointing to https://charted-currents.com/"
+      );
+      assert(
+        (distHtml.includes('property="og:url"') && distHtml.includes('content="https://charted-currents.com/"')) ||
+        distHtml.includes('<meta property="og:url" content="https://charted-currents.com/'),
+        "Static dist/index.html contains og:url pointing to https://charted-currents.com/"
+      );
+    }
+
     // 2. Timeline Precision & Sub-Lane Stacking
     console.log("Testing timeline fractional precision & sub-lane stacking...");
     const timelineCheck = await send("Runtime.evaluate", {
@@ -2238,8 +2282,8 @@ async function runReviewSuite() {
       await new Promise((r) => setTimeout(r, 400));
     }
 
-    // 28. Packet 9: Dutch Atlantic Documentary Thread (Nationaal Archief 2.22.24) Invariants & Behavioral Tests
-    console.log("\nTesting Packet 9 Dutch Atlantic Documentary Thread (Nationaal Archief 2.22.24) & HCA 32...");
+    // 28. Packet 9: Direct Prize Papers Documentary Thread via Nationaal Archief (2.22.24) Invariants & Behavioral Tests
+    console.log("\nTesting Packet 9 Direct Prize Papers Documentary Thread via Nationaal Archief (2.22.24) & HCA 32...");
 
     // Close any open panels / drawers first
     await send("Runtime.evaluate", {
@@ -2252,7 +2296,7 @@ async function runReviewSuite() {
     });
     await new Promise((r) => setTimeout(r, 300));
 
-    // A. Verify Cádiz place connections include Documented Vessel Departure for Nostra Seniora Concepcion
+    // A. Verify Cádiz place connections include Recorded Origin for Nostra Seniora Concepcion
     await send("Runtime.evaluate", {
       expression: `(() => {
         window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_cadiz" } }));
@@ -2339,8 +2383,11 @@ async function runReviewSuite() {
         const activeYears = document.querySelector('[data-person-active-years]')?.textContent || '';
         const resolution = document.querySelector('[data-person-resolution-status]')?.textContent || '';
         const voyagesText = document.querySelector('[data-person-voyages-list]')?.textContent || '';
-        const hasVesselLink = voyagesText.includes("Nostra Seniora Concepcion y St Joseph") && (voyagesText.includes("Origin: van Cadiz") || voyagesText.includes("Unrecorded voyage"));
-        return { title, badge, role, activeYears, resolution, hasVesselLink };
+        const hasOcc380 = voyagesText.includes("Nostra Seniora Concepcion y St Joseph") && voyagesText.includes("Recorded origin: Cádiz");
+        const hasOcc391 = voyagesText.includes("Nostra Seniora Concepcion y St Joseph") && voyagesText.includes("Origin not recorded in finding aid");
+        const hasVesselLink = hasOcc380 && hasOcc391;
+        const mentionsUnrecordedVoyage = voyagesText.includes("Unrecorded voyage");
+        return { title, badge, role, activeYears, resolution, hasVesselLink, mentionsUnrecordedVoyage };
       })()`,
       returnByValue: true,
     });
@@ -2350,9 +2397,10 @@ async function runReviewSuite() {
     assert(deWitteVal?.role === "Master", "Person role displays Master");
     assert(deWitteVal?.activeYears.includes("archival occurrence"), "Person active years reflects archival occurrences");
     assert(deWitteVal?.resolution.includes("Nationaal Archief"), "Person resolution status attributes Nationaal Archief");
-    assert(deWitteVal?.hasVesselLink, "Person voyages list links Nostra Seniora Concepcion y St Joseph");
+    assert(deWitteVal?.hasVesselLink, "Person occurrences list links Nostra Seniora Concepcion y St Joseph with archival occurrence wording");
+    assert(!deWitteVal?.mentionsUnrecordedVoyage, "Person occurrences list strictly avoids calling occurrences an 'Unrecorded voyage'");
 
-    // D. Open Source Drawer from ship and verify Dutch archival metadata & primary facsimile
+    // D. Open Source Drawer from ship and verify Dutch archival metadata & upstream viewer links
     await send("Runtime.evaluate", {
       expression: `(() => {
         window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "ship", id: "ship_nostra_seniora_concepcion_1666" } }));
@@ -2403,7 +2451,7 @@ async function runReviewSuite() {
     assert(!naDrawerVal?.hasFacImg, "Source drawer does not render local facsimile image (non-commercial scan preserved upstream)");
     assert(naDrawerVal?.hasFacLink, "Source drawer provides direct viewer link to Nationaal Archief digital viewer");
 
-    // Screenshot of Source Drawer with Archival Facsimile
+    // Screenshot of Source Drawer with Nationaal Archief Archival Provenance & Viewer Link
     if (!skipScreenshots) {
       const drawerShot = await send("Page.captureScreenshot", { format: "png" });
       if (drawerShot?.data) {
