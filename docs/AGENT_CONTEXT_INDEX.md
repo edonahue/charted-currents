@@ -11,7 +11,8 @@ Use this file to load **the minimum useful context for the task**. Do not read t
 - Packet 5 foundation, broader Greater Caribbean Carrera coverage, and scholarly integrity framework are complete, accepted, and merged on `main`.
 - Packet 6 recorded goods across Spanish Atlantic and Dutch Caribbean (MERCANCIAS itemization, commodity cross-tabulation, and contradiction reconciliation) are complete, accepted, and merged on `main`.
 - Packet 7 place-centered dataset context, TodosNavios analytical derivation, and deterministic place mapping are complete, accepted, and merged on `main`.
-- Packet 8 (First Period Map Reference Layer) is the active product phase: integrating Herman Moll's 1715 chart (*A map of the West-Indies...*, LOC `gm71005442`) as an inspectable, provenance-rich reference layer over modern MapLibre geography.
+- Packet 8 (First Period Map Reference Layer: Herman Moll ca. 1715) is complete, accepted, and hosted-verified on `main`.
+- Packet 9 (Direct Prize Papers Documentary Thread via Nationaal Archief) is the active product phase: connecting Dutch archival finding aids and photographic duplicate / digital surrogate custody (Nationaal Archief, Den Haag, Archive 2.22.24: High Court of Admiralty Prize Papers / Sailing Letters) with the physical legal custody at The National Archives, Kew (HCA 32).
 
 The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–4 interaction/provenance architecture.
 
@@ -134,7 +135,7 @@ Read:
 - `docs/IMPLEMENTATION_CONTRACT.md`
 - `design/reviews/packet1-hosted-review.md` when production-history context matters.
 
-The root Cloudflare Pages deployment is live at the recorded production URL (`https://charted-currents.pages.dev/`) under the intentional public indexing posture (`index,follow` with `robots.txt Allow: /`). Do not solve the eventual `/labs/...` URL shape during historical-data work.
+The production deployment is live at the canonical production URL (`https://charted-currents.com/`) on Cloudflare Pages (service origin `https://charted-currents.pages.dev/`) under the intentional public indexing posture (`index,follow` with `robots.txt Allow: /`). Do not solve the eventual `/labs/...` URL shape during historical-data work.
 
 ## Benchmark, environment, data-export, screenshot, config, or agent-local setup work
 

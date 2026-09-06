@@ -54,6 +54,9 @@ jobs:
       - name: Verify Packet 8 period map georeferencing
         run: npm run data:verify-moll-georeference
 
+      - name: Verify Packet 9 Nationaal Archief acquisition metadata invariants
+        run: npm run data:verify-na-acquisition
+
       - name: Run published data schema validation
         run: npm run data:validate
 

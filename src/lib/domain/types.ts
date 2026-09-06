@@ -217,6 +217,9 @@ export interface PublishedSourceRecord {
   upstream_archive_source_id?: string;
   upstream_archive_reference?: string;
   parent_ship_record_id?: string;
+  persistent_handle?: string;
+  mets_manifest_url?: string;
+  scan_count?: number;
 }
 
 export interface PublishedAssertion {
@@ -245,6 +248,8 @@ export interface PublishedShipOccurrence {
   recorded_year?: number;
   recorded_date?: string | null;
   date_precision?: "day" | "month" | "year" | "circa";
+  recorded_origin_descriptor_raw?: string | null;
+  recorded_origin_place_id?: string | null;
   recorded_voyage_origin?: string | null;
   recorded_muster_place?: string | null;
   recorded_voyage_destination?: string | null;
@@ -283,6 +288,7 @@ export interface PublishedPersonOccurrence {
   year_as_recorded?: number;
   departure_place_raw?: string;
   arrival_place_raw?: string;
+  origin_descriptor_raw?: string;
   assertion_ids: string[];
 }
 

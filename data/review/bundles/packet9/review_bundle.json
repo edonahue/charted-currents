@@ -1,0 +1,194 @@
+{
+  "bundle_type": "historical_review_bundle",
+  "packet": "Historical Review Bundle — packet9",
+  "comparison": {
+    "base_ref": "origin/main",
+    "branch": "packet9-dutch-documentary-thread"
+  },
+  "summary_counts": {
+    "corpus_version": "0.7.0",
+    "total_added_assertions": 10,
+    "total_added_source_records": 2,
+    "total_added_ships": 1,
+    "total_goods_occurrences": 160,
+    "added_assertion_epistemic_classes": {
+      "class_a_direct_transcription": 9,
+      "class_b_deterministic_transformation": 1,
+      "class_c_relational_derivation": 0,
+      "class_d_identity_resolution": 4,
+      "class_e_changed_prose_count": 1,
+      "class_f_reconstructed_model": 0
+    },
+    "by_epistemic_class": {
+      "class_a_direct_transcription": 9,
+      "class_b_deterministic_transformation": 1,
+      "class_c_relational_derivation": 0,
+      "class_d_identity_resolution": 4,
+      "class_e_changed_prose_count": 1,
+      "class_f_reconstructed_model": 0
+    },
+    "analytical_derivation_contract_count": 0
+  },
+  "ethical_compliance": {
+    "status": "PASS",
+    "verification_note": "Standard compliance verified."
+  },
+  "exception_queue": [],
+  "dataset_context_summary": null,
+  "added_source_records": [
+    {
+      "id": "sr_na_hca32_11_380",
+      "source_id": "src_na_2_22_24_sailing_letters",
+      "record_type": "prize_cause_ship_papers",
+      "inspection_state": "metadata_only",
+      "native_identifier": "HCA 32-11.380"
+    },
+    {
+      "id": "sr_na_hca32_11_391",
+      "source_id": "src_na_2_22_24_sailing_letters",
+      "record_type": "prize_cause_ship_papers",
+      "inspection_state": "metadata_only",
+      "native_identifier": "HCA 32-11.391"
+    }
+  ],
+  "epistemic_classes": {
+    "class_a_sample": [
+      {
+        "id": "ast_na_380_title",
+        "field": "archival_finding_aid_title",
+        "raw_value": "Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666",
+        "source_record_id": "sr_na_hca32_11_380"
+      },
+      {
+        "id": "ast_na_380_ship_name",
+        "field": "ship_name",
+        "raw_value": "Nostra Seniora Concepcion y St Joseph",
+        "source_record_id": "sr_na_hca32_11_380"
+      },
+      {
+        "id": "ast_na_380_master",
+        "field": "master",
+        "raw_value": "Antonio de Witte",
+        "source_record_id": "sr_na_hca32_11_380"
+      },
+      {
+        "id": "ast_na_380_year",
+        "field": "event_date",
+        "source_record_id": "sr_na_hca32_11_380"
+      },
+      {
+        "id": "ast_na_380_origin_descriptor",
+        "field": "recorded_origin_descriptor",
+        "raw_value": "van Cadiz",
+        "source_record_id": "sr_na_hca32_11_380"
+      },
+      {
+        "id": "ast_na_391_title",
+        "field": "archival_finding_aid_title",
+        "raw_value": "Schip Nostra Seniora Concepcion y St Joseph onder leiding van Antonio de Witte; 1666",
+        "source_record_id": "sr_na_hca32_11_391"
+      },
+      {
+        "id": "ast_na_391_ship_name",
+        "field": "ship_name",
+        "raw_value": "Nostra Seniora Concepcion y St Joseph",
+        "source_record_id": "sr_na_hca32_11_391"
+      },
+      {
+        "id": "ast_na_391_master",
+        "field": "master",
+        "raw_value": "Antonio de Witte",
+        "source_record_id": "sr_na_hca32_11_391"
+      },
+      {
+        "id": "ast_na_391_year",
+        "field": "event_date",
+        "source_record_id": "sr_na_hca32_11_391"
+      }
+    ],
+    "class_b_all": [
+      {
+        "id": "ast_na_380_origin_place_mapping",
+        "field": "place_mapping",
+        "derived_value": "Cádiz",
+        "derivation_method": "deterministic_catalogue_place_mapping",
+        "source_assertion_id": "ast_na_380_origin_descriptor"
+      }
+    ],
+    "class_c_sample": [],
+    "class_d_edges": [
+      {
+        "occurrence_id": "occ_ship_nostra_seniora_380",
+        "target_entity_id": "ship_nostra_seniora_concepcion_1666",
+        "resolution_state": "probable_match",
+        "resolver": "project_archival_intake_na_2_22_24",
+        "evidence_assertions": [
+          "ast_na_380_ship_name",
+          "ast_na_380_master",
+          "ast_na_380_year"
+        ]
+      },
+      {
+        "occurrence_id": "occ_ship_nostra_seniora_391",
+        "target_entity_id": "ship_nostra_seniora_concepcion_1666",
+        "resolution_state": "probable_match",
+        "resolver": "project_archival_intake_na_2_22_24",
+        "evidence_assertions": [
+          "ast_na_391_ship_name",
+          "ast_na_391_master",
+          "ast_na_391_year"
+        ]
+      },
+      {
+        "occurrence_id": "occ_person_antonio_de_witte_380",
+        "target_entity_id": "person_antonio_de_witte_1666",
+        "resolution_state": "probable_match",
+        "resolver": "project_archival_intake_na_2_22_24",
+        "evidence_assertions": [
+          "ast_na_380_master",
+          "ast_na_380_year",
+          "ast_na_380_ship_name"
+        ]
+      },
+      {
+        "occurrence_id": "occ_person_antonio_de_witte_391",
+        "target_entity_id": "person_antonio_de_witte_1666",
+        "resolution_state": "probable_match",
+        "resolver": "project_archival_intake_na_2_22_24",
+        "evidence_assertions": [
+          "ast_na_391_master",
+          "ast_na_391_year",
+          "ast_na_391_ship_name"
+        ]
+      }
+    ],
+    "class_e_changed_prose": [
+      {
+        "location": "ships[id=ship_nostra_seniora_concepcion_1666].capture_display",
+        "entity_id": "ship_nostra_seniora_concepcion_1666",
+        "entity_kind": "ship",
+        "base_text": null,
+        "new_text": "High Court of Admiralty prize papers (1666, HCA 32-11.380 / 11.391)",
+        "classification": "prize_capture_context",
+        "support_references": [
+          "ast_na_380_title",
+          "ast_na_380_ship_name",
+          "ast_na_380_master",
+          "ast_na_380_year",
+          "ast_na_380_origin_descriptor",
+          "ast_na_380_origin_place_mapping",
+          "sr_na_hca32_11_380",
+          "ast_na_391_title",
+          "ast_na_391_ship_name",
+          "ast_na_391_master",
+          "ast_na_391_year",
+          "sr_na_hca32_11_391"
+        ],
+        "support_references_present": true,
+        "review_status": "REVIEW_PENDING",
+        "advisory": null
+      }
+    ],
+    "class_f_all": []
+  }
+}

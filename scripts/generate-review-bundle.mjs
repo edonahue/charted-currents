@@ -103,12 +103,14 @@ const baseAssertionIds = new Set(baseSources?.assertions?.map((a) => a.id) || []
 const baseSourceRecordIds = new Set(baseSources?.source_records?.map((r) => r.id) || []);
 const baseShipIds = new Set(baseEntities?.ships?.map((s) => s.id) || []);
 const baseShipOccIds = new Set(baseEntities?.ship_occurrences?.map((o) => o.id) || []);
+const basePersonOccIds = new Set(baseEntities?.person_occurrences?.map((o) => o.id) || []);
 
 // 4. Extract Added / Modified Assertions and Records
 const addedAssertions = currentSources.assertions.filter((a) => !baseAssertionIds.has(a.id));
 const addedSourceRecords = currentSources.source_records.filter((r) => !baseSourceRecordIds.has(r.id));
 const addedShips = currentEntities.ships.filter((s) => !baseShipIds.has(s.id));
 const addedShipOccs = currentEntities.ship_occurrences.filter((o) => !baseShipOccIds.has(o.id));
+const addedPersonOccs = (currentEntities.person_occurrences || []).filter((o) => !basePersonOccIds.has(o.id));
 const goodsOccurrences = currentEntities.goods_occurrences || [];
 
 // 5. Epistemic Classification of Assertions (Classes A-D)
@@ -168,7 +170,11 @@ for (const ast of addedAssertions) {
 
 // Add entity resolution edges into Class D
 const resolutionEdges = currentEntities.entity_resolution_edges || [];
-const addedResolutionEdges = resolutionEdges.filter((e) => addedShipOccs.some((o) => o.id === e.occurrence_id));
+const addedOccIds = new Set([
+  ...addedShipOccs.map((o) => o.id),
+  ...addedPersonOccs.map((o) => o.id),
+]);
+const addedResolutionEdges = resolutionEdges.filter((e) => addedOccIds.has(e.occurrence_id));
 
 // 6. Class E Changed Historical Prose Diff (Deterministic Inspection)
 const changedProse = [];
@@ -198,6 +204,12 @@ for (const ship of currentEntities.ships || []) {
   const baseShip = baseEntities?.ships?.find((s) => s.id === ship.id);
   if (!baseShip || baseShip.capture_display !== ship.capture_display) {
     if (ship.capture_display) {
+      const shipOccs = (currentEntities.ship_occurrences || []).filter((o) =>
+        (ship.occurrence_ids || []).includes(o.id)
+      );
+      const supportRefs = Array.from(
+        new Set(shipOccs.flatMap((o) => [...(o.assertion_ids || []), o.source_record_id].filter(Boolean)))
+      );
       changedProse.push({
         location: `ships[id=${ship.id}].capture_display`,
         entity_id: ship.id,
@@ -205,8 +217,8 @@ for (const ship of currentEntities.ships || []) {
         base_text: baseShip?.capture_display || null,
         new_text: ship.capture_display,
         classification: "prize_capture_context",
-        support_references: [],
-        support_references_present: false,
+        support_references: supportRefs,
+        support_references_present: supportRefs.length > 0,
         review_status: "REVIEW_PENDING",
         advisory: null,
       });

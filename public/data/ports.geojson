@@ -653,7 +653,9 @@
         "source_assertion_ids": [
           "ast_crespo_6156_dep",
           "ast_crespo_6587_dep",
-          "ast_crespo_6627_dep"
+          "ast_crespo_6627_dep",
+          "ast_na_380_origin_descriptor",
+          "ast_na_380_origin_place_mapping"
         ],
         "notes": "Primary transatlantic departure port for Spanish Carrera de Indias fleets calling at Havana."
       }

@@ -1,0 +1,51 @@
+{
+  "archive_id": "2.22.24",
+  "archive_title": "Inventaris van het archief van de High Court of Admiralty: Prize Papers (Sailing Letters), ca. 1564-1830",
+  "finding_aid_creators": [
+    "P.J.M. van den Heuvel",
+    "J. van Luin"
+  ],
+  "holding_institution": "Nationaal Archief, Den Haag",
+  "finding_aid_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.22.24",
+  "finding_aid_handle": "http://hdl.handle.net/10648/36a06ddd-dd23-42c6-ac41-4bb7c42fed67",
+  "finding_aid_rights": "http://creativecommons.org/publicdomain/zero/1.0/",
+  "finding_aid_rights_label": "CC0 1.0 Universal",
+  "scan_usage_restriction": "De scans zijn alleen beschikbaar voor niet-commercieel gebruik.",
+  "components": [
+    {
+      "unitid": "HCA32-11.380",
+      "unittitle": "Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte;",
+      "unitdate": "1666",
+      "persistent_handle": "http://hdl.handle.net/10648/aa19a57e-e115-094f-e053-09f0900ae341",
+      "mets_api_url": "https://service.archief.nl/gaf/api/mets/v1/df622bda-e85e-473b-94b4-ab1f6e2d225d",
+      "mets_uuid": "df622bda-e85e-473b-94b4-ab1f6e2d225d",
+      "rights_category": "PUBLIC DOMAIN (APE METS WRAPPER)",
+      "rights_context": "EAD metadata CC0; collection scans restricted to non-commercial use (not hosted)",
+      "scan_count": 5,
+      "representative_scan_uuid": "5802eb91-4b6b-4f87-9b95-70ac88438e40",
+      "representative_scan_url": "https://service.archief.nl/api/file/v1/default/5802eb91-4b6b-4f87-9b95-70ac88438e40",
+      "local_mets_file": "na_hca32_11_380_mets.xml",
+      "local_mets_sha256": "6da7432e633894c3c2a95cc2f87ad6188f9569ce01a1c18ad390d6cc7b586eba",
+      "local_mets_size_bytes": 9573
+    },
+    {
+      "unitid": "HCA32-11.391",
+      "unittitle": "Schip Nostra Seniora Concepcion y St Joseph onder leiding van Antonio de Witte;",
+      "unitdate": "1666",
+      "persistent_handle": "http://hdl.handle.net/10648/aa19a57e-e120-094f-e053-09f0900ae341",
+      "mets_api_url": "https://service.archief.nl/gaf/api/mets/v1/6de4c794-c8b3-4712-8f8a-cd510c8c86bd",
+      "mets_uuid": "6de4c794-c8b3-4712-8f8a-cd510c8c86bd",
+      "rights_category": "PUBLIC DOMAIN (APE METS WRAPPER)",
+      "rights_context": "EAD metadata CC0; collection scans restricted to non-commercial use (not hosted)",
+      "scan_count": 7,
+      "representative_scan_uuid": "aaa638fe-2575-4f60-85bb-85477a4e19c5",
+      "representative_scan_url": "https://service.archief.nl/api/file/v1/default/aaa638fe-2575-4f60-85bb-85477a4e19c5",
+      "local_mets_file": "na_hca32_11_391_mets.xml",
+      "local_mets_sha256": "13d925441415ab42eb81a60077a9ca152ee765488bdc83c8e09c43653ea3e059",
+      "local_mets_size_bytes": 12205
+    }
+  ],
+  "local_ead_components_file": "na_hca32_11_ead_components.xml",
+  "local_ead_components_sha256": "7ca901ec558458855be91793b1a32d64ff1030d0059b391294374c412905d573",
+  "local_ead_components_size_bytes": 1445
+}

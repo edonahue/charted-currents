@@ -110,15 +110,17 @@ Packet 1 displays four real **modern locator** anchors to make the shell explora
 
 ## Public deployment
 
-**Status**: Packet 3 Public Beta Complete.
-**Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
-**Active Corpus**: Greater Caribbean & Transatlantic network (1684–1712), featuring:
-- **15 verified canonical vessels** across 15 transatlantic and regional route segments;
+**Status**: Public beta
+**Canonical Production URL**: [`https://charted-currents.com/`](https://charted-currents.com/)
+**Deployment Hostname**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
+**Active Corpus**: Greater Caribbean & Transatlantic network (1666–1712), featuring:
+- **22 canonical vessel entities** across transatlantic and Caribbean route segments;
 - **26 examined crew depositions** with raw preserved source spellings;
-- **23 resolved geographic places** with evidence-bounded notes and navigation coordinates;
+- **29 resolved geographic places** with evidence-bounded notes and navigation coordinates;
+- **1,928 baseline dataset context records** linking Carrera de Indias commercial volume to mapped ports;
 - **16 dated historical events** spanning wartime prize captures and the 1692 Port Royal earthquake;
-- Contemporary 1684 Bochart & Knollis cartographic reference visual (Library of Congress);
-- Attributed multi-source archival provenance linking UK Data Service SN 852135 (IMLM) and upstream High Court of Admiralty Prize Papers (TNA HCA 32).
+- Contemporary cartographic reference layers: 1684 Bochart & Knollis chart and Herman Moll ca. 1715 West Indies map (Library of Congress);
+- Attributed multi-source archival provenance across UK Data Service (IMLM), Spanish Carrera records (Crespo / PARES AGI), Royal Society archives, Library of Congress, and Nationaal Archief, Den Haag (2.22.24 Sailing Letters).
 - **Indexing posture**: Public (`<meta name="robots" content="index,follow" />`, `robots.txt` `Allow: /`).
 - **Hosted verification**: Verified on edge with Vite-bundled MapLibre worker, OpenFreeMap vector tiles, and zero runtime exceptions. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
 
@@ -134,7 +136,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Packet 3 Public Beta Complete.** The interactive atlas, 15-vessel provenance-backed maritime network, multi-source archival inspector, responsive timeline rail with reactive period filtering, and route aggregation are fully implemented, deterministically tested, and deployed to production on Cloudflare Pages. Subsequent milestones proceed from [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 2.
+**Status: Public beta.** The interactive atlas, provenance-backed maritime network (1666–1712), multi-source archival inspector, responsive timeline rail with reactive period filtering, place-centered dataset context, georeferenced period map reference layers, and direct archival documentary threads via the Nationaal Archief are fully implemented, deterministically tested, and deployed to production on Cloudflare Pages. Subsequent milestones proceed from [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Licensing
 

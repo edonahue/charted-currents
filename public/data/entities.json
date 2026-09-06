@@ -720,6 +720,67 @@
         "year": 1700
       },
       "fleet_convoy_display": "Barco Holandés (Dutch Transatlantic Trade)"
+    },
+    {
+      "id": "occ_ship_nostra_seniora_380",
+      "source_record_id": "sr_na_hca32_11_380",
+      "record_context": "prize_capture",
+      "raw_name": "Nostra Seniora Concepcion y St Joseph",
+      "attestations": [
+        {
+          "raw_name": "Nostra Seniora Concepcion y St Joseph",
+          "evidence_layer": "archival_catalogue_metadata",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_na_hca32_11_380",
+          "normalized_search_key": "nostra seniora concepcion y st joseph"
+        }
+      ],
+      "recorded_master": "Antonio de Witte",
+      "recorded_year": 1666,
+      "date_precision": "year",
+      "recorded_origin_descriptor_raw": "van Cadiz",
+      "recorded_origin_place_id": "place_cadiz",
+      "recorded_voyage_origin": null,
+      "recorded_voyage_destination": null,
+      "archival_register_reference": "NL-HaNA 2.22.24 / HCA 32-11.380",
+      "assertion_ids": [
+        "ast_na_380_title",
+        "ast_na_380_ship_name",
+        "ast_na_380_master",
+        "ast_na_380_year",
+        "ast_na_380_origin_descriptor",
+        "ast_na_380_origin_place_mapping"
+      ]
+    },
+    {
+      "id": "occ_ship_nostra_seniora_391",
+      "source_record_id": "sr_na_hca32_11_391",
+      "record_context": "prize_capture",
+      "raw_name": "Nostra Seniora Concepcion y St Joseph",
+      "attestations": [
+        {
+          "raw_name": "Nostra Seniora Concepcion y St Joseph",
+          "evidence_layer": "archival_catalogue_metadata",
+          "language": "es",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_na_hca32_11_391",
+          "normalized_search_key": "nostra seniora concepcion y st joseph"
+        }
+      ],
+      "recorded_master": "Antonio de Witte",
+      "recorded_year": 1666,
+      "date_precision": "year",
+      "recorded_origin_descriptor": null,
+      "recorded_voyage_origin": null,
+      "recorded_voyage_destination": null,
+      "archival_register_reference": "NL-HaNA 2.22.24 / HCA 32-11.391",
+      "assertion_ids": [
+        "ast_na_391_title",
+        "ast_na_391_ship_name",
+        "ast_na_391_master",
+        "ast_na_391_year"
+      ]
     }
   ],
   "crew_occurrences": [
@@ -1181,6 +1242,36 @@
         "ast_crespo_6825_year",
         "ast_crespo_6825_vessel",
         "ast_crespo_6825_route"
+      ]
+    },
+    {
+      "id": "occ_person_antonio_de_witte_380",
+      "source_record_id": "sr_na_hca32_11_380",
+      "raw_name": "Antonio de Witte",
+      "role": "master",
+      "ship_occurrence_id": "occ_ship_nostra_seniora_380",
+      "vessel_name_raw": "Nostra Seniora Concepcion y St Joseph",
+      "year_as_recorded": 1666,
+      "departure_place_raw": null,
+      "origin_descriptor_raw": "van Cadiz",
+      "assertion_ids": [
+        "ast_na_380_master",
+        "ast_na_380_year",
+        "ast_na_380_origin_descriptor"
+      ]
+    },
+    {
+      "id": "occ_person_antonio_de_witte_391",
+      "source_record_id": "sr_na_hca32_11_391",
+      "raw_name": "Antonio de Witte",
+      "role": "master",
+      "ship_occurrence_id": "occ_ship_nostra_seniora_391",
+      "vessel_name_raw": "Nostra Seniora Concepcion y St Joseph",
+      "year_as_recorded": 1666,
+      "departure_place_raw": null,
+      "assertion_ids": [
+        "ast_na_391_master",
+        "ast_na_391_year"
       ]
     }
   ],
@@ -5151,6 +5242,21 @@
       "capture_display": "Captured in the vicinity of Puerto Rico by corsair Manuel Duarte (1700)",
       "goods_summary_display": "Corambre ; Palo de Brasil ; cacao ; tabaco de Barinas ; añil ; cobre ; conchas de carey ; cascaras  de naranja ; monedas de plata españoles",
       "goods_value_display": "10491 pesos y 2 reales de valor total"
+    },
+    {
+      "id": "ship_nostra_seniora_concepcion_1666",
+      "canonical_name": "Nostra Seniora Concepcion y St Joseph",
+      "disambiguation_display": "(1666, Master Antonio de Witte)",
+      "evidence_state": "probable_match",
+      "occurrence_ids": [
+        "occ_ship_nostra_seniora_380",
+        "occ_ship_nostra_seniora_391"
+      ],
+      "reported_burden_display": "Burden unrecorded in Dutch inventory",
+      "voyage_display": "Recorded origin: Cádiz · Destination unrecorded (1666)",
+      "capture_display": "High Court of Admiralty prize papers (1666, HCA 32-11.380 / 11.391)",
+      "master_display": "Antonio de Witte",
+      "register_display": "NL-HaNA 2.22.24, inv. nr. HCA 32-11.380 / 11.391"
     }
   ],
   "persons": [
@@ -5207,6 +5313,45 @@
         }
       ],
       "notes": "Probable recurring Carrera master across 4 Crespo voyage records departing Andalusian ports between 1688 and 1706. Upstream agent ID 11357 in PRUEBAAGENTES conflates this master with Francisco Antonio Garrote (1684) and is discounted."
+    },
+    {
+      "id": "person_antonio_de_witte_1666",
+      "canonical_name": "Antonio de Witte",
+      "raw_source_name": "Antonio de Witte",
+      "roles": [
+        "master"
+      ],
+      "evidence_state": "probable_match",
+      "recorded_year_range": [
+        1666,
+        1666
+      ],
+      "member_occurrence_years": [
+        1666
+      ],
+      "active_year_range": [
+        1666,
+        1666
+      ],
+      "occurrence_ids": [
+        "occ_person_antonio_de_witte_380",
+        "occ_person_antonio_de_witte_391"
+      ],
+      "source_record_ids": [
+        "sr_na_hca32_11_380",
+        "sr_na_hca32_11_391"
+      ],
+      "attestations": [
+        {
+          "raw_name": "Antonio de Witte",
+          "evidence_layer": "archival_catalogue_metadata",
+          "language": "nl",
+          "attestation_relationship": "source_transcription",
+          "source_record_id": "sr_na_hca32_11_380",
+          "normalized_search_key": "antonio de witte"
+        }
+      ],
+      "notes": "Master of the Nostra Seniora Concepcion y St Joseph (1666). Recorded in two separate Prize Papers inventory entries (HCA 32-11.380 and 11.391); probable match representing the same master."
     }
   ],
   "entity_resolution_edges": [
@@ -5480,6 +5625,50 @@
       "resolver": "crespo_adapter",
       "evidence_assertions": [
         "ast_crespo_4501_name"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_nostra_seniora_380",
+      "target_entity_id": "ship_nostra_seniora_concepcion_1666",
+      "resolution_state": "probable_match",
+      "resolver": "project_archival_intake_na_2_22_24",
+      "evidence_assertions": [
+        "ast_na_380_ship_name",
+        "ast_na_380_master",
+        "ast_na_380_year"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_nostra_seniora_391",
+      "target_entity_id": "ship_nostra_seniora_concepcion_1666",
+      "resolution_state": "probable_match",
+      "resolver": "project_archival_intake_na_2_22_24",
+      "evidence_assertions": [
+        "ast_na_391_ship_name",
+        "ast_na_391_master",
+        "ast_na_391_year"
+      ]
+    },
+    {
+      "occurrence_id": "occ_person_antonio_de_witte_380",
+      "target_entity_id": "person_antonio_de_witte_1666",
+      "resolution_state": "probable_match",
+      "resolver": "project_archival_intake_na_2_22_24",
+      "evidence_assertions": [
+        "ast_na_380_master",
+        "ast_na_380_year",
+        "ast_na_380_ship_name"
+      ]
+    },
+    {
+      "occurrence_id": "occ_person_antonio_de_witte_391",
+      "target_entity_id": "person_antonio_de_witte_1666",
+      "resolution_state": "probable_match",
+      "resolver": "project_archival_intake_na_2_22_24",
+      "evidence_assertions": [
+        "ast_na_391_master",
+        "ast_na_391_year",
+        "ast_na_391_ship_name"
       ]
     }
   ],
@@ -5926,7 +6115,9 @@
       "source_assertion_ids": [
         "ast_crespo_6156_dep",
         "ast_crespo_6587_dep",
-        "ast_crespo_6627_dep"
+        "ast_crespo_6627_dep",
+        "ast_na_380_origin_descriptor",
+        "ast_na_380_origin_place_mapping"
       ]
     },
     {

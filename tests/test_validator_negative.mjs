@@ -378,5 +378,29 @@ function createTempDataCopy() {
   fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
+// Test 29: Nonexistent recorded_origin_place_id fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  const occ = entities.ship_occurrences.find((o) => o.id === "occ_ship_nostra_seniora_380");
+  occ.recorded_origin_place_id = "place_nonexistent_xyz";
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when recorded_origin_place_id does not exist");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
+// Test 30: Both recorded_origin_place_id and recorded_voyage_origin on ship occurrence fails validator
+{
+  const tmpDir = createTempDataCopy();
+  const entities = JSON.parse(fs.readFileSync(path.join(tmpDir, "entities.json"), "utf8"));
+  const occ = entities.ship_occurrences.find((o) => o.id === "occ_ship_nostra_seniora_380");
+  occ.recorded_voyage_origin = "Cádiz";
+  fs.writeFileSync(path.join(tmpDir, "entities.json"), JSON.stringify(entities));
+  const result = validatePublishedData(tmpDir, true);
+  assert(result.valid === false && result.errorCount > 0, "Validator fails when both recorded_origin_place_id and recorded_voyage_origin are populated");
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+}
+
 console.log(`\nNegative Test Summary: ${passedTests} passed, ${failedTests} failed.`);
 process.exit(failedTests > 0 ? 1 : 0);
