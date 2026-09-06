@@ -2265,14 +2265,14 @@ async function runReviewSuite() {
         const placeTitle = document.querySelector('[data-inspector-title]')?.textContent || '';
         const connectionsWrap = document.querySelector('[data-place-connections-wrap]');
         const connectionsList = document.querySelector('[data-place-connections-list]')?.textContent || '';
-        const hasConcepcionDeparture = connectionsList.includes("Nostra Seniora Concepcion y St Joseph (1666)") && connectionsList.includes("Documented Departure");
+        const hasConcepcionDeparture = connectionsList.includes("Nostra Seniora Concepcion y St Joseph (1666)") && connectionsList.includes("Recorded Origin");
         return { placeTitle, isWrapVisible: connectionsWrap && !connectionsWrap.hidden, hasConcepcionDeparture };
       })()`,
       returnByValue: true,
     });
     assert(cadizConcepcionCheck?.result?.value?.placeTitle === "Cádiz", "Cádiz place selected in inspector");
     assert(cadizConcepcionCheck?.result?.value?.isWrapVisible, "Cádiz connections wrap is visible");
-    assert(cadizConcepcionCheck?.result?.value?.hasConcepcionDeparture, "Cádiz connections list contains Documented Departure for Nostra Seniora Concepcion y St Joseph (1666)");
+    assert(cadizConcepcionCheck?.result?.value?.hasConcepcionDeparture, "Cádiz connections list contains Recorded Origin for Nostra Seniora Concepcion y St Joseph (1666)");
 
     // B. Select Nostra Seniora Concepcion y St Joseph
     await send("Runtime.evaluate", {
@@ -2293,7 +2293,7 @@ async function runReviewSuite() {
         const register = document.querySelector('[data-ship-register]')?.textContent || '';
         const connectionsText = document.querySelector('[data-ship-connections-list]')?.textContent || '';
         const hasMasterRel = connectionsText.includes("Antonio de Witte") && connectionsText.includes("Master");
-        const hasOriginRel = connectionsText.includes("Cádiz") && connectionsText.includes("Voyage Origin");
+        const hasOriginRel = connectionsText.includes("Cádiz") && connectionsText.includes("Recorded Origin");
         return { title, subtitle, master, voyage, capture, badge, register, hasMasterRel, hasOriginRel };
       })()`,
       returnByValue: true,
@@ -2301,13 +2301,13 @@ async function runReviewSuite() {
     const shipVal = concepcionCheck?.result?.value;
     assert(shipVal?.title === "Nostra Seniora Concepcion y St Joseph", "Nostra Seniora Concepcion vessel title is accurately displayed");
     assert(shipVal?.subtitle.includes("(1666, Master Antonio de Witte)"), "Vessel subtitle notes 1666 and master Antonio de Witte");
-    assert(shipVal?.capture.includes("Prize Papers seized 1666"), "Vessel capture notes Prize Papers seized 1666 (HCA 32-11.380)");
-    assert(shipVal?.badge === "Documented", "Vessel evidence state badge displays 'Documented'");
+    assert(shipVal?.capture.includes("HCA 32-11.380 / 11.391"), "Vessel capture notes Prize Papers (1666, HCA 32-11.380 / 11.391)");
+    assert(shipVal?.badge === "Probable Match", "Vessel evidence state badge displays 'Probable Match'");
     assert(shipVal?.master.includes("Antonio de Witte"), "Vessel displays documented master Antonio de Witte");
-    assert(shipVal?.voyage.includes("Cádiz → Unrecorded destination (1666)"), "Vessel voyage displays truthful Cádiz origin and unrecorded destination");
+    assert(shipVal?.voyage.includes("Recorded origin: Cádiz · Destination unrecorded (1666)"), "Vessel voyage displays truthful Cádiz origin descriptor and unrecorded destination");
     assert(shipVal?.register.includes("NL-HaNA 2.22.24"), "Vessel register notes Nationaal Archief finding aid citation");
     assert(shipVal?.hasMasterRel, "Vessel connections list displays Master relationship to Antonio de Witte");
-    assert(shipVal?.hasOriginRel, "Vessel connections list displays Voyage Origin relationship to Cádiz");
+    assert(shipVal?.hasOriginRel, "Vessel connections list displays Recorded Origin relationship to Cádiz");
 
     // Screenshot of Vessel in Inspector
     if (!skipScreenshots) {
@@ -2337,18 +2337,18 @@ async function runReviewSuite() {
         const activeYears = document.querySelector('[data-person-active-years]')?.textContent || '';
         const resolution = document.querySelector('[data-person-resolution-status]')?.textContent || '';
         const voyagesText = document.querySelector('[data-person-voyages-list]')?.textContent || '';
-        const hasVesselLink = voyagesText.includes("Nostra Seniora Concepcion y St Joseph") && voyagesText.includes("Cadiz departure");
+        const hasVesselLink = (voyagesText.includes("Nostra Seniiora Concepcion y St Joseph") || voyagesText.includes("Nostra Seniora Concepcion y St Joseph")) && (voyagesText.includes("Origin: van Cadiz") || voyagesText.includes("Unrecorded voyage"));
         return { title, badge, role, activeYears, resolution, hasVesselLink };
       })()`,
       returnByValue: true,
     });
     const deWitteVal = deWitteCheck?.result?.value;
     assert(deWitteVal?.title === "Antonio de Witte", "Person inspector displays Antonio de Witte");
-    assert(deWitteVal?.badge === "Documented", "Person badge displays 'Documented'");
+    assert(deWitteVal?.badge === "Probable Match", "Person badge displays 'Probable Match'");
     assert(deWitteVal?.role === "Master", "Person role displays Master");
     assert(deWitteVal?.activeYears.includes("1666"), "Person active years includes 1666");
-    assert(deWitteVal?.resolution.includes("Nationaal Archief 2.22.24"), "Person resolution status attributes Nationaal Archief 2.22.24 / HCA 32");
-    assert(deWitteVal?.hasVesselLink, "Person voyages list links Nostra Seniora Concepcion y St Joseph departure");
+    assert(deWitteVal?.resolution.includes("Nationaal Archief"), "Person resolution status attributes Nationaal Archief");
+    assert(deWitteVal?.hasVesselLink, "Person voyages list links Nostra Seni(i)ora Concepcion y St Joseph");
 
     // D. Open Source Drawer from ship and verify Dutch archival metadata & primary facsimile
     await send("Runtime.evaluate", {
@@ -2374,13 +2374,13 @@ async function runReviewSuite() {
         const text = container?.textContent || "";
         const handleLink = container?.querySelector('a[href*="10648/aa19a57e-e115-094f-e053-09f0900ae341"]');
         const facImg = container?.querySelector('img.inspector-facsimile-img');
-        const facLink = container?.querySelector('a[href*="10648/aa19a57e-e115-094f-e053-09f0900ae341"].inspector-link:not(.inspector-mono)');
+        const facLink = container?.querySelector('a[href*="10648/aa19a57e-e115-094f-e053-09f0900ae341"].inspector-link');
         return {
           isOpen,
           hasTitle: text.includes("High Court of Admiralty: Prize Papers (Sailing Letters)"),
           hasInstitution: text.includes("Nationaal Archief, Den Haag"),
-          hasRights: text.includes("Open public domain"),
-          hasScansCount: text.includes("15 scans (Public Domain)"),
+          hasRights: text.includes("Open access · No registration required"),
+          hasScansCount: text.includes("5 scans (Non-commercial access via Nationaal Archief)"),
           hasHandleLink: Boolean(handleLink),
           handleText: handleLink?.textContent?.trim(),
           hasFacImg: Boolean(facImg),
@@ -2394,12 +2394,11 @@ async function runReviewSuite() {
     assert(naDrawerVal?.isOpen, "Source drawer is open for Nostra Seniora Concepcion");
     assert(naDrawerVal?.hasTitle, "Source drawer displays Nationaal Archief 2.22.24 Sailing Letters title");
     assert(naDrawerVal?.hasInstitution, "Source drawer displays holding institution Nationaal Archief, Den Haag");
-    assert(naDrawerVal?.hasRights, "Source drawer displays Open public domain rights posture");
-    assert(naDrawerVal?.hasScansCount, "Source drawer displays 15 scans (Public Domain) readout");
+    assert(naDrawerVal?.hasRights, "Source drawer displays Open access rights posture");
+    assert(naDrawerVal?.hasScansCount, "Source drawer displays 5 scans (Non-commercial access via Nationaal Archief) readout");
     assert(naDrawerVal?.hasHandleLink, "Source drawer includes persistent handle link to Nationaal Archief");
     assert(naDrawerVal?.handleText?.startsWith("hdl:10648/"), `Persistent handle is formatted as hdl:... (got: "${naDrawerVal?.handleText}")`);
-    assert(naDrawerVal?.hasFacImg, "Source drawer renders primary archival facsimile image");
-    assert(naDrawerVal?.facImgSrc === "/assets/visuals/na_hca32_11_380_facsimile.jpg", `Archival facsimile image src matches local asset path (got: "${naDrawerVal?.facImgSrc}")`);
+    assert(!naDrawerVal?.hasFacImg, "Source drawer does not render local facsimile image (non-commercial scan preserved upstream)");
     assert(naDrawerVal?.hasFacLink, "Source drawer provides direct viewer link to Nationaal Archief digital viewer");
 
     // Screenshot of Source Drawer with Archival Facsimile

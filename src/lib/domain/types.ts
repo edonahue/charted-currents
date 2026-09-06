@@ -286,6 +286,7 @@ export interface PublishedPersonOccurrence {
   year_as_recorded?: number;
   departure_place_raw?: string;
   arrival_place_raw?: string;
+  origin_descriptor_raw?: string;
   assertion_ids: string[];
 }
 

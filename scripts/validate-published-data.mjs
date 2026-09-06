@@ -266,7 +266,7 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
     assert(!shipIds.has(s.id), `Duplicate ship ID: ${s.id}`);
     shipIds.add(s.id);
     assert(typeof s.canonical_name === "string", `Ship ${s.id} missing canonical_name`);
-    assert(s.evidence_state === "documented", `Ship ${s.id} evidence_state must be 'documented'`);
+    assert(["documented", "probable_match"].includes(s.evidence_state), `Ship ${s.id} invalid evidence_state: ${s.evidence_state}`);
     assert(s.construction_display !== "Unknown", `Ship ${s.id} contains synthetic sentinel 'Unknown' for construction_display`);
     assert(Array.isArray(s.occurrence_ids) && s.occurrence_ids.length > 0, `Ship ${s.id} missing occurrence_ids`);
     validateAttestations("Ship", s.id, s.attestations);

@@ -744,14 +744,16 @@
           }
         }
 
+        const seenShipIds = new Set();
         for (const occ of directVesselOccs) {
           const edge = entitiesCache.entity_resolution_edges.find((e) => e.occurrence_id === occ.id);
-          if (edge) {
+          if (edge && !seenShipIds.has(edge.target_entity_id)) {
+            seenShipIds.add(edge.target_entity_id);
             const ship = entitiesCache.ships.find((s) => s.id === edge.target_entity_id);
             const shipName = ship ? ship.canonical_name : occ.raw_name;
             const yearStr = occ.recorded_year ? ` (${occ.recorded_year})` : "";
             placeConnectionsList.appendChild(
-              createRelationshipRow("VESSEL", "Documented Departure", `${shipName}${yearStr}`, "ship", edge.target_entity_id)
+              createRelationshipRow("VESSEL", "Recorded Origin", `${shipName}${yearStr}`, "ship", edge.target_entity_id)
             );
           }
         }
@@ -922,8 +924,9 @@
     if (kickerEl) kickerEl.textContent = "Documented Vessel";
     if (badgeWrap && badgeEl) {
       badgeWrap.hidden = false;
-      badgeEl.textContent = "Documented";
-      badgeEl.setAttribute("data-evidence-state", "documented");
+      const shipEvState = ship.evidence_state || "documented";
+      badgeEl.textContent = shipEvState === "probable_match" ? "Probable Match" : "Documented";
+      badgeEl.setAttribute("data-evidence-state", shipEvState);
     }
     if (titleEl) titleEl.textContent = ship.canonical_name;
     if (subtitleEl) {
@@ -1280,7 +1283,7 @@
 
         if (unroutedOrigin) {
           shipConnectionsList.appendChild(
-            createRelationshipRow("LOCATION", "Voyage Origin", unroutedOrigin.canonical_name, "port", unroutedOrigin.id)
+            createRelationshipRow("LOCATION", "Recorded Origin", unroutedOrigin.canonical_name, "port", unroutedOrigin.id)
           );
         }
 
@@ -1522,8 +1525,10 @@
     if (personResolutionStatus) {
       if (person.id === "person_bartolome_antonio_garrote") {
         personResolutionStatus.textContent = "Probable match across four Crespo voyage records";
+      } else if (person.id === "person_antonio_de_witte_1666") {
+        personResolutionStatus.textContent = "Probable match across two Nationaal Archief inventory items (HCA 32-11.380 / 11.391)";
       } else {
-        personResolutionStatus.textContent = "Documented archival occurrence (Nationaal Archief 2.22.24 / HCA 32)";
+        personResolutionStatus.textContent = person.evidence_state === "probable_match" ? "Probable match across archival occurrences" : "Documented archival occurrence";
       }
     }
     if (personNotes) {
@@ -1543,8 +1548,10 @@
         const roleTitle = (occ.role || "master").charAt(0).toUpperCase() + (occ.role || "master").slice(1);
         const roleStr = `${occ.year_as_recorded} ${roleTitle}`;
         const routeLabel = occ.arrival_place_raw
-          ? `${occ.departure_place_raw} → ${occ.arrival_place_raw}`
-          : (occ.departure_place_raw ? `${occ.departure_place_raw} departure` : "Unrecorded voyage");
+          ? `${occ.departure_place_raw || "Unrecorded"} → ${occ.arrival_place_raw}`
+          : (occ.departure_place_raw
+              ? `${occ.departure_place_raw} departure`
+              : (occ.origin_descriptor_raw ? `Origin: ${occ.origin_descriptor_raw}` : "Unrecorded voyage"));
         const labelStr = `${occ.vessel_name_raw} (${routeLabel})`;
 
         if (occ.ship_occurrence_id) {

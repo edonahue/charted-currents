@@ -112,14 +112,14 @@ Packet 1 displays four real **modern locator** anchors to make the shell explora
 
 **Status**: Production (Packet 8 Complete).
 **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
-**Active Corpus**: Greater Caribbean & Transatlantic network (1650–1730), featuring:
-- **21 verified canonical vessels** across transatlantic and Caribbean route segments;
+**Active Corpus**: Greater Caribbean & Transatlantic network (1666–1712), featuring:
+- **22 verified canonical vessels** across transatlantic and Caribbean route segments;
 - **26 examined crew depositions** with raw preserved source spellings;
 - **29 resolved geographic places** with evidence-bounded notes and navigation coordinates;
 - **1,928 baseline dataset context records** linking Carrera de Indias commercial volume to mapped ports;
 - **16 dated historical events** spanning wartime prize captures and the 1692 Port Royal earthquake;
 - Contemporary cartographic reference layers: 1684 Bochart & Knollis chart and Herman Moll ca. 1715 West Indies map (Library of Congress);
-- Attributed multi-source archival provenance across UK Data Service (IMLM), Spanish Carrera records (Crespo / PARES AGI), Royal Society archives, and Library of Congress.
+- Attributed multi-source archival provenance across UK Data Service (IMLM), Spanish Carrera records (Crespo / PARES AGI), Royal Society archives, Library of Congress, and Nationaal Archief, Den Haag (2.22.24 Sailing Letters).
 - **Indexing posture**: Public (`<meta name="robots" content="index,follow" />`, `robots.txt` `Allow: /`).
 - **Hosted verification**: Verified on edge with Vite-bundled MapLibre worker, OpenFreeMap vector tiles, and zero runtime exceptions. See [`docs/CLOUDFLARE_DEPLOYMENT.md`](docs/CLOUDFLARE_DEPLOYMENT.md).
 

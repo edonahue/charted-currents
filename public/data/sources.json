@@ -112,11 +112,11 @@
       "holding_institution": "Nationaal Archief, Den Haag",
       "stable_identifier": "NL-HaNA 2.22.24",
       "item_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.22.24",
-      "rights_posture": "open_public_domain",
-      "public_use_basis": "cc0_and_public_domain",
+      "rights_posture": "open_access_no_registration_required",
+      "public_use_basis": "open_metadata_and_persistent_handle_surrogates",
       "attribution_required": true,
       "credit_line": "Nationaal Archief, Den Haag / The National Archives, Kew, Archive 2.22.24 (High Court of Admiralty: Prize Papers / Sailing Letters)",
-      "notes": "Digital photographic duplicate collection and finding aid created by Nationaal Archief in cooperation with The National Archives (UK). Underlying manuscripts are 17th-century High Court of Admiralty records seized in prize causes."
+      "notes": "Digital photographic duplicate collection and finding aid created by Nationaal Archief in cooperation with The National Archives (UK). EAD finding aid metadata is CC0; digital scans carry an institutional non-commercial use restriction and are accessed via persistent handle rather than hosted. Underlying manuscripts are 17th-century High Court of Admiralty records seized in prize causes."
     }
   ],
   "source_records": [
@@ -2286,24 +2286,24 @@
       "source_id": "src_na_2_22_24_sailing_letters",
       "record_type": "prize_cause_ship_papers",
       "native_identifier": "HCA 32-11.380",
-      "inspection_state": "digital_content_inspected",
+      "inspection_state": "metadata_only",
       "upstream_archive_source_id": "src_tna_hca_32",
       "upstream_archive_reference": "TNA HCA 32/11/380",
       "persistent_handle": "http://hdl.handle.net/10648/aa19a57e-e115-094f-e053-09f0900ae341",
       "mets_manifest_url": "https://service.archief.nl/gaf/api/mets/v1/df622bda-e85e-473b-94b4-ab1f6e2d225d",
-      "scan_count": 15
+      "scan_count": 5
     },
     {
       "id": "sr_na_hca32_11_391",
       "source_id": "src_na_2_22_24_sailing_letters",
       "record_type": "prize_cause_ship_papers",
       "native_identifier": "HCA 32-11.391",
-      "inspection_state": "digital_content_inspected",
+      "inspection_state": "metadata_only",
       "upstream_archive_source_id": "src_tna_hca_32",
       "upstream_archive_reference": "TNA HCA 32/11/391",
       "persistent_handle": "http://hdl.handle.net/10648/aa19a57e-e120-094f-e053-09f0900ae341",
       "mets_manifest_url": "https://service.archief.nl/gaf/api/mets/v1/6de4c794-c8b3-4712-8f8a-cd510c8c86bd",
-      "scan_count": 21
+      "scan_count": 7
     }
   ],
   "assertions": [
@@ -12564,16 +12564,16 @@
       "id": "ast_na_380_title",
       "source_record_id": "sr_na_hca32_11_380",
       "field": "archival_finding_aid_title",
-      "raw_value": "Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666",
+      "raw_value": "Schip Nostra Seniiora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666",
       "risk_class": "A"
     },
     {
       "id": "ast_na_380_ship_name",
       "source_record_id": "sr_na_hca32_11_380",
       "field": "ship_name",
-      "raw_value": "Nostra Seniora Concepcion y St Joseph",
+      "raw_value": "Nostra Seniiora Concepcion y St Joseph",
       "language": "es",
-      "normalized_search_key": "nostra seniora concepcion y st joseph",
+      "normalized_search_key": "nostra seniiora concepcion y st joseph",
       "risk_class": "A"
     },
     {
@@ -12592,18 +12592,11 @@
       "risk_class": "A"
     },
     {
-      "id": "ast_na_380_dep_cadiz",
+      "id": "ast_na_380_origin_cadiz",
       "source_record_id": "sr_na_hca32_11_380",
-      "field": "voyage",
-      "origin_raw": "Cadiz",
+      "field": "recorded_origin_descriptor",
+      "raw_value": "Cadiz",
       "place_id": "place_cadiz",
-      "risk_class": "B"
-    },
-    {
-      "id": "ast_na_380_prize_context",
-      "source_record_id": "sr_na_hca32_11_380",
-      "field": "prize_cause",
-      "raw_value": "Seized in the Second Anglo-Dutch War (1666); papers impounded by the High Court of Admiralty.",
       "risk_class": "B"
     },
     {
@@ -12618,6 +12611,8 @@
       "source_record_id": "sr_na_hca32_11_391",
       "field": "ship_name",
       "raw_value": "Nostra Seniora Concepcion y St Joseph",
+      "language": "es",
+      "normalized_search_key": "nostra seniora concepcion y st joseph",
       "risk_class": "A"
     },
     {
@@ -12625,6 +12620,14 @@
       "source_record_id": "sr_na_hca32_11_391",
       "field": "master",
       "raw_value": "Antonio de Witte",
+      "risk_class": "A"
+    },
+    {
+      "id": "ast_na_391_year",
+      "source_record_id": "sr_na_hca32_11_391",
+      "field": "event_date",
+      "year": 1666,
+      "date_as_recorded": "1666",
       "risk_class": "A"
     }
   ]

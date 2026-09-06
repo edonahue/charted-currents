@@ -69,7 +69,7 @@ class TestHistoricalInvariants(unittest.TestCase):
         for edge in self.entities["entity_resolution_edges"]:
             if edge["occurrence_id"] in ship_occ_ids:
                 self.assertIn(edge["target_entity_id"], canonical_ship_ids)
-                self.assertEqual(edge["resolution_state"], "documented_identity")
+                self.assertIn(edge["resolution_state"], ["documented_identity", "probable_match", "possible_match", "unresolved_ambiguity"])
                 ship_edge_occurrences.add(edge["occurrence_id"])
             elif edge["occurrence_id"] in person_occ_ids:
                 self.assertIn(edge["target_entity_id"], canonical_person_ids)
