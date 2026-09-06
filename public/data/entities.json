@@ -722,25 +722,26 @@
       "fleet_convoy_display": "Barco Holandés (Dutch Transatlantic Trade)"
     },
     {
-      "id": "occ_ship_nostra_seniiora_380",
+      "id": "occ_ship_nostra_seniora_380",
       "source_record_id": "sr_na_hca32_11_380",
       "record_context": "prize_capture",
-      "raw_name": "Nostra Seniiora Concepcion y St Joseph",
+      "raw_name": "Nostra Seniora Concepcion y St Joseph",
       "attestations": [
         {
-          "raw_name": "Nostra Seniiora Concepcion y St Joseph",
+          "raw_name": "Nostra Seniora Concepcion y St Joseph",
           "evidence_layer": "archival_catalogue_metadata",
           "language": "es",
           "attestation_relationship": "source_transcription",
           "source_record_id": "sr_na_hca32_11_380",
-          "normalized_search_key": "nostra seniiora concepcion y st joseph"
+          "normalized_search_key": "nostra seniora concepcion y st joseph"
         }
       ],
       "recorded_master": "Antonio de Witte",
       "recorded_year": 1666,
       "date_precision": "year",
-      "recorded_origin_descriptor": "Cadiz",
-      "recorded_voyage_origin": "Cadiz",
+      "recorded_origin_descriptor_raw": "van Cadiz",
+      "recorded_origin_place_id": "place_cadiz",
+      "recorded_voyage_origin": null,
       "recorded_voyage_destination": null,
       "archival_register_reference": "NL-HaNA 2.22.24 / HCA 32-11.380",
       "assertion_ids": [
@@ -748,7 +749,8 @@
         "ast_na_380_ship_name",
         "ast_na_380_master",
         "ast_na_380_year",
-        "ast_na_380_origin_cadiz"
+        "ast_na_380_origin_descriptor",
+        "ast_na_380_origin_place_mapping"
       ]
     },
     {
@@ -1247,14 +1249,15 @@
       "source_record_id": "sr_na_hca32_11_380",
       "raw_name": "Antonio de Witte",
       "role": "master",
-      "ship_occurrence_id": "occ_ship_nostra_seniiora_380",
-      "vessel_name_raw": "Nostra Seniiora Concepcion y St Joseph",
+      "ship_occurrence_id": "occ_ship_nostra_seniora_380",
+      "vessel_name_raw": "Nostra Seniora Concepcion y St Joseph",
       "year_as_recorded": 1666,
       "departure_place_raw": null,
       "origin_descriptor_raw": "van Cadiz",
       "assertion_ids": [
         "ast_na_380_master",
-        "ast_na_380_year"
+        "ast_na_380_year",
+        "ast_na_380_origin_descriptor"
       ]
     },
     {
@@ -5246,7 +5249,7 @@
       "disambiguation_display": "(1666, Master Antonio de Witte)",
       "evidence_state": "probable_match",
       "occurrence_ids": [
-        "occ_ship_nostra_seniiora_380",
+        "occ_ship_nostra_seniora_380",
         "occ_ship_nostra_seniora_391"
       ],
       "reported_burden_display": "Burden unrecorded in Dutch inventory",
@@ -5625,7 +5628,7 @@
       ]
     },
     {
-      "occurrence_id": "occ_ship_nostra_seniiora_380",
+      "occurrence_id": "occ_ship_nostra_seniora_380",
       "target_entity_id": "ship_nostra_seniora_concepcion_1666",
       "resolution_state": "probable_match",
       "resolver": "project_archival_intake_na_2_22_24",
@@ -6113,7 +6116,8 @@
         "ast_crespo_6156_dep",
         "ast_crespo_6587_dep",
         "ast_crespo_6627_dep",
-        "ast_na_380_origin_cadiz"
+        "ast_na_380_origin_descriptor",
+        "ast_na_380_origin_place_mapping"
       ]
     },
     {

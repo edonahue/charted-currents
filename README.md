@@ -113,7 +113,7 @@ Packet 1 displays four real **modern locator** anchors to make the shell explora
 **Status**: Production (Packet 8 Complete).
 **Production URL**: [`https://charted-currents.pages.dev/`](https://charted-currents.pages.dev/)
 **Active Corpus**: Greater Caribbean & Transatlantic network (1666–1712), featuring:
-- **22 verified canonical vessels** across transatlantic and Caribbean route segments;
+- **22 canonical vessel entities** across transatlantic and Caribbean route segments;
 - **26 examined crew depositions** with raw preserved source spellings;
 - **29 resolved geographic places** with evidence-bounded notes and navigation coordinates;
 - **1,928 baseline dataset context records** linking Carrera de Indias commercial volume to mapped ports;
@@ -135,7 +135,7 @@ Aesthetic grounding should come primarily from period maps, charts, archival doc
 
 ## Repository status
 
-**Packet 8 Complete — Active Phase: Packet 9 (First Dutch Atlantic Documentary Thread).** The interactive atlas, 21-vessel provenance-backed maritime network, multi-source archival inspector, responsive timeline rail with reactive period filtering, place-centered dataset context, and Herman Moll ca. 1715 georeferenced period map reference layer are fully implemented, deterministically tested, and deployed to production on Cloudflare Pages. Subsequent milestones proceed from [`docs/ROADMAP.md`](docs/ROADMAP.md).
+**Packet 8 Complete — Active Phase: Packet 9 (Direct Prize Papers Documentary Thread via Nationaal Archief).** The interactive atlas, 21-vessel provenance-backed maritime network, multi-source archival inspector, responsive timeline rail with reactive period filtering, place-centered dataset context, and Herman Moll ca. 1715 georeferenced period map reference layer are fully implemented, deterministically tested, and deployed to production on Cloudflare Pages. Subsequent milestones proceed from [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Licensing
 

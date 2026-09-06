@@ -27,7 +27,7 @@ sources:
   public_use_basis: open_public_domain
   attribution_required: true
   credit_line: The National Archives, Kew
-  notes: Upstream archival series cited by IMLM. Physical manuscripts at Kew were not independently examined by Charted Currents.
+  notes: Primary legal repository holding original prize manuscripts and papers seized by English privateers and naval vessels. Cited upstream by IMLM (UK Data Service SN 852135) and held in photographic duplicate custody / digital surrogate format by Nationaal Archief, Den Haag (Archive 2.22.24). Physical manuscripts at Kew were not independently examined by Charted Currents.
 - id: src_royal_society_el_l5_117
   title: Letter, from T L [to the Royal Society]
   creator: T L
@@ -9412,14 +9412,14 @@ assertions:
 - id: ast_na_380_title
   source_record_id: sr_na_hca32_11_380
   field: archival_finding_aid_title
-  raw_value: 'Schip Nostra Seniiora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666'
+  raw_value: 'Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666'
   risk_class: A
 - id: ast_na_380_ship_name
   source_record_id: sr_na_hca32_11_380
   field: ship_name
-  raw_value: Nostra Seniiora Concepcion y St Joseph
+  raw_value: Nostra Seniora Concepcion y St Joseph
   language: es
-  normalized_search_key: nostra seniiora concepcion y st joseph
+  normalized_search_key: nostra seniora concepcion y st joseph
   risk_class: A
 - id: ast_na_380_master
   source_record_id: sr_na_hca32_11_380
@@ -9432,11 +9432,18 @@ assertions:
   year: 1666
   date_as_recorded: '1666'
   risk_class: A
-- id: ast_na_380_origin_cadiz
+- id: ast_na_380_origin_descriptor
   source_record_id: sr_na_hca32_11_380
   field: recorded_origin_descriptor
-  raw_value: Cadiz
+  raw_value: van Cadiz
+  risk_class: A
+- id: ast_na_380_origin_place_mapping
+  source_record_id: sr_na_hca32_11_380
+  source_assertion_id: ast_na_380_origin_descriptor
+  field: place_mapping
+  derived_value: Cádiz
   place_id: place_cadiz
+  derivation_method: deterministic_catalogue_place_mapping
   risk_class: B
 - id: ast_na_391_title
   source_record_id: sr_na_hca32_11_391
@@ -9804,7 +9811,8 @@ places:
   - ast_crespo_6156_dep
   - ast_crespo_6587_dep
   - ast_crespo_6627_dep
-  - ast_na_380_origin_cadiz
+  - ast_na_380_origin_descriptor
+  - ast_na_380_origin_place_mapping
 - id: place_curacao
   canonical_name: Curaçao
   raw_source_name: Curazao
@@ -10561,22 +10569,23 @@ ship_occurrences:
     fleet_destination: Amsterdam
     year: 1700
   fleet_convoy_display: Barco Holandés (Dutch Transatlantic Trade)
-- id: occ_ship_nostra_seniiora_380
+- id: occ_ship_nostra_seniora_380
   source_record_id: sr_na_hca32_11_380
   record_context: prize_capture
-  raw_name: Nostra Seniiora Concepcion y St Joseph
+  raw_name: Nostra Seniora Concepcion y St Joseph
   attestations:
-  - raw_name: Nostra Seniiora Concepcion y St Joseph
+  - raw_name: Nostra Seniora Concepcion y St Joseph
     evidence_layer: archival_catalogue_metadata
     language: es
     attestation_relationship: source_transcription
     source_record_id: sr_na_hca32_11_380
-    normalized_search_key: nostra seniiora concepcion y st joseph
+    normalized_search_key: nostra seniora concepcion y st joseph
   recorded_master: Antonio de Witte
   recorded_year: 1666
   date_precision: year
-  recorded_origin_descriptor: Cadiz
-  recorded_voyage_origin: Cadiz
+  recorded_origin_descriptor_raw: van Cadiz
+  recorded_origin_place_id: place_cadiz
+  recorded_voyage_origin: null
   recorded_voyage_destination: null
   archival_register_reference: NL-HaNA 2.22.24 / HCA 32-11.380
   assertion_ids:
@@ -10584,7 +10593,8 @@ ship_occurrences:
   - ast_na_380_ship_name
   - ast_na_380_master
   - ast_na_380_year
-  - ast_na_380_origin_cadiz
+  - ast_na_380_origin_descriptor
+  - ast_na_380_origin_place_mapping
 - id: occ_ship_nostra_seniora_391
   source_record_id: sr_na_hca32_11_391
   record_context: prize_capture
@@ -10667,14 +10677,15 @@ person_occurrences:
   source_record_id: sr_na_hca32_11_380
   raw_name: Antonio de Witte
   role: master
-  ship_occurrence_id: occ_ship_nostra_seniiora_380
-  vessel_name_raw: Nostra Seniiora Concepcion y St Joseph
+  ship_occurrence_id: occ_ship_nostra_seniora_380
+  vessel_name_raw: Nostra Seniora Concepcion y St Joseph
   year_as_recorded: 1666
   departure_place_raw: null
   origin_descriptor_raw: van Cadiz
   assertion_ids:
   - ast_na_380_master
   - ast_na_380_year
+  - ast_na_380_origin_descriptor
 - id: occ_person_antonio_de_witte_391
   source_record_id: sr_na_hca32_11_391
   raw_name: Antonio de Witte
@@ -11256,7 +11267,7 @@ ships:
   disambiguation_display: (1666, Master Antonio de Witte)
   evidence_state: probable_match
   occurrence_ids:
-  - occ_ship_nostra_seniiora_380
+  - occ_ship_nostra_seniora_380
   - occ_ship_nostra_seniora_391
   reported_burden_display: Burden unrecorded in Dutch inventory
   voyage_display: "Recorded origin: Cádiz · Destination unrecorded (1666)"
@@ -11532,7 +11543,7 @@ entity_resolution_edges:
   resolver: crespo_adapter
   evidence_assertions:
   - ast_crespo_4501_name
-- occurrence_id: occ_ship_nostra_seniiora_380
+- occurrence_id: occ_ship_nostra_seniora_380
   target_entity_id: ship_nostra_seniora_concepcion_1666
   resolution_state: probable_match
   resolver: project_archival_intake_na_2_22_24

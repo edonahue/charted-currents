@@ -14,7 +14,7 @@
   "components": [
     {
       "unitid": "HCA32-11.380",
-      "unittitle": "Schip Nostra Seniiora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte;",
+      "unittitle": "Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte;",
       "unitdate": "1666",
       "persistent_handle": "http://hdl.handle.net/10648/aa19a57e-e115-094f-e053-09f0900ae341",
       "mets_api_url": "https://service.archief.nl/gaf/api/mets/v1/df622bda-e85e-473b-94b4-ab1f6e2d225d",
@@ -46,6 +46,6 @@
     }
   ],
   "local_ead_components_file": "na_hca32_11_ead_components.xml",
-  "local_ead_components_sha256": "22cab1f2189f1a5913e94aad07097b39982c80688a00e3cea93863c863bf41b1",
-  "local_ead_components_size_bytes": 1446
+  "local_ead_components_sha256": "7ca901ec558458855be91793b1a32d64ff1030d0059b391294374c412905d573",
+  "local_ead_components_size_bytes": 1445
 }

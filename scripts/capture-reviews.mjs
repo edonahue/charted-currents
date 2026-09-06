@@ -2284,6 +2284,7 @@ async function runReviewSuite() {
 
     const concepcionCheck = await send("Runtime.evaluate", {
       expression: `(() => {
+        const kicker = document.querySelector('[data-inspector-kicker]')?.textContent || '';
         const title = document.querySelector('[data-inspector-title]')?.textContent || '';
         const subtitle = document.querySelector('[data-inspector-subtitle]')?.textContent || '';
         const master = document.querySelector('[data-ship-master]')?.textContent || '';
@@ -2294,11 +2295,12 @@ async function runReviewSuite() {
         const connectionsText = document.querySelector('[data-ship-connections-list]')?.textContent || '';
         const hasMasterRel = connectionsText.includes("Antonio de Witte") && connectionsText.includes("Master");
         const hasOriginRel = connectionsText.includes("Cádiz") && connectionsText.includes("Recorded Origin");
-        return { title, subtitle, master, voyage, capture, badge, register, hasMasterRel, hasOriginRel };
+        return { kicker, title, subtitle, master, voyage, capture, badge, register, hasMasterRel, hasOriginRel };
       })()`,
       returnByValue: true,
     });
     const shipVal = concepcionCheck?.result?.value;
+    assert(shipVal?.kicker === "Vessel", "Probable match vessel kicker displays neutral 'Vessel'");
     assert(shipVal?.title === "Nostra Seniora Concepcion y St Joseph", "Nostra Seniora Concepcion vessel title is accurately displayed");
     assert(shipVal?.subtitle.includes("(1666, Master Antonio de Witte)"), "Vessel subtitle notes 1666 and master Antonio de Witte");
     assert(shipVal?.capture.includes("HCA 32-11.380 / 11.391"), "Vessel capture notes Prize Papers (1666, HCA 32-11.380 / 11.391)");
@@ -2337,7 +2339,7 @@ async function runReviewSuite() {
         const activeYears = document.querySelector('[data-person-active-years]')?.textContent || '';
         const resolution = document.querySelector('[data-person-resolution-status]')?.textContent || '';
         const voyagesText = document.querySelector('[data-person-voyages-list]')?.textContent || '';
-        const hasVesselLink = (voyagesText.includes("Nostra Seniiora Concepcion y St Joseph") || voyagesText.includes("Nostra Seniora Concepcion y St Joseph")) && (voyagesText.includes("Origin: van Cadiz") || voyagesText.includes("Unrecorded voyage"));
+        const hasVesselLink = voyagesText.includes("Nostra Seniora Concepcion y St Joseph") && (voyagesText.includes("Origin: van Cadiz") || voyagesText.includes("Unrecorded voyage"));
         return { title, badge, role, activeYears, resolution, hasVesselLink };
       })()`,
       returnByValue: true,
@@ -2346,9 +2348,9 @@ async function runReviewSuite() {
     assert(deWitteVal?.title === "Antonio de Witte", "Person inspector displays Antonio de Witte");
     assert(deWitteVal?.badge === "Probable Match", "Person badge displays 'Probable Match'");
     assert(deWitteVal?.role === "Master", "Person role displays Master");
-    assert(deWitteVal?.activeYears.includes("1666"), "Person active years includes 1666");
+    assert(deWitteVal?.activeYears.includes("archival occurrence"), "Person active years reflects archival occurrences");
     assert(deWitteVal?.resolution.includes("Nationaal Archief"), "Person resolution status attributes Nationaal Archief");
-    assert(deWitteVal?.hasVesselLink, "Person voyages list links Nostra Seni(i)ora Concepcion y St Joseph");
+    assert(deWitteVal?.hasVesselLink, "Person voyages list links Nostra Seniora Concepcion y St Joseph");
 
     // D. Open Source Drawer from ship and verify Dutch archival metadata & primary facsimile
     await send("Runtime.evaluate", {

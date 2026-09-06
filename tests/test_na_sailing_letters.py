@@ -61,7 +61,7 @@ class TestNationaalArchiefSailingLetters(unittest.TestCase):
         self.assertEqual(rec_391.get("scan_count"), 7)
 
     def test_cadiz_source_assertion_and_no_modern_attestation(self):
-        """place_cadiz must link ast_na_380_origin_cadiz without modern Dutch toponym attestation."""
+        """place_cadiz must link ast_na_380_origin_descriptor without modern Dutch toponym attestation."""
         places_by_id = {p["id"]: p for p in self.entities["places"]}
         self.assertIn("place_cadiz", places_by_id)
         cadiz = places_by_id["place_cadiz"]
@@ -69,15 +69,20 @@ class TestNationaalArchiefSailingLetters(unittest.TestCase):
 
         nl_atts = [a for a in attestations if a.get("language") == "nl"]
         self.assertEqual(len(nl_atts), 0, "place_cadiz must not contain modern Dutch toponym attestation")
-        self.assertIn("ast_na_380_origin_cadiz", cadiz.get("source_assertion_ids", []))
+        self.assertIn("ast_na_380_origin_descriptor", cadiz.get("source_assertion_ids", []))
+        self.assertIn("ast_na_380_origin_place_mapping", cadiz.get("source_assertion_ids", []))
 
     def test_nostra_seniora_ship_and_person_resolution(self):
         """Nostra Seniora Concepcion and Antonio de Witte must resolve separate occurrences via probable_match."""
         ship_occs = {o["id"]: o for o in self.entities["ship_occurrences"]}
-        self.assertIn("occ_ship_nostra_seniiora_380", ship_occs)
+        self.assertIn("occ_ship_nostra_seniora_380", ship_occs)
         self.assertIn("occ_ship_nostra_seniora_391", ship_occs)
-        self.assertEqual(ship_occs["occ_ship_nostra_seniiora_380"]["raw_name"], "Nostra Seniiora Concepcion y St Joseph")
+        occ_380 = ship_occs["occ_ship_nostra_seniora_380"]
+        self.assertEqual(occ_380["raw_name"], "Nostra Seniora Concepcion y St Joseph")
         self.assertEqual(ship_occs["occ_ship_nostra_seniora_391"]["raw_name"], "Nostra Seniora Concepcion y St Joseph")
+        self.assertIsNone(occ_380.get("recorded_voyage_origin"), "Cádiz must not be stored as recorded_voyage_origin")
+        self.assertEqual(occ_380.get("recorded_origin_descriptor_raw"), "van Cadiz")
+        self.assertEqual(occ_380.get("recorded_origin_place_id"), "place_cadiz")
 
         ships_by_id = {s["id"]: s for s in self.entities["ships"]}
         self.assertIn("ship_nostra_seniora_concepcion_1666", ships_by_id)
@@ -107,6 +112,11 @@ class TestNationaalArchiefSailingLetters(unittest.TestCase):
         self.assertEqual(person["evidence_state"], "probable_match")
         self.assertIn("master", person["roles"])
         self.assertEqual(len(person["occurrence_ids"]), 2)
+
+        person_edges = [e for e in edges if e["target_entity_id"] == "person_antonio_de_witte_1666"]
+        self.assertEqual(len(person_edges), 2)
+        for edge in person_edges:
+            self.assertEqual(edge["resolution_state"], "probable_match")
 
         person_edges = [e for e in edges if e["target_entity_id"] == "person_antonio_de_witte_1666"]
         self.assertEqual(len(person_edges), 2)

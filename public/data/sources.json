@@ -24,7 +24,7 @@
       "public_use_basis": "open_public_domain",
       "attribution_required": true,
       "credit_line": "The National Archives, Kew",
-      "notes": "Upstream archival series cited by IMLM. Physical manuscripts at Kew were not independently examined by Charted Currents."
+      "notes": "Primary legal repository holding original prize manuscripts and papers seized by English privateers and naval vessels. Cited upstream by IMLM (UK Data Service SN 852135) and held in photographic duplicate custody / digital surrogate format by Nationaal Archief, Den Haag (Archive 2.22.24). Physical manuscripts at Kew were not independently examined by Charted Currents."
     },
     {
       "id": "src_royal_society_el_l5_117",
@@ -12564,16 +12564,16 @@
       "id": "ast_na_380_title",
       "source_record_id": "sr_na_hca32_11_380",
       "field": "archival_finding_aid_title",
-      "raw_value": "Schip Nostra Seniiora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666",
+      "raw_value": "Schip Nostra Seniora Concepcion y St Joseph van Cadiz onder leiding van Antonio de Witte; 1666",
       "risk_class": "A"
     },
     {
       "id": "ast_na_380_ship_name",
       "source_record_id": "sr_na_hca32_11_380",
       "field": "ship_name",
-      "raw_value": "Nostra Seniiora Concepcion y St Joseph",
+      "raw_value": "Nostra Seniora Concepcion y St Joseph",
       "language": "es",
-      "normalized_search_key": "nostra seniiora concepcion y st joseph",
+      "normalized_search_key": "nostra seniora concepcion y st joseph",
       "risk_class": "A"
     },
     {
@@ -12592,11 +12592,20 @@
       "risk_class": "A"
     },
     {
-      "id": "ast_na_380_origin_cadiz",
+      "id": "ast_na_380_origin_descriptor",
       "source_record_id": "sr_na_hca32_11_380",
       "field": "recorded_origin_descriptor",
-      "raw_value": "Cadiz",
+      "raw_value": "van Cadiz",
+      "risk_class": "A"
+    },
+    {
+      "id": "ast_na_380_origin_place_mapping",
+      "source_record_id": "sr_na_hca32_11_380",
+      "source_assertion_id": "ast_na_380_origin_descriptor",
+      "field": "place_mapping",
+      "derived_value": "Cádiz",
       "place_id": "place_cadiz",
+      "derivation_method": "deterministic_catalogue_place_mapping",
       "risk_class": "B"
     },
     {

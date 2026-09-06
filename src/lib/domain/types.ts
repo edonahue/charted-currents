@@ -248,6 +248,8 @@ export interface PublishedShipOccurrence {
   recorded_year?: number;
   recorded_date?: string | null;
   date_precision?: "day" | "month" | "year" | "circa";
+  recorded_origin_descriptor_raw?: string | null;
+  recorded_origin_place_id?: string | null;
   recorded_voyage_origin?: string | null;
   recorded_muster_place?: string | null;
   recorded_voyage_destination?: string | null;

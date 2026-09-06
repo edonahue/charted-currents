@@ -188,6 +188,14 @@ export function validatePublishedData(dataDir = targetDir, isSilent = false) {
       assert(assertionIds.has(astId), `Ship occurrence ${occ.id} references nonexistent assertion ${astId}`);
     }
 
+    if (occ.recorded_origin_place_id) {
+      assert(placeIds.has(occ.recorded_origin_place_id), `Ship occurrence ${occ.id} references nonexistent recorded_origin_place_id ${occ.recorded_origin_place_id}`);
+      assert(
+        !occ.recorded_voyage_origin,
+        `Ship occurrence ${occ.id} has recorded_origin_place_id but also specifies recorded_voyage_origin; recorded origins must not be treated as voyage departures`
+      );
+    }
+
     // Validate structured fleet convoy context if present
     if (occ.fleet_convoy) {
       const fc = occ.fleet_convoy;

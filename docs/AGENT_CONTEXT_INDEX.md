@@ -12,7 +12,7 @@ Use this file to load **the minimum useful context for the task**. Do not read t
 - Packet 6 recorded goods across Spanish Atlantic and Dutch Caribbean (MERCANCIAS itemization, commodity cross-tabulation, and contradiction reconciliation) are complete, accepted, and merged on `main`.
 - Packet 7 place-centered dataset context, TodosNavios analytical derivation, and deterministic place mapping are complete, accepted, and merged on `main`.
 - Packet 8 (First Period Map Reference Layer: Herman Moll ca. 1715) is complete, accepted, and hosted-verified on `main`.
-- Packet 9 (First Dutch Atlantic Documentary Thread) is the active product phase: introducing archival records and digitized facsimiles from the Dutch National Archives (Nationaal Archief, Den Haag, Archive 2.22.24: High Court of Admiralty Prize Papers / Sailing Letters).
+- Packet 9 (Direct Prize Papers Documentary Thread via Nationaal Archief) is the active product phase: connecting Dutch archival finding aids and photographic duplicate / digital surrogate custody (Nationaal Archief, Den Haag, Archive 2.22.24: High Court of Admiralty Prize Papers / Sailing Letters) with the physical legal custody at The National Archives, Kew (HCA 32).
 
 The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–4 interaction/provenance architecture.
 

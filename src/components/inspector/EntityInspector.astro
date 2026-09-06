@@ -180,7 +180,7 @@
               <dd data-ship-fleet></dd>
             </div>
             <div class="inspector-meta__row">
-              <dt>Recorded Voyage</dt>
+              <dt data-ship-voyage-label>Recorded Voyage</dt>
               <dd data-ship-voyage></dd>
             </div>
             <div class="inspector-meta__row" data-ship-capture-row>
@@ -366,8 +366,8 @@
           <p class="inspector-note" data-person-notes></p>
         </section>
 
-        <section class="inspector-section" aria-label="Documented master voyages">
-          <p class="panel-kicker">Recorded Master Voyages</p>
+        <section class="inspector-section" aria-label="Archival occurrences">
+          <p class="panel-kicker" data-person-voyages-kicker>Archival Occurrences</p>
           <div class="inspector-connections-list" data-person-voyages-list></div>
         </section>
 
@@ -714,9 +714,10 @@
       // Also check for documented vessels departing/recorded at this place without aggregated routes
       const directVesselOccs = entitiesCache.ship_occurrences.filter((occ) => {
         const isAtPlace =
+          occ.recorded_origin_place_id === place.id ||
           occ.recorded_voyage_origin === place.canonical_name ||
           occ.recorded_voyage_origin === place.raw_source_name ||
-          (place.id === "place_cadiz" && occ.recorded_voyage_origin === "Cadiz");
+          (place.id === "place_cadiz" && (occ.recorded_voyage_origin === "Cadiz" || occ.recorded_origin_descriptor_raw === "van Cadiz"));
         if (!isAtPlace) return false;
         const edge = entitiesCache?.entity_resolution_edges.find((e) => e.occurrence_id === occ.id);
         const targetShipId = edge?.target_entity_id;
@@ -921,7 +922,7 @@
     const capYear = capYearMatch ? parseInt(capYearMatch[1], 10) : shipOcc?.recorded_year || null;
     checkPeriodFocus(capYear);
 
-    if (kickerEl) kickerEl.textContent = "Documented Vessel";
+    if (kickerEl) kickerEl.textContent = ship.evidence_state === "probable_match" ? "Vessel" : "Documented Vessel";
     if (badgeWrap && badgeEl) {
       badgeWrap.hidden = false;
       const shipEvState = ship.evidence_state || "documented";
@@ -1013,6 +1014,12 @@
       }
     }
 
+    const shipVoyageLabel = document.querySelector<HTMLElement>("[data-ship-voyage-label]");
+    if (shipVoyageLabel) {
+      shipVoyageLabel.textContent = (shipOcc?.recorded_origin_descriptor_raw || shipOcc?.recorded_origin_place_id) && !shipOcc?.recorded_voyage_destination
+        ? "Recorded Origin"
+        : "Recorded Voyage";
+    }
     if (shipVoyage) shipVoyage.textContent = ship.voyage_display;
 
     if (shipCaptureRow) {
@@ -1254,12 +1261,13 @@
       }
 
       // Check if voyage origin place exists without an aggregated route edge
-      const unroutedOrigin = !connectedEdges.length && shipOcc?.recorded_voyage_origin
+      const unroutedOrigin = !connectedEdges.length && (shipOcc?.recorded_origin_place_id || shipOcc?.recorded_voyage_origin)
         ? entitiesCache.places.find(
             (p) =>
-              p.canonical_name === shipOcc.recorded_voyage_origin ||
-              p.raw_source_name === shipOcc.recorded_voyage_origin ||
-              (p.id === "place_cadiz" && shipOcc.recorded_voyage_origin === "Cadiz")
+              p.id === shipOcc?.recorded_origin_place_id ||
+              p.canonical_name === shipOcc?.recorded_voyage_origin ||
+              p.raw_source_name === shipOcc?.recorded_voyage_origin ||
+              (p.id === "place_cadiz" && shipOcc?.recorded_voyage_origin === "Cadiz")
           )
         : null;
 
@@ -1517,10 +1525,21 @@
         personRole.textContent = person.roles?.map((r) => r.charAt(0).toUpperCase() + r.slice(1)).join(", ") || "Documented Role";
       }
     }
+    const personVoyagesKicker = document.querySelector<HTMLElement>("[data-person-voyages-kicker]");
+    if (personVoyagesKicker) {
+      personVoyagesKicker.textContent = person.id === "person_bartolome_antonio_garrote"
+        ? "Recorded Master Voyages"
+        : "Archival Occurrences";
+    }
+
     if (personActiveYears) {
       const occCount = person.occurrence_ids ? person.occurrence_ids.length : 1;
       const yrLabel = yr ? (yr[0] === yr[1] ? `${yr[0]}` : `${yr[0]}–${yr[1]}`) : "";
-      personActiveYears.textContent = yrLabel ? `${yrLabel} (${occCount} recorded ${occCount === 1 ? "voyage/appearance" : "voyages"})` : "";
+      if (person.id === "person_bartolome_antonio_garrote") {
+        personActiveYears.textContent = yrLabel ? `${yrLabel} (${occCount} recorded voyages)` : "";
+      } else {
+        personActiveYears.textContent = yrLabel ? `${yrLabel} (${occCount} archival occurrence${occCount === 1 ? "" : "s"})` : "";
+      }
     }
     if (personResolutionStatus) {
       if (person.id === "person_bartolome_antonio_garrote") {
