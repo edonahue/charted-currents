@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mets PROFILE="apeMETS" xmlns="http://www.loc.gov/METS/" xmlns:rts="http://www.archivesportaleurope.net/Portal/profiles/rights/" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <metsHdr CREATEDATE="2026-09-06T01:11:57.752Z" LASTMODDATE="2026-09-06T01:11:57.752Z" RECORDSTATUS="NEW">
+        <agent ROLE="CUSTODIAN">
+            <name>Nationaal Archief</name>
+        </agent>
+        <agent ROLE="DISSEMINATOR">
+            <name>Nationaal Archief</name>
+        </agent>
+        <agent ROLE="ARCHIVIST">
+            <name>Nationaal Archief</name>
+        </agent>
+        <altRecordID TYPE="apeID">df622bda-e85e-473b-94b4-ab1f6e2d225d</altRecordID>
+        <metsDocumentID>df622bda-e85e-473b-94b4-ab1f6e2d225d.xml</metsDocumentID>
+    </metsHdr>
+    <amdSec>
+        <rightsMD ID="rights1">
+            <mdWrap MDTYPE="OTHER" OTHERMDTYPE="apeMETSRights">
+                <xmlData>
+                    <rts:RightsDeclarationMD RIGHTSDECID="SET36392ada8767cc3c3548367d833b35e2" RIGHTSCATEGORY="PUBLIC DOMAIN">
+                        <rts:RightsDeclaration CONTEXT="Set B: Rechtenvrij / Publiek Domein"/>
+                        <rts:RightsHolder>
+                            <rts:RightsHolderName>Nationaal Archief</rts:RightsHolderName>
+                            <rts:RightsHolderComments>DIT betreft de collecties die wegens ouderdom inmiddels rechtenvrij zijn of in het publiek domein vallen: collecties Eerste Wereldoorlog, KNVB (let op: bij gebruik foto's KNVB moet toestemming aan KNVB gevraagd worden), Rijkswaterstaat en Van Houten.</rts:RightsHolderComments>
+                            <rts:RightsHolderContact>
+                                <rts:RightsHolderContactDesignation>Nationaal Archief</rts:RightsHolderContactDesignation>
+                                <rts:RightsHolderContactAddress>Prins Willem Alexanderhof 20, 2595 BE Den Haag, NL </rts:RightsHolderContactAddress>
+                                <rts:RightsHolderContactPhone PHONETYPE="BUSINESS">+31 (0)70 331 54 00</rts:RightsHolderContactPhone>
+                                <rts:RightsHolderContactEmail>info@nationaalarchief.nl</rts:RightsHolderContactEmail>
+                            </rts:RightsHolderContact>
+                        </rts:RightsHolder>
+                        <rts:Context CONTEXTCLASS="GENERAL PUBLIC">
+                            <rts:Permissions DISCOVER="true" DISPLAY="true" COPY="true" DUPLICATE="true" MODIFY="true" DELETE="true" PRINT="true"/>
+                        </rts:Context>
+                    </rts:RightsDeclarationMD>
+                </xmlData>
+            </mdWrap>
+        </rightsMD>
+    </amdSec>
+    <fileSec>
+        <fileGrp USE="DEFAULT">
+            <file ID="ID5802eb91-4b6b-4f87-9b95-70ac88438e40DEF" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="26179728">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/default/5802eb91-4b6b-4f87-9b95-70ac88438e40" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID6a510d03-f572-46a8-898a-924f0c052b36DEF" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="51323448">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/default/6a510d03-f572-46a8-898a-924f0c052b36" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID1d1f30ca-5d47-47ae-804e-818bc7c2a008DEF" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="51319252">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/default/1d1f30ca-5d47-47ae-804e-818bc7c2a008" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID4ff5d4e4-067d-4345-8bac-388be0868002DEF" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="51204328">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/default/4ff5d4e4-067d-4345-8bac-388be0868002" LOCTYPE="URL"/>
+            </file>
+            <file ID="IDfe6a8be5-cf73-4b87-94b1-6190a42f809dDEF" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="26245336">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/default/fe6a8be5-cf73-4b87-94b1-6190a42f809d" LOCTYPE="URL"/>
+            </file>
+        </fileGrp>
+        <fileGrp USE="THUMBS">
+            <file ID="ID5802eb91-4b6b-4f87-9b95-70ac88438e40THB" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="0">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/thumb/5802eb91-4b6b-4f87-9b95-70ac88438e40" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID6a510d03-f572-46a8-898a-924f0c052b36THB" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="0">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/thumb/6a510d03-f572-46a8-898a-924f0c052b36" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID1d1f30ca-5d47-47ae-804e-818bc7c2a008THB" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="0">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/thumb/1d1f30ca-5d47-47ae-804e-818bc7c2a008" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID4ff5d4e4-067d-4345-8bac-388be0868002THB" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="0">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/thumb/4ff5d4e4-067d-4345-8bac-388be0868002" LOCTYPE="URL"/>
+            </file>
+            <file ID="IDfe6a8be5-cf73-4b87-94b1-6190a42f809dTHB" USE="DISPLAY" MIMETYPE="image/jpeg" SIZE="0">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/api/file/v1/thumb/fe6a8be5-cf73-4b87-94b1-6190a42f809d" LOCTYPE="URL"/>
+            </file>
+        </fileGrp>
+        <fileGrp USE="DISPLAY">
+            <file ID="ID5802eb91-4b6b-4f87-9b95-70ac88438e40IIP" USE="DISPLAY" MIMETYPE="application/ld+json">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/iip/iipsrv?IIIF=df/62/2b/da/e8/5e/47/3b/94/b4/ab/1f/6e/2d/22/5d/5802eb91-4b6b-4f87-9b95-70ac88438e40.jp2/info.json" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID6a510d03-f572-46a8-898a-924f0c052b36IIP" USE="DISPLAY" MIMETYPE="application/ld+json">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/iip/iipsrv?IIIF=df/62/2b/da/e8/5e/47/3b/94/b4/ab/1f/6e/2d/22/5d/6a510d03-f572-46a8-898a-924f0c052b36.jp2/info.json" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID1d1f30ca-5d47-47ae-804e-818bc7c2a008IIP" USE="DISPLAY" MIMETYPE="application/ld+json">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/iip/iipsrv?IIIF=df/62/2b/da/e8/5e/47/3b/94/b4/ab/1f/6e/2d/22/5d/1d1f30ca-5d47-47ae-804e-818bc7c2a008.jp2/info.json" LOCTYPE="URL"/>
+            </file>
+            <file ID="ID4ff5d4e4-067d-4345-8bac-388be0868002IIP" USE="DISPLAY" MIMETYPE="application/ld+json">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/iip/iipsrv?IIIF=df/62/2b/da/e8/5e/47/3b/94/b4/ab/1f/6e/2d/22/5d/4ff5d4e4-067d-4345-8bac-388be0868002.jp2/info.json" LOCTYPE="URL"/>
+            </file>
+            <file ID="IDfe6a8be5-cf73-4b87-94b1-6190a42f809dIIP" USE="DISPLAY" MIMETYPE="application/ld+json">
+                <FLocat xlink:type="simple" xlink:href="https://service.archief.nl/iip/iipsrv?IIIF=df/62/2b/da/e8/5e/47/3b/94/b4/ab/1f/6e/2d/22/5d/fe6a8be5-cf73-4b87-94b1-6190a42f809d.jp2/info.json" LOCTYPE="URL"/>
+            </file>
+        </fileGrp>
+    </fileSec>
+    <structMap TYPE="PHYSICAL" LABEL="PHYSICAL">
+        <div LABEL="physSequence">
+            <div ID="ID5802eb91-4b6b-4f87-9b95-70ac88438e40" ORDER="1" ORDERLABEL="record (item)" LABEL="NL-HaNA_2.22.24_HCA32-11.380_0001.tif">
+                <fptr FILEID="ID5802eb91-4b6b-4f87-9b95-70ac88438e40DEF"/>
+                <fptr FILEID="ID5802eb91-4b6b-4f87-9b95-70ac88438e40THB"/>
+                <fptr FILEID="ID5802eb91-4b6b-4f87-9b95-70ac88438e40IIP"/>
+            </div>
+            <div ID="ID6a510d03-f572-46a8-898a-924f0c052b36" ORDER="2" ORDERLABEL="record (item)" LABEL="NL-HaNA_2.22.24_HCA32-11.380_0002.tif">
+                <fptr FILEID="ID6a510d03-f572-46a8-898a-924f0c052b36DEF"/>
+                <fptr FILEID="ID6a510d03-f572-46a8-898a-924f0c052b36THB"/>
+                <fptr FILEID="ID6a510d03-f572-46a8-898a-924f0c052b36IIP"/>
+            </div>
+            <div ID="ID1d1f30ca-5d47-47ae-804e-818bc7c2a008" ORDER="3" ORDERLABEL="record (item)" LABEL="NL-HaNA_2.22.24_HCA32-11.380_0003.tif">
+                <fptr FILEID="ID1d1f30ca-5d47-47ae-804e-818bc7c2a008DEF"/>
+                <fptr FILEID="ID1d1f30ca-5d47-47ae-804e-818bc7c2a008THB"/>
+                <fptr FILEID="ID1d1f30ca-5d47-47ae-804e-818bc7c2a008IIP"/>
+            </div>
+            <div ID="ID4ff5d4e4-067d-4345-8bac-388be0868002" ORDER="4" ORDERLABEL="record (item)" LABEL="NL-HaNA_2.22.24_HCA32-11.380_0004.tif">
+                <fptr FILEID="ID4ff5d4e4-067d-4345-8bac-388be0868002DEF"/>
+                <fptr FILEID="ID4ff5d4e4-067d-4345-8bac-388be0868002THB"/>
+                <fptr FILEID="ID4ff5d4e4-067d-4345-8bac-388be0868002IIP"/>
+            </div>
+            <div ID="IDfe6a8be5-cf73-4b87-94b1-6190a42f809d" ORDER="5" ORDERLABEL="record (item)" LABEL="NL-HaNA_2.22.24_HCA32-11.380_0005.tif">
+                <fptr FILEID="IDfe6a8be5-cf73-4b87-94b1-6190a42f809dDEF"/>
+                <fptr FILEID="IDfe6a8be5-cf73-4b87-94b1-6190a42f809dTHB"/>
+                <fptr FILEID="IDfe6a8be5-cf73-4b87-94b1-6190a42f809dIIP"/>
+            </div>
+        </div>
+    </structMap>
+</mets>
