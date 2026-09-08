@@ -7,8 +7,17 @@ This log records substantive historical, provenance, and cartographic correction
 ## Correction Entry: `CORR-20260906-01`
 
 * **Date**: 2026-09-06
-* **Status**: `corrected` (self-verified, pending maintainer review)
-* **First Corrected Branch / Release**: `correction-moll-georeference` (targeting next corpus release after `0.7.0`)
+* **Status**: `accepted — merged — hosted_verified` (external review accepted; PR #8 merged; hosted production verified 2026-09-08)
+* **First Corrected Branch / Release**: `main` via PR #8 (feature branch: `correction-moll-georeference`)
+* **Verification & Merge Metadata**:
+  * Feature Branch HEAD: `dca9130ae8126110ebd68f4836743fe60e66a36e`
+  * Pull Request: [PR #8](https://github.com/edonahue/charted-currents/pull/8)
+  * Merge Commit SHA: `1c55573637a28ee1c6ad50f9b2c77cbc1fe46bb0` (2026-09-08T00:50:20-04:00)
+  * Main CI Run ID: `34188412513` (`success`)
+  * Cloudflare Production Deployment: `4e5a4219-334f-4d29-9d10-0c66e43e10a5` (check-run `101941938790`, `success`)
+  * Hosted Verification Timestamp: `2026-09-08T00:57:07-04:00` (12/12 automated production smoke checks passed on `https://charted-currents.com/`)
+  * Original Packet 8 WebP SHA: `b1a03f4ee7dd2664ff035bb7ef1d893297a7d4554b73ad640eb424075b318cf8`
+  * Corrected Canonical WebP SHA: `1250d8864beb684357f3e3ec7dc066be1e49d39160ad6297cf4004115befb0d5`
 * **Category**: Cartographic georeference / Class F (spatial alignment) and Class B (transformation parameter) assertion correction
 * **Impacted Objects**:
   * Assertion: `ast_loc_moll_georeference` in `public/data/sources.json`
