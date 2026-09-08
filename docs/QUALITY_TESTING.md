@@ -38,7 +38,7 @@ npm run review:quality:full
 
 ## 2. Test Architecture
 
-The audit suite is implemented in [`scripts/quality-audit.mjs`](file:///home/erich/projects/charted-currents/scripts/quality-audit.mjs) and consists of four main layers:
+The audit suite is implemented in `scripts/quality-audit.mjs` and consists of four main layers:
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -66,7 +66,7 @@ Axe-core scans run across 6 distinct application UI states:
 6. **About / Methodology Dialog**: Scholarly methodology and attribution modal open.
 
 #### Baseline Ratchet Mechanism
-To prevent regressions without blocking on pre-existing editorial contrast choices, the test enforces a **zero-critical, ratcheted-serious** policy defined in [`tests/a11y-baseline.json`](file:///home/erich/projects/charted-currents/tests/a11y-baseline.json):
+To prevent regressions without blocking on pre-existing editorial contrast choices, the test enforces a **zero-critical, ratcheted-serious** policy defined in `tests/a11y-baseline.json`:
 * **Critical violations**: strictly 0 allowed. Any critical violation fails the run.
 * **Serious violations**: only specific selectors documented in the baseline file are tolerated (currently `.inspector-dataset-context-badge` for historical dataset tags). Any new or unexpected serious rule or selector fails the run.
 * **Moderate / Minor**: recorded for monitoring in `quality-audit.json` without failing the build.
@@ -111,7 +111,7 @@ When run with `--full`, high-resolution full-page or component screenshots are w
 > `test-results/` is explicitly listed in `.gitignore` to prevent binary image drift in git history. Screenshots are generated locally or in review artifacts.
 
 ### Audit Report JSON
-Every run emits [`test-results/quality-audit.json`](file:///home/erich/projects/charted-currents/test-results/quality-audit.json) containing:
+Every run emits `test-results/quality-audit.json` containing:
 * Timestamp, execution time (ms), and mode (`ci-mode` vs `full`).
 * Total axe violations count categorized by impact (`critical`, `serious`, `moderate`, `minor`).
 * Array of evaluated viewports and pass/fail layout statuses.
@@ -124,7 +124,7 @@ This file is automatically consumed by `scripts/packet-report.mjs --quality=test
 
 ## 4. Continuous Integration (CI)
 
-In [`.github/workflows/ci.yml`](file:///home/erich/projects/charted-currents/.github/workflows/ci.yml), the `review:quality` job runs after unit tests and before deployment:
+In `.github/workflows/ci.yml`, the `review:quality` job runs after unit tests and before deployment:
 ```yaml
 - name: Run product quality and accessibility audit
   run: npm run review:quality
