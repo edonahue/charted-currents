@@ -27,6 +27,17 @@ function argsValue(prefix) {
 
 const jsonMode = process.argv.includes("--json");
 const sourceFilter = argsValue("--source=");
+const factsArg = argsValue("--facts=");
+const qualityArg = argsValue("--quality=");
+
+const qualityPath = qualityArg || (existsSync("test-results/quality-audit.json") ? "test-results/quality-audit.json" : null);
+const qualityData = qualityPath ? readJson(qualityPath, null) : null;
+
+let factsPath = factsArg;
+if (!factsPath && existsSync("data/source_acquisitions/loc_gm71005442/candidate_benchmark.json")) {
+  factsPath = "data/source_acquisitions/loc_gm71005442/candidate_benchmark.json";
+}
+const factsData = factsPath ? readJson(factsPath, null) : null;
 
 const branch = git(["rev-parse", "--abbrev-ref", "HEAD"]);
 const head = git(["rev-parse", "HEAD"]);
@@ -110,6 +121,22 @@ const report = {
         unrecorded_places: Object.values(datasetContext.places || {}).filter((p) => p.status === "unrecorded").length,
       }
     : null,
+  quality_audit: qualityData
+    ? {
+        path: qualityPath,
+        mode: qualityData.mode ?? null,
+        timestamp: qualityData.timestamp ?? null,
+        summary: qualityData.summary ?? null,
+        journeys_passed: qualityData.summary?.journeys_passed ?? null,
+        journeys_total: Array.isArray(qualityData.journeys) ? qualityData.journeys.length : null,
+      }
+    : null,
+  machine_derived_facts: factsData
+    ? {
+        path: factsPath,
+        facts: factsData,
+      }
+    : null,
   caveat: "This report is data-derived. It does not assert that tests, CI, preview, production deployment, source URLs, or external services were verified in this run.",
 };
 
@@ -150,6 +177,38 @@ if (sourceFilter) {
   console.log(`Source filter: ${sourceFilter}`);
   for (const record of report.source_filter.records) {
     console.log(`  ${record.id} | native=${record.native_identifier ?? "—"} | inspection=${record.inspection_state ?? "—"} | ${record.title ?? ""}`);
+  }
+}
+if (report.quality_audit && report.quality_audit.summary) {
+  const qa = report.quality_audit;
+  console.log("------------------------------------------");
+  console.log(`Quality & Accessibility Audit (${qa.path}):`);
+  console.log(`  Critical A11y Violations: ${qa.summary.critical_a11y ?? 0}`);
+  console.log(`  Serious A11y Violations:  ${qa.summary.serious_a11y ?? 0} (${qa.summary.allowed_serious_a11y ?? 0} allowed baseline, ${qa.summary.unallowed_serious_a11y ?? 0} unallowed)`);
+  console.log(`  Moderate A11y Violations: ${qa.summary.moderate_a11y ?? 0}`);
+  console.log(`  Minor A11y Violations:    ${qa.summary.minor_a11y ?? 0}`);
+  console.log(`  Layout Failures:          ${qa.summary.layout_failures ?? 0}`);
+  console.log(`  User Journeys:            ${qa.journeys_passed ?? 0} / ${qa.journeys_total ?? 0} passed`);
+}
+if (report.machine_derived_facts && report.machine_derived_facts.facts) {
+  const mf = report.machine_derived_facts;
+  console.log("------------------------------------------");
+  console.log(`Machine-Derived Facts (${mf.path}):`);
+  const fd = mf.facts;
+  if (fd.candidate_c_full_scope) {
+    const c = fd.candidate_c_full_scope;
+    console.log(`  Candidate C GCPs:        ${c.gcp_count}`);
+    console.log(`  In-sample RMSE:          ${c.rmse_in_sample_km} km`);
+    console.log(`  LOOCV RMSE:              ${c.rmse_loocv_km} km`);
+    console.log(`  LOOCV Mean:              ${c.loocv_mean_km} km`);
+    console.log(`  LOOCV Median:            ${c.loocv_median_km} km`);
+    console.log(`  LOOCV Max:               ${c.loocv_max_km} km (${c.loocv_max_feature})`);
+  } else {
+    for (const [k, v] of Object.entries(fd).slice(0, 10)) {
+      if (typeof v === "number" || typeof v === "string" || typeof v === "boolean") {
+        console.log(`  ${k.padEnd(24)} ${v}`);
+      }
+    }
   }
 }
 console.log("------------------------------------------");

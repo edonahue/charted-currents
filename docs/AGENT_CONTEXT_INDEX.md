@@ -13,6 +13,8 @@ Use this file to load **the minimum useful context for the task**. Do not read t
 - Packet 7 place-centered dataset context, TodosNavios analytical derivation, and deterministic place mapping are complete, accepted, and merged on `main`.
 - Packet 8 (First Period Map Reference Layer: Herman Moll ca. 1715) is complete, accepted, and hosted-verified on `main`.
 - Packet 9 (Direct Prize Papers Documentary Thread via Nationaal Archief) is complete, accepted, merged, and hosted-verified on `main` and the canonical production domain `https://charted-currents.com/`.
+- Corrective Interstitial CORR-20260906-01 (Herman Moll [1715?] Georeference Quality Pass, Candidate C) is accepted, merged, and hosted-verified on `main`.
+- Packet 11 (First Bounded Privateering Encounter & Prize Connection + Quality & Reporting Instrumentation) is implemented and self-verified on `packet11-privateering-quality-instrumentation`.
 
 The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–4 interaction/provenance architecture.
 
@@ -70,7 +72,8 @@ When the task changes or reviews public historical claims, also read:
 
 For adversarial historical review, use `.agents/skills/charted-currents-historical-audit/SKILL.md`.
 
-Then read only the relevant source registries/dossiers.
+Then read only the relevant source registries/dossiers:
+- `docs/packets/packet11_historical_dossier.md` — Packet 11 archival dossier, dual archival corroboration (`CO 138/11` vs `HCA 32/80`), and epistemic classification.
 
 ## Source ingestion, APIs, archival research, or source accounts
 
@@ -147,6 +150,10 @@ For Gemini/Antigravity local configuration use:
 - `docs/LOCAL_GEMINI_SCHOLARLY_REVIEW_SETUP.md` for the current maintainer workflow, deferred worktree/rules posture, and parallel historical auditors.
 
 Visual review screenshots belong under `design/reviews/` only when they come from the real running application and are safe to publish.
+
+## Testing, quality audits, and verification
+
+Read `docs/QUALITY_TESTING.md` for automated design, usage, viewport, and axe-core accessibility auditing via `@axe-core/puppeteer` across 6 UI states, 5 viewports, and 4 user journeys.
 
 ## Current/future work
 

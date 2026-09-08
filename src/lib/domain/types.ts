@@ -359,6 +359,19 @@ export interface PublishedShip {
   recorded_goods_display?: string | null;
   goods_summary_display?: string | null;
   goods_value_display?: string | null;
+  privateering_engagement?: PublishedPrivateeringEngagement | null;
+}
+
+export interface PublishedPrivateeringEngagement {
+  engagement_display: string;
+  resistance_display: string;
+  plunder_display: string;
+  petition_display: string;
+  report_date: string;
+  calendar_ref: string;
+  upstream_ref: string;
+  source_id: string;
+  assertion_ids: string[];
 }
 
 export interface PublishedEntityResolutionEdge {

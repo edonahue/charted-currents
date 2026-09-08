@@ -143,6 +143,11 @@
     if (field === "upstream_archive_reference") {
       return `Cited in upstream archival series: ${ast.raw_value}`;
     }
+    if (field === "battle_engagement") return String(ast.raw_value || "");
+    if (field === "crew_resistance") return String(ast.raw_value || "");
+    if (field === "plunder_cargo") return String(ast.raw_value || "");
+    if (field === "jamaica_petition") return String(ast.raw_value || "");
+    if (field === "report_date") return `Council of Trade Report Date: ${ast.raw_value}`;
     if (field === "crew_examination") {
       const parts: string[] = [];
       if (ast.first_name || ast.last_name) parts.push(`${ast.first_name || ""} ${ast.last_name || ""}`.trim());

@@ -263,6 +263,33 @@
           </button>
         </section>
 
+        <!-- Privateering Engagement & Petition Section (Packet 11) -->
+        <section class="inspector-section" data-ship-privateering-section hidden aria-label="Privateering encounter & petition">
+          <p class="panel-kicker">Privateering Encounter & Petition</p>
+          <dl class="inspector-meta">
+            <div class="inspector-meta__row" data-privateering-engagement-row>
+              <dt>Recorded Action</dt>
+              <dd data-privateering-engagement></dd>
+            </div>
+            <div class="inspector-meta__row" data-privateering-resistance-row>
+              <dt>Crew Resistance</dt>
+              <dd data-privateering-resistance></dd>
+            </div>
+            <div class="inspector-meta__row" data-privateering-plunder-row>
+              <dt>Cargo Plunder</dt>
+              <dd data-privateering-plunder></dd>
+            </div>
+            <div class="inspector-meta__row" data-privateering-petition-row>
+              <dt>Queen Anne Petition</dt>
+              <dd data-privateering-petition></dd>
+            </div>
+          </dl>
+          <p class="inspector-field-note" data-privateering-upstream-note></p>
+          <button type="button" class="inspector-evidence-btn" data-privateering-evidence-btn>
+            Inspect Council of Trade Report in Source Drawer ↗
+          </button>
+        </section>
+
         <!-- Ship Connections -->
         <section class="inspector-section" data-ship-connections-wrap hidden aria-label="Network connections">
           <p class="panel-kicker">Network Connections</p>
@@ -464,6 +491,15 @@
   const shipGoodsMeasureNote = document.querySelector<HTMLElement>("[data-ship-goods-measure-note]");
   const shipGoodsMeasureText = document.querySelector<HTMLElement>("[data-ship-goods-measure-text]");
   const shipGoodsEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-ship-goods-evidence-btn]");
+
+  // Privateering Encounter Selectors (Packet 11)
+  const shipPrivateeringSection = document.querySelector<HTMLElement>("[data-ship-privateering-section]");
+  const privateeringEngagement = document.querySelector<HTMLElement>("[data-privateering-engagement]");
+  const privateeringResistance = document.querySelector<HTMLElement>("[data-privateering-resistance]");
+  const privateeringPlunder = document.querySelector<HTMLElement>("[data-privateering-plunder]");
+  const privateeringPetition = document.querySelector<HTMLElement>("[data-privateering-petition]");
+  const privateeringUpstreamNote = document.querySelector<HTMLElement>("[data-privateering-upstream-note]");
+  const privateeringEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-privateering-evidence-btn]");
 
   const viewEvent = document.querySelector<HTMLElement>("[data-view-event]");
   const eventDate = document.querySelector<HTMLElement>("[data-event-date]");
@@ -1230,6 +1266,36 @@
       }
     }
 
+    // Privateering Encounter & Petition Section (Packet 11)
+    if (shipPrivateeringSection) {
+      if (ship.privateering_engagement) {
+        const pe = ship.privateering_engagement;
+        shipPrivateeringSection.hidden = false;
+        if (privateeringEngagement) privateeringEngagement.textContent = pe.engagement_display;
+        if (privateeringResistance) privateeringResistance.textContent = pe.resistance_display;
+        if (privateeringPlunder) privateeringPlunder.textContent = pe.plunder_display;
+        if (privateeringPetition) privateeringPetition.textContent = pe.petition_display;
+        if (privateeringUpstreamNote) {
+          privateeringUpstreamNote.textContent = `Reported 5 Oct 1705 to Secretary Harley (${pe.calendar_ref}), citing Board of Trade Jamaica Entry Book (${pe.upstream_ref}).`;
+        }
+        if (privateeringEvidenceBtn) {
+          privateeringEvidenceBtn.onclick = () => {
+            window.dispatchEvent(
+              new CustomEvent("cc:open-source", {
+                detail: {
+                  sourceId: pe.source_id,
+                  assertionIds: pe.assertion_ids,
+                  triggerEl: privateeringEvidenceBtn,
+                },
+              })
+            );
+          };
+        }
+      } else {
+        shipPrivateeringSection.hidden = true;
+      }
+    }
+
     if (shipUpstreamRef) {
       if (sr?.source_id === "src_crespo_dyncoopnet") {
         shipUpstreamRef.textContent = `Upstream Archive: Archivo General de Indias (${sr.upstream_archive_reference || "PARES"})`;
@@ -1318,6 +1384,7 @@
         const allAsts = [
           ...(shipOcc?.assertion_ids || []),
           ...crewOccs.flatMap((c) => c.assertion_ids),
+          ...(ship.privateering_engagement?.assertion_ids || []),
         ];
         window.dispatchEvent(
           new CustomEvent("cc:open-source", {

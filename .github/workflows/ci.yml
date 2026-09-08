@@ -71,3 +71,6 @@ jobs:
 
       - name: Run browser review suite and UI behavioral assertions
         run: npm run review:behavioral
+
+      - name: Run product quality and accessibility audit
+        run: npm run review:quality
