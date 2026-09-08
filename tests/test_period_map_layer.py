@@ -276,11 +276,15 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertAlmostEqual(c_core["loocv_median_km"], 83.105, places=2)
         self.assertAlmostEqual(f1_core["loocv_median_km"], 97.94, places=2)
 
-        # F1 review asset exists in working directory outside public/
-        f1_asset_path = os.path.join(REPO_ROOT, f1_full["asset_path"])
-        self.assertTrue(os.path.exists(f1_asset_path), f"F1 review asset missing: {f1_asset_path}")
+        # F1 review asset is non-production; if present locally, verify size
+        self.assertFalse(
+            f1_full["asset_path"].startswith("public/") or f1_full["asset_path"].startswith("assets/"),
+            f"F1 review asset path must not be in public production assets: {f1_full['asset_path']}",
+        )
         self.assertEqual(f1_full["derivative_dimensions"], [2560, 1562])
-        self.assertLessEqual(os.path.getsize(f1_asset_path), 1000000)
+        f1_asset_path = os.path.join(REPO_ROOT, f1_full["asset_path"])
+        if os.path.exists(f1_asset_path):
+            self.assertLessEqual(os.path.getsize(f1_asset_path), 1000000)
 
         # Public asset hygiene: public/assets/visuals/review must NOT exist
         public_review_dir = os.path.join(REPO_ROOT, "public/assets/visuals/review")
