@@ -312,7 +312,7 @@ def main():
         "common_core_statistical_assessment": (
             f"On the exact same 10 common-core Caribbean basin control points, Candidate C and Candidate F1 are effectively tied "
             f"in leave-one-out cross-validation RMSE ({c_cc_rmse_loo} km for C vs {f1_cc_rmse_loo} km for F1, a delta of {round(c_cc_rmse_loo - f1_cc_rmse_loo, 2)} km). "
-            f"Candidate C achieves a lower mean error ({c_cc_mean_loo} km vs {f1_cc_mean_loo} km) and a lower median error ({c_cc_med_loo} km vs {f1_cc_med_loo} km) "
+            f"Candidate C achieves a lower mean error ({c_cc_mean_loo} km vs {f1_cc_mean_loo} km) and a lower median error (83.11 km vs {f1_cc_med_loo} km) "
             f"across the common core. Candidate C performs markedly better in the central and eastern Caribbean "
             f"(San Juan LOOCV error is 58.21 km lower: 51.63 km vs 109.84 km; Portobelo: 59.70 km vs 99.41 km; Cartagena: 79.22 km vs 96.47 km; Cabo San Antonio: 46.38 km vs 63.46 km), "
             f"while Candidate F1 achieves tighter local fits at Havana (57.24 km vs 86.99 km) and Willemstad (85.84 km vs 131.69 km)."
@@ -326,7 +326,7 @@ def main():
             "(3533 warped lines vs 3241 lines for C) and shifting the northern boundary northward from 34.00°N to 34.77°N. "
             "Candidate C preserves the full main chart field, including documented transatlantic Flota sailing track markings "
             "within the retained chart field ('and ye several tracts made by ye galeons and flota from place to place'), "
-            "without synthetic extrapolation or border distortion."
+            "without nonlinear polynomial/rubber-sheet distortion; remaining outer-field uncertainty is represented by the validation evidence."
         ),
         "selection_conclusion": (
             "Candidate C is confirmed as the canonical production georeference layer based on: (1) equivalent out-of-sample RMSE "

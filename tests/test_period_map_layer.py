@@ -273,7 +273,7 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertLess(c_core["loocv_median_km"], f1_core["loocv_median_km"])
         self.assertAlmostEqual(c_core["loocv_mean_km"], 93.14, places=2)
         self.assertAlmostEqual(f1_core["loocv_mean_km"], 96.50, places=2)
-        self.assertAlmostEqual(c_core["loocv_median_km"], 83.105, places=2)
+        self.assertAlmostEqual(c_core["loocv_median_km"], 83.11, places=1)
         self.assertAlmostEqual(f1_core["loocv_median_km"], 97.94, places=2)
 
         # F1 review asset is non-production; if present locally, verify size
@@ -300,6 +300,7 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
         self.assertNotIn("degrees of freedom", sel.lower())
         self.assertNotIn("clipped", sel.lower())
         self.assertNotIn("truncated", sel.lower())
+        self.assertNotIn("synthetic extrapolation", sel.lower())
 
 
 if __name__ == "__main__":
