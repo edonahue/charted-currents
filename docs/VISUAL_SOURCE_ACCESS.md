@@ -471,9 +471,9 @@ For high-resolution cartographic reference layers (such as Herman Moll's 1715 We
 
 1. **Neatline Crop**: Source scans often feature marginal harbor insets, portrait cartouches, or decorative borders. Cropping to the inner map graticule / neatline avoids distorting ancillary insets across modern geographic space.
 2. **Ground Control Points (GCPs)**: Coastal features corresponding to documented corpus entities (fortresses, headlands, harbor entrances, island groups) are selected with exact geographic coordinates (`EPSG:4326`).
-3. **Polynomial / Spline Warping**: `gdal_translate` attaches GCPs to the cropped raster with `-a_srs EPSG:4326`; `gdalwarp` reprojects the image to `EPSG:3857` (Web Mercator) using second-order polynomial (`-order 2`) or thin-plate spline (`-tps`) transformation and bilinear resampling.
+3. **Affine Transformation**: `gdal_translate` attaches GCPs to the cropped raster with `-a_srs EPSG:4326`; `gdalwarp` reprojects the image to `EPSG:3857` (Web Mercator) using a first-order affine (`-order 1`) transformation and bilinear resampling, preserving the linear geometry of the historical copperplate without synthetic polynomial buckling.
 4. **Optimized Derivative**: The warped raster is exported as an alpha-transparent WebP (`quality=80`, target <= 1.5MB), ready for direct rendering as a MapLibre `image` source.
-5. **Epistemic Invariant**: Residual errors and pre-chronometer longitudinal distortion are documented in a tracked georeference report (`georeference_report.json`) and displayed transparently in the UI.
+5. **Epistemic Invariant**: Residual errors and historical cartographic distortions are documented in a tracked georeference report (`georeference_report.json`) and displayed transparently in the UI.
 
 ---
 

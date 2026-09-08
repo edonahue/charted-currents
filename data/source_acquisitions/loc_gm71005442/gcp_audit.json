@@ -1,0 +1,362 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Authoritative Ground Control Point (GCP) audit fixture for Herman Moll 1715 map (LOC gm71005442).",
+  "master_image": {
+    "path": "data/raw/loc_gm71005442/moll-1715-loc-master.jpg",
+    "dimensions": [
+      6025,
+      3636
+    ],
+    "neatline_crop_offset": [
+      20,
+      91
+    ]
+  },
+  "candidate_c_summary": {
+    "gcp_count": 13,
+    "warp_method": "gdalwarp_affine_order_1",
+    "rmse_in_sample_km": 79.57,
+    "rmse_loocv_km": 107.68,
+    "loocv_median_km": 86.99,
+    "loocv_p90_km": 171.41,
+    "loocv_max_km": 171.68,
+    "loocv_max_feature": "Bridgetown, Barbados",
+    "willemstad_loocv_km": 131.69
+  },
+  "canonical_gcps": [
+    {
+      "id": "gcp_moll_havana",
+      "name": "Havana, Cuba",
+      "feature": "Harbor entrance / Castillo del Morro",
+      "master_pixel": [
+        2550,
+        1360
+      ],
+      "crop_pixel": [
+        2530,
+        1269
+      ],
+      "target_coords_wgs84": [
+        -82.35,
+        23.14
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 76.25,
+      "residual_loocv_km": 86.99,
+      "pinpoint_rationale": "Castillo del Morro promontory guarding the narrow entrance channel to Havana harbor, south of Bahia Honda on the northwest Cuban coast."
+    },
+    {
+      "id": "gcp_moll_port_royal",
+      "name": "Port Royal, Jamaica",
+      "feature": "Palisadoes spit / harbor anchorage",
+      "master_pixel": [
+        3420,
+        1960
+      ],
+      "crop_pixel": [
+        3400,
+        1869
+      ],
+      "target_coords_wgs84": [
+        -76.84,
+        17.94
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 124.9,
+      "residual_loocv_km": 135.87,
+      "pinpoint_rationale": "The tip of the Palisadoes sand spit enclosing Kingston Harbour and Port Royal on the south coast of Jamaica, distinctly engraved with anchorage anchor."
+    },
+    {
+      "id": "gcp_moll_veracruz",
+      "name": "Veracruz, Mexico",
+      "feature": "San Juan de Ulua island fort",
+      "master_pixel": [
+        795,
+        1665
+      ],
+      "crop_pixel": [
+        775,
+        1574
+      ],
+      "target_coords_wgs84": [
+        -96.13,
+        19.2
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 85.28,
+      "residual_loocv_km": 171.41,
+      "pinpoint_rationale": "Island fortress of San Juan de Ulua directly offshore from the port of Veracruz on the southwestern Gulf coast of New Spain."
+    },
+    {
+      "id": "gcp_moll_cartagena",
+      "name": "Cartagena, Colombia",
+      "feature": "Boca Chica entrance / bay forts",
+      "master_pixel": [
+        3410,
+        2835
+      ],
+      "crop_pixel": [
+        3390,
+        2744
+      ],
+      "target_coords_wgs84": [
+        -75.54,
+        10.4
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 60.97,
+      "residual_loocv_km": 79.22,
+      "pinpoint_rationale": "Harbor entrance at Boca Chica and fortress symbol defending Cartagena bay on the Tierra Firme coast. Pinpointed from coastal engraving, correcting previous draft offset."
+    },
+    {
+      "id": "gcp_moll_portobelo",
+      "name": "Portobelo, Panama",
+      "feature": "Bahia de Portobelo / Chagres approach",
+      "master_pixel": [
+        2840,
+        2830
+      ],
+      "crop_pixel": [
+        2820,
+        2739
+      ],
+      "target_coords_wgs84": [
+        -79.66,
+        9.55
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 42.71,
+      "residual_loocv_km": 59.7,
+      "pinpoint_rationale": "Embayment of Portobelo on the Caribbean coast of the Isthmus of Panama, just east of the mouth of Rio Chagres."
+    },
+    {
+      "id": "gcp_moll_st_augustine",
+      "name": "Saint Augustine, Florida",
+      "feature": "Inlet / Castillo de San Marcos",
+      "master_pixel": [
+        2860,
+        570
+      ],
+      "crop_pixel": [
+        2840,
+        479
+      ],
+      "target_coords_wgs84": [
+        -81.31,
+        29.89
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": false,
+      "residual_in_sample_km": 43.96,
+      "residual_loocv_km": 60.28,
+      "pinpoint_rationale": "The coastal barrier island inlet and Castillo de San Marcos on the northeast coast of Florida. Preserved in Candidate C for Atlantic coastal continuity; excluded from F1 regional basin."
+    },
+    {
+      "id": "gcp_moll_san_juan",
+      "name": "San Juan, Puerto Rico",
+      "feature": "Castillo San Felipe del Morro",
+      "master_pixel": [
+        4680,
+        1825
+      ],
+      "crop_pixel": [
+        4660,
+        1734
+      ],
+      "target_coords_wgs84": [
+        -66.12,
+        18.47
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 41.26,
+      "residual_loocv_km": 51.63,
+      "pinpoint_rationale": "The fortified islet and harbor entrance of San Juan on the north coast of Puerto Rico (San Juan Bautista)."
+    },
+    {
+      "id": "gcp_moll_santo_domingo",
+      "name": "Santo Domingo, Hispaniola",
+      "feature": "Ozama River harbor entrance",
+      "master_pixel": [
+        4130,
+        1880
+      ],
+      "crop_pixel": [
+        4110,
+        1789
+      ],
+      "target_coords_wgs84": [
+        -69.88,
+        18.47
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 42.67,
+      "residual_loocv_km": 48.38,
+      "pinpoint_rationale": "Mouth of the Ozama River on the south-central coast of Hispaniola (Santo Domingo)."
+    },
+    {
+      "id": "gcp_moll_bridgetown",
+      "name": "Bridgetown, Barbados",
+      "feature": "Carlisle Bay anchorage",
+      "master_pixel": [
+        5325,
+        2430
+      ],
+      "crop_pixel": [
+        5305,
+        2339
+      ],
+      "target_coords_wgs84": [
+        -59.62,
+        13.09
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": false,
+      "residual_in_sample_km": 115.49,
+      "residual_loocv_km": 171.68,
+      "pinpoint_rationale": "Carlisle Bay anchorage on the southwest coast of Barbados, easternmost Windward island. Preserved in Candidate C to anchor Lesser Antilles; excluded from F1 regional basin."
+    },
+    {
+      "id": "gcp_moll_willemstad",
+      "name": "Willemstad, Curacao",
+      "feature": "Santa Anna Bay harbor entrance",
+      "master_pixel": [
+        4365,
+        2588
+      ],
+      "crop_pixel": [
+        4345,
+        2497
+      ],
+      "target_coords_wgs84": [
+        -68.93,
+        12.11
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 106.85,
+      "residual_loocv_km": 131.69,
+      "pinpoint_rationale": "Deep natural inlet of Santa Anna Bay on the south coast of Curacao ('Bay St. Anna'), precisely pinpointed on the engraved harbor channel, correcting the 85px open-water error of earlier drafts."
+    },
+    {
+      "id": "gcp_moll_cabo_san_antonio",
+      "name": "Cabo San Antonio, Cuba",
+      "feature": "Westernmost promontory of Cuba",
+      "master_pixel": [
+        2280,
+        1495
+      ],
+      "crop_pixel": [
+        2260,
+        1404
+      ],
+      "target_coords_wgs84": [
+        -84.95,
+        21.86
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 39.66,
+      "residual_loocv_km": 46.38,
+      "pinpoint_rationale": "Prominent western cape of Cuba, serving as critical cartographic anchor between the Gulf of Mexico and Yucatan Channel."
+    },
+    {
+      "id": "gcp_moll_cabo_maisi",
+      "name": "Cabo Maisi, Cuba",
+      "feature": "Easternmost promontory of Cuba",
+      "master_pixel": [
+        3520,
+        1690
+      ],
+      "crop_pixel": [
+        3500,
+        1599
+      ],
+      "target_coords_wgs84": [
+        -74.14,
+        20.25
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": true,
+      "residual_in_sample_km": 110.26,
+      "residual_loocv_km": 120.15,
+      "pinpoint_rationale": "Easternmost cape of Cuba framing the Windward Passage opposite Hispaniola."
+    },
+    {
+      "id": "gcp_moll_charles_town",
+      "name": "Charles Town, South Carolina",
+      "feature": "Charleston Harbor / Ashley River entrance",
+      "master_pixel": [
+        3080,
+        150
+      ],
+      "crop_pixel": [
+        3060,
+        59
+      ],
+      "target_coords_wgs84": [
+        -79.93,
+        32.78
+      ],
+      "in_candidate_c": true,
+      "in_candidate_f1": false,
+      "residual_in_sample_km": 64.29,
+      "residual_loocv_km": 115.89,
+      "pinpoint_rationale": "Entrance to Charleston Harbor on the Atlantic seaboard, anchoring the northern neatline of the chart field. Excluded from F1 regional basin."
+    }
+  ],
+  "excluded_investigated_points": [
+    {
+      "feature_name": "Cape Hatteras, North Carolina",
+      "investigated_coords": [
+        -75.5,
+        35.24
+      ],
+      "packet8_pick_master_px": [
+        2980,
+        740
+      ],
+      "rejection_status": "strictly_rejected_off_sheet",
+      "rejection_rationale": "The physical engraving of Moll's 1715 map terminates at approximately 33°N latitude. Cape Hatteras (35°15'N) is physically off the top edge of the copperplate. In Packet 8, an arbitrary pixel at [2980, 740] (in the North Carolina coastal sounds near Beaufort) was assigned to Hatteras, injecting a >250 km systematic error that distorted the entire northern neatline under polynomial warping."
+    },
+    {
+      "feature_name": "Bermuda ('Barmudas Isl. English')",
+      "investigated_coords": [
+        -64.75,
+        32.3
+      ],
+      "master_px": [
+        4650,
+        160
+      ],
+      "measured_displacement_km": 261.64,
+      "measured_longitude_offset_deg": -2.53,
+      "rejection_status": "preserved_in_chart_excluded_from_gcp_fit",
+      "rejection_rationale": "Bermuda is preserved unmasked in the main chart field. On this chart Bermuda is plotted materially west of its modern WGS84 position relative to the North American coastline (measured displacement ~261.6 km, 2.53° west). Including it as an active affine control worsens the principal chart-field fit across the mainland and Greater Antilles, so it is preserved visually in the main chart but excluded from the control set."
+    },
+    {
+      "feature_name": "Mexico City ('The city of Mexico in New Spain')",
+      "investigated_coords": [
+        -99.13,
+        19.43
+      ],
+      "master_px": [
+        1050,
+        3200
+      ],
+      "rejection_status": "loc_catalogue_inset_outside_crop",
+      "rejection_rationale": "The panoramic bird's-eye view of Mexico City is LOC Inset #6, engraved in the lower margin (y >= 2905). It is completely outside the main chart neatline crop (y <= 2895), requiring zero internal masking."
+    }
+  ],
+  "packet8_baseline_accounting": {
+    "gcp_count": 14,
+    "warp_method": "gdalwarp_polynomial_order_2",
+    "root_cause_defect": "Packet 8 used 14 GCPs with several severe coordinate errors (including off-sheet Cape Hatteras and an uncalibrated coordinate frame). Second-order polynomial fitting ('gdalwarp -order 2') curled coordinate space between those flawed points, producing visible buckling along the Florida coast, Cuba, and neatlines."
+  }
+}

@@ -38,6 +38,7 @@
     "review:capture-packet7": "node scripts/capture-reviews.mjs --packet=packet7",
     "review:capture-packet8": "node scripts/capture-reviews.mjs --packet=packet8",
     "review:capture-packet9": "node scripts/capture-reviews.mjs --packet=packet9",
+    "review:moll-comparison": "node scripts/capture-moll-comparison.mjs",
     "historical:review-bundle": "node scripts/generate-review-bundle.mjs",
     "packet:report": "node scripts/packet-report.mjs"
   },

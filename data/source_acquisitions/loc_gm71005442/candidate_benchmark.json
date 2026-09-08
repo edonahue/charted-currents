@@ -1,0 +1,378 @@
+{
+  "schema_version": "2.0.0",
+  "benchmark_timestamp": "2026-09-07T23:55:00Z",
+  "master_source": {
+    "item_id": "gm71005442",
+    "file": "moll-1715-loc-master.jpg",
+    "dimensions": [
+      6025,
+      3636
+    ],
+    "neatline_crop_offset": [
+      20,
+      91
+    ]
+  },
+  "baseline_packet8": {
+    "method": "gdalwarp_polynomial_order_2",
+    "gcp_count": 14,
+    "rmse_in_sample_km": 85.78,
+    "rmse_loocv_km": 209.65,
+    "notes": "Severe non-rigid curling caused by off-sheet Hatteras pick and uncalibrated scale."
+  },
+  "candidate_c_full_scope": {
+    "gcp_count": 13,
+    "rmse_in_sample_km": 79.57,
+    "rmse_loocv_km": 107.68,
+    "loocv_mean_km": 98.41,
+    "loocv_median_km": 86.99,
+    "loocv_p90_km": 171.41,
+    "loocv_max_km": 171.68,
+    "loocv_max_feature": "Bridgetown, Barbados",
+    "per_point": [
+      {
+        "id": "gcp_moll_havana",
+        "name": "Havana, Cuba",
+        "in_sample_km": 76.25,
+        "loocv_km": 86.99
+      },
+      {
+        "id": "gcp_moll_port_royal",
+        "name": "Port Royal, Jamaica",
+        "in_sample_km": 124.9,
+        "loocv_km": 135.87
+      },
+      {
+        "id": "gcp_moll_veracruz",
+        "name": "Veracruz, Mexico",
+        "in_sample_km": 85.28,
+        "loocv_km": 171.41
+      },
+      {
+        "id": "gcp_moll_cartagena",
+        "name": "Cartagena, Colombia",
+        "in_sample_km": 60.97,
+        "loocv_km": 79.22
+      },
+      {
+        "id": "gcp_moll_portobelo",
+        "name": "Portobelo, Panama",
+        "in_sample_km": 42.71,
+        "loocv_km": 59.7
+      },
+      {
+        "id": "gcp_moll_st_augustine",
+        "name": "Saint Augustine, Florida",
+        "in_sample_km": 43.96,
+        "loocv_km": 60.28
+      },
+      {
+        "id": "gcp_moll_san_juan",
+        "name": "San Juan, Puerto Rico",
+        "in_sample_km": 41.26,
+        "loocv_km": 51.63
+      },
+      {
+        "id": "gcp_moll_santo_domingo",
+        "name": "Santo Domingo, Hispaniola",
+        "in_sample_km": 42.67,
+        "loocv_km": 48.38
+      },
+      {
+        "id": "gcp_moll_bridgetown",
+        "name": "Bridgetown, Barbados",
+        "in_sample_km": 115.49,
+        "loocv_km": 171.68
+      },
+      {
+        "id": "gcp_moll_willemstad",
+        "name": "Willemstad, Curacao",
+        "in_sample_km": 106.85,
+        "loocv_km": 131.69
+      },
+      {
+        "id": "gcp_moll_cabo_san_antonio",
+        "name": "Cabo San Antonio, Cuba",
+        "in_sample_km": 39.66,
+        "loocv_km": 46.38
+      },
+      {
+        "id": "gcp_moll_cabo_maisi",
+        "name": "Cabo Maisi, Cuba",
+        "in_sample_km": 110.26,
+        "loocv_km": 120.15
+      },
+      {
+        "id": "gcp_moll_charles_town",
+        "name": "Charles Town, South Carolina",
+        "in_sample_km": 64.29,
+        "loocv_km": 115.89
+      }
+    ],
+    "asset_path": "assets/visuals/moll-west-indies-1715-rectified.webp",
+    "geographic_bounds": [
+      [
+        -103.504252,
+        34.004028
+      ],
+      [
+        -54.900389,
+        34.004028
+      ],
+      [
+        -54.900389,
+        9.146624
+      ],
+      [
+        -103.504252,
+        9.146624
+      ]
+    ],
+    "derivative_dimensions": [
+      2560,
+      1422
+    ],
+    "intermediate_warped_dimensions": [
+      5832,
+      3241
+    ],
+    "derivative_size_bytes": 830286,
+    "derivative_sha256": "1250d8864beb684357f3e3ec7dc066be1e49d39160ad6297cf4004115befb0d5"
+  },
+  "candidate_f1_full_scope": {
+    "gcp_count": 10,
+    "rmse_in_sample_km": 69.8,
+    "rmse_loocv_km": 101.16,
+    "loocv_mean_km": 96.5,
+    "loocv_median_km": 97.94,
+    "loocv_p90_km": 133.27,
+    "loocv_max_km": 150.81,
+    "loocv_max_feature": "Veracruz, Mexico",
+    "per_point": [
+      {
+        "id": "gcp_moll_havana",
+        "name": "Havana, Cuba",
+        "in_sample_km": 42.06,
+        "loocv_km": 57.24
+      },
+      {
+        "id": "gcp_moll_port_royal",
+        "name": "Port Royal, Jamaica",
+        "in_sample_km": 118.97,
+        "loocv_km": 133.27
+      },
+      {
+        "id": "gcp_moll_veracruz",
+        "name": "Veracruz, Mexico",
+        "in_sample_km": 61.8,
+        "loocv_km": 150.81
+      },
+      {
+        "id": "gcp_moll_cartagena",
+        "name": "Cartagena, Colombia",
+        "in_sample_km": 61.17,
+        "loocv_km": 96.47
+      },
+      {
+        "id": "gcp_moll_portobelo",
+        "name": "Portobelo, Panama",
+        "in_sample_km": 56.76,
+        "loocv_km": 99.41
+      },
+      {
+        "id": "gcp_moll_san_juan",
+        "name": "San Juan, Puerto Rico",
+        "in_sample_km": 70.68,
+        "loocv_km": 109.84
+      },
+      {
+        "id": "gcp_moll_santo_domingo",
+        "name": "Santo Domingo, Hispaniola",
+        "in_sample_km": 44.0,
+        "loocv_km": 55.32
+      },
+      {
+        "id": "gcp_moll_willemstad",
+        "name": "Willemstad, Curacao",
+        "in_sample_km": 61.6,
+        "loocv_km": 85.84
+      },
+      {
+        "id": "gcp_moll_cabo_san_antonio",
+        "name": "Cabo San Antonio, Cuba",
+        "in_sample_km": 48.72,
+        "loocv_km": 63.46
+      },
+      {
+        "id": "gcp_moll_cabo_maisi",
+        "name": "Cabo Maisi, Cuba",
+        "in_sample_km": 94.46,
+        "loocv_km": 113.33
+      }
+    ],
+    "asset_path": "data/working/review/moll-west-indies-1715-f1-inner-basin.webp",
+    "notes": "Non-production review derivative generated on demand for candidate evaluation.",
+    "geographic_bounds": [
+      [
+        -102.229315,
+        34.773944
+      ],
+      [
+        -55.659716,
+        34.773944
+      ],
+      [
+        -55.659716,
+        8.664943
+      ],
+      [
+        -102.229315,
+        8.664943
+      ]
+    ],
+    "derivative_dimensions": [
+      2560,
+      1562
+    ],
+    "intermediate_warped_dimensions": [
+      5787,
+      3533
+    ],
+    "derivative_size_bytes": 892668,
+    "derivative_sha256": "10cfb9cad6b9f51e4cd5cb0c458740be4084ee7c274697975ec822aed45d9142"
+  },
+  "common_core_comparison": {
+    "common_core_gcp_count": 10,
+    "common_core_ids": [
+      "gcp_moll_havana",
+      "gcp_moll_port_royal",
+      "gcp_moll_veracruz",
+      "gcp_moll_cartagena",
+      "gcp_moll_portobelo",
+      "gcp_moll_san_juan",
+      "gcp_moll_santo_domingo",
+      "gcp_moll_willemstad",
+      "gcp_moll_cabo_san_antonio",
+      "gcp_moll_cabo_maisi"
+    ],
+    "candidate_c": {
+      "in_sample_rmse_km": 79.31,
+      "loocv_rmse_km": 102.07,
+      "loocv_mean_km": 93.14,
+      "loocv_median_km": 83.105,
+      "loocv_p90_km": 135.87,
+      "loocv_max_km": 171.41,
+      "loocv_max_feature": "Veracruz, Mexico"
+    },
+    "candidate_f1": {
+      "in_sample_rmse_km": 69.8,
+      "loocv_rmse_km": 101.16,
+      "loocv_mean_km": 96.5,
+      "loocv_median_km": 97.94,
+      "loocv_p90_km": 133.27,
+      "loocv_max_km": 150.81,
+      "loocv_max_feature": "Veracruz, Mexico"
+    },
+    "delta_rmse_loocv_km": 0.91,
+    "delta_mean_loocv_km": -3.36,
+    "delta_median_loocv_km": -14.835,
+    "per_point_comparison": [
+      {
+        "id": "gcp_moll_havana",
+        "name": "Havana, Cuba",
+        "candidate_c_in_sample_km": 76.25,
+        "candidate_c_loocv_km": 86.99,
+        "candidate_f1_in_sample_km": 42.06,
+        "candidate_f1_loocv_km": 57.24,
+        "delta_loocv_km": 29.76
+      },
+      {
+        "id": "gcp_moll_port_royal",
+        "name": "Port Royal, Jamaica",
+        "candidate_c_in_sample_km": 124.9,
+        "candidate_c_loocv_km": 135.87,
+        "candidate_f1_in_sample_km": 118.97,
+        "candidate_f1_loocv_km": 133.27,
+        "delta_loocv_km": 2.6
+      },
+      {
+        "id": "gcp_moll_veracruz",
+        "name": "Veracruz, Mexico",
+        "candidate_c_in_sample_km": 85.28,
+        "candidate_c_loocv_km": 171.41,
+        "candidate_f1_in_sample_km": 61.8,
+        "candidate_f1_loocv_km": 150.81,
+        "delta_loocv_km": 20.6
+      },
+      {
+        "id": "gcp_moll_cartagena",
+        "name": "Cartagena, Colombia",
+        "candidate_c_in_sample_km": 60.97,
+        "candidate_c_loocv_km": 79.22,
+        "candidate_f1_in_sample_km": 61.17,
+        "candidate_f1_loocv_km": 96.47,
+        "delta_loocv_km": -17.25
+      },
+      {
+        "id": "gcp_moll_portobelo",
+        "name": "Portobelo, Panama",
+        "candidate_c_in_sample_km": 42.71,
+        "candidate_c_loocv_km": 59.7,
+        "candidate_f1_in_sample_km": 56.76,
+        "candidate_f1_loocv_km": 99.41,
+        "delta_loocv_km": -39.71
+      },
+      {
+        "id": "gcp_moll_san_juan",
+        "name": "San Juan, Puerto Rico",
+        "candidate_c_in_sample_km": 41.26,
+        "candidate_c_loocv_km": 51.63,
+        "candidate_f1_in_sample_km": 70.68,
+        "candidate_f1_loocv_km": 109.84,
+        "delta_loocv_km": -58.21
+      },
+      {
+        "id": "gcp_moll_santo_domingo",
+        "name": "Santo Domingo, Hispaniola",
+        "candidate_c_in_sample_km": 42.67,
+        "candidate_c_loocv_km": 48.38,
+        "candidate_f1_in_sample_km": 44.0,
+        "candidate_f1_loocv_km": 55.32,
+        "delta_loocv_km": -6.94
+      },
+      {
+        "id": "gcp_moll_willemstad",
+        "name": "Willemstad, Curacao",
+        "candidate_c_in_sample_km": 106.85,
+        "candidate_c_loocv_km": 131.69,
+        "candidate_f1_in_sample_km": 61.6,
+        "candidate_f1_loocv_km": 85.84,
+        "delta_loocv_km": 45.85
+      },
+      {
+        "id": "gcp_moll_cabo_san_antonio",
+        "name": "Cabo San Antonio, Cuba",
+        "candidate_c_in_sample_km": 39.66,
+        "candidate_c_loocv_km": 46.38,
+        "candidate_f1_in_sample_km": 48.72,
+        "candidate_f1_loocv_km": 63.46,
+        "delta_loocv_km": -17.08
+      },
+      {
+        "id": "gcp_moll_cabo_maisi",
+        "name": "Cabo Maisi, Cuba",
+        "candidate_c_in_sample_km": 110.26,
+        "candidate_c_loocv_km": 120.15,
+        "candidate_f1_in_sample_km": 94.46,
+        "candidate_f1_loocv_km": 113.33,
+        "delta_loocv_km": 6.82
+      }
+    ]
+  },
+  "selection_analysis": {
+    "selected_candidate": "Candidate C",
+    "common_core_statistical_assessment": "On the exact same 10 common-core Caribbean basin control points, Candidate C and Candidate F1 are effectively tied in leave-one-out cross-validation RMSE (102.07 km for C vs 101.16 km for F1, a delta of 0.91 km). Candidate C achieves a lower mean error (93.14 km vs 96.5 km) and a lower median error (83.11 km vs 97.94 km) across the common core. Candidate C performs markedly better in the central and eastern Caribbean (San Juan LOOCV error is 58.21 km lower: 51.63 km vs 109.84 km; Portobelo: 59.70 km vs 99.41 km; Cartagena: 79.22 km vs 96.47 km; Cabo San Antonio: 46.38 km vs 63.46 km), while Candidate F1 achieves tighter local fits at Havana (57.24 km vs 86.99 km) and Willemstad (85.84 km vs 131.69 km).",
+    "extent_and_geometry_assessment": "Candidate C incorporates 3 peripheral anchor controls (Charles Town, SC on the northern Atlantic seaboard; St. Augustine, FL on the Atlantic coast; and Bridgetown, Barbados anchoring the Windward Islands). These peripheral controls stabilize the affine coordinate frame across the full chart plate. In contrast, Candidate F1 relies strictly on 10 inner-basin controls without peripheral constraints. Under this inner-basin-only fit, outer-field extrapolation drifts, producing an unconstrained 9% vertical over-stretching (3533 warped lines vs 3241 lines for C) and shifting the northern boundary northward from 34.00\u00b0N to 34.77\u00b0N. Candidate C preserves the full main chart field, including documented transatlantic Flota sailing track markings within the retained chart field ('and ye several tracts made by ye galeons and flota from place to place'), without nonlinear polynomial/rubber-sheet distortion; remaining outer-field uncertainty is represented by the validation evidence.",
+    "selection_conclusion": "Candidate C is confirmed as the canonical production georeference layer based on: (1) equivalent out-of-sample RMSE on the common core with superior median and mean errors; (2) full-extent geometric stability without artificial latitude stretching; (3) preservation of documented Atlantic coastal and island geography; and (4) verified visual fidelity across all viewports."
+  }
+}
