@@ -4,7 +4,7 @@ scripts/benchmark-moll-candidates.py
 
 Authoritative benchmark generator for Herman Moll's 1715 map overlay candidates:
   - Candidate C: 13-point Full Main Chart Affine (canonical)
-  - Candidate F1: 10-point Greater-Caribbean Regional Affine (review candidate)
+  - Candidate F1: 10-point Inner-Basin Controls Affine (review candidate)
   - Baseline: Packet 8 14-point Order 2 Polynomial (reconstructed)
 
 Computes full-scope metrics, common-core apples-to-apples evaluation across the exact
@@ -16,6 +16,7 @@ import hashlib
 import json
 import math
 import os
+import statistics
 import subprocess
 import sys
 from PIL import Image
@@ -27,8 +28,8 @@ REPORT_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/g
 OUTPUT_BENCHMARK_JSON = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/candidate_benchmark.json")
 
 C_WEBP_PATH = os.path.join(REPO_ROOT, "public/assets/visuals/moll-west-indies-1715-rectified.webp")
-F1_REVIEW_DIR = os.path.join(REPO_ROOT, "public/assets/visuals/review")
-F1_WEBP_PATH = os.path.join(F1_REVIEW_DIR, "moll-west-indies-1715-f1-regional.webp")
+F1_REVIEW_DIR = os.path.join(REPO_ROOT, "data/working/review")
+F1_WEBP_PATH = os.path.join(F1_REVIEW_DIR, "moll-west-indies-1715-f1-inner-basin.webp")
 TMP_DIR = os.path.join(REPO_ROOT, "data/raw/loc_gm71005442/tmp")
 
 
@@ -99,8 +100,7 @@ def evaluate_gdal_transform(gcps, crop_x, crop_y):
     rmse_in = round(math.sqrt(sum(d ** 2 for d in in_sample_dists) / n), 2)
     rmse_loo = round(math.sqrt(sum(d ** 2 for d in loocv_dists) / n), 2)
     mean_loo = round(sum(loocv_dists) / n, 2)
-    sorted_loo = sorted(loocv_dists)
-    med_loo = round(sorted_loo[n // 2], 2)
+    med_loo = round(float(statistics.median(loocv_dists)), 2)
     p90_loo = round(p90(loocv_dists), 2)
     max_loo = round(max(loocv_dists), 2)
     max_feat = gcps[loocv_dists.index(max(loocv_dists))]["name"]
@@ -188,7 +188,8 @@ def ensure_f1_review_derivative(f1_gcps, crop_x, crop_y):
             os.remove(f)
 
     return {
-        "asset_path": "assets/visuals/review/moll-west-indies-1715-f1-regional.webp",
+        "asset_path": "data/working/review/moll-west-indies-1715-f1-inner-basin.webp",
+        "notes": "Non-production review derivative generated on demand for candidate evaluation.",
         "geographic_bounds": f1_corners,
         "derivative_dimensions": [target_w, target_h],
         "intermediate_warped_dimensions": [inter_w, inter_h],
@@ -243,7 +244,7 @@ def main():
     c_cc_rmse_in = round(math.sqrt(sum(d ** 2 for d in c_common_in_sample) / 10), 2)
     c_cc_rmse_loo = round(math.sqrt(sum(d ** 2 for d in c_common_loocv) / 10), 2)
     c_cc_mean_loo = round(sum(c_common_loocv) / 10, 2)
-    c_cc_med_loo = round(sorted(c_common_loocv)[5], 2)
+    c_cc_med_loo = round(float(statistics.median(c_common_loocv)), 3)
     c_cc_p90_loo = round(p90(c_common_loocv), 2)
     c_cc_max_loo = round(max(c_common_loocv), 2)
     c_cc_max_feat = f1_gcps[c_common_loocv.index(max(c_common_loocv))]["name"]
@@ -291,7 +292,7 @@ def main():
         },
         "delta_rmse_loocv_km": round(c_cc_rmse_loo - f1_cc_rmse_loo, 2),
         "delta_mean_loocv_km": round(c_cc_mean_loo - f1_cc_mean_loo, 2),
-        "delta_median_loocv_km": round(c_cc_med_loo - f1_cc_med_loo, 2),
+        "delta_median_loocv_km": round(c_cc_med_loo - f1_cc_med_loo, 3),
         "per_point_comparison": per_point_common_core
     }
 
@@ -313,15 +314,16 @@ def main():
             f"in leave-one-out cross-validation RMSE ({c_cc_rmse_loo} km for C vs {f1_cc_rmse_loo} km for F1, a delta of {round(c_cc_rmse_loo - f1_cc_rmse_loo, 2)} km). "
             f"Candidate C achieves a lower mean error ({c_cc_mean_loo} km vs {f1_cc_mean_loo} km) and a lower median error ({c_cc_med_loo} km vs {f1_cc_med_loo} km) "
             f"across the common core. Candidate C performs markedly better in the central and eastern Caribbean "
-            f"(San Juan: 51.63 km vs 109.84 km; Portobelo: 59.70 km vs 99.41 km; Cartagena: 79.22 km vs 96.47 km; Cabo San Antonio: 46.38 km vs 63.46 km), "
+            f"(San Juan LOOCV error is 58.21 km lower: 51.63 km vs 109.84 km; Portobelo: 59.70 km vs 99.41 km; Cartagena: 79.22 km vs 96.47 km; Cabo San Antonio: 46.38 km vs 63.46 km), "
             f"while Candidate F1 achieves tighter local fits at Havana (57.24 km vs 86.99 km) and Willemstad (85.84 km vs 131.69 km)."
         ),
         "extent_and_geometry_assessment": (
             "Candidate C incorporates 3 peripheral anchor controls (Charles Town, SC on the northern Atlantic seaboard; "
             "St. Augustine, FL on the Atlantic coast; and Bridgetown, Barbados anchoring the Windward Islands). "
             "These peripheral controls stabilize the affine coordinate frame across the full chart plate. "
-            "In contrast, Candidate F1 relies strictly on inner-basin controls, which causes an unconstrained 9% vertical over-stretching "
-            "(3533 warped lines vs 3241 lines for C) and shifts the northern boundary northward from 34.00°N to 34.77°N. "
+            "In contrast, Candidate F1 relies strictly on 10 inner-basin controls without peripheral constraints. "
+            "Under this inner-basin-only fit, outer-field extrapolation drifts, producing an unconstrained 9% vertical over-stretching "
+            "(3533 warped lines vs 3241 lines for C) and shifting the northern boundary northward from 34.00°N to 34.77°N. "
             "Candidate C preserves the full main chart field, including documented transatlantic Flota sailing track markings "
             "within the retained chart field ('and ye several tracts made by ye galeons and flota from place to place'), "
             "without synthetic extrapolation or border distortion."

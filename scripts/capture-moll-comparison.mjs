@@ -71,9 +71,23 @@ const mimeTypes = {
   ".woff2": "font/woff2",
 };
 
+const F1_WORKING_ASSET = path.resolve("data/working/review/moll-west-indies-1715-f1-inner-basin.webp");
+
 const server = http.createServer((req, res) => {
   let reqPath = (req.url || "/").split("?")[0];
   if (reqPath === "/" || reqPath === "") reqPath = "/index.html";
+
+  if (
+    reqPath === "/review-assets/moll-west-indies-1715-f1-inner-basin.webp" ||
+    reqPath === "/assets/visuals/review/moll-west-indies-1715-f1-regional.webp"
+  ) {
+    if (fs.existsSync(F1_WORKING_ASSET)) {
+      res.writeHead(200, { "Content-Type": "image/webp" });
+      res.end(fs.readFileSync(F1_WORKING_ASSET));
+      return;
+    }
+  }
+
   const filePath = path.normalize(path.join(distDir, reqPath));
 
   const relative = path.relative(distDir, filePath);
@@ -107,8 +121,8 @@ const CANDIDATE_C = {
 
 const CANDIDATE_F1 = {
   id: "candidate-f1",
-  label: "Candidate F1 (Regional 10 GCPs)",
-  url: "/assets/visuals/review/moll-west-indies-1715-f1-regional.webp",
+  label: "Candidate F1 (Inner-Basin 10 GCPs)",
+  url: "/review-assets/moll-west-indies-1715-f1-inner-basin.webp",
   coordinates: [
     [-102.229315, 34.773944],
     [-55.659716, 34.773944],
@@ -175,6 +189,12 @@ const VIEWPORTS = [
 ];
 
 async function main() {
+  if (!fs.existsSync(F1_WORKING_ASSET)) {
+    console.log("[SETUP] F1 working review asset not found. Generating via scripts/benchmark-moll-candidates.py...");
+    const { execSync } = await import("node:child_process");
+    execSync("python3 scripts/benchmark-moll-candidates.py", { stdio: "inherit" });
+  }
+
   const serverPort = await getAvailablePort();
   await new Promise((resolve) => server.listen(serverPort, "127.0.0.1", resolve));
   const baseUrl = `http://127.0.0.1:${serverPort}/`;

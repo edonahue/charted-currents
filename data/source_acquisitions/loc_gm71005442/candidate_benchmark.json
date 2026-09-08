@@ -144,7 +144,7 @@
     "rmse_in_sample_km": 69.8,
     "rmse_loocv_km": 101.16,
     "loocv_mean_km": 96.5,
-    "loocv_median_km": 99.41,
+    "loocv_median_km": 97.94,
     "loocv_p90_km": 133.27,
     "loocv_max_km": 150.81,
     "loocv_max_feature": "Veracruz, Mexico",
@@ -210,7 +210,8 @@
         "loocv_km": 113.33
       }
     ],
-    "asset_path": "assets/visuals/review/moll-west-indies-1715-f1-regional.webp",
+    "asset_path": "data/working/review/moll-west-indies-1715-f1-inner-basin.webp",
+    "notes": "Non-production review derivative generated on demand for candidate evaluation.",
     "geographic_bounds": [
       [
         -102.229315,
@@ -258,7 +259,7 @@
       "in_sample_rmse_km": 79.31,
       "loocv_rmse_km": 102.07,
       "loocv_mean_km": 93.14,
-      "loocv_median_km": 86.99,
+      "loocv_median_km": 83.105,
       "loocv_p90_km": 135.87,
       "loocv_max_km": 171.41,
       "loocv_max_feature": "Veracruz, Mexico"
@@ -267,14 +268,14 @@
       "in_sample_rmse_km": 69.8,
       "loocv_rmse_km": 101.16,
       "loocv_mean_km": 96.5,
-      "loocv_median_km": 99.41,
+      "loocv_median_km": 97.94,
       "loocv_p90_km": 133.27,
       "loocv_max_km": 150.81,
       "loocv_max_feature": "Veracruz, Mexico"
     },
     "delta_rmse_loocv_km": 0.91,
     "delta_mean_loocv_km": -3.36,
-    "delta_median_loocv_km": -12.42,
+    "delta_median_loocv_km": -14.835,
     "per_point_comparison": [
       {
         "id": "gcp_moll_havana",
@@ -370,8 +371,8 @@
   },
   "selection_analysis": {
     "selected_candidate": "Candidate C",
-    "common_core_statistical_assessment": "On the exact same 10 common-core Caribbean basin control points, Candidate C and Candidate F1 are effectively tied in leave-one-out cross-validation RMSE (102.07 km for C vs 101.16 km for F1, a delta of 0.91 km). Candidate C achieves a lower mean error (93.14 km vs 96.5 km) and a lower median error (86.99 km vs 99.41 km) across the common core. Candidate C performs markedly better in the central and eastern Caribbean (San Juan: 51.63 km vs 109.84 km; Portobelo: 59.70 km vs 99.41 km; Cartagena: 79.22 km vs 96.47 km; Cabo San Antonio: 46.38 km vs 63.46 km), while Candidate F1 achieves tighter local fits at Havana (57.24 km vs 86.99 km) and Willemstad (85.84 km vs 131.69 km).",
-    "extent_and_geometry_assessment": "Candidate C incorporates 3 peripheral anchor controls (Charles Town, SC on the northern Atlantic seaboard; St. Augustine, FL on the Atlantic coast; and Bridgetown, Barbados anchoring the Windward Islands). These peripheral controls stabilize the affine coordinate frame across the full chart plate. In contrast, Candidate F1 relies strictly on inner-basin controls, which causes an unconstrained 9% vertical over-stretching (3533 warped lines vs 3241 lines for C) and shifts the northern boundary northward from 34.00\u00b0N to 34.77\u00b0N. Candidate C preserves the full main chart field, including documented transatlantic Flota sailing track markings within the retained chart field ('and ye several tracts made by ye galeons and flota from place to place'), without synthetic extrapolation or border distortion.",
+    "common_core_statistical_assessment": "On the exact same 10 common-core Caribbean basin control points, Candidate C and Candidate F1 are effectively tied in leave-one-out cross-validation RMSE (102.07 km for C vs 101.16 km for F1, a delta of 0.91 km). Candidate C achieves a lower mean error (93.14 km vs 96.5 km) and a lower median error (83.105 km vs 97.94 km) across the common core. Candidate C performs markedly better in the central and eastern Caribbean (San Juan LOOCV error is 58.21 km lower: 51.63 km vs 109.84 km; Portobelo: 59.70 km vs 99.41 km; Cartagena: 79.22 km vs 96.47 km; Cabo San Antonio: 46.38 km vs 63.46 km), while Candidate F1 achieves tighter local fits at Havana (57.24 km vs 86.99 km) and Willemstad (85.84 km vs 131.69 km).",
+    "extent_and_geometry_assessment": "Candidate C incorporates 3 peripheral anchor controls (Charles Town, SC on the northern Atlantic seaboard; St. Augustine, FL on the Atlantic coast; and Bridgetown, Barbados anchoring the Windward Islands). These peripheral controls stabilize the affine coordinate frame across the full chart plate. In contrast, Candidate F1 relies strictly on 10 inner-basin controls without peripheral constraints. Under this inner-basin-only fit, outer-field extrapolation drifts, producing an unconstrained 9% vertical over-stretching (3533 warped lines vs 3241 lines for C) and shifting the northern boundary northward from 34.00\u00b0N to 34.77\u00b0N. Candidate C preserves the full main chart field, including documented transatlantic Flota sailing track markings within the retained chart field ('and ye several tracts made by ye galeons and flota from place to place'), without synthetic extrapolation or border distortion.",
     "selection_conclusion": "Candidate C is confirmed as the canonical production georeference layer based on: (1) equivalent out-of-sample RMSE on the common core with superior median and mean errors; (2) full-extent geometric stability without artificial latitude stretching; (3) preservation of documented Atlantic coastal and island geography; and (4) verified visual fidelity across all viewports."
   }
 }
