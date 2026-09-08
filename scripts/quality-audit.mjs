@@ -1057,11 +1057,19 @@ async function main() {
     console.log(`Journeys Passed:          ${auditReport.summary.journeys_passed} / ${auditReport.journeys.length}`);
     console.log(`==================================================\n`);
 
-    ws.close();
+    try {
+      ws.close();
+    } catch {}
   } finally {
-    proc.kill();
-    fs.rmSync(userDataDir, { recursive: true, force: true });
-    server.close();
+    try {
+      proc.kill();
+    } catch {}
+    try {
+      fs.rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {}
+    try {
+      server.close();
+    } catch {}
   }
 
   if (testFailures > 0) {
