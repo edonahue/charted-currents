@@ -335,8 +335,10 @@
         4650,
         160
       ],
+      "measured_displacement_km": 261.64,
+      "measured_longitude_offset_deg": -2.53,
       "rejection_status": "preserved_in_chart_excluded_from_gcp_fit",
-      "rejection_rationale": "Bermuda is preserved unmasked in the main chart field. However, in Moll's 1715 engraving (as in contemporary early 18th-century cartography prior to marine chronometers), Bermuda was plotted ~250 km too far west relative to the North American coastline. Using it as an active affine control would distort the continental coastline and Greater Antilles."
+      "rejection_rationale": "Bermuda is preserved unmasked in the main chart field. On this chart Bermuda is plotted materially west of its modern WGS84 position relative to the North American coastline (measured displacement ~261.6 km, 2.53° west). Including it as an active affine control worsens the principal chart-field fit across the mainland and Greater Antilles, so it is preserved visually in the main chart but excluded from the control set."
     },
     {
       "feature_name": "Mexico City ('The city of Mexico in New Spain')",

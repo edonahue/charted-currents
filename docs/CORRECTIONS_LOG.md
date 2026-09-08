@@ -52,7 +52,10 @@ This log records substantive historical, provenance, and cartographic correction
   - Willemstad, Curaçao: Pinpointed to the engraved harbor inlet at Bay St. Anna ($x=4365, y=2588$), dropping its LOOCV error from $238.49\text{ km}$ to $131.69\text{ km}$.
   - Cartagena, Colombia: Pinpointed to the Boca Chica entrance symbol on the coast ($x=3410, y=2835$), reducing LOOCV error to $79.22\text{ km}$.
 * **Transformation Method**: First-order Affine transformation (`gdalwarp_affine_order_1`). An affine warp scales, translates, and rotates the linear cylindrical plate without introducing synthetic polynomial curvature.
-* **Comparative Benchmark**: Benchmarked Candidate C (Full Main Chart Affine, 13 GCPs) against Candidate F1 (Regional Caribbean Basin Affine, 10 GCPs). Candidate C preserves the full main chart field (including the northern Atlantic seaboard at Charles Town, Florida at St. Augustine, the Lesser Antilles and Barbados, and the transatlantic Flota return route) while achieving an overall LOOCV RMSE of `107.68 km`.
+* **Comparative Benchmark (Full Scope vs Common Core)**: Benchmarked Candidate C (Full Main Chart Affine, 13 GCPs) against Candidate F1 (Regional Caribbean Basin Affine, 10 GCPs). Because headline RMSE evaluates different populations (13 vs 10 GCPs), Candidate C was also evaluated across the exact same 10 common-core Caribbean basin control points used by F1:
+  - On the 10 common points, LOOCV RMSE is effectively tied (`102.07 km` for C vs `101.16 km` for F1, delta `0.91 km`).
+  - Candidate C achieves lower mean error (`93.14 km` vs `96.50 km`) and lower median error (`86.99 km` vs `99.41 km`) across the common core.
+  - Candidate C stabilizes full-plate geometry without the unconstrained 9% vertical over-stretching (3533 vs 3241 lines) produced by Candidate F1, and preserves Moll's eastward/transatlantic Flota track markings within the retained chart field (*"and ye several tracts made by ye galeons and flota from place to place"*) alongside Florida and the Lesser Antilles to Barbados without artificial geographic truncation.
 * **Harbor Inset Masking**: Applied transparent alpha mask across three exact bounding boxes covering the five catalogued harbor draught insets inside the neatline crop:
   - Box A: Havana, Porto Bella, Cartagena ($x \in [4831, 5963], y \in [91, 1234]$)
   - Box B: La Vera Cruz ($x \in [4481, 4831], y \in [233, 439]$)
@@ -81,3 +84,4 @@ This log records substantive historical, provenance, and cartographic correction
   - `test_georeferencing_epistemic_honesty`: Enforces honest epistemic disclaimer in report.
   - `test_cartographic_assertions`: Verifies published assertion records match derivation parameters.
   - `test_acquisition_metadata_invariants`: Verifies Bowles imprint and `[1715?]` date uncertainty.
+  - `test_candidate_benchmark_and_common_core_invariants`: Verifies Candidate C vs F1 full scope and common-core metrics, delta LOOCV RMSE $\le 1.0\text{ km}$, F1 review asset presence, and lack of contradictory or unverified claims.

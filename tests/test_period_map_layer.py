@@ -9,6 +9,7 @@ REPORT_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/g
 METADATA_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/metadata.json")
 GCP_AUDIT_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/gcp_audit.json")
 GRATICULE_AUDIT_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/graticule_audit.json")
+BENCHMARK_PATH = os.path.join(REPO_ROOT, "data/source_acquisitions/loc_gm71005442/candidate_benchmark.json")
 
 
 class TestPeriodMapLayerInvariants(unittest.TestCase):
@@ -26,6 +27,8 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
             cls.gcp_audit = json.load(f)
         with open(GRATICULE_AUDIT_PATH, "r", encoding="utf-8") as f:
             cls.graticule_audit = json.load(f)
+        with open(BENCHMARK_PATH, "r", encoding="utf-8") as f:
+            cls.benchmark = json.load(f)
 
     def test_loc_source_provenance_and_rights(self):
         """Herman Moll 1715 source must preserve LOC holding, call number, and open public domain rights."""
@@ -209,6 +212,79 @@ class TestPeriodMapLayerInvariants(unittest.TestCase):
             "Printed for Tho: Bowles in St. Pauls Church Yard and Iohn Bowles at the Black Horse in Cornhill.",
         )
         self.assertEqual(meta["rights_state"], "open_public_domain")
+
+    def test_candidate_benchmark_and_common_core_invariants(self):
+        """Verifies Candidate C vs F1 benchmark and common-core evaluation (R16, R16B, R19)."""
+        bm = self.benchmark
+        self.assertIn("candidate_c_full_scope", bm)
+        self.assertIn("candidate_f1_full_scope", bm)
+        self.assertIn("common_core_comparison", bm)
+
+        c_full = bm["candidate_c_full_scope"]
+        f1_full = bm["candidate_f1_full_scope"]
+        core = bm["common_core_comparison"]
+
+        # Scope counts
+        self.assertEqual(c_full["gcp_count"], 13)
+        self.assertEqual(f1_full["gcp_count"], 10)
+        self.assertEqual(core["common_core_gcp_count"], 10)
+
+        # Candidate C full scope metrics
+        self.assertAlmostEqual(c_full["rmse_in_sample_km"], 79.57, places=2)
+        self.assertAlmostEqual(c_full["rmse_loocv_km"], 107.68, places=2)
+        self.assertAlmostEqual(c_full["loocv_median_km"], 86.99, places=2)
+        self.assertEqual(c_full["loocv_max_feature"], "Bridgetown, Barbados")
+
+        # Candidate F1 full scope metrics
+        self.assertAlmostEqual(f1_full["rmse_in_sample_km"], 69.80, places=2)
+        self.assertAlmostEqual(f1_full["rmse_loocv_km"], 101.16, places=2)
+        self.assertAlmostEqual(f1_full["loocv_median_km"], 99.41, places=2)
+        self.assertEqual(f1_full["loocv_max_feature"], "Veracruz, Mexico")
+
+        # Common core evaluation
+        expected_core_ids = [
+            "gcp_moll_havana",
+            "gcp_moll_port_royal",
+            "gcp_moll_veracruz",
+            "gcp_moll_cartagena",
+            "gcp_moll_portobelo",
+            "gcp_moll_san_juan",
+            "gcp_moll_santo_domingo",
+            "gcp_moll_willemstad",
+            "gcp_moll_cabo_san_antonio",
+            "gcp_moll_cabo_maisi",
+        ]
+        self.assertEqual(core["common_core_ids"], expected_core_ids)
+
+        c_core = core["candidate_c"]
+        f1_core = core["candidate_f1"]
+
+        self.assertAlmostEqual(c_core["loocv_rmse_km"], 102.07, places=2)
+        self.assertAlmostEqual(f1_core["loocv_rmse_km"], 101.16, places=2)
+        self.assertAlmostEqual(core["delta_rmse_loocv_km"], 0.91, places=2)
+        self.assertLessEqual(core["delta_rmse_loocv_km"], 1.0, "C and F1 LOOCV RMSE on common core must be tied within 1.0 km")
+
+        # Candidate C has lower mean and median error on the common core
+        self.assertLess(c_core["loocv_mean_km"], f1_core["loocv_mean_km"])
+        self.assertLess(c_core["loocv_median_km"], f1_core["loocv_median_km"])
+        self.assertAlmostEqual(c_core["loocv_mean_km"], 93.14, places=2)
+        self.assertAlmostEqual(f1_core["loocv_mean_km"], 96.50, places=2)
+        self.assertAlmostEqual(c_core["loocv_median_km"], 86.99, places=2)
+        self.assertAlmostEqual(f1_core["loocv_median_km"], 99.41, places=2)
+
+        # F1 regional review asset verification
+        f1_asset_path = os.path.join(REPO_ROOT, "public", f1_full["asset_path"])
+        self.assertTrue(os.path.exists(f1_asset_path), f"F1 review asset missing: {f1_asset_path}")
+        self.assertEqual(f1_full["derivative_dimensions"], [2560, 1562])
+        self.assertLessEqual(os.path.getsize(f1_asset_path), 1000000)
+
+        # Selection rationale sanity check: no forbidden phrases
+        sel = json.dumps(bm["selection_analysis"])
+        self.assertNotIn("route to Europe", sel)
+        self.assertNotIn("route to Spain", sel)
+        self.assertNotIn("116.45", json.dumps(bm))
+        self.assertNotIn("pre-chronometer", json.dumps(bm))
+        self.assertNotIn("marine chronometer", json.dumps(bm))
 
 
 if __name__ == "__main__":
