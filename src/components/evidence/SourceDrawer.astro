@@ -143,6 +143,11 @@
     if (field === "upstream_archive_reference") {
       return `Cited in upstream archival series: ${ast.raw_value}`;
     }
+    if (field === "battle_engagement") return String(ast.raw_value || "");
+    if (field === "crew_resistance") return String(ast.raw_value || "");
+    if (field === "plunder_cargo") return String(ast.raw_value || "");
+    if (field === "jamaica_petition") return String(ast.raw_value || "");
+    if (field === "report_date") return `Council of Trade Report Date: ${ast.raw_value}`;
     if (field === "crew_examination") {
       const parts: string[] = [];
       if (ast.first_name || ast.last_name) parts.push(`${ast.first_name || ""} ${ast.last_name || ""}`.trim());
@@ -261,8 +266,23 @@
     rowRights.append(dtRights, ddRights);
     dl.appendChild(rowRights);
 
-    // Source Permalink Row
-    if (source.item_url) {
+    // Source / Record Permalink Row
+    if (record?.record_url) {
+      const rowLink = document.createElement("div");
+      rowLink.className = "inspector-meta__row";
+      const dtLink = document.createElement("dt");
+      dtLink.textContent = "Record Link";
+      const ddLink = document.createElement("dd");
+      const a = document.createElement("a");
+      a.href = record.record_url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "inspector-link";
+      a.textContent = "View Published Record ↗";
+      ddLink.appendChild(a);
+      rowLink.append(dtLink, ddLink);
+      dl.appendChild(rowLink);
+    } else if (source.item_url) {
       const rowLink = document.createElement("div");
       rowLink.className = "inspector-meta__row";
       const dtLink = document.createElement("dt");
@@ -372,6 +392,13 @@
       } else if (record?.source_id === "src_na_2_22_24_sailing_letters") {
         upNote.textContent =
           "Physical manuscripts held at The National Archives, Kew (series HCA 32). Photographic duplicate collection and finding aid examined at Nationaal Archief, Den Haag.";
+      } else if (
+        record?.source_id === "src_csp_colonial_vol22" ||
+        record?.upstream_archive_source_id === "src_tna_co_138" ||
+        record?.upstream_archive_source_id === "src_tna_co_137"
+      ) {
+        upNote.textContent =
+          "Colonial Office manuscript records held at The National Archives, Kew. The physical manuscript volume was not independently examined; entry inspected via published Calendar of State Papers.";
       } else {
         upNote.textContent =
           "Cited in dataset extract from High Court of Admiralty prize papers. The physical 17th/18th-century manuscript at Kew was not independently examined.";

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "baseline_commit": "8b690135b1232f043ee1e6bb436aaae3aea4ee15",
+  "generated_at": "2026-09-08T05:56:00.000Z",
+  "critical_allowed": 0,
+  "allowed_serious_rules": [
+    {
+      "rule_id": "color-contrast",
+      "target_selector_pattern": ".inspector-dataset-context-badge",
+      "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+      "allowed_occurrences": 1,
+      "allowed_states": [
+        "state_5_period_map",
+        "state_6_mobile"
+      ],
+      "rationale": "Inherited contrast on dataset context badge in inspector; empirically verified on 8b690135 in state_5_period_map and state_6_mobile only"
+    }
+  ],
+  "baseline_counts": {
+    "critical": 0,
+    "serious": 2,
+    "moderate": 0,
+    "minor": 0
+  }
+}

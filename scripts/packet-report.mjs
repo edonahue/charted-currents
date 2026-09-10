@@ -27,6 +27,14 @@ function argsValue(prefix) {
 
 const jsonMode = process.argv.includes("--json");
 const sourceFilter = argsValue("--source=");
+const factsArg = argsValue("--facts=");
+const qualityArg = argsValue("--quality=");
+
+const qualityPath = qualityArg || (existsSync("test-results/quality-audit.json") ? "test-results/quality-audit.json" : null);
+const qualityData = qualityPath ? readJson(qualityPath, null) : null;
+
+const factsPath = factsArg || null;
+const factsData = factsPath ? readJson(factsPath, null) : null;
 
 const branch = git(["rev-parse", "--abbrev-ref", "HEAD"]);
 const head = git(["rev-parse", "HEAD"]);
@@ -110,6 +118,22 @@ const report = {
         unrecorded_places: Object.values(datasetContext.places || {}).filter((p) => p.status === "unrecorded").length,
       }
     : null,
+  quality_audit: qualityData
+    ? {
+        path: qualityPath,
+        mode: qualityData.mode ?? null,
+        timestamp: qualityData.timestamp ?? null,
+        summary: qualityData.summary ?? null,
+        journeys_passed: qualityData.summary?.journeys_passed ?? null,
+        journeys_total: Array.isArray(qualityData.journeys) ? qualityData.journeys.length : null,
+      }
+    : null,
+  machine_derived_facts: factsData
+    ? {
+        path: factsPath,
+        facts: factsData,
+      }
+    : null,
   caveat: "This report is data-derived. It does not assert that tests, CI, preview, production deployment, source URLs, or external services were verified in this run.",
 };
 
@@ -151,6 +175,36 @@ if (sourceFilter) {
   for (const record of report.source_filter.records) {
     console.log(`  ${record.id} | native=${record.native_identifier ?? "—"} | inspection=${record.inspection_state ?? "—"} | ${record.title ?? ""}`);
   }
+}
+if (report.quality_audit && report.quality_audit.summary) {
+  const qa = report.quality_audit;
+  console.log("------------------------------------------");
+  console.log(`Quality & Accessibility Audit (${qa.path}):`);
+  console.log(`  Critical A11y Violations: ${qa.summary.critical_a11y ?? 0}`);
+  console.log(`  Serious A11y Violations:  ${qa.summary.serious_a11y ?? 0} (${qa.summary.allowed_serious_a11y ?? 0} allowed baseline, ${qa.summary.unallowed_serious_a11y ?? 0} unallowed)`);
+  console.log(`  Moderate A11y Violations: ${qa.summary.moderate_a11y ?? 0}`);
+  console.log(`  Minor A11y Violations:    ${qa.summary.minor_a11y ?? 0}`);
+  console.log(`  Layout Failures:          ${qa.summary.layout_failures ?? 0}`);
+  console.log(`  User Journeys:            ${qa.journeys_passed ?? 0} / ${qa.journeys_total ?? 0} passed`);
+}
+if (report.machine_derived_facts && report.machine_derived_facts.facts) {
+  const mf = report.machine_derived_facts;
+  console.log("------------------------------------------");
+  console.log(`Machine-Derived Facts (${mf.path}):`);
+  const fd = mf.facts;
+  function printFacts(obj, indent = "  ") {
+    for (const [k, v] of Object.entries(obj)) {
+      if (v !== null && typeof v === "object" && !Array.isArray(v)) {
+        console.log(`${indent}${k}:`);
+        printFacts(v, indent + "  ");
+      } else if (Array.isArray(v)) {
+        console.log(`${indent}${k.padEnd(24)} [${v.length} items]`);
+      } else if (v !== null && v !== undefined) {
+        console.log(`${indent}${k.padEnd(24)} ${v}`);
+      }
+    }
+  }
+  printFacts(fd);
 }
 console.log("------------------------------------------");
 console.log("NOTE: This report does not prove tests, CI, preview, hosted deployment, source-link health, or external service status.");

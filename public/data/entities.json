@@ -23,6 +23,29 @@
       ]
     },
     {
+      "id": "occ_ship_csp_1352",
+      "source_record_id": "sr_csp_colonial_v22_1352",
+      "raw_name": "Richard and Sarah",
+      "assertion_ids": [
+        "ast_rs_recapture",
+        "ast_rs_salvage_petition",
+        "ast_rs_1352_date"
+      ]
+    },
+    {
+      "id": "occ_ship_csp_1361",
+      "source_record_id": "sr_csp_colonial_v22_1361",
+      "raw_name": "Richard and Sarah",
+      "assertion_ids": [
+        "ast_rs_battle_engagement",
+        "ast_rs_crew_resistance",
+        "ast_rs_plunder_cargo",
+        "ast_rs_jamaica_petition",
+        "ast_rs_report_date",
+        "ast_rs_upstream_co"
+      ]
+    },
+    {
       "id": "occ_ship_imlm_2228",
       "source_record_id": "sr_imlm_ship_2228",
       "raw_name": "William",
@@ -4928,13 +4951,37 @@
       "canonical_name": "Richard & Sarah of London",
       "evidence_state": "documented",
       "occurrence_ids": [
-        "occ_ship_imlm_2052"
+        "occ_ship_imlm_2052",
+        "occ_ship_csp_1361",
+        "occ_ship_csp_1352"
       ],
       "reported_burden_display": "300 tons reported burden",
       "construction_display": "English built · reported age 20 at capture",
       "owner_display": "London",
       "voyage_display": "Jamaica → London",
-      "capture_display": "Dartmouth, Devon (May 1705)"
+      "capture_display": "Dartmouth, Devon (May 1705)",
+      "privateering_engagement": {
+        "cross_archive_resolution_state": "probable_match",
+        "cross_archive_note": "The CSP calendar entries are a strong but not directly docket-linked match to this HCA/IMLM vessel.",
+        "engagement_display": "Engaged for six hours by a French privateer (20 guns, 166 men); disabled, plundered, and recaptured by HMS Rochester",
+        "resistance_display": "9 of 30 mariners refused to fight; the rest maintained a 6-hour defense",
+        "plunder_display": "The ship was disabled; the privateer took the most valuable part of the cargo.",
+        "petition_display": "Petitioners asked Queen Anne to give them the Crown's one-eighth share of the ship, citing heavy losses in Jamaica by fire and earthquakes",
+        "report_date": "1705-10-05",
+        "calendar_ref": "CSP Colonial Vol. 22, Items 1352 & 1361",
+        "upstream_ref": "TNA CO 138/11, pp. 417–419; CO 137/7, Nos. 12, 12.i",
+        "source_id": "src_csp_colonial_vol22",
+        "assertion_ids": [
+          "ast_rs_battle_engagement",
+          "ast_rs_crew_resistance",
+          "ast_rs_plunder_cargo",
+          "ast_rs_recapture",
+          "ast_rs_salvage_petition",
+          "ast_rs_jamaica_petition",
+          "ast_rs_report_date",
+          "ast_rs_upstream_co"
+        ]
+      }
     },
     {
       "id": "ship_william_1702",
@@ -5364,6 +5411,29 @@
         "ast_2052_name",
         "ast_2052_tonnage",
         "ast_2052_voyage"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_csp_1352",
+      "target_entity_id": "ship_richard_and_sarah_1705",
+      "resolution_state": "probable_match",
+      "resolver": "cross_archival_concordance",
+      "evidence_assertions": [
+        "ast_rs_recapture",
+        "ast_rs_salvage_petition",
+        "ast_rs_1352_date"
+      ]
+    },
+    {
+      "occurrence_id": "occ_ship_csp_1361",
+      "target_entity_id": "ship_richard_and_sarah_1705",
+      "resolution_state": "probable_match",
+      "resolver": "cross_archival_concordance",
+      "evidence_assertions": [
+        "ast_rs_battle_engagement",
+        "ast_rs_crew_resistance",
+        "ast_rs_plunder_cargo",
+        "ast_rs_jamaica_petition"
       ]
     },
     {

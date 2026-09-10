@@ -220,6 +220,7 @@ export interface PublishedSourceRecord {
   persistent_handle?: string;
   mets_manifest_url?: string;
   scan_count?: number;
+  record_url?: string;
 }
 
 export interface PublishedAssertion {
@@ -359,6 +360,21 @@ export interface PublishedShip {
   recorded_goods_display?: string | null;
   goods_summary_display?: string | null;
   goods_value_display?: string | null;
+  privateering_engagement?: PublishedPrivateeringEngagement | null;
+}
+
+export interface PublishedPrivateeringEngagement {
+  cross_archive_resolution_state?: string;
+  cross_archive_note?: string;
+  engagement_display: string;
+  resistance_display: string;
+  plunder_display: string;
+  petition_display: string;
+  report_date: string;
+  calendar_ref: string;
+  upstream_ref: string;
+  source_id: string;
+  assertion_ids: string[];
 }
 
 export interface PublishedEntityResolutionEdge {

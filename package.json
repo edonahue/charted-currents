@@ -30,6 +30,8 @@
     "research:check-access": "node scripts/check-research-access.mjs",
     "research:test-diagnostic": "node tests/test_research_access_diagnostic.mjs",
     "refs:sync": "node scripts/sync-visual-references.mjs",
+    "review:quality": "node scripts/quality-audit.mjs --ci-mode",
+    "review:quality:full": "node scripts/quality-audit.mjs --full",
     "review:behavioral": "node scripts/capture-reviews.mjs --behavioral-only",
     "review:capture": "node scripts/capture-reviews.mjs",
     "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4",
@@ -51,6 +53,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "axe-core": "4.13.0",
     "typescript": "6.0.3"
   },
   "repository": {

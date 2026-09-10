@@ -22,20 +22,29 @@
     },
     {
       "id": "event_capture_richard_and_sarah_1705",
-      "title": "Capture of the Richard & Sarah",
+      "title": "Recorded Capture Record of the Richard & Sarah — Dartmouth",
       "date": "1705-05",
       "place_id": "place_dartmouth",
       "vessel_id": "ship_richard_and_sarah_1705",
       "kind": "capture",
       "evidence_state": "documented",
-      "summary": "The English-built vessel Richard & Sarah of London, on a recorded voyage from Jamaica to London, was taken at Dartmouth, Devon in May 1705 and recorded in High Court of Admiralty Prize Papers.",
+      "summary": "The IMLM dataset, citing HCA 32/80 upstream, records Dartmouth, Devon as the vessel's capture location in May 1705. Separately, CSP Colonial Items 1352 and 1361 record the French-privateer capture/engagement, plunder, and recapture by HMS Rochester; the inspected calendar entries do not record the geographic location of that engagement/recapture. Petitioners subsequently asked Queen Anne to give them the Crown's one-eighth share of the ship, citing extraordinary losses in Jamaica by fire and earthquakes.",
       "sources": [
         "src_imlm_ukda_852135",
-        "src_tna_hca_32"
+        "src_tna_hca_32",
+        "src_csp_colonial_vol22",
+        "src_tna_co_138",
+        "src_tna_co_137"
       ],
       "assertion_ids": [
         "ast_2052_capture",
-        "ast_2052_upstream_hca"
+        "ast_2052_upstream_hca",
+        "ast_rs_battle_engagement",
+        "ast_rs_crew_resistance",
+        "ast_rs_plunder_cargo",
+        "ast_rs_recapture",
+        "ast_rs_salvage_petition",
+        "ast_rs_jamaica_petition"
       ]
     },
     {
