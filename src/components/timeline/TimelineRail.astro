@@ -122,9 +122,36 @@ const discreteCoverages = (coverageData as any[]).filter(
     <div class="timeline-shell__heading">
       <p class="panel-kicker">Period Focus</p>
       <div class="timeline-filters" role="group" aria-label="Temporal period filter">
-        <button type="button" class="timeline-filter-btn is-active" data-time-filter="all">All (1650–1730)</button>
-        <button type="button" class="timeline-filter-btn" data-time-filter="1684-1695">1684–1695 (Early / Disaster Context)</button>
-        <button type="button" class="timeline-filter-btn" data-time-filter="1702-1712">1702–1712 (Prize Papers Sample)</button>
+        <button
+          type="button"
+          class="timeline-filter-btn is-active"
+          data-time-filter="all"
+          aria-pressed="true"
+          aria-label="All periods, 1650–1730"
+        >
+          <span class="timeline-filter-btn__long" aria-hidden="true">All (1650–1730)</span>
+          <span class="timeline-filter-btn__short" aria-hidden="true">All</span>
+        </button>
+        <button
+          type="button"
+          class="timeline-filter-btn"
+          data-time-filter="1684-1695"
+          aria-pressed="false"
+          aria-label="1684–1695, Early / Disaster Context"
+        >
+          <span class="timeline-filter-btn__long" aria-hidden="true">1684–1695 (Early / Disaster Context)</span>
+          <span class="timeline-filter-btn__short" aria-hidden="true">1684–1695</span>
+        </button>
+        <button
+          type="button"
+          class="timeline-filter-btn"
+          data-time-filter="1702-1712"
+          aria-pressed="false"
+          aria-label="1702–1712, Prize Papers Sample"
+        >
+          <span class="timeline-filter-btn__long" aria-hidden="true">1702–1712 (Prize Papers Sample)</span>
+          <span class="timeline-filter-btn__short" aria-hidden="true">1702–1712</span>
+        </button>
       </div>
     </div>
   </div>
@@ -586,5 +613,32 @@ const discreteCoverages = (coverageData as any[]).filter(
 
   .timeline-shell__note {
     font-style: italic;
+  }
+
+  .timeline-filter-btn__short {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .timeline-shell {
+      padding: var(--cc-space-2) var(--cc-space-3);
+      gap: var(--cc-space-1);
+    }
+
+    .timeline-filter-btn__long {
+      display: none;
+    }
+
+    .timeline-filter-btn__short {
+      display: inline;
+    }
+
+    .timeline-coverage-label {
+      display: none;
+    }
+
+    .timeline-shell__footer {
+      font-size: 0.625rem;
+    }
   }
 </style>

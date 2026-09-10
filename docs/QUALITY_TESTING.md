@@ -15,7 +15,7 @@ npm run review:quality
 # Equivalent to: node scripts/quality-audit.mjs --ci-mode
 ```
 * **Viewports Tested**: 2 viewports (`standard_desktop` 1440x900, `mobile_compact` 390x844).
-* **Scope**: 6 axe-core state scans, multi-state layout geometry checks across 3 open states per viewport, 4 end-to-end user journeys.
+* **Scope**: 6 axe-core state scans, multi-state layout geometry checks across 5 UI states per viewport (10 evaluations total), 5 end-to-end user journeys.
 * **Target Execution Time**: Under 25 seconds (typically ~18–21s).
 * **Screenshots**: Skipped to minimize CI time.
 
@@ -31,7 +31,7 @@ npm run review:quality:full
   3. `tablet_small_desktop`: 1024x768 (Tablet / low-res desktop)
   4. `standard_desktop`: 1440x900 (Standard desktop reference)
   5. `ultrawide`: 3440x1440 (Ultrawide desktop)
-* **Scope**: 6 axe-core state scans, responsive geometry matrix across 3 open states per viewport (15 evaluations total), 4 end-to-end user journeys, and 7 deterministic visual screenshots.
+* **Scope**: 6 axe-core state scans, responsive geometry matrix across 5 UI states per viewport (25 evaluations total), 5 end-to-end user journeys, and 7 deterministic visual screenshots.
 * **Artifacts Generated**: `test-results/screenshots/*.png` and `test-results/quality-audit.json`.
 
 ---
@@ -52,7 +52,7 @@ The audit suite is implemented in `scripts/quality-audit.mjs` and operates via d
     └───────┬──────┘ └─────┬──────┘ └─────┬──────────┘
             │              │              │
             ▼              ▼              ▼
-     Multi-Factor       Multi-State    4 Real Flows
+     Multi-Factor       Multi-State    5 Real Flows
     Ratchet Baseline      Matrix        Dual-Source
  (tests/a11y-baseline)  0px Overflow     Evidence
 ```
@@ -60,33 +60,28 @@ The audit suite is implemented in `scripts/quality-audit.mjs` and operates via d
 ### Layer 1: WCAG 2.1 AA Accessibility Audits
 Axe-core scans run across 6 distinct application UI states:
 1. `state_1_initial`: Baseline desktop state with map canvas, app masthead, and filter bar.
-2. `state_2_locator`: Place Locator modal panel open with search input and port list.
+2. `state_2_locator`: Place Locator dropdown navigation surface open with search input and port list.
 3. `state_3_inspector`: Entity Inspector drawer rendered with historical facts and timeline (Port Royal selected).
 4. `state_4_drawer`: Multi-source evidence drawer open, rendering archival citations and assertions.
 5. `state_5_period_map`: Herman Moll [1715?] georeferenced raster layer loaded with overlay controls active.
 6. `state_6_mobile`: Representative mobile portrait state (390x844) with mobile bottom-sheet inspector.
 
 #### Baseline Ratchet Mechanism
-To prevent regressions without blocking on pre-existing editorial styling choices, the test enforces a **zero-critical, ratcheted-serious** policy defined in `tests/a11y-baseline.json`:
+Following the contrast repair on `.inspector-dataset-context-badge` using `--cc-ink-soft`, the test enforces a **strict zero-critical, zero-serious** policy defined in `tests/a11y-baseline.json`:
 * **Critical violations**: strictly 0 allowed. Any critical violation fails the run.
-* **Serious violations**: evaluated by a multi-factor ratchet rule checking:
-  1. `rule_id`: must match allowed axe rule (e.g. `color-contrast`).
-  2. `allowed_states`: violation is tolerated strictly in `state_5_period_map` and `state_6_mobile` (empirically reproduced on base commit `8b690135`).
-  3. `allowed_occurrences`: maximum 1 violation per state.
-  4. `target_selector_pattern`: must match `.inspector-dataset-context-badge`.
-  Any new, unlisted, or out-of-state serious violation immediately fails the run.
+* **Serious violations**: strictly 0 allowed (`baseline_counts.serious: 0`, `allowed_serious_rules: []`). Any serious violation anywhere across the matrix immediately fails the run.
 * **Moderate / Minor**: recorded for monitoring in `quality-audit.json` without failing the build.
 
 ### Layer 2: Viewport & Layout Geometry Matrix
-Every tested viewport is evaluated across three UI states (`initial`, `inspector_open`, and `drawer_open`) against physical geometry constraints:
+Every tested viewport is evaluated across five UI states (`initial`, `inspector_open`, `drawer_open`, `locator_open`, and `period_map_open`) against physical geometry constraints:
 * **No Horizontal Overflow**: `document.documentElement.scrollWidth <= window.innerWidth + 2px` (2px tolerance for sub-pixel layout rounding).
 * **Panel Boundary Clipping**: `.app-masthead`, `[data-component='place-locator']`, `[data-component='entity-inspector']`, `[data-component='source-drawer']`, `.source-drawer-panel`, `.map-layer-control`, and `.maplibregl-ctrl-attrib` must not clip outside viewport bounds.
-* **Control Occlusion**: Primary controls (`[data-locator-toggle]`, `[data-layer-toggle]`) must not be unexpectedly covered by unannounced elements (excluding modal backdrops).
+* **Control Occlusion**: Primary controls (`[data-locator-toggle]`, `[data-layer-toggle]`) must not be unexpectedly covered by unannounced elements (excluding overlay/drawer backdrops).
 * **Zero-Size Interactive Elements**: Interactive buttons/links must have non-zero client dimensions when rendered.
 * **Unintended Content Clipping**: Scroll containers must not have `overflow-y: hidden` when content height exceeds container height.
 
 ### Layer 3: End-to-End User Journeys
-The runner executes four realistic research user journeys:
+The runner executes five realistic research user journeys using native Chrome DevTools Protocol input (`Input.dispatchKeyEvent` for key navigation and `Input.insertText` for typing):
 1. **Journey 1 — Place to Provenance & Dual-Evidence Verification**:
    * Open Place Locator and select Jamaica (`place_jamaica`).
    * Select vessel *Richard & Sarah of London* from network connections list.
@@ -109,6 +104,17 @@ The runner executes four realistic research user journeys:
    * Verify bottom-sheet inspector opens in `data-sheet-state="open"` or `"expanded"`.
    * Click drag handle; verify transition to `expanded`.
    * Close inspector; verify document scroll width has no horizontal overflow.
+   * Verify mobile timeline rail buttons exhibit short visible labels (`All`, `1684–1695`, `1702–1712`), full period accessible names via `aria-label`, correct `aria-pressed` state, and `aria-hidden="true"` on inner text spans.
+5. **Journey 5 — Browse Places Search & Keyboard Navigation**:
+   * Focus `[data-locator-toggle]` and open dropdown navigation surface via native CDP `Enter`.
+   * Verify native focus enters `[data-locator-filter-input]` with 29 initial places listed.
+   * Type search query `Havana` via native CDP `Input.insertText`; verify list filters to exactly 1 of 29 places.
+   * Navigate via native CDP `ArrowDown` (`Input.dispatchKeyEvent`) to first matching place button; verify focus moves to button (`plc_havana`).
+   * Navigate via native CDP `ArrowUp`; verify focus returns to search input.
+   * Clear query via native `Escape`; verify search input resets to empty and all 29 places restore.
+   * Test list navigation via native `ArrowDown`, `End`, `Home`, and `ArrowUp` across visible items.
+   * Re-filter by typing `Havana`, `ArrowDown` to Havana item, and activate via native `Enter`.
+   * Verify place selection updates `selectionStore` (`selectedPlaceId === 'plc_havana'`), dropdown closes, and focus returns to `[data-locator-toggle]`.
 
 ---
 

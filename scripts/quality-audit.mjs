@@ -281,6 +281,11 @@ async function main() {
       await new Promise((r) => setTimeout(r, 80));
     };
 
+    const insertText = async (text) => {
+      await send("Input.insertText", { text });
+      await new Promise((r) => setTimeout(r, 80));
+    };
+
     await send("Page.enable");
     await send("Runtime.enable");
     await send("Page.addScriptToEvaluateOnNewDocument", {
@@ -533,6 +538,30 @@ async function main() {
       expression: `document.querySelector('[data-inspector-close]')?.click()`,
     });
     await new Promise((r) => setTimeout(r, 250));
+    await captureScreenshot("mobile-timeline-390x844.png");
+
+    // Open locator menu on mobile
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector('[data-locator-toggle]')?.click()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    await captureScreenshot("mobile-locator-open-390x844.png");
+
+    // Close locator, open period map on mobile
+    await send("Runtime.evaluate", {
+      expression: `
+        document.querySelector('[data-locator-toggle]')?.click();
+        document.querySelector('[data-layer-toggle]')?.click();
+      `,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    await captureScreenshot("mobile-period-map-open-390x844.png");
+
+    // Close period map
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector('[data-layer-toggle]')?.click()`,
+    });
+    await new Promise((r) => setTimeout(r, 250));
 
     // Reset to desktop viewport for subsequent layout/journey tests
     await send("Emulation.setDeviceMetricsOverride", {
@@ -568,10 +597,12 @@ async function main() {
           const panelSelectors = [
             ".app-masthead",
             "[data-component='place-locator']",
+            "[data-locator-menu]",
             "[data-component='entity-inspector']",
             "[data-component='source-drawer']",
             ".source-drawer-panel",
             ".map-layer-control",
+            "[data-layer-panel]",
             ".maplibregl-ctrl-attrib"
           ];
 
@@ -716,6 +747,68 @@ async function main() {
         });
         await new Promise((r) => setTimeout(r, 200));
 
+        // State D: Place Locator open
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              if (!menu || menu.hidden) {
+                document.querySelector('[data-locator-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 250));
+        const resLocator = await send("Runtime.evaluate", {
+          expression: evaluateLayoutInBrowser,
+          returnByValue: true,
+        });
+        for (const f of resLocator?.result?.value?.findings || []) {
+          vpFindings.push({ state: "locator_open", ...f });
+        }
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              if (menu && !menu.hidden) {
+                document.querySelector('[data-locator-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
+        // State E: Period Map open
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const panel = document.querySelector('[data-layer-panel]');
+              if (!panel || panel.hidden) {
+                document.querySelector('[data-layer-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 250));
+        const resPeriodMap = await send("Runtime.evaluate", {
+          expression: evaluateLayoutInBrowser,
+          returnByValue: true,
+        });
+        for (const f of resPeriodMap?.result?.value?.findings || []) {
+          vpFindings.push({ state: "period_map_open", ...f });
+        }
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const panel = document.querySelector('[data-layer-panel]');
+              if (panel && !panel.hidden) {
+                document.querySelector('[data-layer-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
         const passVp = vpFindings.length === 0;
         if (!passVp) {
           testFailures += vpFindings.length;
@@ -730,7 +823,7 @@ async function main() {
         });
 
         console.log(
-          `  ${passVp ? "[PASS]" : "[FAIL]"} Layout check on ${vp.name} (${vp.width}x${vp.height}) across 3 states: ${vpFindings.length} findings`
+          `  ${passVp ? "[PASS]" : "[FAIL]"} Layout check on ${vp.name} (${vp.width}x${vp.height}) across 5 states: ${vpFindings.length} findings`
         );
         for (const f of vpFindings) {
           console.error(`    [LAYOUT FINDING] [${f.state}] [${f.type}] ${f.selector || ""} — ${f.detail}`);
@@ -747,9 +840,9 @@ async function main() {
       await new Promise((r) => setTimeout(r, 200));
 
       // ----------------------------------------------------
-      // 3. USER-JOURNEY SMOKE TESTS (4 Journeys)
+      // 3. USER-JOURNEY SMOKE TESTS (5 Journeys)
       // ----------------------------------------------------
-      console.log(`\n--- 3. User-Journey Verification (4 Journeys) ---`);
+      console.log(`\n--- 3. User-Journey Verification (5 Journeys) ---`);
 
       // Journey 1: Place to Provenance
       console.log("  Running Journey 1: Place to Provenance (Jamaica -> Richard & Sarah -> Source Drawer -> Esc)...");
@@ -1144,6 +1237,71 @@ async function main() {
         });
         if (!checkScroll?.result?.value) throw new Error("Horizontal overflow detected on mobile viewport after closing inspector");
 
+        // Check timeline button accessible names, visual labels, and aria-pressed state on mobile (F2)
+        const timelineMobileCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const btns = Array.from(document.querySelectorAll(".timeline-filter-btn"));
+              if (btns.length !== 3) return { ok: false, reason: "Expected 3 timeline filter buttons" };
+
+              const expected = [
+                {
+                  filter: "all",
+                  expectedLabel: "All periods, 1650–1730",
+                  expectedShort: "All",
+                  expectedPressed: "true",
+                },
+                {
+                  filter: "1684-1695",
+                  expectedLabel: "1684–1695, Early / Disaster Context",
+                  expectedShort: "1684–1695",
+                  expectedPressed: "false",
+                },
+                {
+                  filter: "1702-1712",
+                  expectedLabel: "1702–1712, Prize Papers Sample",
+                  expectedShort: "1702–1712",
+                  expectedPressed: "false",
+                },
+              ];
+
+              for (let i = 0; i < expected.length; i++) {
+                const btn = btns[i];
+                const exp = expected[i];
+                const ariaLabel = btn.getAttribute("aria-label");
+                const ariaPressed = btn.getAttribute("aria-pressed");
+                const shortSpan = btn.querySelector(".timeline-filter-btn__short");
+                const longSpan = btn.querySelector(".timeline-filter-btn__long");
+
+                const shortDisplay = shortSpan ? getComputedStyle(shortSpan).display : "none";
+                const longDisplay = longSpan ? getComputedStyle(longSpan).display : "none";
+
+                if (ariaLabel !== exp.expectedLabel) {
+                  return { ok: false, reason: \`Button \${i} aria-label expected "\${exp.expectedLabel}" but got "\${ariaLabel}"\` };
+                }
+                if (ariaPressed !== exp.expectedPressed) {
+                  return { ok: false, reason: \`Button \${i} aria-pressed expected "\${exp.expectedPressed}" but got "\${ariaPressed}"\` };
+                }
+                if (shortDisplay === "none" || longDisplay !== "none") {
+                  return { ok: false, reason: \`Button \${i} visual label visibility mismatch: short=\${shortDisplay}, long=\${longDisplay}\` };
+                }
+                if (shortSpan.textContent.trim() !== exp.expectedShort) {
+                  return { ok: false, reason: \`Button \${i} short text expected "\${exp.expectedShort}" but got "\${shortSpan.textContent.trim()}"\` };
+                }
+                if (shortSpan.getAttribute("aria-hidden") !== "true" || longSpan.getAttribute("aria-hidden") !== "true") {
+                  return { ok: false, reason: \`Button \${i} inner spans must have aria-hidden="true"\` };
+                }
+              }
+
+              return { ok: true };
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!timelineMobileCheck?.result?.value?.ok) {
+          throw new Error(`Mobile timeline assertion failed: ${timelineMobileCheck?.result?.value?.reason}`);
+        }
+
         j4Pass = true;
       } catch (err) {
         j4Error = err.message;
@@ -1158,6 +1316,296 @@ async function main() {
         console.error(`  [FAIL] Journey 4: Mobile Exploration Flow failed: ${j4Error}`);
       }
       auditReport.journeys.push({ id: "journey_4_mobile_exploration", passed: j4Pass, error: j4Error });
+
+      // ----------------------------------------------------
+      // JOURNEY 5: Browse Places Search & Keyboard Navigation
+      // ----------------------------------------------------
+      console.log("\n  Running Journey 5: Browse Places Search & Keyboard Navigation...");
+      let j5Pass = false;
+      let j5Error = null;
+      try {
+        // Reset to desktop viewport
+        await send("Emulation.setDeviceMetricsOverride", {
+          width: 1440,
+          height: 900,
+          deviceScaleFactor: 1,
+          mobile: false,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
+        // Ensure menu is closed initially
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              if (menu && !menu.hidden) {
+                document.querySelector('[data-locator-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 150));
+
+        // Step 1: Focus toggle, press Enter via native CDP, verify focus moves into filter input
+        const focusToggleResult = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const toggle = document.querySelector('[data-locator-toggle]');
+              if (!toggle) return { ok: false, reason: "Toggle not found" };
+              toggle.focus();
+              return { ok: document.activeElement === toggle };
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!focusToggleResult?.result?.value?.ok) {
+          throw new Error("Focus did not land on [data-locator-toggle]");
+        }
+
+        // Native Enter to open locator dropdown
+        await sendKey("Enter", "Enter", 13);
+        await new Promise((r) => setTimeout(r, 150));
+
+        const step1Check = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              const input = document.querySelector('[data-locator-filter-input]');
+              const count = document.querySelector('[data-locator-filter-count]');
+              const totalItems = document.querySelectorAll('[data-place-item-wrap]').length;
+              const isMenuOpen = menu && !menu.hidden;
+              const isInputFocused = document.activeElement === input;
+              const isInitial29 = totalItems === 29 && count?.textContent?.includes("29");
+              return { isMenuOpen, isInputFocused, isInitial29 };
+            })()
+          `,
+          returnByValue: true,
+        });
+        const s1 = step1Check?.result?.value;
+        if (!s1?.isMenuOpen) throw new Error("Locator dropdown menu did not open on native Enter");
+        if (!s1?.isInputFocused) throw new Error("Focus did not move from toggle into filter input");
+        if (!s1?.isInitial29) throw new Error("Initial 29 places count not verified");
+
+        // Step 2: Native typing filters the list (assert 1 of 29 places for 'Havana')
+        await insertText("Havana");
+        await new Promise((r) => setTimeout(r, 100));
+
+        const step2Check = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              const visibleWraps = Array.from(document.querySelectorAll('[data-place-item-wrap]')).filter(w => !w.hidden);
+              const count = document.querySelector('[data-locator-filter-count]');
+              const empty = document.querySelector('[data-locator-empty]');
+              const isInputFocused = document.activeElement === input;
+              const placeId = visibleWraps[0]?.querySelector('.map-locator-browser__item')?.getAttribute('data-place-id');
+              return {
+                isInputFocused,
+                inputValue: input?.value,
+                visibleCount: visibleWraps.length,
+                countText: count?.textContent || "",
+                emptyHidden: empty?.hidden === true,
+                placeId,
+              };
+            })()
+          `,
+          returnByValue: true,
+        });
+        const s2 = step2Check?.result?.value;
+        if (s2?.inputValue !== "Havana") throw new Error(`Filter input value expected 'Havana' but got '${s2?.inputValue}'`);
+        if (s2?.visibleCount !== 1 || !s2?.countText.includes("1 of 29 places")) {
+          throw new Error(`Filter by 'Havana' did not yield 1 of 29 places (got ${s2?.visibleCount}, countText: '${s2?.countText}')`);
+        }
+        if (!s2?.emptyHidden) throw new Error("Empty state is unexpectedly visible when 1 match exists");
+        if (s2?.placeId !== "place_havana") throw new Error(`Matched place ID expected 'place_havana' but got '${s2?.placeId}'`);
+
+        // Step 3: Native ArrowDown moves focus from input to the first matching place button
+        await sendKey("ArrowDown", "ArrowDown", 40);
+        await new Promise((r) => setTimeout(r, 100));
+
+        const step3Check = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const firstVisibleBtn = document.querySelector('[data-place-item-wrap]:not([hidden]) .map-locator-browser__item');
+              const active = document.activeElement;
+              return {
+                isFirstBtnFocused: active === firstVisibleBtn,
+                activePlaceId: active?.getAttribute('data-place-id'),
+              };
+            })()
+          `,
+          returnByValue: true,
+        });
+        const s3 = step3Check?.result?.value;
+        if (!s3?.isFirstBtnFocused || s3?.activePlaceId !== "place_havana") {
+          throw new Error("ArrowDown from filter input did not move focus to Havana place button");
+        }
+
+        // Step 4: Native ArrowUp returns focus to input
+        await sendKey("ArrowUp", "ArrowUp", 38);
+        await new Promise((r) => setTimeout(r, 100));
+
+        const step4Check = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              return { isInputFocused: document.activeElement === input };
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!step4Check?.result?.value?.isInputFocused) {
+          throw new Error("ArrowUp from first button did not return focus to filter input");
+        }
+
+        // Step 5: Native Escape clears query and restores all 29 places
+        await sendKey("Escape", "Escape", 27);
+        await new Promise((r) => setTimeout(r, 100));
+
+        const step5Check = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              const visibleWraps = Array.from(document.querySelectorAll('[data-place-item-wrap]')).filter(w => !w.hidden);
+              const count = document.querySelector('[data-locator-filter-count]');
+              const empty = document.querySelector('[data-locator-empty]');
+              return {
+                isInputFocused: document.activeElement === input,
+                inputValue: input?.value,
+                visibleCount: visibleWraps.length,
+                countText: count?.textContent || "",
+                emptyHidden: empty?.hidden === true,
+              };
+            })()
+          `,
+          returnByValue: true,
+        });
+        const s5 = step5Check?.result?.value;
+        if (s5?.inputValue !== "") throw new Error(`Escape did not clear input value (got '${s5?.inputValue}')`);
+        if (s5?.visibleCount !== 29 || !s5?.countText.includes("29")) {
+          throw new Error(`Escape did not restore all 29 places (got ${s5?.visibleCount})`);
+        }
+
+        // Step 6: Native End and Home move focus to last / first visible buttons across the full 29 places
+        // Move into list from input with ArrowDown
+        await sendKey("ArrowDown", "ArrowDown", 40);
+        await new Promise((r) => setTimeout(r, 100));
+
+        const firstBtnCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const buttons = Array.from(document.querySelectorAll('[data-place-item-wrap]:not([hidden]) .map-locator-browser__item'));
+              return { isFirstFocused: document.activeElement === buttons[0] };
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!firstBtnCheck?.result?.value?.isFirstFocused) {
+          throw new Error("ArrowDown after reset did not focus first button");
+        }
+
+        // Press End: moves to last visible button
+        await sendKey("End", "End", 35);
+        await new Promise((r) => setTimeout(r, 100));
+
+        const endCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const buttons = Array.from(document.querySelectorAll('[data-place-item-wrap]:not([hidden]) .map-locator-browser__item'));
+              return { isLastFocused: document.activeElement === buttons[buttons.length - 1] };
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!endCheck?.result?.value?.isLastFocused) {
+          throw new Error("End key did not move focus to last visible button");
+        }
+
+        // Press Home: moves to first visible button
+        await sendKey("Home", "Home", 36);
+        await new Promise((r) => setTimeout(r, 100));
+
+        const homeCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const buttons = Array.from(document.querySelectorAll('[data-place-item-wrap]:not([hidden]) .map-locator-browser__item'));
+              return { isFirstFocused: document.activeElement === buttons[0] };
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!homeCheck?.result?.value?.isFirstFocused) {
+          throw new Error("Home key did not move focus to first visible button");
+        }
+
+        // Return focus to input with ArrowUp
+        await sendKey("ArrowUp", "ArrowUp", 38);
+        await new Promise((r) => setTimeout(r, 100));
+
+        // Step 7: Re-typing, ArrowDown to Havana, and native Enter triggers selection
+        await insertText("Havana");
+        await new Promise((r) => setTimeout(r, 100));
+
+        await sendKey("ArrowDown", "ArrowDown", 40);
+        await new Promise((r) => setTimeout(r, 100));
+
+        const havanaFocusedCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const active = document.activeElement;
+              return { isHavana: active?.getAttribute('data-place-id') === "place_havana" };
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!havanaFocusedCheck?.result?.value?.isHavana) {
+          throw new Error("Focus not on Havana before pressing Enter");
+        }
+
+        // Press native Enter to trigger place selection
+        await sendKey("Enter", "Enter", 13);
+        await new Promise((r) => setTimeout(r, 400));
+
+        // Step 8 & 9: Verify selectionStore updated, dropdown closed, focus returned to [data-locator-toggle]
+        const finalSelectionCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              const toggle = document.querySelector('[data-locator-toggle]');
+              const sel = window.__CC_SELECTION_STORE__ ? window.__CC_SELECTION_STORE__.get() : null;
+              const isClosed = !menu || menu.hidden || menu.getAttribute('data-state') === 'closed';
+              const isToggleFocused = document.activeElement === toggle;
+              const selectedPlaceId = sel ? sel.id : null;
+              return { isClosed, isToggleFocused, selectedPlaceId };
+            })()
+          `,
+          returnByValue: true,
+        });
+        const finalRes = finalSelectionCheck?.result?.value;
+        if (finalRes?.selectedPlaceId !== "place_havana") {
+          throw new Error(`Selection store place ID expected 'place_havana' but got '${finalRes?.selectedPlaceId}'`);
+        }
+        if (!finalRes?.isClosed) {
+          throw new Error("Dropdown menu was not closed after selection");
+        }
+        if (!finalRes?.isToggleFocused) {
+          throw new Error("Focus did not return to [data-locator-toggle] after place selection");
+        }
+
+        j5Pass = true;
+      } catch (err) {
+        j5Error = err.message;
+      }
+
+      if (j5Pass) {
+        auditReport.summary.journeys_passed++;
+        console.log("  [PASS] Journey 5: Browse Places Search & Keyboard Navigation passed.");
+      } else {
+        auditReport.summary.journeys_failed++;
+        testFailures++;
+        console.error(`  [FAIL] Journey 5: Browse Places Search & Keyboard Navigation failed: ${j5Error}`);
+      }
+      auditReport.journeys.push({ id: "journey_5_browse_places_search_and_keyboard", passed: j5Pass, error: j5Error });
     }
 
     // Save machine-readable quality audit report

@@ -48,7 +48,17 @@ const routes = readJson("public/data/routes.geojson", {});
 const sources = readJson("public/data/sources.json", {});
 const coverage = readJson("public/data/coverage.json", []);
 const datasetContext = readJson("public/data/dataset_context.json", null);
-const activePacket = readJson(".agent/active-packet.json", null);
+const stateArg = argsValue("--state=");
+const packetArg = argsValue("--packet=");
+const activePacketPath = packetArg || (existsSync(".agent/active-packet.json") ? ".agent/active-packet.json" : null);
+const activePacket = activePacketPath ? readJson(activePacketPath, null) : null;
+
+let reportState = "NO_ACTIVE_PACKET";
+if (stateArg) {
+  reportState = stateArg;
+} else if (activePacket && (activePacket.lifecycle_state || activePacket.state)) {
+  reportState = activePacket.lifecycle_state || activePacket.state;
+}
 
 const sourceRecords = Array.isArray(sources.source_records) ? sources.source_records : [];
 const sourceContainers = Array.isArray(sources.sources) ? sources.sources : [];
@@ -65,7 +75,7 @@ const filteredRecords = sourceFilter
   : [];
 
 const report = {
-  state: "SELF_VERIFIED_REQUIRES_EXTERNAL_REVIEW",
+  state: reportState,
   git: {
     branch,
     head,
