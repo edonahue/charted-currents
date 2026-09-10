@@ -797,12 +797,14 @@ async function main() {
               const privSec = document.querySelector('[data-ship-privateering-section]');
               const privVisible = privSec && !privSec.hidden && getComputedStyle(privSec).display !== 'none';
               const hasAction = Boolean(document.querySelector('[data-privateering-engagement]')?.textContent);
-              return title.includes("Richard & Sarah") && privVisible && hasAction;
+              const linkageState = document.querySelector('[data-privateering-linkage-state]')?.textContent || "";
+              const hasProbable = linkageState.toLowerCase().includes("probable");
+              return title.includes("Richard & Sarah") && privVisible && hasAction && hasProbable;
             })()
           `,
           returnByValue: true,
         });
-        if (!checkShip?.result?.value) throw new Error("Richard & Sarah privateering details not rendered in inspector");
+        if (!checkShip?.result?.value) throw new Error("Richard & Sarah privateering details or probable-match linkage not rendered in inspector");
 
         // 1. First verification: Click privateering evidence button
         const clickPrivBtn = await send("Runtime.evaluate", {

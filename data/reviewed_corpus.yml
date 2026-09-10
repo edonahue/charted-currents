@@ -33,7 +33,7 @@ sources:
   creator: Cecil Headlam (ed.) / HMSO
   holding_institution: British History Online / Institute of Historical Research
   stable_identifier: CSP Colonial Vol. 22 / Items 1352 & 1361 (Sept–Oct 1705)
-  item_url: https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp628-638
+  item_url: https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22
   rights_posture: public_domain
   public_use_basis: open_public_domain_published_calendar
   attribution_required: true
@@ -147,6 +147,7 @@ source_records:
   record_type: archival_calendar_entry
   native_identifier: CSP Colonial Vol. 22, Item 1352 (p. 628)
   inspection_state: digital_content_inspected
+  record_url: https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp613-629
   upstream_archive_source_id: src_tna_co_137
   upstream_archive_reference: TNA CO 137/7, Nos. 12, 12.i; CO 138/11, pp. 415–417
 - id: sr_csp_colonial_v22_1361
@@ -154,6 +155,7 @@ source_records:
   record_type: archival_calendar_entry
   native_identifier: CSP Colonial Vol. 22, Item 1361 (pp. 629–630)
   inspection_state: digital_content_inspected
+  record_url: https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp629-640
   upstream_archive_source_id: src_tna_co_138
   upstream_archive_reference: TNA CO 138/11, pp. 417–419
 - id: sr_imlm_ship_2052
@@ -10047,7 +10049,6 @@ ship_occurrences:
 - id: occ_ship_csp_1361
   source_record_id: sr_csp_colonial_v22_1361
   raw_name: Richard and Sarah
-  recorded_voyage_origin: Jamaica
   assertion_ids:
   - ast_rs_battle_engagement
   - ast_rs_crew_resistance
@@ -11136,6 +11137,8 @@ ships:
   voyage_display: Jamaica → London
   capture_display: Dartmouth, Devon (May 1705)
   privateering_engagement:
+    cross_archive_resolution_state: probable_match
+    cross_archive_note: The CSP calendar entries are a strong but not directly docket-linked match to this HCA/IMLM vessel.
     engagement_display: Engaged for six hours by a French privateer (20 guns, 166 men); disabled, plundered, and recaptured by HMS Rochester
     resistance_display: 9 of 30 mariners refused to fight; the rest maintained a 6-hour defense
     plunder_display: Most valuable cargo plundered at sea; remainder recovered and brought into Dartmouth (May 1705)
@@ -11997,13 +12000,13 @@ events:
   - ast_eq_account_heath
   - ast_eq_letter_tl
 - id: event_capture_richard_and_sarah_1705
-  title: Recorded Prize/Capture Record of the Richard & Sarah — Dartmouth
+  title: Recorded Capture Record of the Richard & Sarah — Dartmouth
   date: '1705-05'
   place_id: place_dartmouth
   vessel_id: ship_richard_and_sarah_1705
   kind: capture
   evidence_state: documented
-  summary: Dartmouth, Devon is the documented location of prize landing and examinations in High Court of Admiralty records (HCA 32/80); the six-hour privateering engagement, cargo plunder, and recapture by HMS Rochester occurred at an unrecorded location at sea prior to return to port. Petitioners subsequently prayed Queen Anne for remission of the Crown's 1/8th salvage share citing extraordinary losses in Jamaica by fire and earthquakes.
+  summary: The IMLM dataset, citing HCA 32/80 upstream, records Dartmouth, Devon as the vessel's capture location in May 1705. Separately, CSP Colonial Items 1352 and 1361 record the French-privateer capture/engagement, plunder, and recapture by HMS Rochester; the inspected calendar entries do not record the geographic location of that engagement/recapture. Petitioners subsequently prayed Queen Anne for remission of the Crown's 1/8th salvage share citing extraordinary losses in Jamaica by fire and earthquakes.
   sources:
   - src_imlm_ukda_852135
   - src_tna_hca_32

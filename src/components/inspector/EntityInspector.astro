@@ -266,6 +266,13 @@
         <!-- Privateering Engagement & Petition Section (Packet 11) -->
         <section class="inspector-section" data-ship-privateering-section hidden aria-label="Privateering encounter & petition">
           <p class="panel-kicker">Privateering Encounter & Petition</p>
+          <div data-privateering-linkage-wrap hidden class="inspector-cross-archive-linkage">
+            <div class="inspector-cross-archive-header">
+              <span class="inspector-cross-archive-label">Cross-archive linkage:</span>
+              <span class="evidence-badge" data-privateering-linkage-state data-evidence-state="probable_match">Probable match</span>
+            </div>
+            <p class="inspector-field-note" data-privateering-linkage-note></p>
+          </div>
           <dl class="inspector-meta">
             <div class="inspector-meta__row" data-privateering-engagement-row>
               <dt>Recorded Action</dt>
@@ -497,6 +504,9 @@
   const privateeringEngagement = document.querySelector<HTMLElement>("[data-privateering-engagement]");
   const privateeringResistance = document.querySelector<HTMLElement>("[data-privateering-resistance]");
   const privateeringPlunder = document.querySelector<HTMLElement>("[data-privateering-plunder]");
+  const privateeringLinkageWrap = document.querySelector<HTMLElement>("[data-privateering-linkage-wrap]");
+  const privateeringLinkageState = document.querySelector<HTMLElement>("[data-privateering-linkage-state]");
+  const privateeringLinkageNote = document.querySelector<HTMLElement>("[data-privateering-linkage-note]");
   const privateeringPetition = document.querySelector<HTMLElement>("[data-privateering-petition]");
   const privateeringUpstreamNote = document.querySelector<HTMLElement>("[data-privateering-upstream-note]");
   const privateeringEvidenceBtn = document.querySelector<HTMLButtonElement>("[data-privateering-evidence-btn]");
@@ -1271,6 +1281,20 @@
       if (ship.privateering_engagement) {
         const pe = ship.privateering_engagement;
         shipPrivateeringSection.hidden = false;
+        if (pe.cross_archive_resolution_state) {
+          if (privateeringLinkageWrap) privateeringLinkageWrap.hidden = false;
+          if (privateeringLinkageState) {
+            privateeringLinkageState.textContent =
+              pe.cross_archive_resolution_state === "probable_match" ? "Probable match" : pe.cross_archive_resolution_state;
+            privateeringLinkageState.setAttribute("data-evidence-state", pe.cross_archive_resolution_state);
+          }
+          if (privateeringLinkageNote) {
+            privateeringLinkageNote.textContent = pe.cross_archive_note || "";
+            privateeringLinkageNote.hidden = !pe.cross_archive_note;
+          }
+        } else if (privateeringLinkageWrap) {
+          privateeringLinkageWrap.hidden = true;
+        }
         if (privateeringEngagement) privateeringEngagement.textContent = pe.engagement_display;
         if (privateeringResistance) privateeringResistance.textContent = pe.resistance_display;
         if (privateeringPlunder) privateeringPlunder.textContent = pe.plunder_display;
@@ -2246,6 +2270,47 @@
     font-size: 0.7rem;
     font-style: italic;
     color: var(--cc-ink-muted);
+  }
+
+  /* Cross-Archive Linkage Cue (Packet 11) */
+  .inspector-cross-archive-linkage {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.5rem 0.65rem;
+    background: color-mix(in srgb, var(--cc-paper) 70%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--cc-brass) 55%, transparent);
+    border-radius: var(--cc-radius-xs);
+    margin-bottom: 0.75rem;
+  }
+
+  .inspector-cross-archive-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .inspector-cross-archive-label {
+    font-family: var(--cc-font-mono);
+    font-size: 0.68rem;
+    color: var(--cc-ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .inspector-cross-archive-linkage .evidence-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.35rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px dashed color-mix(in srgb, var(--cc-brass) 65%, transparent);
+    border-radius: var(--cc-radius-xs);
+    color: var(--cc-ink-soft);
+    background: color-mix(in srgb, var(--cc-paper-raised) 82%, transparent);
+    font-family: var(--cc-font-mono);
+    font-size: var(--cc-text-xs);
+    font-weight: 400;
+    letter-spacing: 0.025em;
   }
 
   .inspector-dataset-context-header {

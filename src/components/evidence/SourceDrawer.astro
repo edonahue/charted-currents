@@ -266,8 +266,23 @@
     rowRights.append(dtRights, ddRights);
     dl.appendChild(rowRights);
 
-    // Source Permalink Row
-    if (source.item_url) {
+    // Source / Record Permalink Row
+    if (record?.record_url) {
+      const rowLink = document.createElement("div");
+      rowLink.className = "inspector-meta__row";
+      const dtLink = document.createElement("dt");
+      dtLink.textContent = "Record Link";
+      const ddLink = document.createElement("dd");
+      const a = document.createElement("a");
+      a.href = record.record_url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "inspector-link";
+      a.textContent = "View Published Record ↗";
+      ddLink.appendChild(a);
+      rowLink.append(dtLink, ddLink);
+      dl.appendChild(rowLink);
+    } else if (source.item_url) {
       const rowLink = document.createElement("div");
       rowLink.className = "inspector-meta__row";
       const dtLink = document.createElement("dt");

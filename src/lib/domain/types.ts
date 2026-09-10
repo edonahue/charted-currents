@@ -220,6 +220,7 @@ export interface PublishedSourceRecord {
   persistent_handle?: string;
   mets_manifest_url?: string;
   scan_count?: number;
+  record_url?: string;
 }
 
 export interface PublishedAssertion {
@@ -363,6 +364,8 @@ export interface PublishedShip {
 }
 
 export interface PublishedPrivateeringEngagement {
+  cross_archive_resolution_state?: string;
+  cross_archive_note?: string;
   engagement_display: string;
   resistance_display: string;
   plunder_display: string;

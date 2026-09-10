@@ -32,7 +32,7 @@
       "creator": "Cecil Headlam (ed.) / HMSO",
       "holding_institution": "British History Online / Institute of Historical Research",
       "stable_identifier": "CSP Colonial Vol. 22 / Items 1352 & 1361 (Sept–Oct 1705)",
-      "item_url": "https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp628-638",
+      "item_url": "https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22",
       "rights_posture": "public_domain",
       "public_use_basis": "open_public_domain_published_calendar",
       "attribution_required": true,
@@ -165,6 +165,7 @@
       "record_type": "archival_calendar_entry",
       "native_identifier": "CSP Colonial Vol. 22, Item 1352 (p. 628)",
       "inspection_state": "digital_content_inspected",
+      "record_url": "https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp613-629",
       "upstream_archive_source_id": "src_tna_co_137",
       "upstream_archive_reference": "TNA CO 137/7, Nos. 12, 12.i; CO 138/11, pp. 415–417"
     },
@@ -174,6 +175,7 @@
       "record_type": "archival_calendar_entry",
       "native_identifier": "CSP Colonial Vol. 22, Item 1361 (pp. 629–630)",
       "inspection_state": "digital_content_inspected",
+      "record_url": "https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp629-640",
       "upstream_archive_source_id": "src_tna_co_138",
       "upstream_archive_reference": "TNA CO 138/11, pp. 417–419"
     },

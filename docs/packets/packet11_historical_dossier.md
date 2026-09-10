@@ -53,7 +53,7 @@ All assertions added in Packet 11 are classified by epistemic risk in accordance
   * `ast_rs_1352_date`: Verbatim raw date: `"Subscribed, Windsor, Sept. 23, 1705"` (`sr_csp_colonial_v22_1352`, `risk_class: A`).
 
 ### Class B — Deterministic Geographic / Temporal Transformations
-* Origin place mapping: `place_jamaica` (derived from recorded origin Jamaica in both IMLM and CSP).
+* Origin place mapping: `place_jamaica` (derived from recorded origin Jamaica in IMLM; CSP Items 1352 and 1361 establish Jamaica trade and merchant disaster context but do not explicitly record vessel voyage origin).
 * Destination place mapping: `place_london` (derived from recorded destination London in IMLM).
 * Arrival place mapping: `place_dartmouth` (derived from arrival port Dartmouth, Devon in IMLM).
 * Event date mapping: `1705-05` (derived from recorded arrival date May 1705 in IMLM).
@@ -79,8 +79,8 @@ All assertions added in Packet 11 are classified by epistemic risk in accordance
    The attacking vessel is recorded in source text as a "French privateer" of 20 guns and 166 men. The project does not assert an audited letter of marque or declare the vessel a confirmed legitimate combatant under French prize law; it records the attacking vessel as characterized in official English petitions and Council of Trade reports.
 2. **Owners' Petition as Source Claim**:
    The claims of prior losses in Jamaica fire and earthquakes are explicitly framed as assertions made by the petitioners to the Crown in seeking relief. The raw Class A text contains no synthetic dates (the source text says "extraordinary accidents of fire and earthquakes" without mentioning years 1692 or 1703).
-3. **At-Sea Engagement vs Dartmouth Prize Landing**:
-   Event `event_capture_richard_and_sarah_1705` is entitled `Recorded Prize/Capture Record of the Richard & Sarah — Dartmouth`. The summary explicitly distinguishes between the documented port of prize landing and examination in Devon (HCA 32/80) and the six-hour combat, plunder, and naval recapture by HMS Rochester which took place at an unrecorded location at sea.
+3. **Capture Record Semantics vs Engagement Location**:
+   Event `event_capture_richard_and_sarah_1705` is entitled `Recorded Capture Record of the Richard & Sarah — Dartmouth`. The summary strictly reflects the inspected IMLM dataset field citing HCA 32/80 upstream, which records Dartmouth, Devon as the capture location in May 1705. The inspected calendar entries (CSP Colonial Items 1352 & 1361) record the six-hour engagement, plunder by a French privateer, and recapture by HMS *Rochester*, but do not record the geographic location of that engagement/recapture.
 
 ---
 
@@ -104,9 +104,10 @@ All assertions added in Packet 11 are classified by epistemic risk in accordance
 ## 5. Verification Summary
 
 * **Build & Validation**: `python3 data/pipeline/build_corpus.py && node scripts/validate-published-data.mjs` (PASS, 0 errors across 8 published artifacts).
-* **Python Invariants**: `python3 -m unittest discover tests` (PASS, 73 tests passed in 1.5s).
+* **Python Invariants**: `python3 -m unittest discover tests` (PASS, 75 tests passed in 1.6s).
 * **Negative Validator Tests**: `node tests/test_validator_negative.mjs` (PASS, 30 tests passed).
 * **Packet Report Integrity**: `python3 tests/test_packet_report_integrity.py` (PASS, 6 tests passed in 0.2s).
 * **Astro Verification**: `npm run verify` (PASS, 0 errors, 0 warnings across 38 files).
-* **Quality Audit (CI Mode)**: `npm run review:quality` (PASS in 20.04s, 0 critical, 0 unallowed serious, 4/4 journeys passed).
-* **Quality Audit (Full Mode)**: `npm run review:quality:full` (PASS in 24.25s, 5 viewports across 3 states, 7 screenshots generated, 4/4 journeys passed).
+* **Behavioral Review Suite**: `npm run review:behavioral` (PASS, 238 tests passed).
+* **Quality Audit (CI Mode)**: `npm run review:quality` (PASS in 19.38s, 0 critical, 0 unallowed serious, 4/4 journeys passed).
+* **Quality Audit (Full Mode)**: `npm run review:quality:full` (PASS in 24.38s, 5 viewports across 3 states, 7 screenshots generated, 4/4 journeys passed).

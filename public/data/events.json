@@ -22,13 +22,13 @@
     },
     {
       "id": "event_capture_richard_and_sarah_1705",
-      "title": "Recorded Prize/Capture Record of the Richard & Sarah — Dartmouth",
+      "title": "Recorded Capture Record of the Richard & Sarah — Dartmouth",
       "date": "1705-05",
       "place_id": "place_dartmouth",
       "vessel_id": "ship_richard_and_sarah_1705",
       "kind": "capture",
       "evidence_state": "documented",
-      "summary": "Dartmouth, Devon is the documented location of prize landing and examinations in High Court of Admiralty records (HCA 32/80); the six-hour privateering engagement, cargo plunder, and recapture by HMS Rochester occurred at an unrecorded location at sea prior to return to port. Petitioners subsequently prayed Queen Anne for remission of the Crown's 1/8th salvage share citing extraordinary losses in Jamaica by fire and earthquakes.",
+      "summary": "The IMLM dataset, citing HCA 32/80 upstream, records Dartmouth, Devon as the vessel's capture location in May 1705. Separately, CSP Colonial Items 1352 and 1361 record the French-privateer capture/engagement, plunder, and recapture by HMS Rochester; the inspected calendar entries do not record the geographic location of that engagement/recapture. Petitioners subsequently prayed Queen Anne for remission of the Crown's 1/8th salvage share citing extraordinary losses in Jamaica by fire and earthquakes.",
       "sources": [
         "src_imlm_ukda_852135",
         "src_tna_hca_32",

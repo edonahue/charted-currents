@@ -36,7 +36,6 @@
       "id": "occ_ship_csp_1361",
       "source_record_id": "sr_csp_colonial_v22_1361",
       "raw_name": "Richard and Sarah",
-      "recorded_voyage_origin": "Jamaica",
       "assertion_ids": [
         "ast_rs_battle_engagement",
         "ast_rs_crew_resistance",
@@ -4962,6 +4961,8 @@
       "voyage_display": "Jamaica → London",
       "capture_display": "Dartmouth, Devon (May 1705)",
       "privateering_engagement": {
+        "cross_archive_resolution_state": "probable_match",
+        "cross_archive_note": "The CSP calendar entries are a strong but not directly docket-linked match to this HCA/IMLM vessel.",
         "engagement_display": "Engaged for six hours by a French privateer (20 guns, 166 men); disabled, plundered, and recaptured by HMS Rochester",
         "resistance_display": "9 of 30 mariners refused to fight; the rest maintained a 6-hour defense",
         "plunder_display": "Most valuable cargo plundered at sea; remainder recovered and brought into Dartmouth (May 1705)",

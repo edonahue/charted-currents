@@ -635,8 +635,13 @@ async function runReviewSuite() {
         const construction = document.querySelector('[data-ship-construction]')?.textContent;
         const crewRows = document.querySelectorAll('[data-ship-crew-tbody] tr').length;
         const isHeadingFocused = document.activeElement?.id === 'inspector-heading';
+        const privSection = document.querySelector('[data-ship-privateering-section]');
+        const isPrivOpen = privSection && !privSection.hidden && getComputedStyle(privSection).display !== 'none';
+        const linkageState = document.querySelector('[data-privateering-linkage-state]')?.textContent?.trim();
+        const linkageNote = document.querySelector('[data-privateering-linkage-note]')?.textContent?.trim();
+        const badgeText = document.querySelector('[data-inspector-badge]')?.textContent?.trim();
 
-        return { isOpen, title, rawName, tonnage, construction, crewRows, isHeadingFocused };
+        return { isOpen, title, rawName, tonnage, construction, crewRows, isHeadingFocused, isPrivOpen, linkageState, linkageNote, badgeText };
       })()`,
       returnByValue: true,
     });
@@ -646,6 +651,10 @@ async function runReviewSuite() {
     assert(vesselCheck?.result?.value?.tonnage === "300 tons reported burden", "Reported burden displays '300 tons reported burden'");
     assert(vesselCheck?.result?.value?.construction === "English built · reported age 20 at capture", "Construction display shows recorded facts without unmodeled '~1685'");
     assert(vesselCheck?.result?.value?.crewRows === 3, "All 3 documented crew members rendered in table");
+    assert(vesselCheck?.result?.value?.isPrivOpen, "Privateering section rendered on Richard & Sarah");
+    assert(vesselCheck?.result?.value?.linkageState === "Probable match", "Privateering section exposes 'Probable match' cross-archive linkage");
+    assert(vesselCheck?.result?.value?.linkageNote?.includes("docket-linked"), "Cross-archive linkage note explains probable match context");
+    assert(vesselCheck?.result?.value?.badgeText === "Documented", "Canonical vessel badge remains 'Documented'");
     assert(!vesselCheck?.result?.value?.isHeadingFocused, "Pointer selection on timeline does NOT steal keyboard focus to inspector heading");
 
     // 3. Layered Source Drawer & Modal Tab Focus Trap
