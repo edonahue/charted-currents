@@ -51,11 +51,57 @@ class TestPacketReportIntegrity(unittest.TestCase):
         """packet-report.mjs --json must produce valid JSON with required lifecycle keys."""
         report = self.run_report()
         self.assertIn("state", report)
-        self.assertEqual(report["state"], "SELF_VERIFIED_REQUIRES_EXTERNAL_REVIEW")
+        self.assertEqual(report["state"], "NO_ACTIVE_PACKET")
         self.assertIn("git", report)
         self.assertIn("corpus", report)
         self.assertIn("evidence_graph", report)
         self.assertIn("caveat", report)
+
+    def test_explicit_state_override(self):
+        """Passing --state=<STATE> explicitly must override default state."""
+        report_self_verified = self.run_report("--state=SELF_VERIFIED_REQUIRES_EXTERNAL_REVIEW")
+        self.assertEqual(report_self_verified["state"], "SELF_VERIFIED_REQUIRES_EXTERNAL_REVIEW")
+
+        report_accepted = self.run_report("--state=ACCEPTED")
+        self.assertEqual(report_accepted["state"], "ACCEPTED")
+
+    def test_active_packet_lifecycle_state(self):
+        """When an active packet contract is present, its lifecycle state must be reported."""
+        import tempfile
+        sample_packet = {
+            "packet_id": "packet12_mock",
+            "lifecycle_state": "IMPLEMENTING"
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+            json.dump(sample_packet, tf)
+            tf_path = tf.name
+
+        try:
+            report = self.run_report(f"--packet={tf_path}")
+            self.assertEqual(report["state"], "IMPLEMENTING")
+            self.assertIsNotNone(report.get("active_packet"))
+            self.assertEqual(report["active_packet"]["packet_id"], "packet12_mock")
+        finally:
+            if os.path.exists(tf_path):
+                os.unlink(tf_path)
+
+    def test_state_precedence_explicit_over_packet(self):
+        """Explicit --state must take precedence over active packet contract state."""
+        import tempfile
+        sample_packet = {
+            "packet_id": "packet12_mock",
+            "lifecycle_state": "IMPLEMENTING"
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+            json.dump(sample_packet, tf)
+            tf_path = tf.name
+
+        try:
+            report = self.run_report(f"--packet={tf_path}", "--state=ACCEPTED")
+            self.assertEqual(report["state"], "ACCEPTED")
+        finally:
+            if os.path.exists(tf_path):
+                os.unlink(tf_path)
 
     def test_corpus_counts_match_manifest(self):
         """Reported corpus counts must match public/data/manifest.json exactly."""
@@ -132,11 +178,12 @@ class TestPacketReportIntegrity(unittest.TestCase):
         report = self.run_report(f"--quality={self.quality_path}")
         self.assertIsNotNone(report.get("quality_audit"))
         qa = report["quality_audit"]
-
         self.assertEqual(qa["summary"]["critical_a11y"], 0)
         self.assertEqual(qa["summary"]["unallowed_serious_a11y"], 0)
-        self.assertEqual(qa["journeys_passed"], 4)
-        self.assertEqual(qa["journeys_total"], 4)
+        total_journeys = len(quality.get("journeys", []))
+        self.assertGreaterEqual(total_journeys, 4)
+        self.assertEqual(qa["journeys_passed"], total_journeys)
+        self.assertEqual(qa["journeys_total"], total_journeys)
         self.assertEqual(qa["summary"]["layout_failures"], 0)
 
 if __name__ == "__main__":

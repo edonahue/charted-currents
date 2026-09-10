@@ -58,12 +58,34 @@ const hasMollLayer = Boolean(
       hidden
     >
       <div class="map-locator-browser__header">
-        <p class="panel-kicker">Historical Places</p>
-        <span class="map-locator-browser__caption">Sourced Corpus (1684–1712)</span>
+        <div class="map-locator-browser__header-top">
+          <p class="panel-kicker">Historical Places</p>
+          <span class="map-locator-browser__caption">Sourced Corpus (1684–1712)</span>
+        </div>
+        <div class="map-locator-browser__search-box">
+          <svg class="map-locator-browser__search-icon" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="6" cy="6" r="4.5" />
+            <line x1="9.5" y1="9.5" x2="13" y2="13" />
+          </svg>
+          <input
+            type="search"
+            class="map-locator-browser__filter-input"
+            data-locator-filter-input
+            placeholder="Filter places or regions..."
+            aria-label="Filter 29 historical places by name or region"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+        <div class="map-locator-browser__meta-row">
+          <span class="map-locator-browser__filter-count" data-locator-filter-count aria-live="polite">
+            {PLACES.length} places
+          </span>
+        </div>
       </div>
       <ul class="map-locator-browser__list">
         {PLACES.map((place) => (
-          <li>
+          <li data-place-item-wrap data-place-name={place.label.toLowerCase()} data-place-region={place.region.toLowerCase()}>
             <button
               type="button"
               class="map-locator-browser__item"
@@ -75,6 +97,9 @@ const hasMollLayer = Boolean(
             </button>
           </li>
         ))}
+        <li class="map-locator-browser__empty" data-locator-empty hidden>
+          No places match "<span data-locator-empty-query></span>"
+        </li>
       </ul>
     </nav>
   </div>
@@ -199,6 +224,11 @@ const hasMollLayer = Boolean(
   const locatorToggle = document.querySelector<HTMLButtonElement>("[data-locator-toggle]");
   const locatorMenu = document.querySelector<HTMLElement>("[data-locator-menu]");
   const locatorItems = Array.from(document.querySelectorAll<HTMLButtonElement>(".map-locator-browser__item"));
+  const locatorFilterInput = document.querySelector<HTMLInputElement>("[data-locator-filter-input]");
+  const locatorFilterCount = document.querySelector<HTMLElement>("[data-locator-filter-count]");
+  const locatorEmptyState = document.querySelector<HTMLElement>("[data-locator-empty]");
+  const locatorEmptyQuery = document.querySelector<HTMLElement>("[data-locator-empty-query]");
+  const locatorItemWraps = Array.from(document.querySelectorAll<HTMLElement>("[data-place-item-wrap]"));
 
   const layerControl = document.querySelector<HTMLElement>("[data-layer-control]");
   const layerToggle = document.querySelector<HTMLButtonElement>("[data-layer-toggle]");
@@ -755,6 +785,42 @@ const hasMollLayer = Boolean(
     updateRouteVisualHierarchy(selection, activeTimeFilter);
   }
 
+  function getVisibleLocatorButtons(): HTMLButtonElement[] {
+    return locatorItemWraps
+      .filter((wrap) => !wrap.hidden)
+      .map((wrap) => wrap.querySelector<HTMLButtonElement>(".map-locator-browser__item"))
+      .filter((btn): btn is HTMLButtonElement => btn !== null);
+  }
+
+  function applyPlaceFilter(rawQuery: string): void {
+    const q = rawQuery.trim().toLowerCase();
+    let visibleCount = 0;
+    for (const wrap of locatorItemWraps) {
+      const name = wrap.dataset.placeName || "";
+      const region = wrap.dataset.placeRegion || "";
+      const matches = !q || name.includes(q) || region.includes(q);
+      wrap.hidden = !matches;
+      if (matches) visibleCount++;
+    }
+
+    if (locatorFilterCount) {
+      if (!q) {
+        locatorFilterCount.textContent = `${locatorItemWraps.length} places`;
+      } else {
+        locatorFilterCount.textContent = `${visibleCount} of ${locatorItemWraps.length} places`;
+      }
+    }
+
+    if (locatorEmptyState) {
+      if (visibleCount === 0 && q) {
+        locatorEmptyState.hidden = false;
+        if (locatorEmptyQuery) locatorEmptyQuery.textContent = rawQuery.trim();
+      } else {
+        locatorEmptyState.hidden = true;
+      }
+    }
+  }
+
   function openLocatorMenu(focusFirstItem = false): void {
     if (!locatorMenu || !locatorToggle || !locatorBrowser) return;
     closeLayerPanel();
@@ -762,7 +828,11 @@ const hasMollLayer = Boolean(
     locatorToggle.setAttribute("aria-expanded", "true");
     locatorBrowser.classList.add("is-open");
     if (focusFirstItem) {
-      locatorItems[0]?.focus();
+      if (locatorFilterInput) {
+        locatorFilterInput.focus();
+      } else {
+        locatorItems[0]?.focus();
+      }
     }
   }
 
@@ -771,6 +841,10 @@ const hasMollLayer = Boolean(
     locatorMenu.hidden = true;
     locatorToggle.setAttribute("aria-expanded", "false");
     locatorBrowser.classList.remove("is-open");
+    if (locatorFilterInput && locatorFilterInput.value) {
+      locatorFilterInput.value = "";
+      applyPlaceFilter("");
+    }
   }
 
   function openLayerPanel(): void {
@@ -929,6 +1003,29 @@ const hasMollLayer = Boolean(
       }
     });
 
+    locatorFilterInput?.addEventListener("input", () => {
+      applyPlaceFilter(locatorFilterInput.value);
+    });
+
+    locatorFilterInput?.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        e.stopPropagation();
+        const firstVisible = getVisibleLocatorButtons()[0];
+        firstVisible?.focus();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        if (locatorFilterInput.value) {
+          locatorFilterInput.value = "";
+          applyPlaceFilter("");
+        } else {
+          closeLocatorMenu();
+          locatorToggle.focus();
+        }
+      }
+    });
+
     locatorItems.forEach((btn) => {
       btn.addEventListener("click", () => {
         const placeId = btn.dataset.placeId;
@@ -954,13 +1051,14 @@ const hasMollLayer = Boolean(
         return;
       }
 
-      const activeIdx = locatorItems.indexOf(document.activeElement as HTMLButtonElement);
+      const visibleButtons = getVisibleLocatorButtons();
+      const activeBtn = document.activeElement as HTMLButtonElement;
+      const activeIdx = visibleButtons.indexOf(activeBtn);
 
       if (e.key === "Enter" || e.key === " ") {
-        const item = document.activeElement as HTMLButtonElement;
-        if (locatorItems.includes(item)) {
+        if (activeIdx >= 0) {
           e.preventDefault();
-          const placeId = item.dataset.placeId;
+          const placeId = activeBtn.dataset.placeId;
           if (placeId) {
             recordSelectionTrigger({
               modality: "keyboard",
@@ -969,25 +1067,38 @@ const hasMollLayer = Boolean(
             });
             selectionStore.set({ kind: "port", id: placeId });
             closeLocatorMenu();
+            locatorToggle.focus();
           }
         }
         return;
       }
 
       if (e.key === "ArrowDown") {
+        if (document.activeElement === locatorFilterInput) return;
         e.preventDefault();
-        const nextIdx = (activeIdx + 1) % locatorItems.length;
-        locatorItems[nextIdx]?.focus();
+        if (visibleButtons.length > 0) {
+          const nextIdx = activeIdx >= 0 ? (activeIdx + 1) % visibleButtons.length : 0;
+          visibleButtons[nextIdx]?.focus();
+        }
       } else if (e.key === "ArrowUp") {
+        if (document.activeElement === locatorFilterInput) return;
         e.preventDefault();
-        const prevIdx = (activeIdx - 1 + locatorItems.length) % locatorItems.length;
-        locatorItems[prevIdx]?.focus();
+        if (activeIdx === 0 && locatorFilterInput) {
+          locatorFilterInput.focus();
+        } else if (visibleButtons.length > 0) {
+          const prevIdx = activeIdx > 0 ? activeIdx - 1 : visibleButtons.length - 1;
+          visibleButtons[prevIdx]?.focus();
+        }
       } else if (e.key === "Home") {
-        e.preventDefault();
-        locatorItems[0]?.focus();
+        if (document.activeElement !== locatorFilterInput && visibleButtons.length > 0) {
+          e.preventDefault();
+          visibleButtons[0]?.focus();
+        }
       } else if (e.key === "End") {
-        e.preventDefault();
-        locatorItems[locatorItems.length - 1]?.focus();
+        if (document.activeElement !== locatorFilterInput && visibleButtons.length > 0) {
+          e.preventDefault();
+          visibleButtons[visibleButtons.length - 1]?.focus();
+        }
       }
     });
 
@@ -1100,7 +1211,7 @@ const hasMollLayer = Boolean(
 
   .map-locator-browser__menu {
     margin-top: 0.35rem;
-    width: 260px;
+    width: 270px;
     max-height: 380px;
     background: var(--cc-paper-raised);
     border: 1px solid var(--cc-line);
@@ -1108,7 +1219,7 @@ const hasMollLayer = Boolean(
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   .map-locator-browser__menu[hidden] {
@@ -1116,9 +1227,19 @@ const hasMollLayer = Boolean(
   }
 
   .map-locator-browser__header {
-    padding: 0.6rem 0.85rem 0.4rem;
+    padding: 0.6rem 0.75rem 0.5rem;
     border-bottom: 1px solid var(--cc-line);
     background: var(--cc-paper);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .map-locator-browser__header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
   }
 
   .map-locator-browser__caption {
@@ -1127,10 +1248,71 @@ const hasMollLayer = Boolean(
     color: var(--cc-ink-muted);
   }
 
+  .map-locator-browser__search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .map-locator-browser__search-icon {
+    position: absolute;
+    left: 0.55rem;
+    color: var(--cc-ink-muted);
+    pointer-events: none;
+  }
+
+  .map-locator-browser__filter-input {
+    width: 100%;
+    padding: 0.35rem 0.55rem 0.35rem 1.7rem;
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: var(--cc-radius-xs);
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink);
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .map-locator-browser__filter-input::placeholder {
+    color: var(--cc-ink-muted);
+  }
+
+  .map-locator-browser__filter-input:focus {
+    border-color: var(--cc-atlantic);
+    box-shadow: 0 0 0 1px var(--cc-atlantic);
+  }
+
+  .map-locator-browser__meta-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .map-locator-browser__filter-count {
+    font-family: var(--cc-font-mono);
+    font-size: 0.62rem;
+    color: var(--cc-ink-muted);
+  }
+
   .map-locator-browser__list {
     list-style: none;
     margin: 0;
     padding: 0.25rem 0;
+    overflow-y: auto;
+    flex: 1 1 auto;
+  }
+
+  .map-locator-browser__empty {
+    padding: 0.85rem 0.75rem;
+    font-family: var(--cc-font-sans);
+    font-size: var(--cc-text-xs);
+    color: var(--cc-ink-muted);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .map-locator-browser__empty[hidden] {
+    display: none;
   }
 
   .map-locator-browser__item {
@@ -1377,18 +1559,18 @@ const hasMollLayer = Boolean(
       top: 0.75rem;
       left: 0.75rem;
     }
+    .map-locator-browser__menu {
+      width: min(270px, calc(100vw - 1.5rem));
+      max-height: 340px;
+    }
     .map-layer-control {
       top: 0.75rem;
-      left: calc(0.75rem + 8.8rem);
-    }
-    .map-layer-control__panel {
-      position: fixed;
-      top: 3.1rem;
       left: auto;
       right: 0.75rem;
-      width: min(290px, calc(100vw - 1.5rem));
-      max-width: calc(100vw - 1.5rem);
-      z-index: 50;
+      align-items: flex-end;
+    }
+    .map-layer-control__panel {
+      width: min(270px, calc(100vw - 1.5rem));
     }
     .map-epistemic-legend {
       bottom: 4.5rem;

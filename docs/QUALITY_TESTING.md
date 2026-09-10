@@ -67,14 +67,9 @@ Axe-core scans run across 6 distinct application UI states:
 6. `state_6_mobile`: Representative mobile portrait state (390x844) with mobile bottom-sheet inspector.
 
 #### Baseline Ratchet Mechanism
-To prevent regressions without blocking on pre-existing editorial styling choices, the test enforces a **zero-critical, ratcheted-serious** policy defined in `tests/a11y-baseline.json`:
+Following the contrast repair on `.inspector-dataset-context-badge` using `--cc-ink-soft`, the test enforces a **strict zero-critical, zero-serious** policy defined in `tests/a11y-baseline.json`:
 * **Critical violations**: strictly 0 allowed. Any critical violation fails the run.
-* **Serious violations**: evaluated by a multi-factor ratchet rule checking:
-  1. `rule_id`: must match allowed axe rule (e.g. `color-contrast`).
-  2. `allowed_states`: violation is tolerated strictly in `state_5_period_map` and `state_6_mobile` (empirically reproduced on base commit `8b690135`).
-  3. `allowed_occurrences`: maximum 1 violation per state.
-  4. `target_selector_pattern`: must match `.inspector-dataset-context-badge`.
-  Any new, unlisted, or out-of-state serious violation immediately fails the run.
+* **Serious violations**: strictly 0 allowed (`baseline_counts.serious: 0`, `allowed_serious_rules: []`). Any serious violation anywhere across the matrix immediately fails the run.
 * **Moderate / Minor**: recorded for monitoring in `quality-audit.json` without failing the build.
 
 ### Layer 2: Viewport & Layout Geometry Matrix

@@ -533,6 +533,30 @@ async function main() {
       expression: `document.querySelector('[data-inspector-close]')?.click()`,
     });
     await new Promise((r) => setTimeout(r, 250));
+    await captureScreenshot("mobile-timeline-390x844.png");
+
+    // Open locator menu on mobile
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector('[data-locator-toggle]')?.click()`,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    await captureScreenshot("mobile-locator-open-390x844.png");
+
+    // Close locator, open period map on mobile
+    await send("Runtime.evaluate", {
+      expression: `
+        document.querySelector('[data-locator-toggle]')?.click();
+        document.querySelector('[data-layer-toggle]')?.click();
+      `,
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    await captureScreenshot("mobile-period-map-open-390x844.png");
+
+    // Close period map
+    await send("Runtime.evaluate", {
+      expression: `document.querySelector('[data-layer-toggle]')?.click()`,
+    });
+    await new Promise((r) => setTimeout(r, 250));
 
     // Reset to desktop viewport for subsequent layout/journey tests
     await send("Emulation.setDeviceMetricsOverride", {
@@ -568,10 +592,12 @@ async function main() {
           const panelSelectors = [
             ".app-masthead",
             "[data-component='place-locator']",
+            "[data-locator-menu]",
             "[data-component='entity-inspector']",
             "[data-component='source-drawer']",
             ".source-drawer-panel",
             ".map-layer-control",
+            "[data-layer-panel]",
             ".maplibregl-ctrl-attrib"
           ];
 
@@ -716,6 +742,68 @@ async function main() {
         });
         await new Promise((r) => setTimeout(r, 200));
 
+        // State D: Place Locator open
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              if (!menu || menu.hidden) {
+                document.querySelector('[data-locator-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 250));
+        const resLocator = await send("Runtime.evaluate", {
+          expression: evaluateLayoutInBrowser,
+          returnByValue: true,
+        });
+        for (const f of resLocator?.result?.value?.findings || []) {
+          vpFindings.push({ state: "locator_open", ...f });
+        }
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              if (menu && !menu.hidden) {
+                document.querySelector('[data-locator-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
+        // State E: Period Map open
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const panel = document.querySelector('[data-layer-panel]');
+              if (!panel || panel.hidden) {
+                document.querySelector('[data-layer-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 250));
+        const resPeriodMap = await send("Runtime.evaluate", {
+          expression: evaluateLayoutInBrowser,
+          returnByValue: true,
+        });
+        for (const f of resPeriodMap?.result?.value?.findings || []) {
+          vpFindings.push({ state: "period_map_open", ...f });
+        }
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const panel = document.querySelector('[data-layer-panel]');
+              if (panel && !panel.hidden) {
+                document.querySelector('[data-layer-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
         const passVp = vpFindings.length === 0;
         if (!passVp) {
           testFailures += vpFindings.length;
@@ -730,7 +818,7 @@ async function main() {
         });
 
         console.log(
-          `  ${passVp ? "[PASS]" : "[FAIL]"} Layout check on ${vp.name} (${vp.width}x${vp.height}) across 3 states: ${vpFindings.length} findings`
+          `  ${passVp ? "[PASS]" : "[FAIL]"} Layout check on ${vp.name} (${vp.width}x${vp.height}) across 5 states: ${vpFindings.length} findings`
         );
         for (const f of vpFindings) {
           console.error(`    [LAYOUT FINDING] [${f.state}] [${f.type}] ${f.selector || ""} — ${f.detail}`);
@@ -1158,6 +1246,149 @@ async function main() {
         console.error(`  [FAIL] Journey 4: Mobile Exploration Flow failed: ${j4Error}`);
       }
       auditReport.journeys.push({ id: "journey_4_mobile_exploration", passed: j4Pass, error: j4Error });
+
+      // ----------------------------------------------------
+      // JOURNEY 5: Browse Places Search & Keyboard Navigation
+      // ----------------------------------------------------
+      console.log("\n  Running Journey 5: Browse Places Search & Keyboard Navigation...");
+      let j5Pass = false;
+      let j5Error = null;
+      try {
+        // Step 1: Open locator browser
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              if (!menu || menu.hidden) {
+                document.querySelector('[data-locator-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
+        // Step 2: Verify search input exists and initial 29 places
+        const initialSearchCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              const count = document.querySelector('[data-locator-filter-count]');
+              const totalItems = document.querySelectorAll('[data-place-item-wrap]').length;
+              return Boolean(input && input.value === "" && totalItems === 29 && count?.textContent?.includes("29"));
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!initialSearchCheck?.result?.value) {
+          throw new Error("Search input or initial 29 places count not verified");
+        }
+
+        // Step 3: Type 'Havana' into search input
+        const havanaFilterCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              if (!input) return false;
+              input.value = "Havana";
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+              const visibleWraps = Array.from(document.querySelectorAll('[data-place-item-wrap]')).filter(w => !w.hidden);
+              const count = document.querySelector('[data-locator-filter-count]');
+              const empty = document.querySelector('[data-locator-empty]');
+              return visibleWraps.length === 1 && count?.textContent?.includes("1 of 29") && empty?.hidden === true;
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!havanaFilterCheck?.result?.value) {
+          throw new Error("Filter by 'Havana' did not yield exactly 1 visible place or count mismatch");
+        }
+
+        // Step 4: Type non-matching query 'zzzznonexistent'
+        const emptyStateCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              if (!input) return false;
+              input.value = "zzzznonexistent";
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+              const visibleWraps = Array.from(document.querySelectorAll('[data-place-item-wrap]')).filter(w => !w.hidden);
+              const count = document.querySelector('[data-locator-filter-count]');
+              const empty = document.querySelector('[data-locator-empty]');
+              const emptyQuery = document.querySelector('[data-locator-empty-query]');
+              return visibleWraps.length === 0 && count?.textContent?.includes("0 of 29") && !empty?.hidden && emptyQuery?.textContent === "zzzznonexistent";
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!emptyStateCheck?.result?.value) {
+          throw new Error("Empty state or zero count not verified for non-matching query");
+        }
+
+        // Step 5: Clear query by dispatching Escape on input
+        const escapeClearCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              if (!input) return false;
+              input.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+              const visibleWraps = Array.from(document.querySelectorAll('[data-place-item-wrap]')).filter(w => !w.hidden);
+              const count = document.querySelector('[data-locator-filter-count]');
+              const empty = document.querySelector('[data-locator-empty]');
+              return input.value === "" && visibleWraps.length === 29 && count?.textContent?.includes("29") && empty?.hidden === true;
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!escapeClearCheck?.result?.value) {
+          throw new Error("Escape key on input did not reset filter query to full 29 places");
+        }
+
+        // Step 6: Test ArrowDown navigation from input to first visible button
+        const arrowDownCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const input = document.querySelector('[data-locator-filter-input]');
+              if (!input) return false;
+              input.focus();
+              input.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
+              const active = document.activeElement;
+              const firstBtn = document.querySelector('[data-place-item-wrap]:not([hidden]) .map-locator-browser__item');
+              return active === firstBtn;
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!arrowDownCheck?.result?.value) {
+          throw new Error("ArrowDown from filter input did not move focus to first visible locator button");
+        }
+
+        // Close locator menu
+        await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const menu = document.querySelector('[data-locator-menu]');
+              if (menu && !menu.hidden) {
+                document.querySelector('[data-locator-toggle]')?.click();
+              }
+            })()
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
+        j5Pass = true;
+      } catch (err) {
+        j5Error = err.message;
+      }
+
+      if (j5Pass) {
+        auditReport.summary.journeys_passed++;
+        console.log("  [PASS] Journey 5: Browse Places Search & Keyboard Navigation passed.");
+      } else {
+        auditReport.summary.journeys_failed++;
+        testFailures++;
+        console.error(`  [FAIL] Journey 5: Browse Places Search & Keyboard Navigation failed: ${j5Error}`);
+      }
+      auditReport.journeys.push({ id: "journey_5_browse_places_search_and_keyboard", passed: j5Pass, error: j5Error });
     }
 
     // Save machine-readable quality audit report
