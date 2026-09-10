@@ -14,7 +14,8 @@ Use this file to load **the minimum useful context for the task**. Do not read t
 - Packet 8 (First Period Map Reference Layer: Herman Moll ca. 1715) is complete, accepted, and hosted-verified on `main`.
 - Packet 9 (Direct Prize Papers Documentary Thread via Nationaal Archief) is complete, accepted, merged, and hosted-verified on `main` and the canonical production domain `https://charted-currents.com/`.
 - Corrective Interstitial CORR-20260906-01 (Herman Moll [1715?] Georeference Quality Pass, Candidate C) is accepted, merged, and hosted-verified on `main`.
-- Packet 11 (First Bounded Privateering Encounter & Prize Connection + Quality & Reporting Instrumentation) is implemented and self-verified on `packet11-privateering-quality-instrumentation`.
+- Packet 11 (First Bounded Privateering Encounter & Prize Connection + Quality & Reporting Instrumentation) is accepted, merged, and hosted-verified on `main`.
+- Product Polish Interstitial 1 (Narrow-Screen Control Non-Collision, Contrast Polish & Native CDP Keyboard Proof) is accepted, merged, and hosted-verified on `main`.
 
 The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–4 interaction/provenance architecture.
 
@@ -152,8 +153,8 @@ For Gemini/Antigravity local configuration use:
 Visual review screenshots belong under `design/reviews/` only when they come from the real running application and are safe to publish.
 
 ## Testing, quality audits, and verification
-
-Read `docs/QUALITY_TESTING.md` for automated design, usage, viewport, and axe-core accessibility auditing via `@axe-core/puppeteer` across 6 UI states, 5 viewports, and 4 user journeys.
+ 
+Read `docs/QUALITY_TESTING.md` for automated design, usage, viewport, and axe-core accessibility auditing via native Chrome DevTools Protocol (`scripts/quality-audit.mjs`) across 6 UI states, 5 viewports, and 5 user journeys.
 
 ## Current/future work
 

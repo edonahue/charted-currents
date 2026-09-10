@@ -24,7 +24,7 @@
 - choose typography from actual screen comps;
 - create original Charted Currents design tokens;
 - later prototype a restrained `Fate & material evidence` inspector section rather than a global treasure-wreck layer;
-- address `.inspector-dataset-context-badge` color contrast in future design pass to eliminate baseline ratchet exception.
+- [x] address `.inspector-dataset-context-badge` color contrast in future design pass to eliminate baseline ratchet exception (Completed in Product Polish Interstitial 1 with `--cc-ink-soft`, achieving 5.83:1 contrast and zero axe-core violations).
 
 ## Research
 - [x] identify first 10–20 vessels with robust reusable documentation (Completed in Packets 3, 5, 6, 9, 11);
@@ -41,5 +41,5 @@
 - benchmark GeoJSON before PMTiles;
 - benchmark static JSON vs Parquet/DuckDB-Wasm only after corpus expansion;
 - do not build a general wreck scraper; use targeted enrichment after canonical ship identity exists;
-- [x] implement automated quality, accessibility, viewport layout, and user-journey audit harness (Completed in Packet 11 / Stream B via `@axe-core/puppeteer`);
+- [x] implement automated quality, accessibility, viewport layout, and user-journey audit harness (Completed in Packet 11 and Interstitial 1 via native Chrome DevTools Protocol `scripts/quality-audit.mjs`);
 - expand quality audit coverage during upcoming Codex Astra UI/UX session.

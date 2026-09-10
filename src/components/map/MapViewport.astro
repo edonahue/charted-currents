@@ -60,7 +60,7 @@ const hasMollLayer = Boolean(
       <div class="map-locator-browser__header">
         <div class="map-locator-browser__header-top">
           <p class="panel-kicker">Historical Places</p>
-          <span class="map-locator-browser__caption">Sourced Corpus (1684–1712)</span>
+          <span class="map-locator-browser__caption">Sourced Corpus (1666–1712)</span>
         </div>
         <div class="map-locator-browser__search-box">
           <svg class="map-locator-browser__search-icon" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -72,7 +72,7 @@ const hasMollLayer = Boolean(
             class="map-locator-browser__filter-input"
             data-locator-filter-input
             placeholder="Filter places or regions..."
-            aria-label="Filter 29 historical places by name or region"
+            aria-label={`Filter ${PLACES.length} historical places by name or region`}
             autocomplete="off"
             spellcheck="false"
           />

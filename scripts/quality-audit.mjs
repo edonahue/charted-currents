@@ -1226,6 +1226,26 @@ async function main() {
         });
         if (!checkExpanded?.result?.value) throw new Error("Mobile inspector did not transition to 'expanded' sheet state");
 
+        // Verify unmapped place caveat de-duplication (Port Royal has no Crespo mapping)
+        const unmappedCheck = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const summary = document.querySelector('[data-place-context-summary]');
+              const caveat = document.querySelector('[data-place-context-caveat]');
+              const summaryText = summary?.textContent?.trim() || "";
+              const caveatHidden = !caveat || caveat.hidden || caveat.textContent?.trim() === "";
+              return {
+                hasUnmappedSummary: summaryText.includes("No reviewed Crespo place mapping is currently established"),
+                caveatHidden,
+              };
+            })()
+          `,
+          returnByValue: true,
+        });
+        const uc = unmappedCheck?.result?.value;
+        if (!uc?.hasUnmappedSummary) throw new Error("Port Royal unmapped summary text not found");
+        if (!uc?.caveatHidden) throw new Error("Port Royal caveat paragraph was not suppressed (duplicate text defect)");
+
         // Close inspector
         await send("Runtime.evaluate", { expression: `document.querySelector('[data-inspector-close]')?.click()` });
         await new Promise((r) => setTimeout(r, 300));
@@ -1373,10 +1393,14 @@ async function main() {
               const input = document.querySelector('[data-locator-filter-input]');
               const count = document.querySelector('[data-locator-filter-count]');
               const totalItems = document.querySelectorAll('[data-place-item-wrap]').length;
+              const caption = document.querySelector('.map-locator-browser__caption');
+              const ariaLabel = input?.getAttribute("aria-label") || "";
               const isMenuOpen = menu && !menu.hidden;
               const isInputFocused = document.activeElement === input;
               const isInitial29 = totalItems === 29 && count?.textContent?.includes("29");
-              return { isMenuOpen, isInputFocused, isInitial29 };
+              const hasDynamicAriaLabel = ariaLabel === ("Filter " + totalItems + " historical places by name or region");
+              const hasSourcedCorpusCaption = caption?.textContent?.includes("1666–1712");
+              return { isMenuOpen, isInputFocused, isInitial29, hasDynamicAriaLabel, hasSourcedCorpusCaption, ariaLabel, captionText: caption?.textContent };
             })()
           `,
           returnByValue: true,
@@ -1385,6 +1409,8 @@ async function main() {
         if (!s1?.isMenuOpen) throw new Error("Locator dropdown menu did not open on native Enter");
         if (!s1?.isInputFocused) throw new Error("Focus did not move from toggle into filter input");
         if (!s1?.isInitial29) throw new Error("Initial 29 places count not verified");
+        if (!s1?.hasDynamicAriaLabel) throw new Error(`Filter input aria-label mismatch: ${s1?.ariaLabel}`);
+        if (!s1?.hasSourcedCorpusCaption) throw new Error(`Locator caption mismatch: ${s1?.captionText}`);
 
         // Step 2: Native typing filters the list (assert 1 of 29 places for 'Havana')
         await insertText("Havana");
