@@ -11,22 +11,22 @@
 
 ## 1. Archival Provenance & Ingestion Context
 
-Packet 11 introduces the project's first bounded, cross-archival privateering encounter and imperial petition connection. It enriches the existing corpus vessel `ship_richard_and_sarah_1705` (*Richard & Sarah of London*, 300 tons reported burden, voyage Jamaica → London, arrived disabled at Dartmouth, Devon in May 1705) by connecting two independent bureaucratic source traditions:
+Packet 11 introduces the project's first bounded, cross-archival privateering encounter and imperial petition connection. It enriches the existing corpus vessel `ship_richard_and_sarah_1705` (*Richard & Sarah of London*, 300 tons reported burden, voyage Jamaica → London, with Dartmouth, Devon recorded as capture location in May 1705) by connecting two independent bureaucratic source traditions:
 
 1. **The High Court of Admiralty Prize Proceedings**:
    * Upstream Repository: The National Archives (UK), Kew, `TNA HCA 32/80` (*High Court of Admiralty: Prize Court Papers*).
    * Scholarly Dataset Layer: UK Data Service `SN 852135` (*The international maritime labour market in Europe, relational database 1650–1815*, ed. Jelle van Lottum), `sr_imlm_ship_2052`.
-   * Recorded Facts: Vessel name *Richard & Sarah of London*, English built, reported age 20, 300 tons burden, owner resident in London, voyage Jamaica to London, capture/arrival recorded at Dartmouth, Devon in May 1705, examinations of crew members John Bull (mate navis, b. North Bergen, subject of Denmark), Robert Ashworth (b. Dexlford, Kent), and Roger Prosser (b. Swansea, Wales).
+   * Recorded Facts: Vessel name *Richard & Sarah of London*, English built, reported age 20, 300 tons burden, owner resident in London, voyage Jamaica to London, capture location recorded as Dartmouth, Devon in May 1705, examinations of crew members John Bull (mate navis, b. North Bergen, subject of Denmark), Robert Ashworth (b. Dexlford, Kent), and Roger Prosser (b. Swansea, Wales).
 
 2. **The Council of Trade and Plantations Reports & Merchant Petitions to Queen Anne**:
    * Upstream Manuscript Series: The National Archives (UK), Kew:
      - `CO 138/11, pp. 415–419` (Board of Trade Jamaica Entry Book, petition entry and report to Secretary of State Robert Harley).
      - `CO 137/7, Nos. 12, 12.i` (Original Correspondence, Jamaica).
    * Published Surrogate Series: *Calendar of State Papers, Colonial Series, America and West Indies, Volume 22 (1704–1705)*, ed. Cecil Headlam (London: HMSO, 1916), accessed via British History Online:
-     - `sr_csp_colonial_v22_1352`: Item 1352 (23 Sept 1705, Windsor, p. 628). Petition of 43 merchants trading to Jamaica to Queen Anne praying for remission of the Crown's 1/8th salvage share on the *Richard and Sarah*, "captured by a French privateer and recaptured by H.M.S. Rochester."
+     - `sr_csp_colonial_v22_1352`: Item 1352 (23 Sept 1705, Windsor, p. 628). Petition of 43 merchants trading to Jamaica to Queen Anne asking for the Crown's 1/8th part of the ship *Richard and Sarah*, "captured by a French privateer and recaptured by H.M.S. Rochester."
      - `sr_csp_colonial_v22_1361`: Item 1361 (5 Oct 1705, Whitehall, pp. 629–630). Report of the Council of Trade and Plantations upon Item 1352, detailing the six-hour engagement, mariner resistance, cargo plunder, and petition context citing Jamaica fire and earthquake losses.
 
-* **Dual Archival Independence**: The two source records originate from entirely distinct administrative and legal processes. `HCA 32/80` represents the Prize Court's judicial depositions regarding the prize adjudication in Devon, while `CO 137/7` and `CO 138/11` represent the Colonial Office's administrative review of a merchant salvage petition to the Crown.
+* **Dual Archival Independence**: The two source records originate from entirely distinct administrative and legal processes. `HCA 32/80` represents the Prize Court's judicial depositions regarding the prize adjudication in Devon, while `CO 137/7` and `CO 138/11` represent the Colonial Office's administrative review of a merchant petition to the Crown concerning the Queen's one-eighth share.
 * **Inspection States**:
   * `sr_imlm_ship_2052`: `dataset_record_inspected` (relational database row inspected directly via UKDA SN 852135; physical manuscript `HCA 32/80` at Kew cited upstream).
   * `sr_csp_colonial_v22_1352` & `sr_csp_colonial_v22_1361`: `digital_content_inspected` (full digital calendar text inspected directly via British History Online; physical manuscript series `CO 137/7` and `CO 138/11` cited upstream).
@@ -62,14 +62,14 @@ All assertions added in Packet 11 are classified by epistemic risk in accordance
 * **Occurrences Modeled**:
   * `occ_ship_imlm_2052`: Prize Court record for *Richard & Sarah of London*, 300 tons, Jamaica → London, Dartmouth May 1705 (derived from `sr_imlm_ship_2052` / `HCA 32/80`).
   * `occ_ship_csp_1361`: Council of Trade report for *Richard and Sarah*, Jamaica provenance, 20 guns, 30 men (derived from `sr_csp_colonial_v22_1361` / `CO 138/11`).
-  * `occ_ship_csp_1352`: Merchants' salvage petition for *Richard and Sarah*, captured by French privateer and recaptured by HMS Rochester (derived from `sr_csp_colonial_v22_1352` / `CO 137/7` & `CO 138/11`).
+  * `occ_ship_csp_1352`: Merchants' petition concerning the Queen's 1/8th share of the *Richard and Sarah*, captured by French privateer and recaptured by HMS Rochester (derived from `sr_csp_colonial_v22_1352` / `CO 137/7` & `CO 138/11`).
 * **Canonical Entity**: `ship_richard_and_sarah_1705` (`evidence_state: documented`).
 * **Resolution State**:
   * `occ_ship_imlm_2052` → `ship_richard_and_sarah_1705`: `documented_identity`.
   * `occ_ship_csp_1361` → `ship_richard_and_sarah_1705`: `probable_match`.
   * `occ_ship_csp_1352` → `ship_richard_and_sarah_1705`: `probable_match`.
-* **Resolution Rationale**: Matches vessel name, Jamaica trade provenance, and 1705 wartime context between HCA prize examination papers and Board of Trade salvage records. However, because the archival linkage between Colonial Office entry books (`CO 138/11`, `CO 137/7`) and High Court of Admiralty records (`HCA 32/80`) relies on shared vessel identity rather than explicit reciprocal administrative docket numbers, the resolution is honestly classified as `probable_match` rather than `documented_identity`.
-* **Counter-Hypothesis Analysis**: Could these represent two different vessels named *Richard & Sarah* in Jamaica trade in 1705? While homeward-bound London merchantmen occasionally shared names, the concurrence of a privateering interdiction, cargo plunder, and landing in England in mid-1705 strongly supports identity. The resolution edge is explicitly preserved, occurrence-level, and reversible.
+* **Resolution Rationale**: Matches vessel name, Jamaica trade provenance, and 1705 wartime context between HCA prize examination papers and Board of Trade petition reports. However, because the archival linkage between Colonial Office entry books (`CO 138/11`, `CO 137/7`) and High Court of Admiralty records (`HCA 32/80`) relies on shared vessel identity rather than explicit reciprocal administrative docket numbers, the resolution is honestly classified as `probable_match` rather than `documented_identity`.
+* **Counter-Hypothesis Analysis**: Could these represent two different vessels named *Richard & Sarah* in Jamaica trade in 1705? While homeward-bound London merchantmen occasionally shared names, the concurrence of a privateering interdiction, cargo plunder, and Dartmouth capture record in mid-1705 strongly supports identity. The resolution edge is explicitly preserved, occurrence-level, and reversible.
 
 ---
 

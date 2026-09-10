@@ -38,7 +38,7 @@ sources:
   public_use_basis: open_public_domain_published_calendar
   attribution_required: true
   credit_line: 'Calendar of State Papers, Colonial Series, America and West Indies, Vol. 22 (1704–1705), ed. Cecil Headlam (London: HMSO, 1916)'
-  notes: Published archival calendar entries (Item 1352, 23 Sept 1705, Merchants trading to Jamaica petition to Queen Anne; Item 1361, 5 Oct 1705, Council of Trade and Plantations to Secretary Robert Harley) relating to the privateering capture, salvage petition, and naval recapture of the ship Richard and Sarah. Digital content inspected via British History Online. Physical manuscript volumes cited upstream.
+  notes: Published archival calendar entries (Item 1352, 23 Sept 1705, Merchants trading to Jamaica petition to Queen Anne; Item 1361, 5 Oct 1705, Council of Trade and Plantations to Secretary Robert Harley) relating to the privateering capture, petition concerning the Queen's one-eighth share, and naval recapture of the ship Richard and Sarah. Digital content inspected via British History Online. Physical manuscript volumes cited upstream.
 - id: src_tna_co_137
   title: 'Board of Trade: Jamaica, Original Correspondence'
   creator: Colonial Office / Board of Trade
@@ -11141,8 +11141,8 @@ ships:
     cross_archive_note: The CSP calendar entries are a strong but not directly docket-linked match to this HCA/IMLM vessel.
     engagement_display: Engaged for six hours by a French privateer (20 guns, 166 men); disabled, plundered, and recaptured by HMS Rochester
     resistance_display: 9 of 30 mariners refused to fight; the rest maintained a 6-hour defense
-    plunder_display: Most valuable cargo plundered at sea; remainder recovered and brought into Dartmouth (May 1705)
-    petition_display: Petitioners prayed Queen Anne for Crown's 1/8th salvage share, citing heavy losses in Jamaica by fire and earthquakes
+    plunder_display: The ship was disabled; the privateer took the most valuable part of the cargo.
+    petition_display: Petitioners asked Queen Anne to give them the Crown's one-eighth share of the ship, citing heavy losses in Jamaica by fire and earthquakes
     report_date: '1705-10-05'
     calendar_ref: CSP Colonial Vol. 22, Items 1352 & 1361
     upstream_ref: TNA CO 138/11, pp. 417–419; CO 137/7, Nos. 12, 12.i
@@ -12006,7 +12006,7 @@ events:
   vessel_id: ship_richard_and_sarah_1705
   kind: capture
   evidence_state: documented
-  summary: The IMLM dataset, citing HCA 32/80 upstream, records Dartmouth, Devon as the vessel's capture location in May 1705. Separately, CSP Colonial Items 1352 and 1361 record the French-privateer capture/engagement, plunder, and recapture by HMS Rochester; the inspected calendar entries do not record the geographic location of that engagement/recapture. Petitioners subsequently prayed Queen Anne for remission of the Crown's 1/8th salvage share citing extraordinary losses in Jamaica by fire and earthquakes.
+  summary: The IMLM dataset, citing HCA 32/80 upstream, records Dartmouth, Devon as the vessel's capture location in May 1705. Separately, CSP Colonial Items 1352 and 1361 record the French-privateer capture/engagement, plunder, and recapture by HMS Rochester; the inspected calendar entries do not record the geographic location of that engagement/recapture. Petitioners subsequently asked Queen Anne to give them the Crown's one-eighth share of the ship, citing extraordinary losses in Jamaica by fire and earthquakes.
   sources:
   - src_imlm_ukda_852135
   - src_tna_hca_32
