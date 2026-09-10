@@ -22,18 +22,19 @@
     },
     {
       "id": "event_capture_richard_and_sarah_1705",
-      "title": "Engagement & Plunder of the Richard & Sarah",
+      "title": "Recorded Prize/Capture Record of the Richard & Sarah — Dartmouth",
       "date": "1705-05",
       "place_id": "place_dartmouth",
       "vessel_id": "ship_richard_and_sarah_1705",
       "kind": "capture",
       "evidence_state": "documented",
-      "summary": "The English-built vessel Richard & Sarah of London (300 tons), bound from Jamaica to London with plantation goods, was engaged for six hours by a French privateer of 20 guns and 166 men. Nine crew mutinied or refused to fight while twenty-one maintained defense until the vessel was disabled and plundered. The vessel was brought into Dartmouth, Devon in May 1705 and recorded in High Court of Admiralty prize proceedings; the owners subsequently petitioned Queen Anne citing compounding losses sustained in the 1692 Port Royal earthquake and the 1703 Jamaica fire.",
+      "summary": "Dartmouth, Devon is the documented location of prize landing and examinations in High Court of Admiralty records (HCA 32/80); the six-hour privateering engagement, cargo plunder, and recapture by HMS Rochester occurred at an unrecorded location at sea prior to return to port. Petitioners subsequently prayed Queen Anne for remission of the Crown's 1/8th salvage share citing extraordinary losses in Jamaica by fire and earthquakes.",
       "sources": [
         "src_imlm_ukda_852135",
         "src_tna_hca_32",
         "src_csp_colonial_vol22",
-        "src_tna_co_138"
+        "src_tna_co_138",
+        "src_tna_co_137"
       ],
       "assertion_ids": [
         "ast_2052_capture",
@@ -41,6 +42,8 @@
         "ast_rs_battle_engagement",
         "ast_rs_crew_resistance",
         "ast_rs_plunder_cargo",
+        "ast_rs_recapture",
+        "ast_rs_salvage_petition",
         "ast_rs_jamaica_petition"
       ]
     },

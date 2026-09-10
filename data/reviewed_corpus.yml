@@ -32,13 +32,24 @@ sources:
   title: 'Calendar of State Papers, Colonial: America and West Indies, Volume 22 (1704–1705)'
   creator: Cecil Headlam (ed.) / HMSO
   holding_institution: British History Online / Institute of Historical Research
-  stable_identifier: CSP Colonial Vol. 22 / Item 1361 (Oct 5, 1705)
-  item_url: https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp629-640
+  stable_identifier: CSP Colonial Vol. 22 / Items 1352 & 1361 (Sept–Oct 1705)
+  item_url: https://www.british-history.ac.uk/cal-state-papers/colonial/america-west-indies/vol22/pp628-638
   rights_posture: public_domain
   public_use_basis: open_public_domain_published_calendar
   attribution_required: true
   credit_line: 'Calendar of State Papers, Colonial Series, America and West Indies, Vol. 22 (1704–1705), ed. Cecil Headlam (London: HMSO, 1916)'
-  notes: Published archival calendar entry (Item 1361, 5 Oct 1705, Council of Trade and Plantations to Secretary Robert Harley) summarising petition of the owners and freighters of the ship Richard and Sarah of London. Digital content inspected via British History Online. Physical/manuscript volume cited upstream.
+  notes: Published archival calendar entries (Item 1352, 23 Sept 1705, Merchants trading to Jamaica petition to Queen Anne; Item 1361, 5 Oct 1705, Council of Trade and Plantations to Secretary Robert Harley) relating to the privateering capture, salvage petition, and naval recapture of the ship Richard and Sarah. Digital content inspected via British History Online. Physical manuscript volumes cited upstream.
+- id: src_tna_co_137
+  title: 'Board of Trade: Jamaica, Original Correspondence'
+  creator: Colonial Office / Board of Trade
+  holding_institution: The National Archives, Kew
+  stable_identifier: TNA CO 137
+  item_url: https://discovery.nationalarchives.gov.uk/details/r/C4401
+  rights_posture: public_domain
+  public_use_basis: open_public_domain
+  attribution_required: true
+  credit_line: The National Archives, Kew (CO 137)
+  notes: Board of Trade original correspondence for Jamaica. CO 137/7, Nos. 12, 12.i is cited upstream in CSP Colonial Vol. 22, Item 1352. Physical manuscript at Kew was not independently inspected by Charted Currents.
 - id: src_tna_co_138
   title: 'Board of Trade: Jamaica, Original Correspondence and Entry Books'
   creator: Colonial Office / Board of Trade
@@ -49,7 +60,7 @@ sources:
   public_use_basis: open_public_domain
   attribution_required: true
   credit_line: The National Archives, Kew (CO 138)
-  notes: Board of Trade entry books and correspondence for Jamaica. CO 138/11, pp. 417–419 is cited upstream in CSP Colonial Vol. 22, Item 1361. Physical manuscript at Kew was not independently inspected by Charted Currents.
+  notes: Board of Trade entry books and correspondence for Jamaica. CO 138/11, pp. 415–419 is cited upstream in CSP Colonial Vol. 22, Items 1352 and 1361. Physical manuscript at Kew was not independently inspected by Charted Currents.
 - id: src_royal_society_el_l5_117
   title: Letter, from T L [to the Royal Society]
   creator: T L
@@ -131,10 +142,17 @@ sources:
   credit_line: 'Nationaal Archief, Den Haag / The National Archives, Kew, Archive 2.22.24 (High Court of Admiralty: Prize Papers / Sailing Letters)'
   notes: Digital photographic duplicate collection and finding aid created by Nationaal Archief in cooperation with The National Archives (UK). EAD finding aid metadata is CC0; digital scans carry an institutional non-commercial use restriction and are accessed via persistent handle rather than hosted. Underlying manuscripts are 17th-century High Court of Admiralty records seized in prize causes.
 source_records:
+- id: sr_csp_colonial_v22_1352
+  source_id: src_csp_colonial_vol22
+  record_type: archival_calendar_entry
+  native_identifier: CSP Colonial Vol. 22, Item 1352 (p. 628)
+  inspection_state: digital_content_inspected
+  upstream_archive_source_id: src_tna_co_137
+  upstream_archive_reference: TNA CO 137/7, Nos. 12, 12.i; CO 138/11, pp. 415–417
 - id: sr_csp_colonial_v22_1361
   source_id: src_csp_colonial_vol22
   record_type: archival_calendar_entry
-  native_identifier: CSP Colonial Vol. 22, Item 1361 (pp. 629–640)
+  native_identifier: CSP Colonial Vol. 22, Item 1361 (pp. 629–630)
   inspection_state: digital_content_inspected
   upstream_archive_source_id: src_tna_co_138
   upstream_archive_reference: TNA CO 138/11, pp. 417–419
@@ -1866,32 +1884,47 @@ assertions:
 - id: ast_rs_battle_engagement
   source_record_id: sr_csp_colonial_v22_1361
   field: battle_engagement
-  raw_value: Council of Trade and Plantations report that the ship Richard and Sarah of London, 300 tons, bound from Jamaica to London with plantation goods, was attacked by a French privateer of 20 guns and 166 men, maintaining a six-hour engagement.
+  raw_value: "The ship had 20 guns and 30 men (9 of which refused to fight). The rest maintained a fight of six hours with a French privateer of 20 guns and 166 men etc."
   risk_class: A
 - id: ast_rs_crew_resistance
   source_record_id: sr_csp_colonial_v22_1361
   field: crew_resistance
-  raw_value: During the engagement, 9 of the 30 mariners mutinied or refused to fight; the remaining 21 crew maintained defense until the ship was disabled.
+  raw_value: "The ship had 20 guns and 30 men (9 of which refused to fight). The rest maintained a fight of six hours"
   risk_class: A
 - id: ast_rs_plunder_cargo
   source_record_id: sr_csp_colonial_v22_1361
   field: plunder_cargo
-  raw_value: The disabled vessel was plundered of its most valuable cargo by the French privateer before the remainder was brought in.
+  raw_value: "The ship is disabled and the privateer took the most valuable part of the cargo out of her."
   risk_class: A
 - id: ast_rs_jamaica_petition
   source_record_id: sr_csp_colonial_v22_1361
   field: jamaica_petition
-  raw_value: The owners petitioned Queen Anne for relief, noting they had already suffered extraordinary losses in the 1692 Port Royal earthquake and the 1703 fire at Jamaica.
+  raw_value: "Petitioners have also suffered heavily in Jamaica by extraordinary accidents of fire and earthquakes. They are fit objects for H.M. grace etc."
   risk_class: A
 - id: ast_rs_report_date
   source_record_id: sr_csp_colonial_v22_1361
   field: report_date
-  raw_value: 5 October 1705
+  raw_value: "Whitehall, Oct. 5, 1705"
   risk_class: A
 - id: ast_rs_upstream_co
   source_record_id: sr_csp_colonial_v22_1361
   field: upstream_archive_reference
-  raw_value: CO 138/11, pp. 417–419
+  raw_value: "C.O. 138, 11. pp. 417-419"
+  risk_class: A
+- id: ast_rs_recapture
+  source_record_id: sr_csp_colonial_v22_1352
+  field: vessel_recapture
+  raw_value: "captured by a French privateer and recaptured by H.M.S. Rochester"
+  risk_class: A
+- id: ast_rs_salvage_petition
+  source_record_id: sr_csp_colonial_v22_1352
+  field: salvage_petition
+  raw_value: "Merchants trading to Jamaica to the Queen. Pray H.M. to give them her 1/8th part of their ship Richard and Sarah, captured by a French privateer and recaptured by H.M.S. Rochester. 43 Signatures."
+  risk_class: A
+- id: ast_rs_1352_date
+  source_record_id: sr_csp_colonial_v22_1352
+  field: petition_date
+  raw_value: "Subscribed, Windsor, Sept. 23, 1705"
   risk_class: A
 - id: ast_crew_5035
   source_record_id: sr_imlm_crew_5035
@@ -10004,14 +10037,17 @@ ship_occurrences:
   - ast_2052_voyage
   - ast_2052_capture
   - ast_2052_upstream_hca
+- id: occ_ship_csp_1352
+  source_record_id: sr_csp_colonial_v22_1352
+  raw_name: Richard and Sarah
+  assertion_ids:
+  - ast_rs_recapture
+  - ast_rs_salvage_petition
+  - ast_rs_1352_date
 - id: occ_ship_csp_1361
   source_record_id: sr_csp_colonial_v22_1361
-  raw_name: Richard and Sarah of London
-  raw_tonnage: '300'
+  raw_name: Richard and Sarah
   recorded_voyage_origin: Jamaica
-  recorded_voyage_destination: London
-  recorded_capture_location: Dartmouth, Devon
-  recorded_capture_date: '1705-05'
   assertion_ids:
   - ast_rs_battle_engagement
   - ast_rs_crew_resistance
@@ -11093,24 +11129,27 @@ ships:
   occurrence_ids:
   - occ_ship_imlm_2052
   - occ_ship_csp_1361
+  - occ_ship_csp_1352
   reported_burden_display: 300 tons reported burden
   construction_display: English built · reported age 20 at capture
   owner_display: London
   voyage_display: Jamaica → London
   capture_display: Dartmouth, Devon (May 1705)
   privateering_engagement:
-    engagement_display: Engaged for six hours by a French privateer (20 guns, 166 men); disabled and plundered
-    resistance_display: 9 of 30 mariners mutinied / refused to fight; 21 maintained defense
-    plunder_display: Most valuable cargo plundered at sea before remainder brought into Dartmouth (May 1705)
-    petition_display: Owners petitioned Queen Anne citing compounding losses from 1692 Port Royal earthquake & 1703 fire
+    engagement_display: Engaged for six hours by a French privateer (20 guns, 166 men); disabled, plundered, and recaptured by HMS Rochester
+    resistance_display: 9 of 30 mariners refused to fight; the rest maintained a 6-hour defense
+    plunder_display: Most valuable cargo plundered at sea; remainder recovered and brought into Dartmouth (May 1705)
+    petition_display: Petitioners prayed Queen Anne for Crown's 1/8th salvage share, citing heavy losses in Jamaica by fire and earthquakes
     report_date: '1705-10-05'
-    calendar_ref: CSP Colonial Vol. 22, Item 1361
-    upstream_ref: TNA CO 138/11, pp. 417–419
+    calendar_ref: CSP Colonial Vol. 22, Items 1352 & 1361
+    upstream_ref: TNA CO 138/11, pp. 417–419; CO 137/7, Nos. 12, 12.i
     source_id: src_csp_colonial_vol22
     assertion_ids:
     - ast_rs_battle_engagement
     - ast_rs_crew_resistance
     - ast_rs_plunder_cargo
+    - ast_rs_recapture
+    - ast_rs_salvage_petition
     - ast_rs_jamaica_petition
     - ast_rs_report_date
     - ast_rs_upstream_co
@@ -11445,9 +11484,17 @@ entity_resolution_edges:
   - ast_2052_name
   - ast_2052_tonnage
   - ast_2052_voyage
+- occurrence_id: occ_ship_csp_1352
+  target_entity_id: ship_richard_and_sarah_1705
+  resolution_state: probable_match
+  resolver: cross_archival_concordance
+  evidence_assertions:
+  - ast_rs_recapture
+  - ast_rs_salvage_petition
+  - ast_rs_1352_date
 - occurrence_id: occ_ship_csp_1361
   target_entity_id: ship_richard_and_sarah_1705
-  resolution_state: documented_identity
+  resolution_state: probable_match
   resolver: cross_archival_concordance
   evidence_assertions:
   - ast_rs_battle_engagement
@@ -11950,24 +11997,27 @@ events:
   - ast_eq_account_heath
   - ast_eq_letter_tl
 - id: event_capture_richard_and_sarah_1705
-  title: Engagement & Plunder of the Richard & Sarah
-  date: 1705-05
+  title: Recorded Prize/Capture Record of the Richard & Sarah — Dartmouth
+  date: '1705-05'
   place_id: place_dartmouth
   vessel_id: ship_richard_and_sarah_1705
   kind: capture
   evidence_state: documented
-  summary: The English-built vessel Richard & Sarah of London (300 tons), bound from Jamaica to London with plantation goods, was engaged for six hours by a French privateer of 20 guns and 166 men. Nine crew mutinied or refused to fight while twenty-one maintained defense until the vessel was disabled and plundered. The vessel was brought into Dartmouth, Devon in May 1705 and recorded in High Court of Admiralty prize proceedings; the owners subsequently petitioned Queen Anne citing compounding losses sustained in the 1692 Port Royal earthquake and the 1703 Jamaica fire.
+  summary: Dartmouth, Devon is the documented location of prize landing and examinations in High Court of Admiralty records (HCA 32/80); the six-hour privateering engagement, cargo plunder, and recapture by HMS Rochester occurred at an unrecorded location at sea prior to return to port. Petitioners subsequently prayed Queen Anne for remission of the Crown's 1/8th salvage share citing extraordinary losses in Jamaica by fire and earthquakes.
   sources:
   - src_imlm_ukda_852135
   - src_tna_hca_32
   - src_csp_colonial_vol22
   - src_tna_co_138
+  - src_tna_co_137
   assertion_ids:
   - ast_2052_capture
   - ast_2052_upstream_hca
   - ast_rs_battle_engagement
   - ast_rs_crew_resistance
   - ast_rs_plunder_cargo
+  - ast_rs_recapture
+  - ast_rs_salvage_petition
   - ast_rs_jamaica_petition
 - id: event_capture_william_1702
   title: Capture of the William

@@ -73,6 +73,31 @@ class TestPacketReportIntegrity(unittest.TestCase):
                 f"Count mismatch for {key}: report={report_counts.get(key)} manifest={expected_val}"
             )
 
+    def test_facts_omitted_when_not_passed(self):
+        """When --facts is not provided, machine_derived_facts must be null (no hardcoded fallback)."""
+        report = self.run_report()
+        self.assertIsNone(report.get("machine_derived_facts"))
+
+    def test_generic_facts_passthrough(self):
+        """When --facts points to any arbitrary JSON, packet-report must pass it through faithfully."""
+        import tempfile
+        sample_facts = {
+            "test_key": "test_value",
+            "number_val": 42,
+            "nested": {"inner_key": "inner_val"}
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+            json.dump(sample_facts, tf)
+            tf_path = tf.name
+
+        try:
+            report = self.run_report(f"--facts={tf_path}")
+            self.assertIsNotNone(report.get("machine_derived_facts"))
+            self.assertEqual(report["machine_derived_facts"]["facts"], sample_facts)
+        finally:
+            if os.path.exists(tf_path):
+                os.unlink(tf_path)
+
     def test_facts_integrity_with_benchmark_artifact(self):
         """Facts passed via --facts must match candidate_benchmark.json exact metrics."""
         if not os.path.exists(self.benchmark_path):

@@ -230,6 +230,21 @@ async function main() {
     const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
     await new Promise((r) => (ws.onopen = r));
 
+    const uncaughtExceptions = [];
+    ws.addEventListener("message", (evt) => {
+      try {
+        const msg = JSON.parse(evt.data);
+        if (msg.method === "Runtime.exceptionThrown") {
+          const details = msg.params?.exceptionDetails;
+          const text = details?.exception?.description || details?.text || "Unknown runtime exception";
+          const url = details?.url || "";
+          const line = details?.lineNumber || 0;
+          console.error(`  [CDP UNCAUGHT EXCEPTION] ${text} at ${url}:${line}`);
+          uncaughtExceptions.push({ text, url, line, details });
+        }
+      } catch {}
+    });
+
     const send = (method, params = {}) =>
       new Promise((res, rej) => {
         const id = Math.floor(Math.random() * 1000000);
@@ -296,7 +311,10 @@ async function main() {
       }
       await new Promise((r) => setTimeout(r, 150));
     }
-    console.log(`Map loaded & idle: ${mapReady ? "YES" : "TIMEOUT (proceeding)"}`);
+    if (!mapReady) {
+      throw new Error("MapLibre map failed to reach ready and idle state within timeout (15000ms)");
+    }
+    console.log(`Map loaded & idle: YES`);
 
     // Load axe-core source
     const axePath = require.resolve("axe-core/axe.min.js");
@@ -349,6 +367,9 @@ async function main() {
           // Check if matches baseline allowed rules
           const isAllowed = baseline?.allowed_serious_rules?.some((rule) => {
             if (rule.rule_id !== v.id) return false;
+            const allowedStates = rule.allowed_states || rule.states;
+            if (allowedStates && !allowedStates.includes(stateId)) return false;
+            if (typeof rule.allowed_occurrences === "number" && v.nodes.length > rule.allowed_occurrences) return false;
             // Check if all nodes match the allowed selector pattern
             return v.nodes.every((node) =>
               node.target.some((sel) => sel.includes(rule.target_selector_pattern))
@@ -526,7 +547,119 @@ async function main() {
     // 2. GENERIC LAYOUT & GEOMETRY AUDIT
     // ----------------------------------------------------
     if (!isA11yOnly) {
-      console.log(`\n--- 2. Generic Layout & Geometry Audit ---`);
+      console.log(`\n--- 2. Generic Layout & Geometry Audit (Multi-State Matrix) ---`);
+
+      const evaluateLayoutInBrowser = `
+        (() => {
+          const findings = [];
+          const winW = window.innerWidth;
+          const winH = window.innerHeight;
+
+          // a) Horizontal document overflow (2px tolerance)
+          const scrollW = document.documentElement.scrollWidth;
+          if (scrollW > winW + 2) {
+            findings.push({
+              type: "horizontal_overflow",
+              detail: \`document scrollWidth (\${scrollW}px) exceeds window innerWidth (\${winW}px) by \${scrollW - winW}px\`
+            });
+          }
+
+          // b) Major panel boundary clipping
+          const panelSelectors = [
+            ".app-masthead",
+            "[data-component='place-locator']",
+            "[data-component='entity-inspector']",
+            "[data-component='source-drawer']",
+            ".source-drawer-panel",
+            ".map-layer-control",
+            ".maplibregl-ctrl-attrib"
+          ];
+
+          for (const sel of panelSelectors) {
+            const el = document.querySelector(sel);
+            if (el && !el.hidden && getComputedStyle(el).display !== 'none' && el.offsetWidth > 0) {
+              const rect = el.getBoundingClientRect();
+              if (rect.left < -2) {
+                findings.push({
+                  type: "panel_bounds_left",
+                  selector: sel,
+                  detail: \`Panel extends \${Math.abs(rect.left)}px beyond left viewport bound\`
+                });
+              }
+              if (rect.right > winW + 2) {
+                findings.push({
+                  type: "panel_bounds_right",
+                  selector: sel,
+                  detail: \`Panel extends \${rect.right - winW}px beyond right viewport bound\`
+                });
+              }
+            }
+          }
+
+          // c) Primary controls occlusion check
+          const primaryControls = [
+            "[data-locator-toggle]",
+            "[data-layer-toggle]"
+          ];
+
+          for (const sel of primaryControls) {
+            const el = document.querySelector(sel);
+            if (el && !el.hidden && getComputedStyle(el).display !== 'none' && el.offsetWidth > 0) {
+              const rect = el.getBoundingClientRect();
+              const cx = Math.floor(rect.left + rect.width / 2);
+              const cy = Math.floor(rect.top + rect.height / 2);
+              if (cx >= 0 && cx <= winW && cy >= 0 && cy <= winH) {
+                const topEl = document.elementFromPoint(cx, cy);
+                if (topEl && topEl !== el && !el.contains(topEl)) {
+                  const isModalOverlay = Boolean(topEl.closest && topEl.closest("#source-drawer, .source-drawer-backdrop, .dialog-backdrop"));
+                  if (!isModalOverlay) {
+                    findings.push({
+                      type: "control_occluded",
+                      selector: sel,
+                      detail: \`Control occluded by <\${topEl.tagName.toLowerCase()} class="\${topEl.className}">\`
+                    });
+                  }
+                }
+              }
+            }
+          }
+
+          // d) Zero-size rendered interactive elements
+          const interactiveEls = Array.from(document.querySelectorAll("button, a, input, select, textarea"));
+          for (const el of interactiveEls) {
+            if (el.offsetParent !== null && !el.hidden && !el.closest("[hidden]")) {
+              const style = getComputedStyle(el);
+              if (style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0") {
+                const rect = el.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) {
+                  findings.push({
+                    type: "zero_size_interactive",
+                    selector: el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + (el.className ? "." + el.className.split(" ")[0] : ""),
+                    detail: \`Interactive element rendered with 0 width or height (\${rect.width}x\${rect.height})\`
+                  });
+                }
+              }
+            }
+          }
+
+          // e) Unintended content clipping in scroll containers
+          const scrollableEls = Array.from(document.querySelectorAll(".inspector-body, .source-drawer-body, .locator-results"));
+          for (const el of scrollableEls) {
+            if (el.offsetParent !== null) {
+              const style = getComputedStyle(el);
+              if (el.scrollHeight > el.clientHeight + 2 && (style.overflowY === "hidden" || style.overflowY === "clip")) {
+                findings.push({
+                  type: "unintended_content_clipping",
+                  selector: el.className,
+                  detail: \`Container scrollHeight (\${el.scrollHeight}px) exceeds clientHeight (\${el.clientHeight}px) but overflow-y is \${style.overflowY}\`
+                });
+              }
+            }
+          }
+
+          return { findings, scrollW, winW };
+        })()
+      `;
 
       for (const vp of VIEWPORTS) {
         await send("Emulation.setDeviceMetricsOverride", {
@@ -535,140 +668,72 @@ async function main() {
           deviceScaleFactor: vp.dsf,
           mobile: vp.mobile,
         });
-        await new Promise((r) => setTimeout(r, 300));
+        await new Promise((r) => setTimeout(r, 250));
 
-        const evalLayout = await send("Runtime.evaluate", {
-          expression: `
-            (() => {
-              const findings = [];
-              const winW = window.innerWidth;
-              const winH = window.innerHeight;
+        const vpFindings = [];
 
-              // a) Horizontal document overflow (2px tolerance)
-              const scrollW = document.documentElement.scrollWidth;
-              if (scrollW > winW + 2) {
-                findings.push({
-                  type: "horizontal_overflow",
-                  detail: \`document scrollWidth (\${scrollW}px) exceeds window innerWidth (\${winW}px) by \${scrollW - winW}px\`
-                });
-              }
-
-              // b) Major panel boundary clipping
-              const panelSelectors = [
-                ".app-masthead",
-                "[data-component='place-locator']",
-                "[data-component='entity-inspector']",
-                "[data-component='source-drawer']",
-                ".map-layer-control",
-                ".maplibregl-ctrl-attrib"
-              ];
-
-              for (const sel of panelSelectors) {
-                const el = document.querySelector(sel);
-                if (el && !el.hidden && getComputedStyle(el).display !== 'none' && el.offsetWidth > 0) {
-                  const rect = el.getBoundingClientRect();
-                  if (rect.left < -2) {
-                    findings.push({
-                      type: "panel_bounds_left",
-                      selector: sel,
-                      detail: \`Panel extends \${Math.abs(rect.left)}px beyond left viewport bound\`
-                    });
-                  }
-                  if (rect.right > winW + 2) {
-                    findings.push({
-                      type: "panel_bounds_right",
-                      selector: sel,
-                      detail: \`Panel extends \${rect.right - winW}px beyond right viewport bound\`
-                    });
-                  }
-                }
-              }
-
-              // c) Primary controls occlusion check
-              const primaryControls = [
-                "[data-locator-toggle]",
-                "[data-layer-toggle]"
-              ];
-
-              for (const sel of primaryControls) {
-                const el = document.querySelector(sel);
-                if (el && !el.hidden && getComputedStyle(el).display !== 'none' && el.offsetWidth > 0) {
-                  const rect = el.getBoundingClientRect();
-                  const cx = Math.floor(rect.left + rect.width / 2);
-                  const cy = Math.floor(rect.top + rect.height / 2);
-                  if (cx >= 0 && cx <= winW && cy >= 0 && cy <= winH) {
-                    const topEl = document.elementFromPoint(cx, cy);
-                    if (topEl && topEl !== el && !el.contains(topEl)) {
-                      findings.push({
-                        type: "control_occluded",
-                        selector: sel,
-                        detail: \`Control occluded by <\${topEl.tagName.toLowerCase()} class="\${topEl.className}">\`
-                      });
-                    }
-                  }
-                }
-              }
-
-              // d) Zero-size rendered interactive elements
-              const interactiveEls = Array.from(document.querySelectorAll("button, a, input, select, textarea"));
-              for (const el of interactiveEls) {
-                if (el.offsetParent !== null && !el.hidden && !el.closest("[hidden]")) {
-                  const style = getComputedStyle(el);
-                  if (style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0") {
-                    const rect = el.getBoundingClientRect();
-                    if (rect.width === 0 || rect.height === 0) {
-                      findings.push({
-                        type: "zero_size_interactive",
-                        selector: el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + (el.className ? "." + el.className.split(" ")[0] : ""),
-                        detail: \`Interactive element rendered with 0 width or height (\${rect.width}x\${rect.height})\`
-                      });
-                    }
-                  }
-                }
-              }
-
-              // e) Unintended content clipping in scroll containers
-              const scrollableEls = Array.from(document.querySelectorAll(".inspector-body, .source-drawer-body, .locator-results"));
-              for (const el of scrollableEls) {
-                if (el.offsetParent !== null) {
-                  const style = getComputedStyle(el);
-                  if (el.scrollHeight > el.clientHeight + 2 && (style.overflowY === "hidden" || style.overflowY === "clip")) {
-                    findings.push({
-                      type: "unintended_content_clipping",
-                      selector: el.className,
-                      detail: \`Container scrollHeight (\${el.scrollHeight}px) exceeds clientHeight (\${el.clientHeight}px) but overflow-y is \${style.overflowY}\`
-                    });
-                  }
-                }
-              }
-
-              return { findings, scrollW, winW };
-            })()
-          `,
+        // State A: Initial baseline state
+        const resInit = await send("Runtime.evaluate", {
+          expression: evaluateLayoutInBrowser,
           returnByValue: true,
         });
+        for (const f of resInit?.result?.value?.findings || []) {
+          vpFindings.push({ state: "initial", ...f });
+        }
 
-        const res = evalLayout?.result?.value;
-        const findings = res?.findings || [];
-        const passVp = findings.length === 0;
+        // State B: Entity Inspector open
+        await send("Runtime.evaluate", {
+          expression: `window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "place", id: "place_port_royal" } }))`,
+        });
+        await new Promise((r) => setTimeout(r, 350));
+        const resInspector = await send("Runtime.evaluate", {
+          expression: evaluateLayoutInBrowser,
+          returnByValue: true,
+        });
+        for (const f of resInspector?.result?.value?.findings || []) {
+          vpFindings.push({ state: "inspector_open", ...f });
+        }
 
+        // State C: Source Drawer open
+        await send("Runtime.evaluate", {
+          expression: `document.querySelector('[data-open-ship-source]')?.click() || document.querySelector('[data-place-evidence-btn]')?.click()`,
+        });
+        await new Promise((r) => setTimeout(r, 350));
+        const resDrawer = await send("Runtime.evaluate", {
+          expression: evaluateLayoutInBrowser,
+          returnByValue: true,
+        });
+        for (const f of resDrawer?.result?.value?.findings || []) {
+          vpFindings.push({ state: "drawer_open", ...f });
+        }
+
+        // Close drawer and inspector to restore clean baseline
+        await send("Runtime.evaluate", {
+          expression: `
+            document.querySelector('[data-source-drawer-close]')?.click();
+            document.querySelector('[data-inspector-close]')?.click();
+          `,
+        });
+        await new Promise((r) => setTimeout(r, 200));
+
+        const passVp = vpFindings.length === 0;
         if (!passVp) {
-          testFailures += findings.length;
-          auditReport.summary.layout_failures += findings.length;
+          testFailures += vpFindings.length;
+          auditReport.summary.layout_failures += vpFindings.length;
         }
 
         auditReport.layout_results.push({
           viewport: vp.name,
           dimensions: `${vp.width}x${vp.height}`,
           passed: passVp,
-          findings,
+          findings: vpFindings,
         });
 
         console.log(
-          `  ${passVp ? "[PASS]" : "[FAIL]"} Layout check on ${vp.name} (${vp.width}x${vp.height}): ${findings.length} findings`
+          `  ${passVp ? "[PASS]" : "[FAIL]"} Layout check on ${vp.name} (${vp.width}x${vp.height}) across 3 states: ${vpFindings.length} findings`
         );
-        for (const f of findings) {
-          console.error(`    [LAYOUT FINDING] [${f.type}] ${f.selector || ""} — ${f.detail}`);
+        for (const f of vpFindings) {
+          console.error(`    [LAYOUT FINDING] [${f.state}] [${f.type}] ${f.selector || ""} — ${f.detail}`);
         }
       }
 
@@ -739,42 +804,95 @@ async function main() {
         });
         if (!checkShip?.result?.value) throw new Error("Richard & Sarah privateering details not rendered in inspector");
 
-        // Click open source drawer
-        await send("Runtime.evaluate", {
-          expression: `document.querySelector('[data-privateering-evidence-btn]')?.click() || document.querySelector('[data-ship-evidence-btn]')?.click()`,
+        // 1. First verification: Click privateering evidence button
+        const clickPrivBtn = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const btn = document.querySelector('[data-privateering-evidence-btn]');
+              if (btn) {
+                btn.click();
+                return true;
+              }
+              return false;
+            })()
+          `,
+          returnByValue: true,
         });
-        await new Promise((r) => setTimeout(r, 500));
+        if (!clickPrivBtn?.result?.value) throw new Error("Could not find or click [data-privateering-evidence-btn]");
+        await new Promise((r) => setTimeout(r, 400));
 
-        // Verify drawer open and text
-        const checkDrawer = await send("Runtime.evaluate", {
+        // Verify drawer open and contains CO 138/11 AND Calendar of State Papers
+        const checkDrawerPriv = await send("Runtime.evaluate", {
           expression: `
             (() => {
               const drawer = document.getElementById("source-drawer");
               const isOpen = drawer && !drawer.hidden && drawer.getAttribute("data-state") === "open";
               const content = drawer?.textContent || "";
-              const hasCalendarOrImlm = content.includes("Calendar of State Papers") || content.includes("State Papers") || content.includes("international maritime labour market");
-              return isOpen && hasCalendarOrImlm;
+              const hasCO = content.includes("CO 138/11") || content.includes("CO 138");
+              const hasCSP = content.includes("Calendar of State Papers") || content.includes("CSP Colonial");
+              return { isOpen, hasCO, hasCSP };
             })()
           `,
           returnByValue: true,
         });
-        if (!checkDrawer?.result?.value) throw new Error("Source drawer did not open with expected archival citation");
+        const privRes = checkDrawerPriv?.result?.value;
+        if (!privRes?.isOpen) throw new Error("Source drawer did not open from privateering evidence button");
+        if (!privRes?.hasCO) throw new Error("Source drawer does not cite CO 138/11 for privateering encounter");
+        if (!privRes?.hasCSP) throw new Error("Source drawer does not cite Calendar of State Papers for privateering encounter");
 
-        // Press Escape
+        // Close drawer with Escape
         await sendKey("Escape", "Escape", 27);
         await new Promise((r) => setTimeout(r, 300));
+        const checkPrivClosed = await send("Runtime.evaluate", {
+          expression: `Boolean(document.getElementById("source-drawer")?.hidden || document.getElementById("source-drawer")?.getAttribute("data-state") === "closed")`,
+          returnByValue: true,
+        });
+        if (!checkPrivClosed?.result?.value) throw new Error("Source drawer did not close on Escape after privateering check");
 
-        // Verify drawer closed
-        const checkClosed = await send("Runtime.evaluate", {
+        // 2. Second verification: Click ship evidence button
+        const clickShipBtn = await send("Runtime.evaluate", {
+          expression: `
+            (() => {
+              const btn = document.querySelector('[data-ship-evidence-btn]');
+              if (btn) {
+                btn.click();
+                return true;
+              }
+              return false;
+            })()
+          `,
+          returnByValue: true,
+        });
+        if (!clickShipBtn?.result?.value) throw new Error("Could not find or click [data-ship-evidence-btn]");
+        await new Promise((r) => setTimeout(r, 400));
+
+        // Verify drawer open and contains HCA 32/80 AND international maritime labour market
+        const checkDrawerShip = await send("Runtime.evaluate", {
           expression: `
             (() => {
               const drawer = document.getElementById("source-drawer");
-              return drawer && (drawer.hidden || drawer.getAttribute("data-state") === "closed");
+              const isOpen = drawer && !drawer.hidden && drawer.getAttribute("data-state") === "open";
+              const content = drawer?.textContent || "";
+              const hasHCA = content.includes("HCA 32/80") || content.includes("HCA 32");
+              const hasIMLM = content.includes("international maritime labour market") || content.includes("SN 852135") || content.includes("IMLM");
+              return { isOpen, hasHCA, hasIMLM };
             })()
           `,
           returnByValue: true,
         });
-        if (!checkClosed?.result?.value) throw new Error("Source drawer did not close upon Escape keydown");
+        const shipRes = checkDrawerShip?.result?.value;
+        if (!shipRes?.isOpen) throw new Error("Source drawer did not open from ship evidence button");
+        if (!shipRes?.hasHCA) throw new Error("Source drawer does not cite HCA 32/80 for ship provenance");
+        if (!shipRes?.hasIMLM) throw new Error("Source drawer does not cite IMLM for ship provenance");
+
+        // Close drawer with Escape
+        await sendKey("Escape", "Escape", 27);
+        await new Promise((r) => setTimeout(r, 300));
+        const checkShipClosed = await send("Runtime.evaluate", {
+          expression: `Boolean(document.getElementById("source-drawer")?.hidden || document.getElementById("source-drawer")?.getAttribute("data-state") === "closed")`,
+          returnByValue: true,
+        });
+        if (!checkShipClosed?.result?.value) throw new Error("Source drawer did not close on Escape after ship provenance check");
 
         j1Pass = true;
       } catch (err) {
@@ -1050,6 +1168,13 @@ async function main() {
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`\n==================================================`);
     console.log(`AUDIT COMPLETE in ${elapsed}s`);
+    if (uncaughtExceptions.length > 0) {
+      console.error(`Uncaught Exceptions:      ${uncaughtExceptions.length}`);
+      testFailures += uncaughtExceptions.length;
+    }
+    auditReport.summary.uncaught_browser_exceptions = uncaughtExceptions.length;
+    auditReport.uncaught_exceptions = uncaughtExceptions;
+
     console.log(`Critical A11y Violations: ${auditReport.summary.critical_a11y}`);
     console.log(`Unallowed Serious A11y:   ${auditReport.summary.unallowed_serious_a11y}`);
     console.log(`Allowed Baseline Serious: ${auditReport.summary.allowed_serious_a11y}`);

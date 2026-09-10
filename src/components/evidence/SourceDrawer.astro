@@ -377,6 +377,13 @@
       } else if (record?.source_id === "src_na_2_22_24_sailing_letters") {
         upNote.textContent =
           "Physical manuscripts held at The National Archives, Kew (series HCA 32). Photographic duplicate collection and finding aid examined at Nationaal Archief, Den Haag.";
+      } else if (
+        record?.source_id === "src_csp_colonial_vol22" ||
+        record?.upstream_archive_source_id === "src_tna_co_138" ||
+        record?.upstream_archive_source_id === "src_tna_co_137"
+      ) {
+        upNote.textContent =
+          "Colonial Office manuscript records held at The National Archives, Kew. The physical manuscript volume was not independently examined; entry inspected via published Calendar of State Papers.";
       } else {
         upNote.textContent =
           "Cited in dataset extract from High Court of Admiralty prize papers. The physical 17th/18th-century manuscript at Kew was not independently examined.";

@@ -33,10 +33,7 @@ const qualityArg = argsValue("--quality=");
 const qualityPath = qualityArg || (existsSync("test-results/quality-audit.json") ? "test-results/quality-audit.json" : null);
 const qualityData = qualityPath ? readJson(qualityPath, null) : null;
 
-let factsPath = factsArg;
-if (!factsPath && existsSync("data/source_acquisitions/loc_gm71005442/candidate_benchmark.json")) {
-  factsPath = "data/source_acquisitions/loc_gm71005442/candidate_benchmark.json";
-}
+const factsPath = factsArg || null;
 const factsData = factsPath ? readJson(factsPath, null) : null;
 
 const branch = git(["rev-parse", "--abbrev-ref", "HEAD"]);
@@ -195,21 +192,19 @@ if (report.machine_derived_facts && report.machine_derived_facts.facts) {
   console.log("------------------------------------------");
   console.log(`Machine-Derived Facts (${mf.path}):`);
   const fd = mf.facts;
-  if (fd.candidate_c_full_scope) {
-    const c = fd.candidate_c_full_scope;
-    console.log(`  Candidate C GCPs:        ${c.gcp_count}`);
-    console.log(`  In-sample RMSE:          ${c.rmse_in_sample_km} km`);
-    console.log(`  LOOCV RMSE:              ${c.rmse_loocv_km} km`);
-    console.log(`  LOOCV Mean:              ${c.loocv_mean_km} km`);
-    console.log(`  LOOCV Median:            ${c.loocv_median_km} km`);
-    console.log(`  LOOCV Max:               ${c.loocv_max_km} km (${c.loocv_max_feature})`);
-  } else {
-    for (const [k, v] of Object.entries(fd).slice(0, 10)) {
-      if (typeof v === "number" || typeof v === "string" || typeof v === "boolean") {
-        console.log(`  ${k.padEnd(24)} ${v}`);
+  function printFacts(obj, indent = "  ") {
+    for (const [k, v] of Object.entries(obj)) {
+      if (v !== null && typeof v === "object" && !Array.isArray(v)) {
+        console.log(`${indent}${k}:`);
+        printFacts(v, indent + "  ");
+      } else if (Array.isArray(v)) {
+        console.log(`${indent}${k.padEnd(24)} [${v.length} items]`);
+      } else if (v !== null && v !== undefined) {
+        console.log(`${indent}${k.padEnd(24)} ${v}`);
       }
     }
   }
+  printFacts(fd);
 }
 console.log("------------------------------------------");
 console.log("NOTE: This report does not prove tests, CI, preview, hosted deployment, source-link health, or external service status.");

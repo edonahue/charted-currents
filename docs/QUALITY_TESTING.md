@@ -2,21 +2,21 @@
 
 This document describes the automated design, usage, accessibility, and layout testing architecture in Charted Currents.
 
-The test harness runs headless Chrome via Puppeteer to evaluate real DOM/CSS layout, native interaction flows, and WCAG 2.1 AA accessibility via `@axe-core/puppeteer`.
+The test harness runs headless Chrome directly via the native **Chrome DevTools Protocol (CDP)** over WebSocket (`scripts/quality-audit.mjs`), eliminating heavy third-party framework dependencies like Puppeteer or Playwright while evaluating real DOM/CSS layout, native interaction flows, and WCAG 2.1 AA accessibility via injected `axe-core`.
 
 ---
 
 ## 1. Quick Start
 
-### Fast CI Mode (<20s)
+### Fast CI Mode (<25s)
 Runs in GitHub Actions CI on every push and pull request.
 ```bash
 npm run review:quality
 # Equivalent to: node scripts/quality-audit.mjs --ci-mode
 ```
-* **Viewports Tested**: 2 viewports (`1440x900` desktop, `390x844` mobile).
-* **Scope**: 6 axe-core state scans, layout geometry checks, 4 end-to-end user journeys.
-* **Target Execution Time**: Under 20 seconds (measured ~17s).
+* **Viewports Tested**: 2 viewports (`standard_desktop` 1440x900, `mobile_compact` 390x844).
+* **Scope**: 6 axe-core state scans, multi-state layout geometry checks across 3 open states per viewport, 4 end-to-end user journeys.
+* **Target Execution Time**: Under 25 seconds (typically ~18–21s).
 * **Screenshots**: Skipped to minimize CI time.
 
 ### Full Local / Pre-Release Mode
@@ -26,19 +26,19 @@ npm run review:quality:full
 # Equivalent to: node scripts/quality-audit.mjs --full
 ```
 * **Viewports Tested**: 5 viewports:
-  1. `390x844` (Mobile portrait — modern phone)
-  2. `430x932` (Mobile portrait — large phone)
-  3. `1024x768` (Tablet / low-res desktop)
-  4. `1440x900` (Standard desktop)
-  5. `3440x1440` (Ultrawide desktop)
-* **Scope**: 6 axe-core state scans, full responsive geometry checks, 4 end-to-end user journeys, and deterministic visual screenshots.
+  1. `mobile_compact`: 390x844 (Mobile portrait — compact modern phone)
+  2. `mobile_standard`: 430x932 (Mobile portrait — large phone)
+  3. `tablet_small_desktop`: 1024x768 (Tablet / low-res desktop)
+  4. `standard_desktop`: 1440x900 (Standard desktop reference)
+  5. `ultrawide`: 3440x1440 (Ultrawide desktop)
+* **Scope**: 6 axe-core state scans, responsive geometry matrix across 3 open states per viewport (15 evaluations total), 4 end-to-end user journeys, and 7 deterministic visual screenshots.
 * **Artifacts Generated**: `test-results/screenshots/*.png` and `test-results/quality-audit.json`.
 
 ---
 
 ## 2. Test Architecture
 
-The audit suite is implemented in `scripts/quality-audit.mjs` and consists of four main layers:
+The audit suite is implemented in `scripts/quality-audit.mjs` and operates via direct CDP primitives:
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -48,75 +48,92 @@ The audit suite is implemented in `scripts/quality-audit.mjs` and consists of fo
             │              │              │
     ┌───────▼──────┐ ┌─────▼──────┐ ┌─────▼──────────┐
     │  A11y Audits │ │   Layout   │ │  User Journeys │
-    │  (Axe-Core)  │ │  Geometry  │ │  (Puppeteer)   │
+    │  (Axe-Core)  │ │  Geometry  │ │  (Native CDP)  │
     └───────┬──────┘ └─────┬──────┘ └─────┬──────────┘
             │              │              │
             ▼              ▼              ▼
-    Ratchet Baseline    0px Overflow   4 Real Flows
- (tests/a11y-baseline)  Header/Sheet   State Changes
+     Multi-Factor       Multi-State    4 Real Flows
+    Ratchet Baseline      Matrix        Dual-Source
+ (tests/a11y-baseline)  0px Overflow     Evidence
 ```
 
 ### Layer 1: WCAG 2.1 AA Accessibility Audits
 Axe-core scans run across 6 distinct application UI states:
-1. **Initial Landing**: Baseline state with map, header, timeline slider, and filter bar.
-2. **Vessel Inspector Open**: Entity inspector drawer rendered with historical facts, timeline, and actions.
-3. **Source Drawer Open**: Multi-source evidence drawer open, rendering transcriptions and assertions.
-4. **Period Map Active**: Herman Moll 1715 georeferenced raster layer loaded and overlay controls visible.
-5. **Filters Applied**: Active text filter or search query filtering corpus entities.
-6. **About / Methodology Dialog**: Scholarly methodology and attribution modal open.
+1. `state_1_initial`: Baseline desktop state with map canvas, app masthead, and filter bar.
+2. `state_2_locator`: Place Locator modal panel open with search input and port list.
+3. `state_3_inspector`: Entity Inspector drawer rendered with historical facts and timeline (Port Royal selected).
+4. `state_4_drawer`: Multi-source evidence drawer open, rendering archival citations and assertions.
+5. `state_5_period_map`: Herman Moll [1715?] georeferenced raster layer loaded with overlay controls active.
+6. `state_6_mobile`: Representative mobile portrait state (390x844) with mobile bottom-sheet inspector.
 
 #### Baseline Ratchet Mechanism
-To prevent regressions without blocking on pre-existing editorial contrast choices, the test enforces a **zero-critical, ratcheted-serious** policy defined in `tests/a11y-baseline.json`:
+To prevent regressions without blocking on pre-existing editorial styling choices, the test enforces a **zero-critical, ratcheted-serious** policy defined in `tests/a11y-baseline.json`:
 * **Critical violations**: strictly 0 allowed. Any critical violation fails the run.
-* **Serious violations**: only specific selectors documented in the baseline file are tolerated (currently `.inspector-dataset-context-badge` for historical dataset tags). Any new or unexpected serious rule or selector fails the run.
+* **Serious violations**: evaluated by a multi-factor ratchet rule checking:
+  1. `rule_id`: must match allowed axe rule (e.g. `color-contrast`).
+  2. `allowed_states`: violation is tolerated strictly in `state_5_period_map` and `state_6_mobile` (empirically reproduced on base commit `8b690135`).
+  3. `allowed_occurrences`: maximum 1 violation per state.
+  4. `target_selector_pattern`: must match `.inspector-dataset-context-badge`.
+  Any new, unlisted, or out-of-state serious violation immediately fails the run.
 * **Moderate / Minor**: recorded for monitoring in `quality-audit.json` without failing the build.
 
-### Layer 2: Viewport & Layout Geometry Checks
-Every tested viewport is evaluated against strict physical geometry constraints:
-* **No Horizontal Overflow**: `document.documentElement.scrollWidth <= window.innerWidth + 2px` (2px tolerance for browser rounding).
-* **Persistent Navigation / Header**: App header must remain visible, within viewport bounds, and unobstructed.
-* **Mobile Inspector Layout**: On mobile (<768px), inspector must properly activate as a bottom sheet (`data-sheet-state="open"` or `"expanded"`) rather than overflowing off-screen.
-* **Desktop Split View**: On desktop, map and inspector coexist without overlapping controls.
+### Layer 2: Viewport & Layout Geometry Matrix
+Every tested viewport is evaluated across three UI states (`initial`, `inspector_open`, and `drawer_open`) against physical geometry constraints:
+* **No Horizontal Overflow**: `document.documentElement.scrollWidth <= window.innerWidth + 2px` (2px tolerance for sub-pixel layout rounding).
+* **Panel Boundary Clipping**: `.app-masthead`, `[data-component='place-locator']`, `[data-component='entity-inspector']`, `[data-component='source-drawer']`, `.source-drawer-panel`, `.map-layer-control`, and `.maplibregl-ctrl-attrib` must not clip outside viewport bounds.
+* **Control Occlusion**: Primary controls (`[data-locator-toggle]`, `[data-layer-toggle]`) must not be unexpectedly covered by unannounced elements (excluding modal backdrops).
+* **Zero-Size Interactive Elements**: Interactive buttons/links must have non-zero client dimensions when rendered.
+* **Unintended Content Clipping**: Scroll containers must not have `overflow-y: hidden` when content height exceeds container height.
 
 ### Layer 3: End-to-End User Journeys
 The runner executes four realistic research user journeys:
-1. **Journey 1 — Landing to Vessel Inspection**:
-   * Click a vessel card in the entity list.
-   * Verify inspector opens, displays vessel name (*Richard & Sarah of London*), and renders route metadata.
-2. **Journey 2 — Vessel to Source Drawer Evidence**:
-   * Click the "Inspect All Assertions" button in the inspector.
-   * Verify source evidence drawer opens, displaying archival citations (`CO 138/11` and `HCA 32/80`).
-3. **Journey 3 — Period Map Toggle & Opacity Slider**:
-   * Activate the historical map layer (Herman Moll [1715?]).
-   * Change opacity slider; verify map canvas updates and controls remain responsive.
-4. **Journey 4 — Search / Filter to Selection**:
-   * Type search query into the search input.
-   * Verify list filters down and selecting the filtered entity activates the inspector.
+1. **Journey 1 — Place to Provenance & Dual-Evidence Verification**:
+   * Open Place Locator and select Jamaica (`place_jamaica`).
+   * Select vessel *Richard & Sarah of London* from network connections list.
+   * Verify privateering engagement and petition details render in inspector.
+   * Click `[data-privateering-evidence-btn]`; verify Source Drawer opens with `CO 138/11` and `Calendar of State Papers`. Close drawer with Escape.
+   * Click `[data-ship-evidence-btn]`; verify Source Drawer opens with `HCA 32/80` and `international maritime labour market` (IMLM). Close drawer with Escape.
+   * Both source citations must independently pass with `AND` assertions.
+2. **Journey 2 — Temporal Filter & Entity Sync**:
+   * Click `1684–1695` temporal preset filter; verify `.is-active` class.
+   * Select active event `event_port_royal_earthquake_1692`.
+   * Reset filter to `all` (`1650–1730`); verify filter restoration.
+3. **Journey 3 — Period Map Lifecycle**:
+   * Open historical map panel.
+   * Toggle Herman Moll [1715?] layer ON; verify MapLibre layer `historical-reference-moll-1715-layer` added to map style.
+   * Adjust raster opacity slider; verify map property updates.
+   * Toggle layer OFF; verify layer is removed or hidden.
+4. **Journey 4 — Mobile Exploration Flow**:
+   * Set mobile viewport (`390x844`).
+   * Open locator and select Port Royal.
+   * Verify bottom-sheet inspector opens in `data-sheet-state="open"` or `"expanded"`.
+   * Click drag handle; verify transition to `expanded`.
+   * Close inspector; verify document scroll width has no horizontal overflow.
 
 ---
 
 ## 3. Visual Artifacts & Reporting
 
 ### Deterministic Screenshots
-When run with `--full`, high-resolution full-page or component screenshots are written to `test-results/screenshots/`:
-* `01-landing-desktop.png`
-* `02-landing-mobile.png`
-* `03-inspector-richard-and-sarah.png`
-* `04-source-drawer-open.png`
-* `05-period-map-active.png`
-* `06-filtered-results.png`
-* `07-about-dialog.png`
+When run with `--full`, high-resolution full-page screenshots are written to `test-results/screenshots/`:
+* `initial-state-1440x900.png`
+* `place-locator-open-1440x900.png`
+* `inspector-open-1440x900.png`
+* `source-drawer-open-1440x900.png`
+* `period-map-active-1440x900.png`
+* `mobile-overview-390x844.png`
+* `mobile-inspector-390x844.png`
 
 > [!NOTE]
 > `test-results/` is explicitly listed in `.gitignore` to prevent binary image drift in git history. Screenshots are generated locally or in review artifacts.
 
 ### Audit Report JSON
 Every run emits `test-results/quality-audit.json` containing:
-* Timestamp, execution time (ms), and mode (`ci-mode` vs `full`).
-* Total axe violations count categorized by impact (`critical`, `serious`, `moderate`, `minor`).
-* Array of evaluated viewports and pass/fail layout statuses.
-* Array of user journeys with completion status and latency.
-* List of generated screenshot filenames.
+* Timestamp, commit SHA, execution mode (`ci_mode` vs `full`).
+* Summary counts: critical, serious (allowed vs unallowed), moderate, minor, layout failures, journeys passed/failed, and uncaught browser exceptions.
+* Per-state a11y violation records with node targets and descriptions.
+* Per-viewport layout findings across evaluated states.
+* Journey completion and latency records.
 
 This file is automatically consumed by `scripts/packet-report.mjs --quality=test-results/quality-audit.json` to generate data-derived packet handoff tables.
 
@@ -129,4 +146,4 @@ In `.github/workflows/ci.yml`, the `review:quality` job runs after unit tests an
 - name: Run product quality and accessibility audit
   run: npm run review:quality
 ```
-If any critical violation occurs, any layout overflow is detected, or any user journey fails, CI fails immediately.
+If any critical violation occurs, any unallowed serious violation appears, any layout overflow is detected, any uncaught browser exception is thrown, or any user journey fails, CI fails immediately.

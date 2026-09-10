@@ -8,18 +8,17 @@
       "rule_id": "color-contrast",
       "target_selector_pattern": ".inspector-dataset-context-badge",
       "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
-      "allowed_occurrences": 3,
-      "states": [
-        "Entity Inspector Open",
-        "Source Drawer Open",
-        "Period Map Active"
+      "allowed_occurrences": 1,
+      "allowed_states": [
+        "state_5_period_map",
+        "state_6_mobile"
       ],
-      "rationale": "Inherited contrast on dataset context badge in inspector; preserved for Astra pass per rule B0"
+      "rationale": "Inherited contrast on dataset context badge in inspector; empirically verified on 8b690135 in state_5_period_map and state_6_mobile only"
     }
   ],
   "baseline_counts": {
     "critical": 0,
-    "serious": 3,
+    "serious": 2,
     "moderate": 0,
     "minor": 0
   }
