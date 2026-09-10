@@ -5,7 +5,7 @@
 **Base**: `origin/main` (`8b690135b1232f043ee1e6bb436aaae3aea4ee15`)  
 **Corpus Version**: `0.7.0`  
 **Corpus Title**: `The Greater Caribbean & Transatlantic Maritime Network (1666–1712)`  
-**Lifecycle State**: `PACKET IMPLEMENTATION SELF-VERIFIED — EXTERNAL REVIEW REQUIRED`
+**Lifecycle State**: `PACKET 11 ACCEPTED — MERGED — HOSTED VERIFIED`
 
 ---
 
