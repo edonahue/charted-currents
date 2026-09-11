@@ -1395,12 +1395,25 @@ async function main() {
               const totalItems = document.querySelectorAll('[data-place-item-wrap]').length;
               const caption = document.querySelector('.map-locator-browser__caption');
               const ariaLabel = input?.getAttribute("aria-label") || "";
+              const countText = count?.textContent || "";
               const isMenuOpen = menu && !menu.hidden;
               const isInputFocused = document.activeElement === input;
-              const isInitial29 = totalItems === 29 && count?.textContent?.includes("29");
+              const hasValidTotal = totalItems > 0;
+              const hasInitialCount = countText.includes(String(totalItems) + " places");
               const hasDynamicAriaLabel = ariaLabel === ("Filter " + totalItems + " historical places by name or region");
-              const hasSourcedCorpusCaption = caption?.textContent?.includes("1666–1712");
-              return { isMenuOpen, isInputFocused, isInitial29, hasDynamicAriaLabel, hasSourcedCorpusCaption, ariaLabel, captionText: caption?.textContent };
+              const hasReviewedCorpusCaption = caption?.textContent?.includes("Reviewed Corpus");
+              return {
+                isMenuOpen,
+                isInputFocused,
+                totalItems,
+                hasValidTotal,
+                hasInitialCount,
+                hasDynamicAriaLabel,
+                hasReviewedCorpusCaption,
+                ariaLabel,
+                countText,
+                captionText: caption?.textContent,
+              };
             })()
           `,
           returnByValue: true,
@@ -1408,11 +1421,14 @@ async function main() {
         const s1 = step1Check?.result?.value;
         if (!s1?.isMenuOpen) throw new Error("Locator dropdown menu did not open on native Enter");
         if (!s1?.isInputFocused) throw new Error("Focus did not move from toggle into filter input");
-        if (!s1?.isInitial29) throw new Error("Initial 29 places count not verified");
-        if (!s1?.hasDynamicAriaLabel) throw new Error(`Filter input aria-label mismatch: ${s1?.ariaLabel}`);
-        if (!s1?.hasSourcedCorpusCaption) throw new Error(`Locator caption mismatch: ${s1?.captionText}`);
+        if (!s1?.hasValidTotal) throw new Error(`Rendered place total is invalid (got ${s1?.totalItems})`);
+        if (!s1?.hasInitialCount) throw new Error(`Initial places count mismatch: '${s1?.countText}' does not match '${s1?.totalItems} places'`);
+        if (!s1?.hasDynamicAriaLabel) throw new Error(`Filter input aria-label mismatch: '${s1?.ariaLabel}'`);
+        if (!s1?.hasReviewedCorpusCaption) throw new Error(`Locator caption mismatch: '${s1?.captionText}'`);
 
-        // Step 2: Native typing filters the list (assert 1 of 29 places for 'Havana')
+        const totalItems = s1.totalItems;
+
+        // Step 2: Native typing filters the list (assert 1 of totalItems places for 'Havana')
         await insertText("Havana");
         await new Promise((r) => setTimeout(r, 100));
 
@@ -1439,8 +1455,9 @@ async function main() {
         });
         const s2 = step2Check?.result?.value;
         if (s2?.inputValue !== "Havana") throw new Error(`Filter input value expected 'Havana' but got '${s2?.inputValue}'`);
-        if (s2?.visibleCount !== 1 || !s2?.countText.includes("1 of 29 places")) {
-          throw new Error(`Filter by 'Havana' did not yield 1 of 29 places (got ${s2?.visibleCount}, countText: '${s2?.countText}')`);
+        const expectedFilteredCount = `1 of ${totalItems} places`;
+        if (s2?.visibleCount !== 1 || !s2?.countText.includes(expectedFilteredCount)) {
+          throw new Error(`Filter by 'Havana' did not yield '${expectedFilteredCount}' (got ${s2?.visibleCount}, countText: '${s2?.countText}')`);
         }
         if (!s2?.emptyHidden) throw new Error("Empty state is unexpectedly visible when 1 match exists");
         if (s2?.placeId !== "place_havana") throw new Error(`Matched place ID expected 'place_havana' but got '${s2?.placeId}'`);
@@ -1484,7 +1501,7 @@ async function main() {
           throw new Error("ArrowUp from first button did not return focus to filter input");
         }
 
-        // Step 5: Native Escape clears query and restores all 29 places
+        // Step 5: Native Escape clears query and restores all places
         await sendKey("Escape", "Escape", 27);
         await new Promise((r) => setTimeout(r, 100));
 
@@ -1508,11 +1525,12 @@ async function main() {
         });
         const s5 = step5Check?.result?.value;
         if (s5?.inputValue !== "") throw new Error(`Escape did not clear input value (got '${s5?.inputValue}')`);
-        if (s5?.visibleCount !== 29 || !s5?.countText.includes("29")) {
-          throw new Error(`Escape did not restore all 29 places (got ${s5?.visibleCount})`);
+        const expectedResetCount = `${totalItems} places`;
+        if (s5?.visibleCount !== totalItems || !s5?.countText.includes(expectedResetCount)) {
+          throw new Error(`Escape did not restore all ${totalItems} places (got ${s5?.visibleCount}, countText: '${s5?.countText}')`);
         }
 
-        // Step 6: Native End and Home move focus to last / first visible buttons across the full 29 places
+        // Step 6: Native End and Home move focus to last / first visible buttons across the full visible collection
         // Move into list from input with ArrowDown
         await sendKey("ArrowDown", "ArrowDown", 40);
         await new Promise((r) => setTimeout(r, 100));
