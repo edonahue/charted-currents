@@ -861,6 +861,7 @@
       if (placeContextBaselineNote) placeContextBaselineNote.hidden = true;
       if (placeContextCounterpartsWrap) placeContextCounterpartsWrap.hidden = true;
       if (placeContextCaveat) {
+        placeContextCaveat.hidden = true;
         placeContextCaveat.textContent = ctx.coverage_caveat || "No reviewed Crespo place mapping is currently established for this place. Dataset context is unavailable.";
       }
       return;
@@ -950,7 +951,8 @@
 
     // Persistent caveat
     if (placeContextCaveat) {
-      placeContextCaveat.textContent = ctx.coverage_caveat;
+      placeContextCaveat.hidden = !ctx.coverage_caveat;
+      placeContextCaveat.textContent = ctx.coverage_caveat || "";
     }
   }
 
