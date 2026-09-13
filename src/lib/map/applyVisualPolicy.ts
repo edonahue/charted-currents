@@ -11,10 +11,14 @@ function sourceLayerOf(layer: Record<string, unknown>): string | undefined {
 }
 
 /**
- * Distinguishes basin point symbol layers (e.g. ocean, sea, bay names)
- * from line-following waterway/river labels.
+ * Distinguishes point-placed water-name orientation labels (e.g. ocean, sea,
+ * and high-zoom water body names) from line-following waterway/river/lake labels.
+ *
+ * Point-placed water-name labels receive editorial orientation styling;
+ * line-following rivers/lakes remain untouched. At normal Charted Currents
+ * zooms this primarily affects major seas/oceans.
  */
-function isBasinWaterLabel(layer: Record<string, unknown>): boolean {
+function isOrientationWaterLabel(layer: Record<string, unknown>): boolean {
   const sourceLayer = sourceLayerOf(layer);
   if (sourceLayer !== "water_name" || layer.type !== "symbol") {
     return false;
@@ -25,13 +29,34 @@ function isBasinWaterLabel(layer: Record<string, unknown>): boolean {
 }
 
 /**
+ * Synchronizes modern coastline enhancement layers (cc-coastline-halo and cc-coastline-ink)
+ * with the visibility of the historical Period Map reference raster.
+ *
+ * When the Period Map is active, modern coastline emphasis is temporarily suppressed
+ * (visibility: "none") to prevent distracting doubled coastlines from expected affine
+ * georeference mismatch. When the Period Map is inactive, both layers are restored
+ * (visibility: "visible").
+ *
+ * This is an idempotent display-coexistence helper; it does not alter underlying geography.
+ */
+export function syncPeriodMapComparisonStyling(map: MapLibreMap, isPeriodMapVisible: boolean): void {
+  const coastlineVisibility = isPeriodMapVisible ? "none" : "visible";
+  if (map.getLayer("cc-coastline-halo")) {
+    map.setLayoutProperty("cc-coastline-halo", "visibility", coastlineVisibility);
+  }
+  if (map.getLayer("cc-coastline-ink")) {
+    map.setLayoutProperty("cc-coastline-ink", "visibility", coastlineVisibility);
+  }
+}
+
+/**
  * Apply the editorial-atlas posture to the loaded modern basemap.
  *
  * OpenFreeMap can evolve its upstream style, so this works from source-layer
  * semantics and layer types where possible. Unknown/new layers are left alone
  * for browser review rather than silently guessed at.
  *
- * Coastline stepping (Variant A2) and marine basin typography (Variant C2)
+ * Coastline stepping (Variant A2) and orientation water-label typography (Variant C2)
  * are applied semantically without hard-coding brittle layer assumptions.
  */
 export function applyBasemapVisualPolicy(map: MapLibreMap): void {
@@ -81,8 +106,8 @@ export function applyBasemapVisualPolicy(map: MapLibreMap): void {
       continue;
     }
 
-    // Semantic marine-basin typography (Path C2)
-    if (isBasinWaterLabel(layerRecord)) {
+    // Point-placed water-name orientation typography (Path C2)
+    if (isOrientationWaterLabel(layerRecord)) {
       map.setLayoutProperty(layer.id, "text-transform", policy.typography.basinTextTransform);
       map.setLayoutProperty(layer.id, "text-letter-spacing", policy.typography.basinLetterSpacing);
       map.setPaintProperty(layer.id, "text-color", policy.palette.basinInk);

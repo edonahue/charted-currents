@@ -6,8 +6,11 @@
  * 1. Policy constants integrity (A2 waterlines, C2 basin typography, palette)
  * 2. Semantic water source discovery and idempotent coastline layer injection
  * 3. Graceful fallback when water source is missing
- * 4. Semantic marine-basin typography transformation (Path C2)
- * 5. Evidence-panel double-rule framing token compliance
+ * 4. Point water-name orientation typography contract (Path C2)
+ * 5. Period Map display coexistence (reversible coastline suppression)
+ * 6. Evidence-panel double-rule framing token compliance
+ * 7. Mobile SourceDrawer bottom sheet responsive contract
+ * 8. Period Map epistemic note copy
  *
  * Usage: node tests/test_cartographic_styling.mjs
  */
@@ -16,7 +19,7 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { BASEMAP_VISUAL_POLICY } from "../src/lib/map/visualPolicy.ts";
-import { applyBasemapVisualPolicy } from "../src/lib/map/applyVisualPolicy.ts";
+import { applyBasemapVisualPolicy, syncPeriodMapComparisonStyling } from "../src/lib/map/applyVisualPolicy.ts";
 
 console.log("=== Running Cartographic Styling Refinement Tests ===");
 
@@ -203,23 +206,30 @@ function createMockMap(initialLayers) {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Semantic marine-basin typography (Path C2)
+// 4. Point water-name orientation typography contract (Path C2)
 // ---------------------------------------------------------------------------
 {
   const initialLayers = [
     {
-      id: "water_name_point_label",
+      id: "water_name_sea_point",
       type: "symbol",
       source: "openmaptiles",
       "source-layer": "water_name",
       layout: { "symbol-placement": "point" },
     },
     {
-      id: "water_name_ocean_basin",
+      id: "water_name_ocean_point",
       type: "symbol",
       source: "openmaptiles",
       "source-layer": "water_name",
       // default placement is point (omitted)
+    },
+    {
+      id: "water_name_strait_point",
+      type: "symbol",
+      source: "openmaptiles",
+      "source-layer": "water_name",
+      layout: { "symbol-placement": "point" },
     },
     {
       id: "water_name_river_line",
@@ -227,6 +237,13 @@ function createMockMap(initialLayers) {
       source: "openmaptiles",
       "source-layer": "water_name",
       layout: { "symbol-placement": "line" },
+    },
+    {
+      id: "water_name_lake_line",
+      type: "symbol",
+      source: "openmaptiles",
+      "source-layer": "water_name",
+      layout: { "symbol-placement": "line-center" },
     },
     {
       id: "place_city",
@@ -239,23 +256,80 @@ function createMockMap(initialLayers) {
   const map = createMockMap(initialLayers);
   applyBasemapVisualPolicy(map);
 
-  const basinPoint = map.getLayer("water_name_point_label");
-  const oceanBasin = map.getLayer("water_name_ocean_basin");
+  const seaPoint = map.getLayer("water_name_sea_point");
+  const oceanPoint = map.getLayer("water_name_ocean_point");
+  const straitPoint = map.getLayer("water_name_strait_point");
   const riverLine = map.getLayer("water_name_river_line");
+  const lakeLine = map.getLayer("water_name_lake_line");
   const placeCity = map.getLayer("place_city");
 
-  assert(basinPoint.layout["text-transform"] === "uppercase", "Basin point label has uppercase text-transform");
-  assert(basinPoint.layout["text-letter-spacing"] === 0.22, "Basin point label has 0.22 letter-spacing");
-  assert(basinPoint.paint["text-color"] === "#3c484b", "Basin point label has #3c484b text-color");
-  assert(basinPoint.paint["text-halo-color"] === "#f1eadc", "Basin point label has #f1eadc halo");
-  assert(basinPoint.paint["text-halo-width"] === 1.5, "Basin point label has 1.5 halo width");
-  assert(basinPoint.paint["text-opacity"] === 0.82, "Basin point label has 0.82 opacity");
+  assert(seaPoint.layout["text-transform"] === "uppercase", "Sea point label has uppercase text-transform");
+  assert(seaPoint.layout["text-letter-spacing"] === 0.22, "Sea point label has 0.22 letter-spacing");
+  assert(seaPoint.paint["text-color"] === "#3c484b", "Sea point label has #3c484b text-color");
+  assert(seaPoint.paint["text-halo-color"] === "#f1eadc", "Sea point label has #f1eadc halo");
+  assert(seaPoint.paint["text-halo-width"] === 1.5, "Sea point label has 1.5 halo width");
+  assert(seaPoint.paint["text-opacity"] === 0.82, "Sea point label has 0.82 opacity");
 
-  assert(oceanBasin.layout["text-transform"] === "uppercase", "Ocean basin default point label has uppercase text-transform");
-  assert(oceanBasin.paint["text-color"] === "#3c484b", "Ocean basin default point label has #3c484b text-color");
+  assert(oceanPoint.layout["text-transform"] === "uppercase", "Ocean point label (default placement) has uppercase text-transform");
+  assert(oceanPoint.paint["text-color"] === "#3c484b", "Ocean point label has #3c484b text-color");
 
-  assert(riverLine.layout?.["text-transform"] === undefined, "River line-placement label is NOT coerced to basin uppercase");
+  assert(straitPoint.layout["text-transform"] === "uppercase", "High-zoom point strait label receives orientation styling");
+
+  assert(riverLine.layout?.["text-transform"] === undefined, "River line-placement label is NOT coerced to uppercase");
+  assert(lakeLine.layout?.["text-transform"] === undefined, "Lake line-center placement label is NOT coerced to uppercase");
   assert(placeCity.paint["text-color"] === "#565a56", "Place label retains orientationLabel color (#565a56)");
+}
+
+// ---------------------------------------------------------------------------
+// 5. Period Map display coexistence (reversible coastline suppression)
+// ---------------------------------------------------------------------------
+{
+  const initialLayers = [
+    { id: "background", type: "background" },
+    { id: "water_fill", type: "fill", source: "openmaptiles", "source-layer": "water" },
+    { id: "waterway_line", type: "line", source: "openmaptiles", "source-layer": "waterway" },
+  ];
+
+  const map = createMockMap(initialLayers);
+  applyBasemapVisualPolicy(map);
+
+  const halo = map.getLayer("cc-coastline-halo");
+  const ink = map.getLayer("cc-coastline-ink");
+  assert(halo !== undefined && ink !== undefined, "Coastline layers exist before Period Map coexistence test");
+
+  // Initial state: visibility is not hidden
+  assert(halo.layout?.visibility !== "none", "Coastline halo is initially visible");
+  assert(ink.layout?.visibility !== "none", "Coastline ink is initially visible");
+
+  // Period Map ON -> suppress modern coastline emphasis
+  syncPeriodMapComparisonStyling(map, true);
+  assert(map.getLayer("cc-coastline-halo").layout?.visibility === "none", "Coastline halo hidden when Period Map ON");
+  assert(map.getLayer("cc-coastline-ink").layout?.visibility === "none", "Coastline ink hidden when Period Map ON");
+
+  // Period Map OFF -> restore modern coastline emphasis
+  syncPeriodMapComparisonStyling(map, false);
+  assert(map.getLayer("cc-coastline-halo").layout?.visibility === "visible", "Coastline halo restored when Period Map OFF");
+  assert(map.getLayer("cc-coastline-ink").layout?.visibility === "visible", "Coastline ink restored when Period Map OFF");
+
+  // Idempotency: repeated ON/OFF calls cause no drift or errors
+  syncPeriodMapComparisonStyling(map, true);
+  syncPeriodMapComparisonStyling(map, true);
+  assert(map.getLayer("cc-coastline-halo").layout?.visibility === "none", "Repeated Period Map ON is idempotent");
+
+  syncPeriodMapComparisonStyling(map, false);
+  syncPeriodMapComparisonStyling(map, false);
+  assert(map.getLayer("cc-coastline-halo").layout?.visibility === "visible", "Repeated Period Map OFF is idempotent");
+
+  // Graceful degradation when coastline layers are missing
+  const emptyMap = createMockMap([{ id: "background", type: "background" }]);
+  let emptyThrew = false;
+  try {
+    syncPeriodMapComparisonStyling(emptyMap, true);
+    syncPeriodMapComparisonStyling(emptyMap, false);
+  } catch (err) {
+    emptyThrew = true;
+  }
+  assert(!emptyThrew, "syncPeriodMapComparisonStyling degrades gracefully when coastline layers missing");
 }
 
 // ---------------------------------------------------------------------------
@@ -277,6 +351,36 @@ function createMockMap(initialLayers) {
   assert(!inspectorAstro.includes(".inspector-close { border: 3px double"), "No double rule on inspector close button");
   assert(!sourceDrawerAstro.includes(".source-drawer-close { border: 3px double"), "No double rule on source drawer close button");
   assert(!sourceDrawerAstro.includes(".source-card { border: 3px double"), "No double rule on source cards");
+}
+
+// ---------------------------------------------------------------------------
+// 7. Mobile SourceDrawer bottom sheet responsive contract
+// ---------------------------------------------------------------------------
+{
+  const sourceDrawerAstro = fs.readFileSync(path.resolve(process.cwd(), "src/components/evidence/SourceDrawer.astro"), "utf8");
+
+  assert(sourceDrawerAstro.includes("align-items: flex-end"), "Mobile SourceDrawer aligns to flex-end for bottom-sheet presentation");
+  assert(sourceDrawerAstro.includes("height: auto"), "Mobile SourceDrawer panel height is auto");
+
+  // Fallback order: max-height: 85vh must precede max-height: 85dvh
+  const idxVh = sourceDrawerAstro.indexOf("max-height: 85vh");
+  const idxDvh = sourceDrawerAstro.indexOf("max-height: 85dvh");
+  assert(idxVh !== -1, "Mobile SourceDrawer specifies max-height: 85vh fallback");
+  assert(idxDvh !== -1, "Mobile SourceDrawer specifies max-height: 85dvh");
+  assert(idxVh < idxDvh, "Fallback order preserved: max-height: 85vh precedes max-height: 85dvh");
+
+  assert(sourceDrawerAstro.includes("border-top: 3px double var(--cc-line-strong)"), "Mobile SourceDrawer has 3px double top border");
+  assert(sourceDrawerAstro.includes("border-radius: var(--cc-radius-lg) var(--cc-radius-lg) 0 0"), "Mobile SourceDrawer has rounded top corners");
+  assert(sourceDrawerAstro.includes("env(safe-area-inset-bottom"), "Mobile SourceDrawer accounts for safe-area-inset-bottom");
+}
+
+// ---------------------------------------------------------------------------
+// 8. Period Map epistemic note copy
+// ---------------------------------------------------------------------------
+{
+  const mapViewportAstro = fs.readFileSync(path.resolve(process.cwd(), "src/components/map/MapViewport.astro"), "utf8");
+  const expectedNote = "18th-century chart aligned via affine transformation; historical and modern coastlines will not align perfectly. Not observed ground truth.";
+  assert(mapViewportAstro.includes(expectedNote), "MapViewport contains updated Period Map epistemic note text");
 }
 
 console.log(`\nResults: ${passedTests} passed, ${failedTests} failed.`);

@@ -818,8 +818,29 @@
   }
 
   @media (max-width: 767px) {
+    .source-drawer-shell {
+      align-items: flex-end;
+      justify-content: center;
+    }
+
     .source-drawer-panel {
+      width: 100%;
       max-width: 100%;
+      height: auto;
+      max-height: 85vh;
+      max-height: 85dvh;
+      border-left: none;
+      border-top: 3px double var(--cc-line-strong);
+      border-radius: var(--cc-radius-lg) var(--cc-radius-lg) 0 0;
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.22);
+    }
+
+    .source-drawer-header {
+      border-radius: var(--cc-radius-lg) var(--cc-radius-lg) 0 0;
+    }
+
+    .source-drawer-content {
+      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
     }
   }
 </style>
