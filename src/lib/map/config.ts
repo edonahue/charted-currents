@@ -1,4 +1,4 @@
-import { BASEMAP_SEED_STYLE_URL } from "./visualPolicy";
+import { BASEMAP_SEED_STYLE_URL } from "./visualPolicy.ts";
 
 export const INITIAL_MAP_STYLE_URL = BASEMAP_SEED_STYLE_URL;
 
