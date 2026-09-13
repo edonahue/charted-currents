@@ -9,7 +9,7 @@ export const BASEMAP_SEED_STYLE_URL = "https://tiles.openfreemap.org/styles/posi
  * not assume every upstream layer id is permanently stable.
  */
 export const BASEMAP_VISUAL_POLICY = {
-  preserveSourceLayers: ["water", "waterway", "place", "boundary"] as const,
+  preserveSourceLayers: ["water", "waterway", "water_name", "place", "boundary"] as const,
   stronglyMuteSourceLayers: [
     "transportation",
     "transportation_name",
@@ -33,12 +33,27 @@ export const BASEMAP_VISUAL_POLICY = {
     boundaryInk: "#6c706b",
     orientationLabel: "#565a56",
     orientationHalo: "#f1eadc",
+    basinInk: "#3c484b",
   },
   opacity: {
     modernTransport: 0.12,
     modernLandUse: 0.16,
     modernBoundary: 0.24,
     orientationLabels: 0.58,
+    basinLabels: 0.82,
+  },
+  coastline: {
+    haloWidthPx: 4.5,
+    haloColor: "#8ba3a0",
+    haloOpacity: 0.25,
+    inkWidthPx: 1.2,
+    inkColor: "#57605d",
+    inkOpacity: 0.70,
+  },
+  typography: {
+    basinTextTransform: "uppercase" as const,
+    basinLetterSpacing: 0.22,
+    basinHaloWidth: 1.5,
   },
 } as const;
 

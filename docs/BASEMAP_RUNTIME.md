@@ -49,7 +49,19 @@ The modern basemap is **spatial interface infrastructure**, not a historical sou
 
 Never treat modern OpenStreetMap/OpenFreeMap labels, coastlines, boundaries, roads, or place metadata as evidence about the 1650–1730 world.
 
+The stepped waterlines (`cc-coastline-halo` and `cc-coastline-ink`) and letterspaced uppercase orientation water labels implemented via `src/lib/map/applyVisualPolicy.ts` are modern cartographic styling elements (`NON_SEMANTIC_VISUAL_STYLE`) intended to evoke period atlas legibility and archipelago definition. They must never be treated as assertions of historical shoreline geometry, bathymetry, or shoals.
+
 Historical places, names, routes, boundaries, coast interpretations, period maps, and event relationships must continue through the project's provenance-aware historical data/source system.
+
+### Orientation water labels
+
+Water-name orientation styling (Path C2) targets point-placed symbols (`symbol-placement !== "line" && symbol-placement !== "line-center"`). Line-following rivers and lakes remain untouched. At normal Charted Currents zooms (4.2–6.5), this primarily affects major seas/oceans (Gulf of Mexico, Caribbean Sea, Atlantic Ocean). At extreme zooms (~z8+), minor navigational straits may also receive orientation styling.
+
+### Period Map coexistence
+
+When the historical Period Map reference raster (Herman Moll [1715?]) is toggled ON, the modern coastline enhancement layers (`cc-coastline-halo` and `cc-coastline-ink`) are temporarily suppressed (`visibility: "none"`). When the Period Map is toggled OFF, both layers are restored (`visibility: "visible"`).
+
+This suppression is display coexistence only; it does not alter either historical or modern geography. It prevents distracting doubled shorelines caused by expected affine georeferencing differences between 18th-century cartography and modern satellite geodesy, while preserving modern land/water fills, route vectors, and port markers as comparison context.
 
 ## Packet 1 styling posture
 

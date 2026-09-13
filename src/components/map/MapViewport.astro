@@ -186,7 +186,7 @@ const hasMollLayer = Boolean(
           </div>
 
           <p class="map-layer-control__epistemic-note">
-            18th-century chart aligned to modern coordinates via affine transformation. Not observed ground truth.
+            18th-century chart aligned via affine transformation; historical and modern coastlines will not align perfectly. Not observed ground truth.
           </p>
 
           <button
@@ -209,7 +209,7 @@ const hasMollLayer = Boolean(
   import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
   import type { PublishedPortFeatureCollection, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
   import { publishedDataUrl } from "../../lib/data/loadPublished";
-  import { applyBasemapVisualPolicy } from "../../lib/map/applyVisualPolicy";
+  import { applyBasemapVisualPolicy, syncPeriodMapComparisonStyling } from "../../lib/map/applyVisualPolicy";
   import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW, SELECTION_CAMERA } from "../../lib/map/config";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
@@ -385,6 +385,8 @@ const hasMollLayer = Boolean(
           },
           "historical-routes-line"
         );
+
+        syncPeriodMapComparisonStyling(m, isLayerVisible);
       } else if (layerControl) {
         console.warn("Historical reference layer data missing or invalid; layer not initialized.");
       }
@@ -908,6 +910,7 @@ const hasMollLayer = Boolean(
           isVisible ? "visible" : "none"
         );
       }
+      syncPeriodMapComparisonStyling(m, isVisible);
       if (layerBadge) {
         layerBadge.textContent = isVisible ? "On" : "Off";
         layerBadge.classList.toggle("map-layer-control__badge--active", isVisible);

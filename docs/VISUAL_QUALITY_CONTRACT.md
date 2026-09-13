@@ -116,8 +116,11 @@ The modern basemap should recede.
 - modern visual clutter competing with project layers.
 
 The sea should feel like the primary field. Land should read as warm chart material rather than bright modern map fill.
+Stepped copperplate waterlines (crisp 1.2px ink + 4.5px soft halo) and letterspaced uppercase Roman basin titling establish historical atlas character while preserving modern geographic clarity.
 
-See `src/lib/map/visualPolicy.ts` for the machine-readable Packet 1 posture.
+Evidence panels (`.inspector-shell` and `.source-drawer-panel`) employ restrained double-rule borders (`3px double var(--cc-line-strong)`) and header hairline accents to evoke classic editorial atlas framing without resorting to fake aging, parchment textures, or theme-park kitsch.
+
+See `src/lib/map/visualPolicy.ts` for the machine-readable styling posture.
 
 ## Project markers
 
