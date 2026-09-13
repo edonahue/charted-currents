@@ -49,6 +49,8 @@ The modern basemap is **spatial interface infrastructure**, not a historical sou
 
 Never treat modern OpenStreetMap/OpenFreeMap labels, coastlines, boundaries, roads, or place metadata as evidence about the 1650–1730 world.
 
+The stepped waterlines (`cc-coastline-halo` and `cc-coastline-ink`) and letterspaced uppercase marine-basin typography (Path C2) implemented via `src/lib/map/applyVisualPolicy.ts` are modern cartographic styling elements (`NON_SEMANTIC_VISUAL_STYLE`) intended to evoke period atlas legibility and archipelago definition. They must never be treated as assertions of historical shoreline geometry, bathymetry, or shoals.
+
 Historical places, names, routes, boundaries, coast interpretations, period maps, and event relationships must continue through the project's provenance-aware historical data/source system.
 
 ## Packet 1 styling posture
