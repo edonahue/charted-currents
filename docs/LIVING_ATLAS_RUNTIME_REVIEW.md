@@ -124,3 +124,10 @@ before style readiness. The repair preserves the unavailable state when
 enabling the rest of the map controls. The repaired build passed this
 cold-link case, including native selection of the Caribbean view in
 the fallback. The fault was simulated on software WebGL.
+
+The repaired local build also passed the Firefox and Orca keyboard
+journey through atlas search, Port Royal, and its evidence folio. An
+isolated Speech Dispatcher sink recorded generated speech for the
+search field, result, evidence heading, description list and repository
+link. AT-SPI recorded focus returning to the evidence trigger on Escape.
+The sink did not establish audible output or a return-focus announcement.
