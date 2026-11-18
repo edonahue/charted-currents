@@ -131,6 +131,16 @@ faint. At 85% the sheet remained prominent, and Registered retained the
 fine lines along the edge. The stepped inset gap remained visible
 throughout. Both capture sets are local review artifacts.
 
+A combined proof applied that fade to the 2368-pixel expanded encode.
+It transfers 801,002 bytes and has 15.5% more raster support than the
+current chart at the same alpha threshold. Matched browser captures used
+the same camera and 65% opacity for both versions, at the southern edge
+on desktop and the northeast inset gap on a phone with controls closed.
+The southern scan filled the previously abrupt cut through the mainland.
+The phone view retained a visible gap at the insets, with the stray harbor
+detail removed and the border softened. The proof inherits the original
+control fit and requires independent geographic checks in the added area.
+
 For Blend, start with the narrower inward fade on the existing blue-green
 water. Keep Registered on the current unfeathered derivative, with the
 original image and dated credit in the folio. Add concise coverage language
