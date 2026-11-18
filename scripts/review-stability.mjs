@@ -383,7 +383,6 @@ async function key(send, keyName, code, windowsVirtualKeyCode) {
     ...(text ? { text, unmodifiedText: text } : {}),
   });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: keyName, code, windowsVirtualKeyCode });
-  await delay(100);
 }
 
 async function nativeFrameSample(send, sampleMs = 800) {
@@ -477,6 +476,7 @@ async function runInteractionCycle(send, report) {
   });
 
   await step("change and reset period focus using native input", async () => {
+    // Exercise the first usable moment after Escape closes the reading room.
     await click(send, '[data-time-filter="1684-1695"]');
     await waitFor(send, `window.__CC_TIME_FILTER_STORE__?.get()?.id === '1684-1695'`, "period focus");
     await click(send, '[data-time-filter="all"]');

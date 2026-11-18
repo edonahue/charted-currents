@@ -1365,8 +1365,10 @@ export function initializeInspector(): void {
     if (retry) retry.hidden = true;
     content?.setAttribute("aria-busy", "true");
     try {
-      await loadData();
-      if (needsSource) await loadSources();
+      // Ships and people require sources to resolve their evidence links. Start
+      // both loads on selection intent rather than waiting for the core bundle;
+      // Promise.all also observes either rejection while the other is pending.
+      await Promise.all([loadData(), ...(needsSource ? [loadSources()] : [])]);
       if (request !== renderGeneration) return;
       const current = selectionStore.get();
       if (current?.kind !== selection.kind || current.id !== selection.id) return;

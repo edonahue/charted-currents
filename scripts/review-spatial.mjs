@@ -111,6 +111,8 @@ try {
  // Deferred image: inspect network entries before and after actual activation.
  const initialMoll = await evaluate(`(()=>{const path=new URL(document.querySelector('[data-layer-control]').dataset.rectifiedUrl,location.href).pathname;return {source:!!window.__CC_MAP__.getSource('historical-reference-moll-1715'),requests:performance.getEntriesByType('resource').filter(e=>new URL(e.name).pathname===path).length}})()`);
  assert.deepEqual(initialMoll,{source:false,requests:0});
+ assert.equal(await evaluate("Boolean(window.__CC_MAP__.getSource('cc-coordinate-grid'))"), false,
+   "regional startup does not load the optional ocean coordinate grid");
  await click('[data-layer-toggle]');await click('[data-layer-visibility-checkbox]');
  await until(`window.__CC_MAP__.isSourceLoaded('historical-reference-moll-1715')`);
  const loadedMoll=await evaluate(`(()=>{const layers=window.__CC_MAP__.getStyle().layers.map(l=>l.id);const path=new URL(document.querySelector('[data-layer-control]').dataset.rectifiedUrl,location.href).pathname;return {underRoutes:layers.indexOf('historical-reference-moll-1715-layer')<layers.indexOf('historical-routes-line'),requests:performance.getEntriesByType('resource').filter(e=>new URL(e.name).pathname===path).length}})()`);
@@ -124,6 +126,7 @@ try {
  await until(`document.querySelector('#source-drawer')?.getAttribute('data-state')==='open' && Boolean(document.querySelector('.source-reference-image img'))`);
  await evaluate(`document.querySelector('.source-reference-image img').scrollIntoView({block:'nearest'})`);
  await until(`document.querySelector('.source-reference-image img').complete && document.querySelector('.source-reference-image img').naturalWidth>0`);
+ await until(`document.getElementById('charted-currents-map').getBoundingClientRect().right <= document.querySelector('.source-drawer-panel').getBoundingClientRect().left + 2`);
  const sourceComparison=await evaluate(`(()=>{const m=document.getElementById('charted-currents-map').getBoundingClientRect();const source=document.querySelector('.source-drawer-panel').getBoundingClientRect();const image=document.querySelector('.source-reference-image img');return {spread:document.querySelector('.app-shell').dataset.readingOpen==='true',mapBesideSource:m.right<=source.left+2,sourceImageDistinct:new URL(image.src).pathname!==new URL(document.querySelector('[data-layer-control]').dataset.rectifiedUrl,location.href).pathname,registeredVisible:window.__CC_MAP__.getLayoutProperty('historical-reference-moll-1715-layer','visibility')==='visible'}})()`);
  assert.deepEqual(sourceComparison,{spread:true,mapBesideSource:true,sourceImageDistinct:true,registeredVisible:true});
  await shot('cc-spatial-source-comparison');
@@ -162,7 +165,14 @@ try {
  assert.equal(await evaluate(`window.__nativeEvents.some(event=>event.type==='click' && event.view==='globe' && event.trusted)`),true,'globe must activate through a trusted native click');
  assert.equal(await evaluate('window.__CC_MAP__.getProjection()?.type'),'globe','native Enter must activate globe'); await until(`window.__CC_MAP__.getProjection()?.type==='globe' && !window.__CC_MAP__.isMoving()`,10000);
  const desktopGlobeActivationMs = performance.now() - desktopGlobeStart;
+ assert.equal(await evaluate("window.__CC_MAP__.getLayoutProperty('cc-coordinate-grid','visibility')"), "visible");
  await shot('cc-spatial-globe');
+ await click('[data-layer-toggle]');await click('[data-layer-visibility-checkbox]');
+ assert.equal(await evaluate("window.__CC_MAP__.getLayoutProperty('cc-coordinate-grid','visibility')"), "none",
+   "registered chart comparison suppresses the modern coordinate grid");
+ await click('[data-layer-visibility-checkbox]');await click('[data-layer-panel-close]');
+ assert.equal(await evaluate("window.__CC_MAP__.getLayoutProperty('cc-coordinate-grid','visibility')"), "visible",
+   "returning to the modern globe restores the coordinate grid");
  await evaluate(`void window.__CC_MAP__.jumpTo({bearing:24,pitch:20})`);
  await click('[data-map-north]');await until('!window.__CC_MAP__.isMoving()');
  const north=await evaluate('({bearing:window.__CC_MAP__.getBearing(),pitch:window.__CC_MAP__.getPitch()})');assert.ok(Math.abs(north.bearing)<.001&&Math.abs(north.pitch)<.001);
@@ -303,7 +313,7 @@ try {
  await click('[data-source-drawer-close]');
  await send('Network.setBlockedURLs',{urls:[]});
  await send('Page.navigate',{url:baseUrl});
- await until(`Boolean(window.__CC_MAP__?.getLayer('historical-ports-core'))`);
+ await until(`document.querySelector('#charted-currents-map')?.dataset.mapReady==='true' && Boolean(window.__CC_MAP__?.getLayer('historical-ports-core'))`);
  assert.equal(await evaluate(`document.querySelector('[data-map-unavailable]').hidden`),true);
  assert.equal(await evaluate(`Array.from(document.querySelectorAll('[data-map-view], [data-map-north], [data-layer-toggle]')).every(button=>!button.disabled)`),true);
  report.thirdPartyDegradation={blockedStyleVisibleNotice:true,nativeCorpusAndEvidence:true,successfulReloadRestoresControls:true};
@@ -321,7 +331,7 @@ try {
  report.status = "passed";
  report.browser = (await send("Browser.getVersion")).product;
  report.checks = { nativeKeyboardGlobe: true, nativeNorthUp: nativeNorth, nativeArrowPan: true, nativeMapReturnFocusAndPan: true, projection: true, geographicHistory: true,
-   directGeographicSelection: true, lazyMoll: {initial: initialMoll, activated: loadedMoll},
+   directGeographicSelection: true, wideGridDeferredAndComparisonAware: true, lazyMoll: {initial: initialMoll, activated: loadedMoll},
    comparison: {...sourceComparison, focusReturn:sourceFocusReturn}, northReset: north, visibleSelectionPreserved: true, interruptionStops: true,
    globeActivation: {
      desktopMs: desktopGlobeActivationMs,

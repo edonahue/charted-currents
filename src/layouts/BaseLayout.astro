@@ -8,6 +8,7 @@ import "@fontsource/inter/600.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "../styles/global.css";
 import { withBase } from "../lib/paths";
+import { BASEMAP_SEED_STYLE_URL } from "../lib/map/visualPolicy";
 
 interface Props {
   title?: string;
@@ -37,6 +38,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
     )}
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="preconnect" href={new URL(BASEMAP_SEED_STYLE_URL).origin} crossorigin="anonymous" />
     <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />

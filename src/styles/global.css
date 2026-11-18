@@ -55,14 +55,13 @@ a {
   color: inherit;
 }
 
-/* Base application shell */
+/* Hand MapLibre the final pane size in one layout pass when a surface opens. */
 .app-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 0;
   grid-template-rows: auto minmax(0, 1fr) auto;
   min-height: 100svh;
   background: var(--cc-paper);
-  transition: grid-template-columns var(--cc-duration-standard) var(--cc-ease-standard);
 }
 
 .app-shell[data-inspector-open="true"] {
@@ -520,12 +519,11 @@ a {
   color: var(--cc-ink-muted);
 }
 
-/* Timeline */
+/* Commit timeline width with its columns so filters do not rewrap during input. */
 .timeline-shell {
   grid-column: 1 / -1;
   border-top: var(--cc-rule-thin) solid var(--cc-line-strong);
   background: var(--cc-paper-raised);
-  transition: padding-right var(--cc-duration-standard) var(--cc-ease-standard);
 }
 
 @media (min-width: 768px) {
@@ -1025,5 +1023,20 @@ a {
   .app-shell .map-locator-browser__menu {
     max-height: max(9rem, calc(100svh - 11rem));
     overflow-y: auto;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 768px) {
+  .app-shell .map-viewport[data-map-projection="globe"] {
+    min-height: 62svh;
+  }
+
+  .app-shell .map-viewport[data-map-projection="globe"] .map-view-controls {
+    top: 4rem;
+    bottom: auto;
+  }
+
+  .app-shell .map-viewport[data-map-projection="globe"] .map-epistemic-legend {
+    bottom: max(3.625rem, var(--cc-map-attribution-clearance, 3.625rem));
   }
 }

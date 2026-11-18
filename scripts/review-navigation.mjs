@@ -16,10 +16,13 @@ const events = Array.isArray(eventData) ? eventData : eventData.events;
 const [firstPlace, secondPlace] = entities.places;
 let delayEntities = false;
 let failSources = false;
+let firstDelayedSourceAttempt = null;
+let delayedCoreResponse = null;
 const requestedPaths = [];
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, "http://localhost").pathname;
   requestedPaths.push(pathname);
+  if (delayEntities && pathname === "/data/sources.json") firstDelayedSourceAttempt ??= performance.now();
   if (failSources && pathname === "/data/sources.json") { res.writeHead(503).end("Source unavailable for retry proof"); return; }
   const file = path.resolve(dist, `.${pathname === "/" ? "/index.html" : pathname}`);
   if (!file.startsWith(`${dist}${path.sep}`) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
@@ -30,7 +33,10 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": mime[path.extname(file)] || "application/octet-stream" });
     fs.createReadStream(file).pipe(res);
   };
-  if (delayEntities && pathname === "/data/entities.json") setTimeout(serve, 1800);
+  if (delayEntities && pathname === "/data/entities.json") setTimeout(() => {
+    delayedCoreResponse = performance.now();
+    serve();
+  }, 1800);
   else serve();
 });
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -363,6 +369,7 @@ try {
   await wait(250);
   const initialResources = requestedPaths.slice(startupRequestStart);
   assert.equal(initialResources.some((resource) => /\/controller\.[^/]+\.js$/.test(resource)), false, "record controller chunk is deferred until selection");
+  assert.equal(initialResources.some((resource) => /\/renderSourceRecords\.[^/]+\.js$/.test(resource)), false, "evidence renderer is deferred until the folio opens");
   for (const artifact of ["entities.json", "events.json", "sources.json", "dataset_context.json"]) {
     assert.equal(initialResources.some((resource) => resource.endsWith(`/data/${artifact}`)), false, `${artifact} is deferred until inspection`);
   }
@@ -378,6 +385,11 @@ try {
   failSources = false;
   await click("[data-inspector-retry]");
   await observe("native search during delayed corpus survives hydration and source retry", { kind: "ship", id: vessel.id }, "all");
+  assert.ok(firstDelayedSourceAttempt !== null && delayedCoreResponse !== null &&
+    firstDelayedSourceAttempt < delayedCoreResponse, "cold vessel source lookup starts before delayed core response");
+  assert.equal(requestedPaths.slice(startupRequestStart).some((resource) => /\/renderSourceRecords\.[^/]+\.js$/.test(resource)), false,
+    "selecting a vessel does not fetch the evidence renderer");
+  report.observations.push({ label: "cold vessel overlaps source and core data while deferring evidence rendering", passed: true });
   delayEntities = false;
   await send("Page.navigate", { url: `http://127.0.0.1:${port}/?select=port%3A__unknown__&period=__proto__&foreign=kept` });
   await until("Boolean(window.__CC_SELECTION_STORE__ && window.__CC_TIME_FILTER_STORE__)", "invalid URL page initializes");

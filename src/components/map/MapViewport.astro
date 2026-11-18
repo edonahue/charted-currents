@@ -224,12 +224,13 @@ const hasMollLayer = Boolean(
   import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
   import type { PublishedPortFeatureCollection, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
   import { loadPublishedPorts, loadPublishedRoutes } from "../../lib/data/loadPublished";
-  import { applyBasemapVisualPolicy } from "../../lib/map/applyVisualPolicy";
+  import { transformBasemapStyle } from "../../lib/map/applyVisualPolicy";
+  import { syncCoordinateGrid } from "../../lib/map/graticule";
   import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW, MAP_VIEWS, globeOrientationZoom } from "../../lib/map/config";
   import { revealSelection, selectionCoordinates, visibleMapPadding } from "../../lib/map/cameraPolicy";
-  import { startViewNavigation } from "../../lib/map/viewNavigation";
+  import { readGeographicView, startViewNavigation } from "../../lib/map/viewNavigation";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
-  import { PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
+  import { BASEMAP_WATER_LABEL_LAYER_ID, PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
   import { selectionStore } from "../../lib/state/selection";
   import { timeFilterStore, type TimeFilterState } from "../../lib/state/timeFilter";
 
@@ -327,7 +328,7 @@ const hasMollLayer = Boolean(
   function scheduleSelectionCamera(): void {
     clearTimeout(cameraTimer);
     if (cameraSuppressed || lifecycle.signal.aborted) return;
-    // Wait for the inspector's actual layout, including its grid/sheet transition.
+    // Wait for the inspector's actual layout, including compact sheet motion.
     cameraTimer = setTimeout(() => {
       if (!map || !container || cameraSuppressed || lifecycle.signal.aborted) return;
       const inspector = document.getElementById("entity-inspector");
@@ -356,11 +357,17 @@ const hasMollLayer = Boolean(
     document.addEventListener("astro:before-swap", cleanupMap, { signal: lifecycle.signal });
 
     try {
+      const requestedUrl = new URL(window.location.href);
+      const requestedView = readGeographicView(requestedUrl);
+      const initialView = requestedView ?? INITIAL_MAP_VIEW;
+      const bounds = container.getBoundingClientRect();
+      const initialZoom = requestedView?.mode === "globe" && !requestedUrl.searchParams.has("view")
+        ? globeOrientationZoom(bounds.width, bounds.height)
+        : initialView.zoom;
       map = new Map({
         container,
-        style: INITIAL_MAP_STYLE_URL,
-        center: INITIAL_MAP_VIEW.center,
-        zoom: INITIAL_MAP_VIEW.zoom,
+        center: initialView.center,
+        zoom: initialZoom,
         minZoom: 0.7,
         maxZoom: 9,
         bearing: 0,
@@ -414,15 +421,22 @@ const hasMollLayer = Boolean(
       );
       setMapControlsEnabled(false);
 
-      map.on("load", () => {
+      map.once("style.load", () => {
+        if (!map || lifecycle.signal.aborted) return;
+        const readyMap = map;
+        viewNavigation = startViewNavigation(readyMap, { cancelSelectionCamera: cancelCamera, onMode: applyDisplayMode });
+        const syncGrid = () => syncCoordinateGrid(readyMap, Boolean(visibilityCheckbox?.checked));
+        syncGrid();
+        readyMap.on("moveend", syncGrid);
+        subscriptions.push(() => readyMap.off("moveend", syncGrid));
+        void loadHistoricalData(readyMap, geometry);
+      });
+
+      map.once("load", () => {
         if (!map || !container) return;
         container.dataset.mapReady = "true";
         document.querySelector<HTMLElement>("[data-map-unavailable]")?.setAttribute("hidden", "");
         setMapControlsEnabled(true);
-        map.setProjection({ type: "mercator" });
-        applyBasemapVisualPolicy(map);
-        viewNavigation = startViewNavigation(map, { cancelSelectionCamera: cancelCamera, onMode: applyDisplayMode });
-        loadHistoricalData(map, geometry);
       });
 
       map.on("idle", () => {
@@ -442,7 +456,8 @@ const hasMollLayer = Boolean(
       }
       const inspector = document.getElementById("entity-inspector");
       resizeObserver = new ResizeObserver(() => {
-        map?.resize();
+        // MapLibre already resizes its canvas when this container changes size.
+        // Attribution and sheet changes only need layout measurements here.
         layoutMapChrome();
         scheduleSelectionCamera();
       });
@@ -465,6 +480,12 @@ const hasMollLayer = Boolean(
       }, { signal: lifecycle.signal });
 
       initLayerControl(map);
+      map.setStyle(INITIAL_MAP_STYLE_URL, {
+        transformStyle: (previous, seed) => {
+          const style = transformBasemapStyle(previous, seed);
+          return { ...style, projection: { type: requestedView?.mode ?? "mercator" } };
+        },
+      });
     } catch (err) {
       console.error("Map initialization failed:", err);
       showUnavailableMap("Interactive map unavailable in this browser. Browse places or search the atlas to inspect records.");
@@ -490,10 +511,10 @@ const hasMollLayer = Boolean(
         type: "line",
         source: "historical-routes",
         paint: {
-          "line-color": "#7a5840",
+          "line-color": "#694d38",
           "line-width": 1.3,
-          "line-opacity": 0.28,
-          "line-dasharray": [3, 2.5],
+          "line-opacity": 0.34,
+          "line-dasharray": [2.4, 2.1],
         },
       });
 
@@ -795,7 +816,7 @@ const hasMollLayer = Boolean(
         1.6,
         1.4,
       ]);
-      map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
+      map.setPaintProperty("historical-routes-line", "line-color", "#694d38");
     } else if (selection && selection.kind === "ship") {
       const isSelectedShip: any = [
         "in",
@@ -823,7 +844,7 @@ const hasMollLayer = Boolean(
         "case",
         isSelectedShip,
         "#c85a32",
-        "#7a5840",
+        "#694d38",
       ]);
     } else if (selection && selection.kind === "voyage") {
       const isSelectedGroup: any = [
@@ -852,14 +873,14 @@ const hasMollLayer = Boolean(
         "case",
         isSelectedGroup,
         "#c85a32",
-        "#7a5840",
+        "#694d38",
       ]);
     } else {
       // Default: no selection
       map.setPaintProperty("historical-routes-line", "line-opacity", [
         "case",
         inTimeCondition,
-        0.28,
+        0.34,
         0.04,
       ]);
       map.setPaintProperty("historical-routes-line", "line-width", [
@@ -868,7 +889,7 @@ const hasMollLayer = Boolean(
         1.3,
         1.2,
       ]);
-      map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
+      map.setPaintProperty("historical-routes-line", "line-color", "#694d38");
     }
   }
 
@@ -914,6 +935,7 @@ const hasMollLayer = Boolean(
       if (status) status.textContent = "Globe unavailable in this browser. The 2D atlas remains available.";
     }
     document.querySelector('[data-map-view="globe"]')?.setAttribute("aria-pressed", String(effectiveMode === "globe"));
+    if (container?.parentElement) container.parentElement.dataset.mapProjection = effectiveMode;
     return effectiveMode;
   }
 
@@ -1092,6 +1114,10 @@ const hasMollLayer = Boolean(
       if (!visibilityCheckbox) return;
       const isVisible = visibilityCheckbox.checked;
       syncComparisonControls();
+      syncCoordinateGrid(m, isVisible);
+      if (m.getLayer(BASEMAP_WATER_LABEL_LAYER_ID)) {
+        m.setLayoutProperty(BASEMAP_WATER_LABEL_LAYER_ID, "visibility", isVisible ? "none" : "visible");
+      }
       if (isVisible) ensurePeriodMapLayer(m);
       if (m.getLayer("historical-reference-moll-1715-layer")) {
         m.setLayoutProperty(
