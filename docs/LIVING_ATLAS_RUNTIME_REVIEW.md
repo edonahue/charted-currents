@@ -116,3 +116,11 @@ geometry findings across its 35 states, and the behavioral suite passed
 238 checks. A separate [chart comparison study](LIVING_ATLAS_CHART_COMPARISON.md)
 records the local review of edge softening and research into wider
 historical coverage.
+
+Independent review of the earlier style-loading path found that it
+could re-enable Globe when a cold globe link had already fallen back to
+2D. The browser test reproduces this by injecting a projection failure
+before style readiness. The repair preserves the unavailable state when
+enabling the rest of the map controls. The repaired build passed this
+cold-link case, including native selection of the Caribbean view in
+the fallback. The fault was simulated on software WebGL.

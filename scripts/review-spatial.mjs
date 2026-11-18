@@ -318,6 +318,34 @@ try {
  assert.equal(await evaluate(`Array.from(document.querySelectorAll('[data-map-view], [data-map-north], [data-layer-toggle]')).every(button=>!button.disabled)`),true);
  report.thirdPartyDegradation={blockedStyleVisibleNotice:true,nativeCorpusAndEvidence:true,successfulReloadRestoresControls:true};
 
+ // Fail globe projection before style readiness on a fresh globe link.
+ const startupFailure = await send('Page.addScriptToEvaluateOnNewDocument',{source:`
+   Object.defineProperty(window, '__CC_MAP__', { configurable: true,
+     get() { return window.__ccColdFallbackMap; },
+     set(map) {
+       window.__ccColdFallbackMap=map;
+       const original=map.setProjection.bind(map);
+       map.setProjection=projection=>{
+         if (projection.type==='globe') throw new Error('Synthetic unavailable globe on startup');
+         return original(projection);
+       };
+     }
+   });
+ `});
+ await send('Page.navigate',{url:baseUrl+'?mode=globe'});
+ await until(`document.querySelector('#charted-currents-map')?.dataset.mapReady==='true'`);
+ const coldFallback=await evaluate(`({
+   mode:window.__CC_MAP__.getProjection()?.type,
+   globeDisabled:document.querySelector('[data-map-view="globe"]').disabled,
+   caribbeanDisabled:document.querySelector('[data-map-view="caribbean"]').disabled,
+   status:document.querySelector('[data-map-status]').textContent
+ })`);
+ assert.deepEqual(coldFallback,{mode:'mercator',globeDisabled:true,caribbeanDisabled:false,
+   status:'Globe unavailable in this browser. The 2D atlas remains available.'});
+ await click('[data-map-view="caribbean"]');
+ await until(`!window.__CC_MAP__.isMoving() && Math.abs(window.__CC_MAP__.getCenter().lng+72)<.01`);
+ await send('Page.removeScriptToEvaluateOnNewDocument',{identifier:startupFailure.identifier});
+
  // Remove WebGL in a new document to prove the visible unavailable state and
  // native corpus browser still work when neither map mode can render.
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`const context=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return /webgl/i.test(type)?null:context.call(this,type,...args)}`});
@@ -339,7 +367,7 @@ try {
      method: "Native input to observed projection and camera settle, including CDP and polling overhead. Map already initialized. Software renderer.",
    },
    reducedMotionTravelMs: end.t-start.t, tabletAttributionClear: true,
-   singleConnectorSelection, syntheticGlobeFailureFallback: true, syntheticNoWebGLCorpusFallback: true, uncaughtExceptions: errors };
+   singleConnectorSelection, syntheticGlobeFailureFallback: true, syntheticGlobeFailureAtStartup: true, syntheticNoWebGLCorpusFallback: true, uncaughtExceptions: errors };
  report.screenshots = ["cc-spatial-no-webgl.png", "cc-spatial-registered-chart.png", "cc-spatial-source-comparison.png", "cc-spatial-regional.png", "cc-spatial-globe.png", "cc-spatial-globe-mobile.png", "cc-spatial-tablet.png"];
  console.log("Spatial review passed: native modes, comparison, history, interruption, reduced motion, deferred image, attribution, and synthetic fallback.");
 } catch (error) {

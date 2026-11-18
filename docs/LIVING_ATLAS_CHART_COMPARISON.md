@@ -72,6 +72,13 @@ pixel support with a latitude correction for Web Mercator. Geographic
 agreement in the added band has yet to be independently checked. The
 proof transfers 919,594 bytes at 2560 pixels wide, about 89 KB more than the
 current raster. It exceeds the provisional 0.85 MB regional Blend budget.
+Two encodes from the same uncompressed warp meet that transfer budget.
+At 2560×1711 and WebP quality 75 the file is 773,442 bytes, with a nominal
+17.5 MB RGBA surface. At 2368×1583 and quality 80 the file is 805,566 bytes,
+with a nominal 15.0 MB surface, near the current 14.6 MB. Detail crops
+retain readable larger labels in both. Compare the smaller texture on
+real phones and check fine engraving in the browser before choosing an
+encode. These sizes omit GPU/browser overhead and precede any feathering.
 
 Review this extension before acquiring another chart. Include southern
 holdouts and compare against an original-color folio if the geography

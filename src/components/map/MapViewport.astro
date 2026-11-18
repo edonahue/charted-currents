@@ -266,13 +266,14 @@ const hasMollLayer = Boolean(
   let cameraTimer: ReturnType<typeof setTimeout> | undefined;
   let chromeFrame = 0;
   let cameraSuppressed = false;
+  let globeAvailable = true;
   let viewNavigation: ReturnType<typeof startViewNavigation> | null = null;
   let blendOpacity = 65;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function setMapControlsEnabled(enabled: boolean): void {
     document.querySelectorAll<HTMLButtonElement>("[data-map-view], [data-map-north], [data-layer-toggle], .maplibregl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out")
-      .forEach((button) => { button.disabled = !enabled; });
+      .forEach((button) => { button.disabled = !enabled || (button.dataset.mapView === "globe" && !globeAvailable); });
   }
 
   function showUnavailableMap(message: string): void {
@@ -925,6 +926,7 @@ const hasMollLayer = Boolean(
         "atmosphere-blend": mode === "globe" ? 0.65 : 0 });
     } catch (error) {
       if (mode !== "globe") throw error;
+      globeAvailable = false;
       effectiveMode = "mercator";
       map.setProjection({ type: "mercator" });
       const globeButton = document.querySelector<HTMLButtonElement>('[data-map-view="globe"]');
