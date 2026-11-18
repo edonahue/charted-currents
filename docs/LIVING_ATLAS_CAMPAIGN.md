@@ -139,9 +139,9 @@ Evaluate orientation, visible map, readable evidence, control reachability, pane
 
 The first review build passed phone globe clearance and map-canvas focus return.
 The integrated candidate preserves the accepted accessibility baseline and place
-browsing improvements from `main`. The review branch build is byte-identical to
-the integrated build exercised by the 30-minute stability session. Publication follows
-the external acceptance decision.
+browsing improvements from `main`. Subsequent short-landscape and archive-image
+layout refinements preserve the JavaScript and data from the integrated
+30-minute stability build. Publication follows the external acceptance decision.
 
 Implemented surfaces include native Caribbean/Atlantic/globe views with 2D and
 no-WebGL fallbacks; separated selection/camera/geographic URL state; corpus search
@@ -160,6 +160,13 @@ Attribution/control clearance uses actual geometry. The registered raster and
 inspector data are deferred until relevant user intent; the small map geometry
 requests overlap basemap loading and reuse the shared session cache.
 
+A cold hosted check found the lazy Jamaica chart moved the Port Royal evidence
+action by 123.94 CSS pixels on decode. The inspector now supplies the published
+image's intrinsic dimensions. With a controlled 1.2-second image request delay,
+the revised build measured the same image height and evidence-button position
+before and after decode. Native pointer input then opened the source records.
+
+
 | Evidence | Observed result / limitation |
 |---|---|
 | Astro check/build | 49 files, zero errors, warnings or hints on the review branch. Production build succeeds. Vite retains its large MapLibre chunk advisory. |
@@ -173,7 +180,7 @@ requests overlap basemap loading and reuse the shared session cache.
 | Historical presentation | Independent metadata audit supports revised crew/source-container wording; no corpus or evidence-state change. See CORR-20261117-01 in the corrections log; external acceptance remains pending. |
 | Performance | All five release cold-load and selection observations were valid. Compare current main, original campaign budget and findings below. |
 | Stability | A three-cycle smoke passed after repairing pointer tests to wait for scroll rendering and confirm the hit target. The integrated 30-minute workload completed 52 cycles with zero interaction, console, unhandled, resource or crash failures. |
-| Device/assistive technology | Native keyboard and axe checks are observed. Physical-device rendering/battery and native screen-reader journeys remain unverified. |
+| Device/assistive technology | Native keyboard, axe and an isolated Firefox/Orca journey are observed. Audible output, the return-focus announcement and physical-device rendering/battery remain unverified. |
 | Publication | Authorized after required acceptance; no hosted claim yet. |
 
 ### Release performance observations
@@ -232,14 +239,13 @@ Review the budget miss and physical-device measurements alongside the rendered
 review candidate. The runtime and display checklist records targeted follow-up
 probes and opportunities to measure during preview.
 
-For native screen-reader review, use an installed reader to navigate by keyboard
-from global search to Port Royal, inspect the source heading and record list,
-then close the source and confirm focus returns to its trigger. Record the
-browser, reader and announcements. In the first isolated Orca attempt, the
-reader announced startup and the platform reported address-bar focus. Browser
-navigation timed out before reaching the atlas. The direct-URL retry acquired a
-browser target but could not load the app. A no-proxy X11 retry failed to acquire
-the isolated app window. The native app announcement path remains unverified.
+Firefox 159 with Orca 49.4 completed the native keyboard journey through
+search, Port Royal and supporting evidence. A silent Speech Dispatcher output
+module recorded generated Orca announcements for the search result, evidence
+heading, description list and repository link. AT-SPI independently observed
+focus return to the evidence trigger after Escape. The returned trigger's
+speech announcement and audible output were not verified. Earlier isolated
+Chromium attempts stalled before reaching the atlas.
 
 For physical-mobile performance, record the phone, OS and browser version.
 Start a browser performance recording on that device, let initial tiles settle,
