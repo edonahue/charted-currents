@@ -21,6 +21,7 @@
 ## Design
 - [x] curate 10–20 period maps as visual reference board (Completed in Packet 8);
 - [x] test georeferenced historical-map overlays (Completed in Packet 8; corrected in CORR-20260906-01);
+- extend the chart comparison with reviewed cutlines, independently evaluated registration and scale-appropriate sheets as outlined in the [Living Atlas chart comparison study](LIVING_ATLAS_CHART_COMPARISON.md);
 - choose typography from actual screen comps;
 - create original Charted Currents design tokens;
 - later prototype a restrained `Fate & material evidence` inspector section rather than a global treasure-wreck layer;

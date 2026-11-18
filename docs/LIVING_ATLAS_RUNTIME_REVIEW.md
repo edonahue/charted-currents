@@ -65,3 +65,54 @@ Record the exact build, browser, device, route and action for each finding.
 Repair confirmed release defects and refresh the affected proof. Prioritize
 measured improvements, and carry device-specific observations and later
 experiments into external review where local tools cannot establish them.
+
+## Follow-up cartography candidate
+
+The local candidate applies the visual policy to the provider style before
+MapLibre loads it, uses the saved camera at construction for geographic
+links, and leaves canvas resizing to MapLibre's container observer. The
+app still observes its chrome for control clearance. It opens record and
+source requests in parallel when a selected record needs both, loads the
+evidence renderer on intent, and creates the wide coordinate grid only
+when needed. It retains the pinned stack and provider attribution.
+
+Five cold loads and five separate native selection runs per build on
+Chromium 153, 390×844 at DPR 2, used 4× CPU slowdown, 150 ms latency,
+200,000 bytes/s download, disabled cache, and software WebGL. Values below
+are local medians versus the verified preview revision (`c855595`).
+
+| Metric | Verified preview build | Local candidate |
+| --- | ---: | ---: |
+| LCP | 648 ms | 620 ms |
+| Session-window CLS | 0.03794 | 0.03902 |
+| Map-ready proxy | 4,765 ms | 4,658 ms |
+| Native port selection | 4,982 ms | 4,509 ms |
+| Native selected record visible | 5,549 ms | 5,065 ms |
+| Same-origin initial JavaScript body, encoded | 395,506 bytes | 392,794 bytes |
+
+Native port selection was about 9.5% faster in this profile. The five
+candidate selections ranged from 4.47 to 4.56 seconds. The workload
+includes browser and polling overhead and does not isolate the contribution
+of each change. Window resource timing cannot account for all provider
+or worker bytes. Keep field metrics and physical-device performance
+separate from this result. Run the same profile with a geographic deep
+link to quantify any camera-seeding benefit directly.
+
+The later native stability probe found the timeline filters rewrapping
+after the reading room closed. The pointer landed on the heading after
+the filter had moved. Accelerating the same journey also reproduced an
+Atlantic center 0.143° east of the requested coordinate while the map
+pane was resizing. The local repair commits the map and timeline layout
+sizes without animating columns or padding. Existing camera and mobile
+sheet motion stay available. The accelerated trace then completed 13
+whole journeys in one minute with no errors. The reduced-cooldown
+probe measures interaction correctness. The cold data above precedes
+this CSS-only layout repair.
+
+Native navigation, spatial, full quality and behavioral browser checks
+passed locally. The phone globe has clear space between its southern
+basin name and the route legend. The seven-view audit reported zero
+geometry findings across its 35 states, and the behavioral suite passed
+238 checks. A separate [chart comparison study](LIVING_ATLAS_CHART_COMPARISON.md)
+records the local review of edge softening and research into wider
+historical coverage.
