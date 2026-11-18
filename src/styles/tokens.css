@@ -3,14 +3,14 @@
    * Packet 1 palette baseline. Historical character should come from hierarchy,
    * cartography, typography, and real sources—not fake aging effects.
    */
-  --cc-paper: #f1eadc;
-  --cc-paper-raised: #f8f3e9;
-  --cc-paper-deep: #e7decd;
-  --cc-paper-translucent: rgb(248 243 233 / 94%);
-  --cc-ink: #172126;
-  --cc-ink-soft: #364247;
-  --cc-ink-muted: #626968;
-  --cc-atlantic: #234552;
+  --cc-paper: #eeeae0;
+  --cc-paper-raised: #faf8f1;
+  --cc-paper-deep: #e2e3da;
+  --cc-paper-translucent: rgb(250 248 241 / 96%);
+  --cc-ink: #192d31;
+  --cc-ink-soft: #344a4c;
+  --cc-ink-muted: #536463;
+  --cc-atlantic: #24535a;
   --cc-verdigris: #64877e;
   --cc-brass: #92743d;
   --cc-oxblood: #6c3634;

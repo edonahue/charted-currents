@@ -5,7 +5,26 @@
  * Sourced archival provenance drawer. Displays multi-source evidence grouped
  * by source record, explicit inspection states, and human-readable assertions.
  */
+import entities from "../../../public/data/entities.json";
+import { withBase } from "../../lib/paths";
+const referenceImages = entities.visuals.filter((visual) => visual.rights_state === "open_public_domain" && visual.asset_path);
 ---
+
+{referenceImages.map((visual) => (
+  <template data-source-visual={visual.source_id}>
+    <figure class="source-reference-image">
+      <a href={withBase(visual.asset_path)} target="_blank" rel="noopener noreferrer" aria-label={`Open published reference image: ${visual.title}`}>
+        <img src={withBase(visual.asset_path)} alt={visual.title} loading="lazy" decoding="async" />
+      </a>
+      <figcaption>
+        <p>Published reference image · {visual.date_display}</p>
+        <p>{visual.credit_line} · {visual.call_number}</p>
+        <a href={visual.item_url} target="_blank" rel="noopener noreferrer">Institutional catalogue ↗</a>
+        <span> · Public domain · Select image to inspect</span>
+      </figcaption>
+    </figure>
+  </template>
+))}
 
 <aside
   id="source-drawer"
@@ -53,7 +72,9 @@
 
 <script>
   import type { PublishedAssertion, PublishedSource, PublishedSourceRecord, PublishedSources } from "../../lib/domain/types";
-  import { publishedDataUrl } from "../../lib/data/loadPublished";
+  import { loadPublishedSources } from "../../lib/data/loadPublished";
+  import { selectionStore } from "../../lib/state/selection";
+  import { CURRENT_SELECTION_FOCUS_EVENT } from "../../lib/map/interactionState";
 
   const drawer = document.getElementById("source-drawer");
   const panel = document.querySelector<HTMLElement>(".source-drawer-panel");
@@ -65,20 +86,32 @@
 
   let sourcesCache: PublishedSources | null = null;
   let returnElement: HTMLElement | null = null;
+  let openingRequest = 0;
+  const lifecycle = new AbortController();
+  const { signal } = lifecycle;
+  const desktopReading = window.matchMedia("(min-width: 1025px)");
+  const shell = document.querySelector<HTMLElement>(".app-shell");
+  const inspector = document.getElementById("entity-inspector");
+  function syncReadingLayout(): void {
+    const spread = desktopReading.matches && drawer?.getAttribute("data-state") === "open";
+    if (shell) shell.dataset.readingOpen = String(Boolean(spread));
+    if (inspector) inspector.inert = Boolean(spread);
+    if (backdrop) (backdrop as HTMLElement).hidden = Boolean(spread);
+    panel?.setAttribute("aria-modal", String(!desktopReading.matches));
+    if (!desktopReading.matches && drawer?.getAttribute("data-state") === "open" &&
+        !panel?.contains(document.activeElement)) titleEl?.focus();
+  }
+  desktopReading.addEventListener("change", syncReadingLayout);
 
   async function loadSources(): Promise<PublishedSources | null> {
     if (sourcesCache) return sourcesCache;
     try {
-      const res = await fetch(publishedDataUrl("sources"));
-      if (!res.ok) return null;
-      sourcesCache = await res.json();
+      sourcesCache = await loadPublishedSources();
       return sourcesCache;
     } catch {
       return null;
     }
   }
-
-  loadSources();
 
   function humanizeInspectionState(state: string): string {
     switch (state) {
@@ -200,6 +233,7 @@
   ): HTMLElement {
     const card = document.createElement("article");
     card.className = "source-card";
+    if (record) card.dataset.sourceRecordId = record.id;
 
     // Source Card Header
     const header = document.createElement("header");
@@ -215,6 +249,9 @@
 
     header.append(title, subtitle);
     card.appendChild(header);
+    const visual = Array.from(document.querySelectorAll<HTMLTemplateElement>("template[data-source-visual]"))
+      .find((template) => template.dataset.sourceVisual === source.id);
+    if (visual) card.appendChild(visual.content.cloneNode(true));
 
     // Metadata DL
     const dl = document.createElement("dl");
@@ -226,8 +263,11 @@
     const dtState = document.createElement("dt");
     dtState.textContent = "Inspection State";
     const ddState = document.createElement("dd");
-    const stateVal = record?.inspection_state || "digital_content_inspected";
-    ddState.textContent = humanizeInspectionState(stateVal);
+    const stateVal = record?.inspection_state || "record_level_inspection_not_specified";
+    ddState.textContent = record ? humanizeInspectionState(stateVal)
+      : sourcesCache?.source_records.some((item) => item.source_id === source.id)
+        ? "Select an item-level record to see its inspection state"
+        : "No item-level inspection record published for this source container";
     ddState.setAttribute("data-source-inspection-state", stateVal);
     rowState.append(dtState, ddState);
     dl.appendChild(rowState);
@@ -259,7 +299,7 @@
     const rowRights = document.createElement("div");
     rowRights.className = "inspector-meta__row";
     const dtRights = document.createElement("dt");
-    dtRights.textContent = "Rights Posture";
+    dtRights.textContent = "Rights & reuse";
     const ddRights = document.createElement("dd");
     ddRights.textContent = humanizeRightsPosture(source.rights_posture);
     ddRights.setAttribute("data-source-rights", source.rights_posture);
@@ -437,6 +477,7 @@
 
       for (const ast of assertions) {
         const tr = document.createElement("tr");
+        tr.dataset.assertionId = ast.id;
         const tdField = document.createElement("td");
         tdField.textContent = ast.field.replace(/_/g, " ");
 
@@ -500,10 +541,29 @@
     triggerEl?: HTMLElement | null;
   }): Promise<void> {
     if (!drawer || !container) return;
+    const request = ++openingRequest;
     returnElement = options.triggerEl || (document.activeElement as HTMLElement);
+    container.replaceChildren();
+    const loading = document.createElement("p");
+    loading.className = "inspector-note";
+    loading.setAttribute("role", "status");
+    loading.textContent = "Loading the source records…";
+    container.appendChild(loading);
+    if (titleEl) titleEl.textContent = "Evidence & Provenance";
+    if (subtitleEl) subtitleEl.textContent = "";
+    drawer.hidden = false;
+    drawer.setAttribute("data-state", "open");
+    syncReadingLayout();
+    container.setAttribute("aria-busy", "true");
+    titleEl?.focus();
 
     const sources = await loadSources();
-    if (!sources) return;
+    if (request !== openingRequest) return;
+    container.removeAttribute("aria-busy");
+    if (!sources) {
+      loading.textContent = "The source records could not be loaded. You can close this view and try again.";
+      return;
+    }
 
     container.replaceChildren();
 
@@ -519,9 +579,10 @@
         }
       }
 
-      if (titleEl) titleEl.textContent = "Supporting Evidence & Provenance";
+      if (titleEl) titleEl.textContent = "Evidence & provenance";
       if (subtitleEl) {
-        subtitleEl.textContent = `Resolving ${options.assertionIds.length} historical assertion(s) across ${astByRecordId.size} source record(s).`;
+        const assertionCount = [...astByRecordId.values()].reduce((count, assertions) => count + assertions.length, 0);
+        subtitleEl.textContent = `${assertionCount} published ${assertionCount === 1 ? "assertion" : "assertions"} · ${astByRecordId.size} source ${astByRecordId.size === 1 ? "record" : "records"}.`;
       }
 
       for (const [recordId, recordAsts] of astByRecordId.entries()) {
@@ -539,13 +600,25 @@
         if (subtitleEl) subtitleEl.textContent = `${source.holding_institution} · ${source.stable_identifier}`;
 
         const relatedRecords = sources.source_records.filter((r) => r.source_id === source.id);
-        const firstRecord = relatedRecords.length > 0 ? relatedRecords[0] : null;
-        const relatedAsts = sources.assertions.filter((a) =>
-          relatedRecords.some((r) => r.id === a.source_record_id)
-        );
-
-        const card = renderSourceCard(source, firstRecord, relatedAsts, options.upstreamRef);
-        container.appendChild(card);
+        // A source container is not one record. Keep each assertion with its
+        // actual record, identifier and inspection state.
+        if (!relatedRecords.length) {
+          container.appendChild(renderSourceCard(source, null, [], options.upstreamRef));
+        }
+        for (const record of relatedRecords) {
+          const assertions = sources.assertions.filter((a) => a.source_record_id === record.id);
+          const card = renderSourceCard(source, record, assertions, options.upstreamRef);
+          if (relatedRecords.length === 1) {
+            container.appendChild(card);
+          } else {
+            const entry = document.createElement("details");
+            entry.className = "source-record-entry";
+            const summary = document.createElement("summary");
+            summary.textContent = `${record.native_identifier} · ${assertions.length} assertions`;
+            entry.append(summary, card);
+            container.appendChild(entry);
+          }
+        }
       }
     } else if (sources.sources.length > 0) {
       const source = sources.sources[0];
@@ -553,20 +626,39 @@
       container.appendChild(card);
     }
 
-    drawer.hidden = false;
-    drawer.setAttribute("data-state", "open");
-    titleEl?.focus();
+    if (!container.childElementCount) {
+      const empty = document.createElement("p");
+      empty.className = "inspector-note";
+      empty.textContent = "No published source record matches this request.";
+      container.appendChild(empty);
+    }
   }
 
-  function closeSourceDrawer(): void {
+  function closeSourceDrawer(restoreFocus = true): void {
     if (!drawer) return;
+    openingRequest++;
     drawer.setAttribute("data-state", "closed");
     drawer.hidden = true;
-    returnElement?.focus();
+    syncReadingLayout();
+    if (restoreFocus && returnElement?.isConnected) returnElement.focus();
   }
 
-  closeBtn?.addEventListener("click", closeSourceDrawer);
-  backdrop?.addEventListener("click", closeSourceDrawer);
+  closeBtn?.addEventListener("click", () => closeSourceDrawer(), { signal });
+  backdrop?.addEventListener("click", () => closeSourceDrawer(), { signal });
+  const stopSelection = selectionStore.subscribe(() => {
+    if (drawer?.getAttribute("data-state") === "open") closeSourceDrawer(false);
+  });
+  window.addEventListener(CURRENT_SELECTION_FOCUS_EVENT, () => {
+    if (drawer?.getAttribute("data-state") === "open") closeSourceDrawer(false);
+  }, { capture: true, signal });
+  const cleanup = () => {
+    openingRequest++;
+    lifecycle.abort();
+    stopSelection();
+    desktopReading.removeEventListener("change", syncReadingLayout);
+  };
+  document.addEventListener("astro:before-swap", cleanup, { once: true });
+  window.addEventListener("pagehide", (event) => { if (!event.persisted) cleanup(); }, { signal });
 
   window.addEventListener(
     "keydown",
@@ -578,14 +670,26 @@
         closeSourceDrawer();
       }
     },
-    { capture: true }
+    { capture: true, signal }
   );
 
   panel?.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (desktopReading.matches) return;
     if (e.key !== "Tab") return;
-    const focusable = panel.querySelectorAll<HTMLElement>(
-      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    );
+    const focusable = Array.from(panel.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), summary, [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter((element) => {
+      if (!element.getClientRects().length) return false;
+      // Chromium can retain layout boxes for descendants of closed details.
+      // Only that details element's direct summary remains keyboard reachable.
+      for (let ancestor = element.parentElement; ancestor; ancestor = ancestor.parentElement) {
+        if (ancestor instanceof HTMLDetailsElement && !ancestor.open) {
+          const summary = ancestor.querySelector(":scope > summary");
+          if (!summary?.contains(element)) return false;
+        }
+      }
+      return true;
+    });
     if (focusable.length === 0) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -597,7 +701,7 @@
       e.preventDefault();
       first.focus();
     }
-  });
+  }, { signal });
 
   window.addEventListener("cc:open-source", ((e: CustomEvent<{ sourceId?: string; assertionIds?: string[]; triggerEl?: HTMLElement; upstreamRef?: string }>) => {
     if (e.detail) {
@@ -608,7 +712,7 @@
         upstreamRef: e.detail.upstreamRef,
       });
     }
-  }) as EventListener);
+  }) as EventListener, { signal });
 </script>
 
 <style>

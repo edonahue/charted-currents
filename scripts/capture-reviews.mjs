@@ -212,7 +212,7 @@ async function runReviewSuite() {
     const sendKey = async (key, code, windowsVirtualKeyCode, shiftKey = false) => {
       const text = key === "Enter" ? "\r" : key === " " ? " " : undefined;
       await send("Input.dispatchKeyEvent", {
-        type: "rawKeyDown",
+        type: text ? "keyDown" : "rawKeyDown",
         key,
         code,
         windowsVirtualKeyCode,
@@ -616,13 +616,19 @@ async function runReviewSuite() {
 
     // 4. Historical Vessel Selection & Construction Display (No ~1685)
     console.log("Testing vessel selection & construction display...");
-    await send("Runtime.evaluate", {
+    const vesselTarget = await send("Runtime.evaluate", {
       expression: `(() => {
         const rows = Array.from(document.querySelectorAll('.inspector-rel-row'));
         const vesselRow = rows.find(r => r.textContent?.includes('Richard & Sarah'));
-        vesselRow?.click();
+        vesselRow?.scrollIntoView({block:'nearest'});
+        const rect = vesselRow?.getBoundingClientRect();
+        return rect ? {x:rect.x+rect.width/2,y:rect.y+rect.height/2} : null;
       })()`,
+      returnByValue: true,
     });
+    if (!vesselTarget.result?.value) throw new Error("Vessel connection pointer target unavailable");
+    await send("Input.dispatchMouseEvent", { type: "mousePressed", ...vesselTarget.result.value, button: "left", clickCount: 1 });
+    await send("Input.dispatchMouseEvent", { type: "mouseReleased", ...vesselTarget.result.value, button: "left", clickCount: 1 });
     await new Promise((r) => setTimeout(r, 400));
 
     const vesselCheck = await send("Runtime.evaluate", {
@@ -1861,39 +1867,11 @@ async function runReviewSuite() {
     // 27. Packet 8: Historical Period Map Reference Layer Invariants & Behavioral Tests
     console.log("\nTesting Packet 8 Historical Period Map Layer controls, opacity, and layer stack...");
 
-    // P8-007: Visual Layer Hierarchy check
-    const layerStackCheck = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const m = window.__CC_MAP__;
-        if (!m) return { error: "Map not found" };
-        const layers = m.getStyle().layers.map((l) => l.id);
-        const mollIdx = layers.indexOf("historical-reference-moll-1715-layer");
-        const routesIdx = layers.indexOf("historical-routes-line");
-        const portsCoreIdx = layers.indexOf("historical-ports-core");
-        const portsOuterRingIdx = layers.indexOf("historical-ports-outer-ring");
-        const portsLabelIdx = layers.indexOf("historical-ports-label");
-
-        return {
-          mollIdx,
-          routesIdx,
-          portsCoreIdx,
-          portsOuterRingIdx,
-          portsLabelIdx,
-          mollBelowRoutes: mollIdx !== -1 && routesIdx !== -1 && mollIdx < routesIdx,
-          mollBelowPorts: mollIdx !== -1 && portsCoreIdx !== -1 && mollIdx < portsCoreIdx,
-        };
-      })()`,
-      returnByValue: true,
-    });
-    const layerStackVal = layerStackCheck?.result?.value;
-    assert(layerStackVal?.mollBelowRoutes, `Historical period raster layer (idx ${layerStackVal?.mollIdx}) is strictly below historical-routes-line (idx ${layerStackVal?.routesIdx})`);
-    assert(layerStackVal?.mollBelowPorts, `Historical period raster layer is strictly below historical-ports-core (idx ${layerStackVal?.portsCoreIdx})`);
-
-    // P8-003: Layer starts hidden (visibility: none)
+    // P8-003: Layer starts off; Living Atlas defers raster creation until requested.
     const initialVisibilityCheck = await send("Runtime.evaluate", {
       expression: `(() => {
         const m = window.__CC_MAP__;
-        const layerVis = m?.getLayoutProperty("historical-reference-moll-1715-layer", "visibility");
+        const layerVis = m?.getLayer("historical-reference-moll-1715-layer") ? m.getLayoutProperty("historical-reference-moll-1715-layer", "visibility") : "not-created";
         const checkbox = document.querySelector("[data-layer-visibility-checkbox]");
         const panel = document.querySelector("[data-layer-panel]");
         const badge = document.querySelector("[data-layer-state-badge]");
@@ -1907,7 +1885,7 @@ async function runReviewSuite() {
       returnByValue: true,
     });
     const initVis = initialVisibilityCheck?.result?.value;
-    assert(initVis?.layerVis === "none", `Period map reference layer starts OFF by default (visibility: ${initVis?.layerVis})`);
+    assert(initVis?.layerVis === "none" || initVis?.layerVis === "not-created", `Period map reference layer starts OFF by default (visibility: ${initVis?.layerVis})`);
     assert(initVis?.checkboxChecked === false, "Period map visibility checkbox starts unchecked");
     assert(initVis?.panelHidden === true, "Period map control panel starts collapsed/hidden");
     assert(initVis?.badgeText === "Off", `Period map state badge displays "Off" (found: "${initVis?.badgeText}")`);
@@ -1969,6 +1947,34 @@ async function runReviewSuite() {
     assert(tVal?.layerVis === "visible", `Toggling checkbox ON updates MapLibre layer visibility to "visible" (found: ${tVal?.layerVis})`);
     assert(tVal?.badgeText === "On" && tVal?.badgeActiveClass, 'Badge updates to active "On" state');
     assert(tVal?.sliderGroupHidden === false, "Opacity slider group is unhidden when layer is ON");
+
+    // P8-007: Visual Layer Hierarchy check
+    const layerStackCheck = await send("Runtime.evaluate", {
+      expression: `(() => {
+        const m = window.__CC_MAP__;
+        if (!m) return { error: "Map not found" };
+        const layers = m.getStyle().layers.map((l) => l.id);
+        const mollIdx = layers.indexOf("historical-reference-moll-1715-layer");
+        const routesIdx = layers.indexOf("historical-routes-line");
+        const portsCoreIdx = layers.indexOf("historical-ports-core");
+        const portsOuterRingIdx = layers.indexOf("historical-ports-outer-ring");
+        const portsLabelIdx = layers.indexOf("historical-ports-label");
+
+        return {
+          mollIdx,
+          routesIdx,
+          portsCoreIdx,
+          portsOuterRingIdx,
+          portsLabelIdx,
+          mollBelowRoutes: mollIdx !== -1 && routesIdx !== -1 && mollIdx < routesIdx,
+          mollBelowPorts: mollIdx !== -1 && portsCoreIdx !== -1 && mollIdx < portsCoreIdx,
+        };
+      })()`,
+      returnByValue: true,
+    });
+    const layerStackVal = layerStackCheck?.result?.value;
+    assert(layerStackVal?.mollBelowRoutes, `Historical period raster layer (idx ${layerStackVal?.mollIdx}) is strictly below historical-routes-line (idx ${layerStackVal?.routesIdx})`);
+    assert(layerStackVal?.mollBelowPorts, `Historical period raster layer is strictly below historical-ports-core (idx ${layerStackVal?.portsCoreIdx})`);
 
     // Step 5: Tab to opacity slider and operate via ArrowLeft / ArrowRight
     await sendKey("Tab", "Tab", 9);

@@ -4,6 +4,14 @@ import EntityInspector from "../components/inspector/EntityInspector.astro";
 import SourceDrawer from "../components/evidence/SourceDrawer.astro";
 import TimelineRail from "../components/timeline/TimelineRail.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import AtlasSearch from "../components/exploration/AtlasSearch.astro";
+import entitiesJson from "../../public/data/entities.json";
+
+const featuredRecords = [
+  { kind: "port", record: entitiesJson.places.find((place) => place.id === "place_port_royal") },
+  { kind: "ship", record: entitiesJson.ships.find((ship) => ship.id === "ship_richard_and_sarah_1705") },
+  { kind: "port", record: entitiesJson.places.find((place) => place.id === "place_cadiz") },
+].filter((entry) => entry.record);
 ---
 
 <BaseLayout
@@ -15,6 +23,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div class="app-masthead__brand">
         <p class="app-kicker">Greater Caribbean · Explore 1650–1730</p>
         <h1>Charted Currents</h1>
+      </div>
+      <div class="app-discovery">
+        <AtlasSearch />
+        <details class="app-discovery__suggestions">
+          <summary>Explore records</summary>
+          <nav aria-label="Explore published records">
+            {featuredRecords.map(({ kind, record }) => record && (
+              <a href={`?select=${encodeURIComponent(`${kind}:${record.id}`)}`} data-discovery-kind={kind} data-discovery-id={record.id}>{record.canonical_name}</a>
+            ))}
+          </nav>
+        </details>
       </div>
       <div class="app-utility">
         <p class="app-kicker">Reviewed Corpus · Records Span 1666–1712</p>
@@ -32,3 +51,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <TimelineRail />
   </main>
 </BaseLayout>
+
+<script>
+  import type { EntityKind } from "../lib/domain/types";
+  import { recordSelectionTrigger, requestCurrentSelectionFocus } from "../lib/map/interactionState";
+  import type { SelectionTrigger } from "../lib/map/interactionState";
+  import { selectionStore } from "../lib/state/selection";
+
+  const suggestions = document.querySelector<HTMLDetailsElement>(".app-discovery__suggestions");
+  suggestions?.addEventListener("click", (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("[data-discovery-id]");
+    if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    const trigger: SelectionTrigger = { origin: "search", modality: event.detail === 0 ? "keyboard" : "pointer", returnTarget: suggestions.querySelector("summary") };
+    const next = { kind: link.dataset.discoveryKind as EntityKind, id: link.dataset.discoveryId! };
+    suggestions.open = false;
+    const current = selectionStore.get();
+    if (current?.kind === next.kind && current.id === next.id) {
+      requestCurrentSelectionFocus(trigger);
+    } else {
+      recordSelectionTrigger(trigger);
+      selectionStore.set(next);
+    }
+  });
+</script>

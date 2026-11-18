@@ -24,7 +24,15 @@ const hasMollLayer = Boolean(
 ---
 
 <section class="map-viewport" aria-label="Greater Caribbean map" data-component="map-viewport">
-  <div id="charted-currents-map" class="map-viewport__canvas" tabindex="0" aria-label="Interactive map canvas. Use arrow keys to pan, plus and minus to zoom."></div>
+  <div id="charted-currents-map" class="map-viewport__canvas"></div>
+  <p class="map-viewport__unavailable" data-map-unavailable role="alert" hidden>Interactive map unavailable in this browser. Browse places or search the atlas to inspect records.</p>
+
+  <div class="map-view-controls" role="group" aria-label="Map orientation views" data-map-view-controls>
+    <button type="button" data-map-view="caribbean" disabled>Caribbean</button>
+    <button type="button" data-map-view="atlantic" disabled>Atlantic</button>
+    <button type="button" data-map-view="globe" aria-pressed="false" disabled>Globe</button>
+    <button type="button" data-map-north aria-label="Reset map bearing and tilt to north up" title="North up" disabled>N ↑</button>
+  </div>
 
   <!-- Epistemic map legend -->
   <aside class="map-epistemic-legend" aria-label="Map notation">
@@ -120,6 +128,7 @@ const hasMollLayer = Boolean(
         aria-expanded="false"
         aria-controls="map-layer-panel"
         data-layer-toggle
+        disabled
         title="Toggle Herman Moll [1715?] reference map options"
       >
         <span class="map-layer-control__icon" aria-hidden="true">
@@ -156,6 +165,12 @@ const hasMollLayer = Boolean(
         </div>
 
         <div class="map-layer-control__body">
+          <div class="map-layer-control__comparison" role="group" aria-label="Compare modern context and registered chart">
+            <button type="button" data-map-comparison="modern" aria-pressed="true">Modern</button>
+            <button type="button" data-map-comparison="blend" aria-pressed="false">Blend</button>
+            <button type="button" data-map-comparison="chart" aria-pressed="false">Registered chart</button>
+          </div>
+          <p class="map-layer-control__comparison-note">Compare at the same geographic view. Sourced endpoints remain above the chart.</p>
           <label class="map-layer-control__switch">
             <input
               type="checkbox"
@@ -205,12 +220,14 @@ const hasMollLayer = Boolean(
 </section>
 
 <script>
-  import { AttributionControl, LngLatBounds, Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
+  import { AttributionControl, Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
   import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
   import type { PublishedPortFeatureCollection, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
-  import { publishedDataUrl } from "../../lib/data/loadPublished";
+  import { loadPublishedPorts, loadPublishedRoutes } from "../../lib/data/loadPublished";
   import { applyBasemapVisualPolicy } from "../../lib/map/applyVisualPolicy";
-  import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW, SELECTION_CAMERA } from "../../lib/map/config";
+  import { INITIAL_MAP_STYLE_URL, INITIAL_MAP_VIEW, MAP_VIEWS, globeOrientationZoom } from "../../lib/map/config";
+  import { revealSelection, selectionCoordinates, visibleMapPadding } from "../../lib/map/cameraPolicy";
+  import { startViewNavigation } from "../../lib/map/viewNavigation";
   import { recordSelectionTrigger } from "../../lib/map/interactionState";
   import { PROJECT_MARKER_VISUAL_POLICY } from "../../lib/map/visualPolicy";
   import { selectionStore } from "../../lib/state/selection";
@@ -241,6 +258,85 @@ const hasMollLayer = Boolean(
   const opacityVal = document.querySelector<HTMLElement>("[data-layer-opacity-val]");
   const inspectBtn = document.querySelector<HTMLButtonElement>("[data-layer-inspect-btn]");
 
+  const lifecycle = new AbortController();
+  const subscriptions: (() => void)[] = [];
+  let resizeObserver: ResizeObserver | null = null;
+  let inspectorObserver: MutationObserver | null = null;
+  let cameraTimer: ReturnType<typeof setTimeout> | undefined;
+  let chromeFrame = 0;
+  let cameraSuppressed = false;
+  let viewNavigation: ReturnType<typeof startViewNavigation> | null = null;
+  let blendOpacity = 65;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function setMapControlsEnabled(enabled: boolean): void {
+    document.querySelectorAll<HTMLButtonElement>("[data-map-view], [data-map-north], [data-layer-toggle], .maplibregl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out")
+      .forEach((button) => { button.disabled = !enabled; });
+  }
+
+  function showUnavailableMap(message: string): void {
+    const notice = document.querySelector<HTMLElement>("[data-map-unavailable]");
+    if (notice) { notice.textContent = message; notice.hidden = false; }
+    if (status) status.textContent = message;
+    setMapControlsEnabled(false);
+  }
+
+  function listen<T extends keyof GlobalEventHandlersEventMap>(target: EventTarget | null, type: T,
+    callback: (event: GlobalEventHandlersEventMap[T]) => void, options: AddEventListenerOptions = {}): void {
+    target?.addEventListener(type, callback as EventListener, { ...options, signal: lifecycle.signal });
+  }
+
+  function cancelCamera(): void {
+    cameraSuppressed = true;
+    clearTimeout(cameraTimer);
+    map?.stop();
+  }
+
+  function layoutMapChrome(): void {
+    if (!container) return;
+    cancelAnimationFrame(chromeFrame);
+    const inspector = document.getElementById("entity-inspector");
+    const bounds = container.getBoundingClientRect();
+    const sheet = inspector && !inspector.hidden && window.innerWidth <= 1024
+      ? inspector.getBoundingClientRect() : null;
+    const overlap = sheet ? Math.max(0, bounds.bottom - Math.max(bounds.top, sheet.top)) : 0;
+    container.parentElement?.style.setProperty("--cc-map-sheet-overlap", `${overlap}px`);
+    // Each position depends on the preceding custom property. ResizeObserver
+    // reports dimension changes, so reading the old position in the same
+    // callback can otherwise leave controls stranded after a sheet closes.
+    // Two bounded layout frames settle the stack; there is no idle loop.
+    chromeFrame = requestAnimationFrame(() => {
+      if (lifecycle.signal.aborted || !container) return;
+      const attribution = container.querySelector<HTMLElement>(".maplibregl-ctrl-attrib");
+      const attributionRect = attribution?.getBoundingClientRect();
+      const clearance = attributionRect?.height
+        ? Math.max(32, container.getBoundingClientRect().bottom - attributionRect.top + 12)
+        : overlap + 40;
+      container.parentElement?.style.setProperty("--cc-map-attribution-clearance", `${clearance}px`);
+      chromeFrame = requestAnimationFrame(() => {
+        chromeFrame = 0;
+        if (lifecycle.signal.aborted || !container) return;
+        const legendRect = document.querySelector<HTMLElement>(".map-epistemic-legend")?.getBoundingClientRect();
+        const legendClearance = legendRect?.height
+          ? container.getBoundingClientRect().bottom - legendRect.top + 12 : clearance + 42;
+        container.parentElement?.style.setProperty("--cc-map-legend-clearance", `${legendClearance}px`);
+      });
+    });
+  }
+
+  function scheduleSelectionCamera(): void {
+    clearTimeout(cameraTimer);
+    if (cameraSuppressed || lifecycle.signal.aborted) return;
+    // Wait for the inspector's actual layout, including its grid/sheet transition.
+    cameraTimer = setTimeout(() => {
+      if (!map || !container || cameraSuppressed || lifecycle.signal.aborted) return;
+      const inspector = document.getElementById("entity-inspector");
+      const inspectorRect = inspector && !inspector.hidden ? inspector.getBoundingClientRect() : null;
+      revealSelection(map, selectionCoordinates(selectionStore.get(), portsData, routesData),
+        visibleMapPadding(container.getBoundingClientRect(), inspectorRect), reducedMotion.matches);
+    }, reducedMotion.matches ? 0 : 240);
+  }
+
   let map: Map | null = null;
   let previousSelectedFeatureId: string | null = null;
   let hoveredFeatureId: string | null = null;
@@ -251,13 +347,21 @@ const hasMollLayer = Boolean(
   async function initMap() {
     if (!container) return;
 
+    // The corpus browser remains useful even if no WebGL context can be made.
+    initLocatorBrowser();
+    window.addEventListener("pagehide", (event) => {
+      if (event.persisted) cancelCamera();
+      else cleanupMap();
+    }, { signal: lifecycle.signal });
+    document.addEventListener("astro:before-swap", cleanupMap, { signal: lifecycle.signal });
+
     try {
       map = new Map({
         container,
         style: INITIAL_MAP_STYLE_URL,
         center: INITIAL_MAP_VIEW.center,
         zoom: INITIAL_MAP_VIEW.zoom,
-        minZoom: 2,
+        minZoom: 0.7,
         maxZoom: 9,
         bearing: 0,
         pitch: 0,
@@ -265,6 +369,28 @@ const hasMollLayer = Boolean(
         pitchWithRotate: false,
         touchPitch: false,
         attributionControl: false,
+      });
+      // MapLibre can return from its constructor after a GPU initialization
+      // error instead of throwing. Confirm the existing canvas context before
+      // wiring a map that can never reach its load event.
+      if (!map.getCanvas().getContext("webgl2")) {
+        try { map.remove(); } catch { /* Partially initialized map. */ }
+        map = null;
+        throw new Error("WebGL2 context unavailable");
+      }
+      // Fetch the small reviewed geometry alongside the basemap, not after its
+      // load event. Share the same session requests with later record inspection.
+      const geometry = Promise.all([loadPublishedPorts(), loadPublishedRoutes()]);
+      void geometry.catch(() => {}); // The load handler reports any failure.
+      // Keep north-up navigation while retaining arrow-key pan and pinch zoom.
+      map.keyboard.disableRotation();
+      map.touchZoomRotate.disableRotation();
+      map.getCanvas().setAttribute("aria-label", "Interactive map canvas. Use arrow keys to pan, plus and minus to zoom.");
+      map.on("error", () => {
+        // Remote style/resource failures arrive asynchronously, outside the
+        // constructor catch. Keep the published corpus available without WebGL.
+        if (lifecycle.signal.aborted || container.dataset.mapReady === "true") return;
+        showUnavailableMap("The map background could not be loaded. Browse places or search the atlas to inspect records.");
       });
 
       if (import.meta.env.DEV || (typeof window !== "undefined" && Boolean((window as any).__ENABLE_MAP_TEST_HARNESS__))) {
@@ -274,7 +400,6 @@ const hasMollLayer = Boolean(
       map.addControl(
         new AttributionControl({
           compact: true,
-          customAttribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> | <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>',
         }),
         "bottom-right"
       );
@@ -287,12 +412,17 @@ const hasMollLayer = Boolean(
         }),
         "bottom-right"
       );
+      setMapControlsEnabled(false);
 
       map.on("load", () => {
         if (!map || !container) return;
         container.dataset.mapReady = "true";
+        document.querySelector<HTMLElement>("[data-map-unavailable]")?.setAttribute("hidden", "");
+        setMapControlsEnabled(true);
+        map.setProjection({ type: "mercator" });
         applyBasemapVisualPolicy(map);
-        loadHistoricalData(map);
+        viewNavigation = startViewNavigation(map, { cancelSelectionCamera: cancelCamera, onMode: applyDisplayMode });
+        loadHistoricalData(map, geometry);
       });
 
       map.on("idle", () => {
@@ -300,31 +430,53 @@ const hasMollLayer = Boolean(
         container.dataset.mapIdle = "true";
       });
 
-      selectionStore.subscribe((selection) => {
+      subscriptions.push(selectionStore.subscribe((selection) => {
+        viewNavigation?.selectionChanged();
+        cancelCamera();
+        cameraSuppressed = false;
         syncMapToSelection(selection);
-      });
+      }));
 
-      initLocatorBrowser();
+      for (const event of ["pointerdown", "wheel", "touchstart", "keydown"] as const) {
+        listen(container, event, () => { cancelCamera(); viewNavigation?.userInput(); }, { capture: true, passive: true });
+      }
+      const inspector = document.getElementById("entity-inspector");
+      resizeObserver = new ResizeObserver(() => {
+        map?.resize();
+        layoutMapChrome();
+        scheduleSelectionCamera();
+      });
+      resizeObserver.observe(container);
+      const attribution = container.querySelector<HTMLElement>(".maplibregl-ctrl-attrib");
+      const legend = document.querySelector<HTMLElement>(".map-epistemic-legend");
+      if (attribution) resizeObserver.observe(attribution);
+      if (legend) resizeObserver.observe(legend);
+      if (inspector) {
+        resizeObserver.observe(inspector);
+        inspectorObserver = new MutationObserver(() => { layoutMapChrome(); scheduleSelectionCamera(); });
+        inspectorObserver.observe(inspector, { attributes: true, attributeFilter: ["hidden", "data-sheet-state"] });
+      }
+      initViewControls();
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) cancelCamera();
+      }, { signal: lifecycle.signal });
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches) cancelCamera();
+      }, { signal: lifecycle.signal });
+
       initLayerControl(map);
     } catch (err) {
       console.error("Map initialization failed:", err);
-      if (status) status.textContent = "Map failed to initialize.";
+      showUnavailableMap("Interactive map unavailable in this browser. Browse places or search the atlas to inspect records.");
     }
   }
 
-  async function loadHistoricalData(m: Map) {
+  async function loadHistoricalData(m: Map, geometry: Promise<[PublishedPortFeatureCollection, PublishedRouteFeatureCollection]>) {
     try {
-      const [portsRes, routesRes] = await Promise.all([
-        fetch(publishedDataUrl("ports")),
-        fetch(publishedDataUrl("routes")),
-      ]);
-
-      if (!portsRes.ok || !routesRes.ok) {
-        throw new Error("Failed to load historical data artifacts");
-      }
-
-      portsData = await portsRes.json();
-      routesData = await routesRes.json();
+      const [ports, routes] = await geometry;
+      if (lifecycle.signal.aborted || map !== m) return;
+      portsData = ports;
+      routesData = routes;
 
       // 1. Add Routes Source
       m.addSource("historical-routes", {
@@ -339,55 +491,13 @@ const hasMollLayer = Boolean(
         source: "historical-routes",
         paint: {
           "line-color": "#7a5840",
-          "line-width": 1.8,
-          "line-opacity": 0.45,
+          "line-width": 1.3,
+          "line-opacity": 0.28,
           "line-dasharray": [3, 2.5],
         },
       });
 
-      // Add period map reference source and raster layer (Packet 8)
-      // Placed before "historical-routes-line" so routes and ports render on top
-      const rectifiedUrl = layerControl?.dataset.rectifiedUrl;
-      let coordinates: [[number, number], [number, number], [number, number], [number, number]] | null = null;
-      if (layerControl?.dataset.coordinates) {
-        try {
-          const parsed = JSON.parse(layerControl.dataset.coordinates);
-          if (Array.isArray(parsed) && parsed.length === 4) {
-            coordinates = parsed as [[number, number], [number, number], [number, number], [number, number]];
-          }
-        } catch (e) {
-          console.warn("Failed to parse georeference coordinates:", e);
-        }
-      }
-
-      if (rectifiedUrl && coordinates) {
-        m.addSource("historical-reference-moll-1715", {
-          type: "image",
-          url: rectifiedUrl,
-          coordinates,
-        });
-
-        const isLayerVisible = visibilityCheckbox?.checked ?? false;
-        const initialOpacity = opacitySlider ? Number(opacitySlider.value) / 100 : 0.65;
-
-        m.addLayer(
-          {
-            id: "historical-reference-moll-1715-layer",
-            type: "raster",
-            source: "historical-reference-moll-1715",
-            layout: {
-              visibility: isLayerVisible ? "visible" : "none",
-            },
-            paint: {
-              "raster-opacity": initialOpacity,
-              "raster-resampling": "linear",
-            },
-          },
-          "historical-routes-line"
-        );
-      } else if (layerControl) {
-        console.warn("Historical reference layer data missing or invalid; layer not initialized.");
-      }
+      if (visibilityCheckbox?.checked) ensurePeriodMapLayer(m);
 
       // Hit-target layer for routes
       m.addLayer({
@@ -414,12 +524,11 @@ const hasMollLayer = Boolean(
         source: "historical-ports",
         paint: {
           "circle-radius": [
-            "case",
-            ["boolean", ["feature-state", "selected"], false],
-            PROJECT_MARKER_VISUAL_POLICY.selectedOuterRingRadiusPx,
-            ["boolean", ["feature-state", "hover"], false],
-            PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx + 1,
-            PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx,
+            "interpolate", ["linear"], ["zoom"],
+            1, ["case", ["boolean", ["feature-state", "selected"], false], 8,
+              ["boolean", ["feature-state", "hover"], false], 5, 3.5],
+            6, ["case", ["boolean", ["feature-state", "selected"], false], PROJECT_MARKER_VISUAL_POLICY.selectedOuterRingRadiusPx,
+              ["boolean", ["feature-state", "hover"], false], PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx + 1, PROJECT_MARKER_VISUAL_POLICY.outerRingRadiusPx],
           ],
           "circle-color": "transparent",
           "circle-stroke-color": [
@@ -454,10 +563,9 @@ const hasMollLayer = Boolean(
         source: "historical-ports",
         paint: {
           "circle-radius": [
-            "case",
-            ["boolean", ["feature-state", "selected"], false],
-            PROJECT_MARKER_VISUAL_POLICY.selectedRadiusPx,
-            PROJECT_MARKER_VISUAL_POLICY.radiusPx,
+            "interpolate", ["linear"], ["zoom"],
+            1, ["case", ["boolean", ["feature-state", "selected"], false], 3.5, 2],
+            6, ["case", ["boolean", ["feature-state", "selected"], false], PROJECT_MARKER_VISUAL_POLICY.selectedRadiusPx, PROJECT_MARKER_VISUAL_POLICY.radiusPx],
           ],
           "circle-color": [
             "case",
@@ -477,10 +585,12 @@ const hasMollLayer = Boolean(
         source: "historical-ports",
         layout: {
           "text-field": ["get", "canonical_name"],
+          "text-font": ["Noto Sans Regular"],
           "text-variable-anchor": ["top", "bottom", "right", "left"],
           "text-radial-offset": 0.9,
           "text-justify": "auto",
-          "text-size": 12,
+          "text-size": ["interpolate", ["linear"], ["zoom"], 1, 10, 4, 11.5, 6, 12],
+          "text-padding": 5,
           "text-optional": true,
         },
         paint: {
@@ -527,7 +637,7 @@ const hasMollLayer = Boolean(
           recordSelectionTrigger({
             modality: "pointer",
             origin: "map",
-            returnTarget: container,
+            returnTarget: m.getCanvas(),
           });
           selectionStore.set({ kind: "port", id: String(feature.properties.id) });
         }
@@ -543,6 +653,9 @@ const hasMollLayer = Boolean(
       });
 
       m.on("click", "historical-routes-hit-target", (e) => {
+        // Ports sit above endpoint connectors. One pointer action must not
+        // select a port and then immediately replace it with the route below.
+        if (m.queryRenderedFeatures(e.point, { layers: ["historical-ports-hit-target"] }).length) return;
         const feature = e.features?.[0];
         if (!feature || !feature.properties) return;
         const props = feature.properties;
@@ -550,24 +663,87 @@ const hasMollLayer = Boolean(
         recordSelectionTrigger({
           modality: "pointer",
           origin: "map",
-          returnTarget: container,
+          returnTarget: m.getCanvas(),
         });
         if (recCount > 1) {
           selectionStore.set({ kind: "voyage", id: String(props.route_group_id || props.id) });
-        } else if (props.vessel_id) {
-          selectionStore.set({ kind: "ship", id: String(props.vessel_id) });
+        } else {
+          // Display edges carry reviewed constituent IDs, not a vessel_id.
+          // MapLibre can serialize GeoJSON array properties into JSON strings.
+          let constituents: unknown = props.constituent_vessel_ids;
+          if (typeof constituents === "string") {
+            try { constituents = JSON.parse(constituents); } catch { constituents = null; }
+          }
+          const vesselIds = Array.isArray(constituents)
+            ? [...new Set(constituents.filter((id): id is string => typeof id === "string" && Boolean(id)))]
+            : [];
+          if (vesselIds.length === 1) selectionStore.set({ kind: "ship", id: vesselIds[0] });
+          else if (props.route_group_id || props.id) {
+            // Keep an ambiguous connection at route level rather than choosing
+            // one vessel or manufacturing an identity from a display label.
+            selectionStore.set({ kind: "voyage", id: String(props.route_group_id || props.id) });
+          }
         }
       });
 
-      timeFilterStore.subscribe((filter) => {
+      subscriptions.push(timeFilterStore.subscribe((filter) => {
         activeTimeFilter = filter;
         updateRouteVisualHierarchy(selectionStore.get(), activeTimeFilter);
-      });
+      }));
 
       syncMapToSelection(selectionStore.get());
     } catch (err) {
+      if (lifecycle.signal.aborted) return;
       console.error("Failed to load historical map data:", err);
     }
+  }
+
+  /** MapLibre image sources fetch even with their raster layer hidden. Install
+   * the reviewed reference only after an explicit request, under project data. */
+  function ensurePeriodMapLayer(m: Map): boolean {
+    if (m.getLayer("historical-reference-moll-1715-layer")) return true;
+    if (!m.getLayer("historical-routes-line")) return false;
+    const rectifiedUrl = layerControl?.dataset.rectifiedUrl;
+    let coordinates: [[number, number], [number, number], [number, number], [number, number]] | null = null;
+    if (layerControl?.dataset.coordinates) {
+      try {
+        const parsed = JSON.parse(layerControl.dataset.coordinates);
+        if (Array.isArray(parsed) && parsed.length === 4) {
+          coordinates = parsed as [[number, number], [number, number], [number, number], [number, number]];
+        }
+      } catch (e) {
+        console.warn("Failed to parse georeference coordinates:", e);
+      }
+    }
+
+    if (rectifiedUrl && coordinates) {
+      m.addSource("historical-reference-moll-1715", {
+        type: "image",
+        url: rectifiedUrl,
+        coordinates,
+      });
+
+      const initialOpacity = opacitySlider ? Number(opacitySlider.value) / 100 : 0.65;
+
+      m.addLayer(
+        {
+          id: "historical-reference-moll-1715-layer",
+          type: "raster",
+          source: "historical-reference-moll-1715",
+          layout: {
+            visibility: "visible",
+          },
+          paint: {
+            "raster-opacity": initialOpacity,
+            "raster-resampling": "linear",
+          },
+        },
+        "historical-routes-line"
+      );
+      return true;
+    }
+    console.warn("Historical reference layer data missing or invalid; layer not initialized.");
+    return false;
   }
 
   function updateRouteVisualHierarchy(selection: Selection, timeFilter: TimeFilterState): void {
@@ -683,13 +859,13 @@ const hasMollLayer = Boolean(
       map.setPaintProperty("historical-routes-line", "line-opacity", [
         "case",
         inTimeCondition,
-        0.45,
+        0.28,
         0.04,
       ]);
       map.setPaintProperty("historical-routes-line", "line-width", [
         "case",
         inTimeCondition,
-        1.8,
+        1.3,
         1.2,
       ]);
       map.setPaintProperty("historical-routes-line", "line-color", "#7a5840");
@@ -707,82 +883,77 @@ const hasMollLayer = Boolean(
       previousSelectedFeatureId = null;
     }
 
-    const isDesktop = window.innerWidth >= 768;
-    const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (selection && selection.kind === "port") {
-      const portFeature = portsData?.features.find((f) => f.properties.id === selection.id);
-      if (portFeature) {
-        previousSelectedFeatureId = portFeature.id;
-        map.setFeatureState(
-          { source: "historical-ports", id: portFeature.id },
-          { selected: true }
-        );
-
-        const padding = isDesktop
-          ? { right: 380, top: 40, bottom: 40, left: 40 }
-          : { bottom: 260, top: 40, left: 20, right: 20 };
-
-        if (isReducedMotion) {
-          map.jumpTo({ center: portFeature.geometry.coordinates as [number, number], padding });
-        } else {
-          map.easeTo({
-            center: portFeature.geometry.coordinates as [number, number],
-            padding,
-            duration: SELECTION_CAMERA.durationMs,
-          });
-        }
-      }
-    } else if (selection && selection.kind === "ship") {
-      const routeFeature = routesData?.features.find((f) => f.properties.constituent_vessel_ids.includes(selection.id));
-      if (routeFeature && routeFeature.geometry.coordinates.length >= 2) {
-        const bounds = new LngLatBounds();
-        for (const coord of routeFeature.geometry.coordinates) {
-          bounds.extend(coord as [number, number]);
-        }
-
-        const padding = isDesktop
-          ? { right: 420, top: 70, bottom: 70, left: 60 }
-          : { bottom: 280, top: 50, left: 30, right: 30 };
-
-        if (isReducedMotion) {
-          map.fitBounds(bounds, { padding, maxZoom: 5.5, duration: 0 });
-        } else {
-          map.fitBounds(bounds, {
-            padding,
-            maxZoom: 5.5,
-            duration: SELECTION_CAMERA.durationMs,
-          });
-        }
-      }
-    } else if (selection && selection.kind === "voyage") {
-      const matchingRoutes = routesData?.features.filter(
-        (r) => r.properties.route_group_id === selection.id || r.properties.id === selection.id
-      );
-      if (matchingRoutes && matchingRoutes.length > 0) {
-        const bounds = new LngLatBounds();
-        for (const r of matchingRoutes) {
-          for (const coord of r.geometry.coordinates) {
-            bounds.extend(coord as [number, number]);
-          }
-        }
-        const padding = isDesktop
-          ? { right: 420, top: 70, bottom: 70, left: 60 }
-          : { bottom: 280, top: 50, left: 30, right: 30 };
-
-        if (isReducedMotion) {
-          map.fitBounds(bounds, { padding, maxZoom: 5.5, duration: 0 });
-        } else {
-          map.fitBounds(bounds, {
-            padding,
-            maxZoom: 5.5,
-            duration: SELECTION_CAMERA.durationMs,
-          });
-        }
+    if (selection?.kind === "port") {
+      const port = portsData?.features.find((feature) => feature.properties.id === selection.id);
+      if (port) {
+        previousSelectedFeatureId = port.id;
+        map.setFeatureState({ source: "historical-ports", id: port.id }, { selected: true });
       }
     }
+    scheduleSelectionCamera();
 
     updateRouteVisualHierarchy(selection, activeTimeFilter);
+  }
+
+  function applyDisplayMode(mode: "mercator" | "globe"): "mercator" | "globe" {
+    if (!map) return "mercator";
+    let effectiveMode = mode;
+    try {
+      map.setProjection({ type: mode });
+      map.setSky({ "sky-color": "#dce9e7", "horizon-color": "#d8eeed", "fog-color": "#d8eeed",
+        "atmosphere-blend": mode === "globe" ? 0.65 : 0 });
+    } catch (error) {
+      if (mode !== "globe") throw error;
+      effectiveMode = "mercator";
+      map.setProjection({ type: "mercator" });
+      const globeButton = document.querySelector<HTMLButtonElement>('[data-map-view="globe"]');
+      if (globeButton) {
+        globeButton.disabled = true;
+        globeButton.title = "Globe unavailable in this browser. The 2D atlas remains available.";
+      }
+      if (status) status.textContent = "Globe unavailable in this browser. The 2D atlas remains available.";
+    }
+    document.querySelector('[data-map-view="globe"]')?.setAttribute("aria-pressed", String(effectiveMode === "globe"));
+    return effectiveMode;
+  }
+
+  function initViewControls(): void {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-map-view]"));
+    buttons.forEach((button) => listen(button, "click", () => {
+      if (!map) return;
+      const key = button.dataset.mapView as keyof typeof MAP_VIEWS;
+      const view = MAP_VIEWS[key];
+      if (!view || container?.dataset.mapReady !== "true") return;
+      cancelCamera();
+      const mode = applyDisplayMode(view.projection);
+      const target = mode === view.projection ? view : MAP_VIEWS.caribbean;
+      viewNavigation?.explicitView();
+      const rect = map.getContainer().getBoundingClientRect();
+      const zoom = key === "globe" && mode === "globe" ? globeOrientationZoom(rect.width, rect.height) : target.zoom;
+      // Explicit view changes are direct orientation commands, not selection travel.
+      map.easeTo({ center: target.center, zoom, bearing: 0, pitch: 0,
+        padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: reducedMotion.matches ? 0 : 650 });
+      if (status && mode === view.projection) status.textContent = `${button.textContent} view. Modern basemap for orientation.`;
+    }));
+    listen(document.querySelector("[data-map-north]"), "click", () => {
+      cancelCamera();
+      map?.easeTo({ bearing: 0, pitch: 0, duration: reducedMotion.matches ? 0 : 300 });
+      if (status) status.textContent = "Map reset to north up.";
+    });
+  }
+
+  function cleanupMap(): void {
+    clearTimeout(cameraTimer);
+    cancelAnimationFrame(chromeFrame);
+    lifecycle.abort();
+    subscriptions.splice(0).forEach((unsubscribe) => unsubscribe());
+    viewNavigation?.dispose();
+    resizeObserver?.disconnect();
+    inspectorObserver?.disconnect();
+    map?.remove();
+    map = null;
+    if (container) delete container.dataset.mapReady;
+    if (import.meta.env.DEV || (window as any).__ENABLE_MAP_TEST_HARNESS__) delete (window as any).__CC_MAP__;
   }
 
   function getVisibleLocatorButtons(): HTMLButtonElement[] {
@@ -864,7 +1035,25 @@ const hasMollLayer = Boolean(
   function initLayerControl(m: Map): void {
     if (!layerControl || !layerToggle || !layerPanel) return;
 
-    layerToggle.addEventListener("click", () => {
+    function syncComparisonControls(): void {
+      const mode = !visibilityCheckbox?.checked ? "modern" : Number(opacitySlider?.value) === 100 ? "chart" : "blend";
+      layerPanel?.querySelectorAll<HTMLButtonElement>("[data-map-comparison]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.mapComparison === mode));
+      });
+    }
+
+    layerPanel.querySelectorAll<HTMLButtonElement>("[data-map-comparison]").forEach((button) => listen(button, "click", () => {
+      if (!visibilityCheckbox || !opacitySlider) return;
+      const mode = button.dataset.mapComparison;
+      if (mode !== "modern") {
+        opacitySlider.value = String(mode === "chart" ? 100 : blendOpacity);
+        opacitySlider.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      visibilityCheckbox.checked = mode !== "modern";
+      visibilityCheckbox.dispatchEvent(new Event("change", { bubbles: true }));
+    }));
+
+    listen(layerToggle, "click", () => {
       const isExpanded = layerToggle.getAttribute("aria-expanded") === "true";
       if (isExpanded) {
         closeLayerPanel();
@@ -873,7 +1062,7 @@ const hasMollLayer = Boolean(
       }
     });
 
-    layerToggle.addEventListener("keydown", (e) => {
+    listen(layerToggle, "keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         const isExpanded = layerToggle.getAttribute("aria-expanded") === "true";
@@ -885,12 +1074,12 @@ const hasMollLayer = Boolean(
       }
     });
 
-    layerPanelClose?.addEventListener("click", () => {
+    listen(layerPanelClose, "click", () => {
       closeLayerPanel();
       layerToggle.focus();
     });
 
-    layerPanel.addEventListener("keydown", (e) => {
+    listen(layerPanel, "keydown", (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
@@ -899,8 +1088,11 @@ const hasMollLayer = Boolean(
       }
     });
 
-    visibilityCheckbox?.addEventListener("change", () => {
+    listen(visibilityCheckbox, "change", () => {
+      if (!visibilityCheckbox) return;
       const isVisible = visibilityCheckbox.checked;
+      syncComparisonControls();
+      if (isVisible) ensurePeriodMapLayer(m);
       if (m.getLayer("historical-reference-moll-1715-layer")) {
         m.setLayoutProperty(
           "historical-reference-moll-1715-layer",
@@ -926,13 +1118,16 @@ const hasMollLayer = Boolean(
       }
     });
 
-    opacitySlider?.addEventListener("input", () => {
+    listen(opacitySlider, "input", () => {
+      if (!opacitySlider) return;
       const val = Number(opacitySlider.value);
+      if (val < 100) blendOpacity = val;
       const opacity = val / 100;
       if (opacityVal) {
         opacityVal.textContent = `${val}%`;
       }
       opacitySlider.setAttribute("aria-valuenow", String(val));
+      syncComparisonControls();
       if (m.getLayer("historical-reference-moll-1715-layer")) {
         m.setPaintProperty("historical-reference-moll-1715-layer", "raster-opacity", opacity);
       }
@@ -960,15 +1155,18 @@ const hasMollLayer = Boolean(
       // Do not call closeLayerPanel() so inspectBtn remains the active returnElement in the DOM
     };
 
-    inspectBtn?.addEventListener("click", triggerInspect);
-    inspectBtn?.addEventListener("keydown", (e) => {
+    listen(inspectBtn, "click", triggerInspect);
+    listen(inspectBtn, "keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         triggerInspect();
       }
     });
 
-    window.addEventListener("click", (e) => {
+    listen(window, "click", (e) => {
+      // Source inspection returns focus here. Keep its trigger visible while
+      // interacting with, or closing, the adjacent evidence surface.
+      if (e.target instanceof Element && e.target.closest('[data-component="source-drawer"]')) return;
       if (!layerControl.contains(e.target as Node)) {
         closeLayerPanel();
       }
@@ -978,7 +1176,7 @@ const hasMollLayer = Boolean(
   function initLocatorBrowser(): void {
     if (!locatorBrowser || !locatorToggle || !locatorMenu) return;
 
-    locatorToggle.addEventListener("click", (e) => {
+    listen(locatorToggle, "click", (e) => {
       const isKeyboard = e.detail === 0;
       const isExpanded = locatorToggle.getAttribute("aria-expanded") === "true";
       if (isExpanded) {
@@ -988,7 +1186,7 @@ const hasMollLayer = Boolean(
       }
     });
 
-    locatorToggle.addEventListener("keydown", (e) => {
+    listen(locatorToggle, "keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         const isExpanded = locatorToggle.getAttribute("aria-expanded") === "true";
@@ -1003,11 +1201,12 @@ const hasMollLayer = Boolean(
       }
     });
 
-    locatorFilterInput?.addEventListener("input", () => {
-      applyPlaceFilter(locatorFilterInput.value);
+    listen(locatorFilterInput, "input", () => {
+      if (locatorFilterInput) applyPlaceFilter(locatorFilterInput.value);
     });
 
-    locatorFilterInput?.addEventListener("keydown", (e) => {
+    listen(locatorFilterInput, "keydown", (e) => {
+      if (!locatorFilterInput) return;
       if (e.key === "ArrowDown") {
         e.preventDefault();
         e.stopPropagation();
@@ -1027,7 +1226,7 @@ const hasMollLayer = Boolean(
     });
 
     locatorItems.forEach((btn) => {
-      btn.addEventListener("click", () => {
+      listen(btn, "click", () => {
         const placeId = btn.dataset.placeId;
         if (placeId) {
           recordSelectionTrigger({
@@ -1042,7 +1241,7 @@ const hasMollLayer = Boolean(
       });
     });
 
-    locatorMenu.addEventListener("keydown", (e) => {
+    listen(locatorMenu, "keydown", (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
@@ -1102,7 +1301,7 @@ const hasMollLayer = Boolean(
       }
     });
 
-    window.addEventListener("click", (e) => {
+    listen(window, "click", (e) => {
       if (!locatorBrowser.contains(e.target as Node)) {
         closeLocatorMenu();
       }
@@ -1131,9 +1330,47 @@ const hasMollLayer = Boolean(
     outline-offset: -2px;
   }
 
+  .map-viewport__unavailable {
+    position: absolute;
+    inset: 6rem 1.25rem auto;
+    max-width: 32rem;
+    padding: 1rem;
+    color: var(--cc-ink);
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    font: 0.85rem/1.5 var(--cc-font-sans);
+  }
+
+  .map-view-controls {
+    position: absolute;
+    left: 1.25rem;
+    bottom: max(3.75rem, var(--cc-map-legend-clearance, 3.75rem));
+    z-index: 15;
+    display: flex;
+    background: var(--cc-paper-raised);
+    border: 1px solid var(--cc-line);
+    border-radius: 2px;
+  }
+
+  .map-view-controls button {
+    min-height: 36px;
+    padding: 0.45rem 0.65rem;
+    border: 0;
+    border-right: 1px solid var(--cc-line);
+    background: transparent;
+    color: var(--cc-ink-muted);
+    font: 500 0.7rem var(--cc-font-sans);
+    cursor: pointer;
+  }
+
+  .map-view-controls button:last-child { border-right: 0; }
+  .map-view-controls button[aria-pressed="true"] { color: var(--cc-ink); background: var(--cc-paper); }
+  .map-view-controls button:hover { color: var(--cc-ink); }
+  .map-view-controls button:focus-visible { outline: 2px solid var(--cc-focus); outline-offset: 2px; }
+
   .map-epistemic-legend {
     position: absolute;
-    bottom: 1.25rem;
+    bottom: max(1.25rem, var(--cc-map-attribution-clearance, 2.5rem));
     left: 1.25rem;
     z-index: 10;
     display: flex;
@@ -1465,6 +1702,28 @@ const hasMollLayer = Boolean(
     gap: 0.65rem;
   }
 
+  .map-layer-control__comparison {
+    display: flex;
+    border: 1px solid var(--cc-line);
+  }
+
+  .map-layer-control__comparison button {
+    flex: 1;
+    min-height: 36px;
+    padding: 0.4rem 0.3rem;
+    border: 0;
+    border-right: 1px solid var(--cc-line);
+    background: transparent;
+    color: var(--cc-ink);
+    font: 500 0.68rem var(--cc-font-sans);
+    cursor: pointer;
+  }
+
+  .map-layer-control__comparison button:last-child { border-right: 0; }
+  .map-layer-control__comparison button[aria-pressed="true"] { background: var(--cc-atlantic); color: var(--cc-paper-raised); }
+  .map-layer-control__comparison button:focus-visible { outline: 2px solid var(--cc-focus); outline-offset: 2px; }
+  .map-layer-control__comparison-note { margin: 0; font: 0.68rem/1.4 var(--cc-font-sans); color: var(--cc-ink-muted); }
+
   .map-layer-control__switch {
     display: flex;
     align-items: center;
@@ -1572,8 +1831,10 @@ const hasMollLayer = Boolean(
     .map-layer-control__panel {
       width: min(270px, calc(100vw - 1.5rem));
     }
+    .map-view-controls { left: 0.75rem; bottom: max(6.75rem, var(--cc-map-legend-clearance, 6.75rem)); }
+    .map-view-controls button { min-height: 44px; }
     .map-epistemic-legend {
-      bottom: 4.5rem;
+      bottom: max(4.5rem, var(--cc-map-attribution-clearance, 4.5rem));
       left: 0.75rem;
     }
   }

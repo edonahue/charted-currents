@@ -95,3 +95,28 @@ This log records substantive historical, provenance, and cartographic correction
   - `test_cartographic_assertions`: Verifies published assertion records match derivation parameters.
   - `test_acquisition_metadata_invariants`: Verifies Bowles imprint and `[1715?]` date uncertainty.
   - `test_candidate_benchmark_and_common_core_invariants`: Verifies Candidate C vs F1 full scope and common-core metrics, mathematical delta consistency, non-production working directory storage of review assets, public asset hygiene (`public/assets/visuals/review` absence), and exclusion of unverified claims or forbidden terms.
+
+---
+
+## Correction proposal: `CORR-20261117-01`
+
+- **Status:** implemented locally for Packet 12 review; not accepted or published.
+- **Category:** inspection-state presentation; no corpus values or evidence states changed.
+- **Previous version:** campaign baseline `3e6ef52`, `EntityInspector.astro` crew heading
+  “Examined Crew Depositions” and caption “Sourced depositions recorded in Prize Court examinations.”
+- **Concern:** that blanket heading can imply project examination of original
+  depositions. The displayed records are inspected research-dataset rows.
+- **Repository evidence:** `sr_imlm_crew_5035`, `sr_imlm_crew_5036`,
+  `sr_imlm_crew_5037`, and parent `sr_imlm_ship_2052` have
+  `dataset_record_inspected`. Source `src_tna_hca_32` explicitly says physical
+  manuscripts at Kew were not independently examined by Charted Currents.
+- **Proposed presentation:** “Recorded crew”; “Crew entries from inspected dataset
+  records. Original manuscripts were not independently examined by Charted Currents.”
+- **Related campaign correction:** source containers without item-level records
+  explicitly state that no item-level inspection record is published. Containers
+  with records but no selected item ask the reader to select a record. Neither
+  case receives an inferred inspection state.
+- **Review basis:** independent agent identified the mismatch; primary agent
+  checked the existing published record/source metadata. This is process QA, not
+  new historical corroboration or a new archival inspection.
+- **First corrected public version:** pending external acceptance and publication.

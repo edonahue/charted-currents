@@ -10,6 +10,7 @@ export type SelectionTriggerOrigin =
   | "locator_menu"
   | "locator_browser"
   | "timeline"
+  | "search"
   | "inspector_connection";
 export type SelectionTriggerModality = "pointer" | "keyboard";
 
@@ -26,6 +27,15 @@ let currentTrigger: SelectionTrigger = {
 
 export function recordSelectionTrigger(trigger: SelectionTrigger): void {
   currentTrigger = trigger;
+}
+
+export const CURRENT_SELECTION_FOCUS_EVENT = "cc:focus-current-selection";
+
+/** Refresh inspection/focus for an existing selection without another state or
+ * history transition. Keep its return target with the current interaction. */
+export function requestCurrentSelectionFocus(trigger: SelectionTrigger): void {
+  recordSelectionTrigger(trigger);
+  window.dispatchEvent(new Event(CURRENT_SELECTION_FOCUS_EVENT));
 }
 
 export function getSelectionTrigger(): SelectionTrigger {

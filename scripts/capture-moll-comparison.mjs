@@ -291,6 +291,8 @@ async function main() {
     await send("Runtime.evaluate", {
       expression: `(() => {
         const m = window.__CC_MAP__;
+        const checkbox = document.querySelector('[data-layer-visibility-checkbox]');
+        if (checkbox && !checkbox.checked) checkbox.click(); // Capture setup; not native-input proof.
         if (m.getLayer('historical-reference-moll-1715-layer')) {
           m.setLayoutProperty('historical-reference-moll-1715-layer', 'visibility', 'visible');
           m.setPaintProperty('historical-reference-moll-1715-layer', 'raster-opacity', 0.65);

@@ -1,0 +1,158 @@
+---
+import entitiesJson from "../../../public/data/entities.json";
+import eventsJson from "../../../public/data/events.json";
+import routesJson from "../../../public/data/routes.geojson?raw";
+import type { EntityKind, PublishedEntities, PublishedEvent, PublishedRouteFeatureCollection } from "../../lib/domain/types";
+
+const entities = entitiesJson as unknown as PublishedEntities;
+const events = (Array.isArray(eventsJson) ? eventsJson : eventsJson.events) as PublishedEvent[];
+const routes = JSON.parse(routesJson) as PublishedRouteFeatureCollection;
+const fold = (value: string) => value.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase();
+type SearchEntry = { kind: EntityKind; id: string; name: string; kindLabel: string; detail: string; terms: string };
+const named = (kind: EntityKind, kindLabel: string, values: Array<{ id: string; canonical_name: string; raw_source_name?: string; disambiguation_display?: string | null; attestations?: Array<{ raw_name: string }> }>): SearchEntry[] => values.map((value) => ({
+  kind, kindLabel, id: value.id, name: value.canonical_name,
+  detail: value.disambiguation_display || "",
+  terms: fold([value.canonical_name, value.raw_source_name, ...(value.attestations || []).map(({ raw_name }) => raw_name)].filter(Boolean).join(" ")),
+}));
+const routeIds = new Set<string>();
+const routeEntries: SearchEntry[] = routes.features.flatMap(({ properties }) => {
+  const id = properties.route_group_id || properties.id;
+  if (routeIds.has(id)) return [];
+  routeIds.add(id);
+  const name = `${properties.origin_name} → ${properties.destination_name}`;
+  return [{ kind: "voyage", kindLabel: "Route", id, name, detail: "Documented endpoints", terms: fold(name) }];
+});
+const entries: SearchEntry[] = [
+  ...named("port", "Place", entities.places),
+  ...named("ship", "Vessel", entities.ships),
+  ...named("person", "Person", entities.persons || []),
+  ...events.map(({ id, title, date }) => ({ kind: "event" as const, kindLabel: "Event", id, name: title, detail: date, terms: fold(`${title} ${date}`) })),
+  ...routeEntries,
+].sort((left, right) => left.name.localeCompare(right.name, "en"));
+---
+
+<form class="atlas-search" role="search" aria-label="Published atlas records" data-atlas-search>
+  <label for="atlas-search-input">Search the atlas</label>
+  <div class="atlas-search__field">
+    <svg aria-hidden="true" viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8.3" cy="8.3" r="5.4"/><path d="m12.3 12.3 4.8 4.8"/></svg>
+    <input id="atlas-search-input" name="q" type="search" placeholder="Place, vessel, person, event…" autocomplete="off" aria-controls="atlas-search-results" aria-describedby="atlas-search-help" />
+  </div>
+  <span id="atlas-search-help" class="sr-only">Type a name to search published records. Tab or use the down arrow to reach results. Press Escape to dismiss.</span>
+  <div id="atlas-search-results" class="atlas-search__results" hidden>
+    <p class="atlas-search__count" role="status" aria-live="polite" data-search-count></p>
+    <ul aria-label="Matching published records">
+      {entries.map((entry) => (
+        <li data-search-entry data-search-terms={entry.terms} data-search-name={fold(entry.name)} hidden>
+          <a href={`?select=${encodeURIComponent(`${entry.kind}:${entry.id}`)}`} data-search-kind={entry.kind} data-search-id={entry.id}>
+            <span class="atlas-search__kind">{entry.kindLabel}</span>
+            <span class="atlas-search__record"><span class="atlas-search__name">{entry.name}</span>{entry.detail && <span class="atlas-search__detail">{entry.detail}</span>}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="atlas-search__scope">Search covers the published corpus across all periods. A match does not imply complete historical coverage.</p>
+  </div>
+</form>
+
+<script>
+  import type { EntityKind } from "../../lib/domain/types";
+  import { recordSelectionTrigger, requestCurrentSelectionFocus } from "../../lib/map/interactionState";
+  import type { SelectionTrigger } from "../../lib/map/interactionState";
+  import { selectionStore } from "../../lib/state/selection";
+  import { timeFilterStore } from "../../lib/state/timeFilter";
+  import { writeNavigationState } from "../../lib/state/navigation";
+
+  const form = document.querySelector<HTMLFormElement>("[data-atlas-search]");
+  const input = form?.querySelector<HTMLInputElement>("input");
+  const results = form?.querySelector<HTMLElement>("#atlas-search-results");
+  const count = form?.querySelector<HTMLElement>("[data-search-count]");
+  const entries = Array.from(form?.querySelectorAll<HTMLLIElement>("[data-search-entry]") || []);
+  const fold = (value: string) => value.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase();
+  const controller = new AbortController();
+  const { signal } = controller;
+  // Follow the ranked DOM order for both native Tab and arrow navigation.
+  const visibleLinks = () => Array.from(form?.querySelectorAll<HTMLAnchorElement>("[data-search-entry]:not([hidden]) a") || []);
+  const dismiss = () => { if (results) results.hidden = true; };
+  const search = () => {
+    if (!input || !results || !count) return;
+    const query = fold(input.value.trim());
+    const terms = query.split(/\s+/).filter(Boolean);
+    let matches = 0;
+    const ranked = [...entries].sort((a, b) => Number(b.dataset.searchName?.startsWith(query)) - Number(a.dataset.searchName?.startsWith(query)));
+    for (const entry of ranked) {
+      const match = terms.length > 0 && terms.every((term) => entry.dataset.searchTerms?.includes(term));
+      entry.hidden = !match || ++matches > 12;
+      if (!entry.hidden) {
+        // Keep native new-tab/open-link behavior useful alongside store selection.
+        const link = entry.querySelector<HTMLAnchorElement>("a")!;
+        link.href = writeNavigationState(new URL(location.href), {
+          selection: { kind: link.dataset.searchKind as EntityKind, id: link.dataset.searchId! },
+          period: timeFilterStore.get().id,
+        }).href;
+        entry.parentElement?.append(entry);
+      }
+    }
+    count.textContent = matches === 0 ? "No published records match. Try another name." : matches > 12 ? `First 12 of ${matches} results. Refine your search for more.` : `${matches} matching ${matches === 1 ? "record" : "records"}`;
+    results.hidden = !terms.length;
+  };
+  input?.addEventListener("input", search, { signal });
+  input?.addEventListener("focus", search, { signal });
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    search();
+    visibleLinks()[0]?.focus();
+  }, { signal });
+  form?.addEventListener("click", (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("[data-search-id]");
+    if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    const trigger: SelectionTrigger = { origin: "search", modality: event.detail === 0 ? "keyboard" : "pointer", returnTarget: input };
+    dismiss();
+    const next = { kind: link.dataset.searchKind as EntityKind, id: link.dataset.searchId! };
+    const current = selectionStore.get();
+    if (current?.kind === next.kind && current.id === next.id) {
+      requestCurrentSelectionFocus(trigger);
+    } else {
+      recordSelectionTrigger(trigger);
+      selectionStore.set(next);
+    }
+  }, { signal });
+  form?.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && results && !results.hidden) {
+      event.preventDefault(); event.stopPropagation(); input?.focus(); dismiss();
+    } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      if (results?.hidden) search();
+      const links = visibleLinks();
+      const index = links.indexOf(document.activeElement as HTMLAnchorElement);
+      const next = event.key === "ArrowDown" ? index + 1 : index - 1;
+      if (next >= 0 && next < links.length) { event.preventDefault(); links[next].focus(); }
+      else if (event.key === "ArrowUp" && index === 0) { event.preventDefault(); input?.focus(); }
+    }
+  }, { signal });
+  form?.addEventListener("focusout", (event) => { if (!form.contains(event.relatedTarget as Node | null)) dismiss(); }, { signal });
+  document.addEventListener("pointerdown", (event) => { if (!form?.contains(event.target as Node)) dismiss(); }, { signal });
+  document.addEventListener("astro:before-swap", () => controller.abort(), { once: true });
+</script>
+
+<style>
+  .atlas-search { position: relative; flex: 0 1 24rem; width: min(100%, 24rem); align-self: center; font-family: var(--cc-font-sans); z-index: 40; }
+  .atlas-search label { display: block; margin-bottom: 0.2rem; color: var(--cc-ink-muted); font-size: 0.6875rem; }
+  .atlas-search__field { display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--cc-line-strong); color: var(--cc-atlantic); }
+  .atlas-search input { width: 100%; min-width: 0; min-height: 2.25rem; border: 0; border-radius: 0; background: transparent; color: var(--cc-ink); font: inherit; font-size: 0.8125rem; }
+  .atlas-search input::placeholder { color: var(--cc-ink-muted); opacity: 1; }
+  .atlas-search input:focus-visible { outline: 2px solid var(--cc-focus); outline-offset: 2px; }
+  .atlas-search__results { position: absolute; top: calc(100% + 0.5rem); inset-inline-start: 0; width: max(100%, 20rem); max-width: calc(100vw - 2rem); max-height: min(30rem, 65dvh); overflow-y: auto; overscroll-behavior: contain; background: var(--cc-paper-raised); border: 1px solid var(--cc-line-strong); box-shadow: 0 5px 14px rgb(20 29 33 / 12%); }
+  .atlas-search__results[hidden], .atlas-search li[hidden] { display: none; }
+  .atlas-search__count, .atlas-search__scope { margin: 0; padding: 0.7rem 0.85rem; font-size: 0.6875rem; color: var(--cc-ink-muted); line-height: 1.5; }
+  .atlas-search__count { border-bottom: 1px solid var(--cc-line); }
+  .atlas-search__scope { border-top: 1px solid var(--cc-line); }
+  .atlas-search ul { margin: 0; padding: 0; list-style: none; }
+  .atlas-search a { display: flex; gap: 0.65rem; padding: 0.65rem 0.85rem; align-items: baseline; text-decoration: none; }
+  .atlas-search a:hover, .atlas-search a:focus-visible { background: var(--cc-paper-deep); }
+  .atlas-search a:focus-visible { outline: 2px solid var(--cc-focus); outline-offset: -2px; }
+  .atlas-search__kind { flex: 0 0 3.2rem; font-family: var(--cc-font-mono); font-size: 0.625rem; color: var(--cc-atlantic); }
+  .atlas-search__record { display: grid; gap: 0.2rem; min-width: 0; }
+  .atlas-search__name { font-family: var(--cc-font-serif); font-size: 0.95rem; line-height: 1.35; overflow-wrap: anywhere; }
+  .atlas-search__detail { font-size: 0.6875rem; color: var(--cc-ink-muted); }
+  @media (max-width: 48rem) { .atlas-search { flex: none; width: 100%; max-width: none; } .atlas-search input { min-height: 2.4rem; font-size: 1rem; } .atlas-search__results { width: 100%; } }
+</style>

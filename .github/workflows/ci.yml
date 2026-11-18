@@ -69,6 +69,9 @@ jobs:
       - name: Astro check and build
         run: npm run verify
 
+      - name: Run interaction state and data-loader regressions
+        run: npm run test:interaction
+
       - name: Run browser review suite and UI behavioral assertions
         run: npm run review:behavioral
 

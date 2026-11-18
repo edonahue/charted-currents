@@ -41,6 +41,12 @@ export function applyBasemapVisualPolicy(map: MapLibreMap): void {
       continue;
     }
 
+    if (sourceLayer === "landcover" && layer.type === "fill") {
+      map.setPaintProperty(layer.id, "fill-color", policy.palette.land);
+      map.setPaintProperty(layer.id, "fill-opacity", 0.14);
+      continue;
+    }
+
     if (sourceLayer === "waterway" && layer.type === "line") {
       map.setPaintProperty(layer.id, "line-color", policy.palette.waterLine);
       map.setPaintProperty(layer.id, "line-opacity", 0.6);
@@ -54,10 +60,14 @@ export function applyBasemapVisualPolicy(map: MapLibreMap): void {
     }
 
     if (sourceLayer === "place" && layer.type === "symbol") {
+      // Contemporary country names orient the reader without overpowering the
+      // sourced port labels. Do not present administrative labels as history.
+      const countryLabel = layer.id.includes("country") || layer.id.includes("continent");
       map.setPaintProperty(layer.id, "text-color", policy.palette.orientationLabel);
       map.setPaintProperty(layer.id, "text-halo-color", policy.palette.orientationHalo);
       map.setPaintProperty(layer.id, "text-halo-width", 1);
-      map.setPaintProperty(layer.id, "text-opacity", policy.opacity.orientationLabels);
+      map.setPaintProperty(layer.id, "text-opacity", countryLabel ? 0.25 : ["interpolate", ["linear"], ["zoom"], 2, 0, 5, 0.2, 8, policy.opacity.orientationLabels]);
+      if (countryLabel) map.setLayoutProperty(layer.id, "text-size", ["interpolate", ["linear"], ["zoom"], 1, 10, 5, 13, 9, 16]);
       map.setPaintProperty(layer.id, "icon-opacity", 0.35);
       continue;
     }
