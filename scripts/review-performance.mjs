@@ -460,7 +460,10 @@ async function collectRun(send, baseUrl, localOrigin, runNumber, observeMs) {
 // that a visible published feature actually selects and its record renders.
 async function collectSelectableRun(send, baseUrl, runNumber) {
   await send("Network.clearBrowserCache");
-  await send("Page.navigate", { url: baseUrl });
+  const navigation = await send("Page.navigate", { url: baseUrl });
+  if (navigation.errorText) {
+    return { run: runNumber, selected_ms: null, record_ready_ms: null, failure: sanitizeNavigationError(navigation.errorText) };
+  }
   const evaluate = async (expression) => {
     const result = await send("Runtime.evaluate", { expression, returnByValue: true });
     if (result.exceptionDetails) throw new Error("Selectable-map probe evaluation failed");
@@ -495,8 +498,10 @@ async function collectSelectableRun(send, baseUrl, runNumber) {
     const state = await evaluate(`(() => {
       const selected = window.__CC_SELECTION_STORE__?.get();
       const content = document.getElementById('inspector-content');
+      const place = document.querySelector('[data-view-place]');
+      const title = document.querySelector('[data-inspector-title]')?.textContent?.trim();
       return {matches:selected?.kind==='port' && selected.id===${JSON.stringify(target.id)},
-        ready:content?.getAttribute('aria-busy')!=='true' && !document.querySelector('[data-view-place]')?.hidden,
+        ready:Boolean(content && content.getAttribute('aria-busy')!=='true' && place && !place.hidden && title),
         now:performance.now()};
     })()`);
     if (state.matches && selectedMs === null) selectedMs = state.now;
@@ -594,7 +599,19 @@ async function main() {
 
     const numericMedian = (getter) => median(runs.map(getter).filter((value) => Number.isFinite(value)));
 
+    const incompleteLoadRuns = runs.filter(run => run.navigation_error ||
+      !Number.isFinite(run.metrics.lcp_ms) || !Number.isFinite(run.metrics.map_ready_ms));
+    const incompleteSelectionRuns = selectableRuns.filter(run => run.failure ||
+      !Number.isFinite(run.selected_ms) || !Number.isFinite(run.record_ready_ms));
+    const complete = !incompleteLoadRuns.length && !incompleteSelectionRuns.length;
+
     const report = {
+      status: complete ? "observed" : "incomplete",
+      observation_coverage: {
+        expected_runs_per_workload: options.runs,
+        missing_cold_load_runs: incompleteLoadRuns.map(run => run.run),
+        missing_native_selection_runs: incompleteSelectionRuns.map(run => run.run),
+      },
       generated_at: new Date().toISOString(),
       kind: "local_lab_diagnostic",
       browser: browserVersion.product,
@@ -631,6 +648,10 @@ async function main() {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
     console.log(`Wrote local performance report (${runs.length} run(s)).`);
+    if (!complete) {
+      console.error("Performance observations incomplete. Review per-run diagnostics before comparing budgets.");
+      process.exitCode = 1;
+    }
   } finally {
     if (ws && ws.readyState === WebSocket.OPEN) ws.close();
     await stopProcess(browser);

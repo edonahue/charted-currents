@@ -1012,3 +1012,18 @@ a {
     max-width: calc(100% - 4.5rem);
   }
 }
+
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 769px) and (max-width: 1024px) {
+  /* Keep orientation and attribution within the first landscape screen.
+     The chronology and record text can continue into the scrollable page. */
+  .app-shell .map-viewport {
+    height: auto;
+    min-height: max(15rem, calc(100svh - 7rem));
+  }
+
+  .app-shell .map-layer-control__panel,
+  .app-shell .map-locator-browser__menu {
+    max-height: max(9rem, calc(100svh - 11rem));
+    overflow-y: auto;
+  }
+}

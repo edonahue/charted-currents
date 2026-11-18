@@ -1,7 +1,7 @@
 {
   "packet": 12,
   "title": "Living Atlas: ocean-first exploration and chart-to-record reading room",
-  "status": "implementing",
+  "status": "review_pending",
   "base_commit": "9a97042",
   "working_branch": "campaign/living-atlas-review",
   "objective": "Implement the approved Living Ocean Atlas campaign as one coherent, evidence-preserving experience with open geographic exploration, optional globe/2D navigation, and an integrated period-map-to-record reading room, then hand it off at REVIEW_PENDING.",

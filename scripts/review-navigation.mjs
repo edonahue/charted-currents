@@ -322,6 +322,10 @@ try {
   await key("Enter", "Enter", 13);
   await observe("mobile reduced-motion native search opens vessel", { kind: "ship", id: vessel.id }, "1702-1712");
   report.observations.push({ label: "compact source reading traps native Tab both ways and Escape restores record; reduced-motion search remains usable", passed: true });
+  // On a compact viewport the open record sheet can cover the chronology.
+  // Use its native dismissal before tapping a control behind it.
+  await key("Escape", "Escape", 27);
+  await until("document.getElementById('entity-inspector')?.hidden", "compact record dismissed before chronology");
   await click(".timeline-event-list summary");
   assert.equal(await evaluate("document.querySelector('.timeline-event-list').open"), true);
   const visibleListIds = () => evaluate("Array.from(document.querySelectorAll('.timeline-event-list li:not([hidden]) [data-timeline-list-event]')).map(button=>button.dataset.selectionId)");

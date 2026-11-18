@@ -7,7 +7,7 @@
  *
  * Usage:
  *   node scripts/quality-audit.mjs --ci-mode       # Fast CI run (2 viewports, a11y, layout, journeys; <30s)
- *   node scripts/quality-audit.mjs --full          # Full review (6 viewports, a11y, layout, journeys, state screenshots)
+ *   node scripts/quality-audit.mjs --full          # Full review (7 viewports, a11y, layout, journeys, state screenshots)
  *   node scripts/quality-audit.mjs --a11y-only     # Targeted accessibility scan only
  */
 
@@ -31,6 +31,7 @@ const VIEWPORTS = isFullMode
   ? [
       { name: "mobile_compact", width: 390, height: 844, dsf: 2, mobile: true },
       { name: "mobile_standard", width: 430, height: 932, dsf: 2, mobile: true },
+      { name: "mobile_landscape", width: 844, height: 390, dsf: 2, mobile: true },
       { name: "tablet_portrait", width: 768, height: 1024, dsf: 1, mobile: true },
       { name: "tablet_small_desktop", width: 1024, height: 768, dsf: 1, mobile: false },
       { name: "standard_desktop", width: 1440, height: 900, dsf: 1, mobile: false },
@@ -607,6 +608,15 @@ async function main() {
           const winH = window.innerHeight;
           const inspector = document.getElementById('entity-inspector');
           const sourceOpen = document.getElementById('source-drawer')?.dataset.state === 'open';
+          const optionsOpen = document.querySelector('[data-locator-menu]:not([hidden]), [data-layer-panel]:not([hidden])');
+          if (winW >= 769 && winW <= 1024 && winH <= 520 && !sourceOpen && !optionsOpen) {
+            for (const selector of ['[data-map-view-controls]', '.maplibregl-ctrl-attrib', '.maplibregl-ctrl-zoom-in']) {
+              const box = document.querySelector(selector)?.getBoundingClientRect();
+              if (box && box.height && (box.top < -2 || box.bottom > winH + 2)) {
+                findings.push({type:'landscape_map_control_offscreen',selector,detail:'Short landscape must show orientation, zoom and attribution in the opening map viewport.'});
+              }
+            }
+          }
           if (winW <= 1024 && !sourceOpen && inspector && !inspector.hidden && inspector.dataset.sheetState === 'open') {
             const sheet = inspector.getBoundingClientRect();
             for (const selector of ['[data-map-view-controls]', '.maplibregl-ctrl-attrib']) {

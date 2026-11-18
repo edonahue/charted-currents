@@ -16,7 +16,7 @@ Use this file to load **the minimum useful context for the task**. Do not read t
 - Corrective Interstitial CORR-20260906-01 (Herman Moll [1715?] Georeference Quality Pass, Candidate C) is accepted, merged, and hosted-verified on `main`.
 - Packet 11 (First Bounded Privateering Encounter & Prize Connection + Quality & Reporting Instrumentation) is accepted, merged, and hosted-verified on `main`.
 - Product Polish Interstitial 1 (Narrow-Screen Control Non-Collision, Contrast Polish & Native CDP Keyboard Proof) is accepted, merged, and hosted-verified on `main`.
-- Packet 12 (Living Atlas) is approved and implementing on `campaign/living-atlas-review`; the campaign contract is `docs/LIVING_ATLAS_CAMPAIGN.md` and its machine-readable packet is `docs/packets/living-atlas.json`. Its approved, campaign-scoped architecture changes are in ADRs 0006 and 0007. Do not describe planned campaign capabilities as implemented until verified.
+- Packet 12 (Living Atlas) is in external review on `campaign/living-atlas-review`; the campaign contract is `docs/LIVING_ATLAS_CAMPAIGN.md` and its machine-readable packet is `docs/packets/living-atlas.json`. Its approved, campaign-scoped architecture changes are in ADRs 0006 and 0007. Do not describe planned campaign capabilities as implemented until verified.
 
 The repository owns the Astro/MapLibre application, production Cloudflare Pages deployment, pinned toolchain, and Packet 1–4 interaction/provenance architecture.
 
@@ -157,7 +157,7 @@ Visual review screenshots belong under `design/reviews/` only when they come fro
 
 ## Testing, quality audits, and verification
 
-Read `docs/QUALITY_TESTING.md` for automated design, usage, viewport, and axe-core accessibility auditing via native Chrome DevTools Protocol (`scripts/quality-audit.mjs`) across 6 accessibility states, 6 viewports, and 5 user journeys.
+Read `docs/QUALITY_TESTING.md` for automated design, usage, viewport, and axe-core accessibility auditing via native Chrome DevTools Protocol (`scripts/quality-audit.mjs`) across 6 accessibility states, 7 viewports, and 5 user journeys.
 
 ## Current/future work
 

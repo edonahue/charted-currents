@@ -1,12 +1,12 @@
 # Living Atlas campaign — Packet 12
 
-**Campaign state:** IMPLEMENTING
+**Campaign state:** REVIEW_PENDING
 **Implementation branch:** `campaign/living-atlas-review`
 **Baseline commit:** `3e6ef52`
-**Acceptance state:** not yet reviewed; target handoff is `REVIEW_PENDING`
+**Acceptance state:** external decision pending. See measurement and device gaps below.
 **Publication:** the maintainer subsequently authorized completion, merge/push to main, and live-site verification. Publication follows verification and the required independent acceptance boundary; no deployment has occurred.
 
-This is the durable product, implementation, and acceptance brief for the Living Atlas campaign. The machine-readable packet contract is [living-atlas.json](packets/living-atlas.json). The whole campaign is one implementation packet; its milestones are sequencing aids, not separately accepted packets. Implementation may reach self-verification and review pending. A human maintainer or independent reviewer makes the final acceptance decision.
+This is the durable product, implementation, and acceptance brief for the Living Atlas campaign. The machine-readable packet contract is [living-atlas.json](packets/living-atlas.json). The [runtime and display review](LIVING_ATLAS_RUNTIME_REVIEW.md) records evidence and additional probes. The whole campaign is one implementation packet; its milestones are sequencing aids, not separately accepted packets. Implementation may reach self-verification and review pending. A human maintainer or independent reviewer makes the final acceptance decision.
 
 ## Outcome
 
@@ -140,7 +140,7 @@ Evaluate orientation, visible map, readable evidence, control reachability, pane
 The first review build passed phone globe clearance and map-canvas focus return.
 The integrated candidate preserves the accepted accessibility baseline and place
 browsing improvements from `main`. The review branch build is byte-identical to
-the integrated build used by the running stability session. Publication follows
+the integrated build exercised by the 30-minute stability session. Publication follows
 the external acceptance decision.
 
 Implemented surfaces include native Caribbean/Atlantic/globe views with 2D and
@@ -165,51 +165,81 @@ requests overlap basemap loading and reuse the shared session cache.
 | Astro check/build | 49 files, zero errors, warnings or hints on the review branch. Production build succeeds. Vite retains its large MapLibre chunk advisory. |
 | Interaction tests | Camera/geographic policy, six navigation-state cases, shared-loader deduplication and retry pass. |
 | Corpus | Deterministic rebuild produces no published-data diff; validation, 69 Python tests and 30 negative tests pass on the review branch. |
-| Full visual/accessibility suite | The first candidate had zero findings in six viewports. The integrated matrix retains the stricter upstream accessibility baseline, adds five-state geometry coverage, and requires the upstream native Browse Places journey. The integrated rerun is queued. |
-| Native navigation | 34 observations pass; exact390px layout, search/history, scroll/focus, dated-event list,41source records' assertion grouping, delayed selection and native503retry; zero uncaught exceptions. |
-| Native spatial | Passes connector and port interaction, globe/history, native north-up, interruption without new selection, comparison/source return, provider-blocked corpus access, context restoration, no-WebGL fallback; zero uncaught exceptions. Fault injection is not physical-GPU proof. |
-| Established behavioral suite | 238 assertions passed on the repaired candidate. |
+| Full visual/accessibility suite | The release full suite passed all five journeys, 35 layout evaluations across seven viewports, and six accessibility states with zero findings. Native 844×390 landscape review verified the restored orientation and period-map controls. A separate visual inspection checked the rendered map and record panels. |
+| Native navigation | 34 integrated observations pass. They cover exact 390px layout, search/history, scroll/focus, dated-event list, 41 source records’ assertion grouping, delayed selection and native 503 retry. Zero uncaught exceptions. |
+| Native spatial | Passes connector and port interaction, globe/history, native north-up, interruption without new selection, comparison/source return, provider-blocked corpus access, context restoration, no-WebGL fallback; zero uncaught exceptions. The integrated probe passed. Desktop globe settled in 862 ms and compact reduced-motion globe in 11 ms after native input on a warm map, including probe overhead. Physical GPU behavior remains a separate measurement. |
+| Established behavioral suite | 238 assertions passed on the integrated build. |
 | Independent review | Earlier independent visual/engineering passes identified repaired defects. Final independent screenshot review found unreachable phone globe orientation controls and a misplaced legend after inspector close. The staged measurement repair passes native visibility/hit testing and independent screenshot recheck; the finding is resolved. This is process QA, not acceptance. |
 | Historical presentation | Independent metadata audit supports revised crew/source-container wording; no corpus or evidence-state change. See CORR-20261117-01 in the corrections log; external acceptance remains pending. |
-| Performance | Pre-integration five-run candidate: median LCP640ms, CLS0.03794, native selection4987.4ms; initial encoded JavaScript395173bytes (184bytes,0.047% above baseline). See method and per-run caveats below. |
-| Stability | A three-cycle smoke passed after repairing pointer tests to wait for scroll rendering and confirm the hit target. The full 30-minute integrated workload is running. |
+| Performance | All five release cold-load and selection observations were valid. Compare current main, original campaign budget and findings below. |
+| Stability | A three-cycle smoke passed after repairing pointer tests to wait for scroll rendering and confirm the hit target. The integrated 30-minute workload completed 52 cycles with zero interaction, console, unhandled, resource or crash failures. |
 | Device/assistive technology | Native keyboard and axe checks are observed. Physical-device rendering/battery and native screen-reader journeys remain unverified. |
 | Publication | Authorized after required acceptance; no hosted claim yet. |
 
-### Pre-integration performance observations
+### Release performance observations
 
-The November17 16:15 build was measured with the same five-run profile as the
-baseline. Median LCP was640ms, session-window CLS0.03794, map-ready proxy4705.3ms,
-native selection4987.4ms, and selected-record rendering5526.6ms. Native selection
-runs were5012.3,4999.6,4979.2,4977.1,4987.4ms: the median meets the5000ms target,
-but one run exceeded it. Polling and input transport overhead remain included.
+Both builds used the documented throttled mobile profile with five cold loads
+and five separate native selections. The baseline is the current production
+revision on `main` at `9a97042`. An unrelated local typecheck ran during the
+early baseline sequence, so use this comparison as diagnostic and retain the
+original campaign baseline for the strict payload budget.
 
-Initial encoded JavaScript was395173bytes versus394989baseline: a184-byte
-(0.047%) regression, explicitly a miss against the no-growth target. The candidate
-adds verified spatial modes, navigation and accessibility repairs while deferring
-the record controller; this small net increase is proposed for external acceptance,
-not silently treated as a pass. CSS was21073bytes, fonts87616, data7082 and the
-favicon174. The830286-byte period image is absent from initial requests.
+| Measure | Current main | Release candidate |
+|---|---:|---:|
+| Median LCP | 624 ms | 644 ms |
+| Median session-window CLS | 0.03432 | 0.03794 |
+| Median map-ready signal | 5,219 ms | 4,713 ms |
+| Median native selectable port | 5,746 ms | 4,980 ms |
+| Median selected record ready | 5,746 ms | 5,531 ms |
+| Initial encoded JavaScript | 395,310 B | 395,506 B |
+| Initial encoded CSS | 19,164 B | 21,401 B |
+| Initial encoded fonts | 87,616 B | 87,616 B |
+| Initial encoded data | 95,877 B | 7,082 B |
+| Initial same-origin encoded image | 830,286 B | 174 B |
 
-These are software-renderer local lab results, not field INP, hosted timings or
-physical-device evidence. Cross-origin resources without timing permission remain
-excluded from byte totals. No browser runs competed with these measurements.
+Selection runs were 4,988.8, 4,978.8, 4,988.3, 4,979.9 and 4,967.2 ms.
+All five met 5,000 ms. Polling and native input transport overhead stay in
+the observation.
 
-### Remaining closeout work
+JavaScript is 196 B above current main and 517 B above the original 394,989 B
+budget. The latter is a 0.13% increase and an explicit budget miss for external
+review. Deferred inspector work keeps first-load data small. The registered
+period raster no longer transfers at startup. The remaining 174 B image is the
+favicon. Initial CSS and fonts meet their budgets. Cross-origin requests without
+timing permission are excluded from the byte totals. This software-rendered lab
+profile does not establish hosted, field or physical-device timing.
 
-Run the integrated viewport, navigation, spatial and inherited behavioral suites.
-Re-measure the integrated build and current `main` with the same local profile.
-Record the original campaign budget comparison as well as the current production
-baseline. Complete the long-session checks and review the resulting frame,
-interaction and memory measurements under their documented limitations.
+### Integrated stability observations
+
+The 1440×900 desktop workload used Chrome 153 with SwiftShader. All 52 cycles
+completed across 30 minutes with zero interaction failures, browser errors or
+crashes. Median cycle duration was 4.66 s in the first ten cycles and 4.65 s in
+the last ten. The 884 observed interaction groups had p75 duration 56 ms, with
+entries under 16 ms censored. Post-cycle frame interval p95 was 16.7 ms at the
+median checkpoint (worst checkpoint p95 16.8 ms). Active GPU frame time and
+physical-device performance require separate recordings.
+
+Post-collection main-thread heap rose from 7.46 MB at startup to 11.93 MB at
+five minutes as the repeated journey loaded more data and surfaces. Subsequent
+checkpoints rose to 12.52 MB at 25 minutes with smaller increases after each
+collection. From five minutes onward, DOM node and listener counts were steady
+at 1,819 and 167. These diagnostics showed no degradation in the tested
+workload. They leave GPU, worker and device memory unmeasured.
+
+### External review items
+
+Review the budget miss and physical-device measurements alongside the rendered
+review candidate. The runtime and display checklist records targeted follow-up
+probes and opportunities to measure during preview.
 
 For native screen-reader review, use an installed reader to navigate by keyboard
 from global search to Port Royal, inspect the source heading and record list,
 then close the source and confirm focus returns to its trigger. Record the
 browser, reader and announcements. In the first isolated Orca attempt, the
 reader announced startup and the platform reported address-bar focus. Browser
-navigation timed out before reaching the atlas. A retry opens the atlas directly
-in an isolated Chromium session.
+navigation timed out before reaching the atlas. The direct-URL retry acquired a
+browser target but could not load the app. A no-proxy X11 retry failed to acquire
+the isolated app window. The native app announcement path remains unverified.
 
 For physical-mobile performance, record the phone, OS and browser version.
 Start a browser performance recording on that device, let initial tiles settle,
@@ -220,8 +250,9 @@ for battery and temperature observations.
 ### Release and rollback
 
 After external acceptance, verify the review commit's checks and merge through
-the repository's GitHub and Cloudflare Pages integration. Before merging, record
-the active production deployment and Git revision as the rollback reference.
+the repository's GitHub and Cloudflare Pages integration. The live HTML matched a clean build of current main `9a97042` byte for byte,
+and GitHub verified its Pages deployment. Use that accepted revision and its
+Pages deployment as the rollback reference if main advances through Packet 12.
 After merging, confirm the successful production deployment matches the merged
 revision. Check the canonical origin for atlas search, 2D/globe navigation,
 period-map comparison, sourced evidence, attribution and corpus integrity.

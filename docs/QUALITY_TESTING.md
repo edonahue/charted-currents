@@ -21,7 +21,7 @@ npm run review:performance -- --dist dist --output test-results/performance-audi
 
 `scripts/review-performance.mjs` discovers an installed Chromium/Chrome executable (or `CHROME_BIN` / `BROWSER_PATH`) and uses native CDP with no added package. The defaults are five cache-disabled navigations at 390x844, DPR 2, 4x CPU slowdown, 1.6 Mbps down, 750 Kbps up, and 150 ms latency. Each run is observed for 20 seconds. The local static server negotiates gzip for compressible assets and refuses traversal or symlink escapes from the selected `--dist` directory. The default JSON report is `test-results/performance-audit.json`, which is local review output.
 
-The report gives each run plus median LCP, session-window CLS, and an app-specific map-ready signal. The map-ready value is explicitly a **proxy**, not proof that a user can select a feature; Separate cold navigations then exercise a native click on an unobscured rendered port and observe matching selection plus a rendered place record. These runs use the same profile but stay outside initial payload/LCP accounting. Polling (50 ms) and input transport overhead are included; the result is a conservative lab observation, not a precise earliest-possible interaction timestamp. The report also summarizes same-origin resource transfer, encoded-body, and decoded-body bytes by broad asset type. `transferSize` includes response headers. Cross-origin timing fields can be withheld by browser security unless the remote server sends `Timing-Allow-Origin`; those entries are counted as unavailable, and resource URLs, query strings, credentials, and fragments are omitted from the report.
+The report gives each run plus median LCP, session-window CLS, and an app-specific map-ready signal. Incomplete samples are listed and cause the command to exit nonzero after writing diagnostic results. The map-ready value is explicitly a **proxy**, not proof that a user can select a feature; Separate cold navigations then exercise a native click on an unobscured rendered port and observe matching selection plus a rendered place record. These runs use the same profile but stay outside initial payload/LCP accounting. Polling (50 ms) and input transport overhead are included; the result is a conservative lab observation, not a precise earliest-possible interaction timestamp. The report also summarizes same-origin resource transfer, encoded-body, and decoded-body bytes by broad asset type. `transferSize` includes response headers. Cross-origin timing fields can be withheld by browser security unless the remote server sends `Timing-Allow-Origin`; those entries are counted as unavailable, and resource URLs, query strings, credentials, and fragments are omitted from the report.
 
 This software-WebGL local lab profile is diagnostic. It is not hosted performance, a real-device frame-time observation, field Core Web Vitals, field INP, or a substitute for broader interaction, rendering-cadence, and stability checks. In particular, compare builds served by this gzip-enabled server separately from older measurements made over uncompressed local HTTP.
 
@@ -64,14 +64,15 @@ Runs before merging or releasing to verify responsive stability across all suppo
 npm run review:quality:full
 # Equivalent to: node scripts/quality-audit.mjs --full
 ```
-* **Viewports Tested**: 6 viewports:
+* **Viewports Tested**: 7 viewports:
   1. `mobile_compact`: 390x844 (Mobile portrait — compact modern phone)
   2. `mobile_standard`: 430x932 (Mobile portrait — large phone)
-  3. `tablet_portrait`: 768x1024 (Tablet portrait)
-  4. `tablet_small_desktop`: 1024x768 (Tablet / low-res desktop)
-  5. `standard_desktop`: 1440x900 (Standard desktop reference)
-  6. `ultrawide`: 3440x1440 (Ultrawide desktop)
-* **Scope**: 6 axe-core state scans, responsive geometry matrix across 5 UI states per viewport (30 evaluations total), 5 end-to-end user journeys, and 28 screenshots (10 scenario captures plus the 18-view layout matrix). Layout-state setup uses direct selection/events; the separately exercised native journeys supply interaction proof.
+  3. `mobile_landscape`: 844x390 (Short phone landscape)
+  4. `tablet_portrait`: 768x1024 (Tablet portrait)
+  5. `tablet_small_desktop`: 1024x768 (Tablet / low-res desktop)
+  6. `standard_desktop`: 1440x900 (Standard desktop reference)
+  7. `ultrawide`: 3440x1440 (Ultrawide desktop)
+* **Scope**: 6 axe-core state scans, responsive geometry matrix across 5 UI states per viewport (35 evaluations total), 5 end-to-end user journeys, and 31 screenshots (10 scenario captures plus 21 matrix captures). Layout-state setup uses direct selection/events; the separately exercised native journeys supply interaction proof.
 * **Artifacts Generated**: `test-results/screenshots/*.png` and `test-results/quality-audit.json`.
 
 ---
@@ -116,6 +117,7 @@ Following the contrast repair on `.inspector-dataset-context-badge` using `--cc-
 Every tested viewport is evaluated across five UI states (`initial`, `inspector_open`, `drawer_open`, `locator_open`, and `period_map_open`) against physical geometry constraints:
 * **No Horizontal Overflow**: `document.documentElement.scrollWidth <= window.innerWidth + 2px` (2px tolerance for sub-pixel layout rounding).
 * **Panel Boundary Clipping**: `.app-masthead`, `[data-component='place-locator']`, `[data-component='entity-inspector']`, `[data-component='source-drawer']`, `.source-drawer-panel`, `.map-layer-control`, and `.maplibregl-ctrl-attrib` must not clip outside viewport bounds.
+* **Short Landscape**: Orientation controls, zoom and attribution remain in the opening viewport when the locator, comparison and source overlays are closed.
 * **Control Occlusion**: Primary controls (`[data-locator-toggle]`, `[data-layer-toggle]`) must not be unexpectedly covered by unannounced elements (excluding overlay/drawer backdrops).
 * **Zero-Size Interactive Elements**: Interactive buttons/links must have non-zero client dimensions when rendered.
 * **Unintended Content Clipping**: Scroll containers must not have `overflow-y: hidden` when content height exceeds container height.
