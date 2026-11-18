@@ -616,20 +616,46 @@ async function runReviewSuite() {
 
     // 4. Historical Vessel Selection & Construction Display (No ~1685)
     console.log("Testing vessel selection & construction display...");
-    const vesselTarget = await send("Runtime.evaluate", {
-      expression: `(() => {
-        const rows = Array.from(document.querySelectorAll('.inspector-rel-row'));
-        const vesselRow = rows.find(r => r.textContent?.includes('Richard & Sarah'));
-        vesselRow?.scrollIntoView({block:'nearest'});
-        const rect = vesselRow?.getBoundingClientRect();
-        return rect ? {x:rect.x+rect.width/2,y:rect.y+rect.height/2} : null;
-      })()`,
-      returnByValue: true,
-    });
-    if (!vesselTarget.result?.value) throw new Error("Vessel connection pointer target unavailable");
-    await send("Input.dispatchMouseEvent", { type: "mousePressed", ...vesselTarget.result.value, button: "left", clickCount: 1 });
-    await send("Input.dispatchMouseEvent", { type: "mouseReleased", ...vesselTarget.result.value, button: "left", clickCount: 1 });
-    await new Promise((r) => setTimeout(r, 400));
+    // The inspector controller and corpus load on first selection. Wait for
+    // the rendered event relationship and the compositor before using input.
+    let vesselTarget = null;
+    const vesselDeadline = Date.now() + 8_000;
+    while (!vesselTarget && Date.now() < vesselDeadline) {
+      const target = await send("Runtime.evaluate", {
+        expression: `(async () => {
+          const rows = document.querySelectorAll('[data-view-event]:not([hidden]) .inspector-rel-row');
+          const row = Array.from(rows).find(r => r.textContent?.includes('Richard & Sarah'));
+          if (!row) return null;
+          row.scrollIntoView({block:'nearest',behavior:'instant'});
+          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const rect = row.getBoundingClientRect();
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+          const hit = document.elementFromPoint(x, y);
+          return hit === row || row.contains(hit) ? {x, y} : null;
+        })()`,
+        returnByValue: true,
+        awaitPromise: true,
+      });
+      vesselTarget = target.result?.value;
+      if (!vesselTarget) await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    if (!vesselTarget) throw new Error("Rendered Richard & Sarah connection unavailable for native pointer input");
+    await send("Input.dispatchMouseEvent", { type: "mousePressed", ...vesselTarget, button: "left", clickCount: 1 });
+    await send("Input.dispatchMouseEvent", { type: "mouseReleased", ...vesselTarget, button: "left", clickCount: 1 });
+    const shipDeadline = Date.now() + 8_000;
+    while (Date.now() < shipDeadline) {
+      const state = await send("Runtime.evaluate", {
+        expression: `Boolean(
+          document.querySelector('[data-view-ship]:not([hidden])') &&
+          document.querySelector('[data-inspector-title]')?.textContent?.includes('Richard & Sarah') &&
+          !document.querySelector('#inspector-content')?.hasAttribute('aria-busy')
+        )`,
+        returnByValue: true,
+      });
+      if (state.result?.value) break;
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
 
     const vesselCheck = await send("Runtime.evaluate", {
       expression: `(() => {
