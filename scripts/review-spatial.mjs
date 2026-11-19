@@ -107,7 +107,33 @@ try {
    }
    throw new Error('Timed out ' + condition);
  };
- const click=async(selector)=>{const rect=await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});e.scrollIntoView({block:"nearest"});const r=e.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);await send('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...rect});await send('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...rect})};
+ const click = async (selector) => {
+   await evaluate(`document.querySelector(${JSON.stringify(selector)})?.scrollIntoView({block:'nearest',behavior:'instant'})`);
+   let previous, stable = 0, target;
+   try {
+     await until(async () => {
+       target = await evaluate(`(() => {
+         const element = document.querySelector(${JSON.stringify(selector)});
+         if (!element) return {ready:false, reason:'missing element'};
+         const rect = element.getBoundingClientRect();
+         const x = rect.x + rect.width / 2, y = rect.y + rect.height / 2;
+         const hit = document.elementFromPoint(x, y);
+         return {x, y, width:rect.width, height:rect.height,
+           ready:rect.width > 0 && rect.height > 0 && !element.matches(':disabled') && Boolean(hit && element.contains(hit)),
+           hit:hit?.outerHTML.slice(0, 250) ?? null};
+       })()`);
+       const bounds = JSON.stringify([target.x, target.y, target.width, target.height]);
+       stable = target.ready && bounds === previous ? stable + 1 : 0;
+       previous = bounds;
+       return stable >= 2;
+     }, 10000);
+   } catch (error) {
+     throw new Error(`Native click target did not settle: ${selector}; ${JSON.stringify(target)}`, {cause:error});
+   }
+   const point = {x:target.x, y:target.y};
+   await send('Input.dispatchMouseEvent', {type:'mousePressed', button:'left', clickCount:1, ...point});
+   await send('Input.dispatchMouseEvent', {type:'mouseReleased', button:'left', clickCount:1, ...point});
+ };
  const key=async(key,code)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode:key==='Enter'?13:32,text:key==='Enter'?'\r':' ',unmodifiedText:key==='Enter'?'\r':' '});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode:key==='Enter'?13:32});await delay(100)};
  const shot=async name=>{await delay(500);const r=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(outputDir,name+'.png'),Buffer.from(r.data,'base64'))};
  await send('Runtime.enable');await send('Page.enable');await send('Page.bringToFront');
@@ -350,7 +376,18 @@ try {
  // the 503 and again while the native retry waits for the actual raster.
  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
  await click('[data-map-view="atlantic"]');
- await until(`!window.__CC_MAP__.isMoving() && window.__CC_MAP__.getLayoutProperty('cc-coordinate-grid','visibility')==='visible'`);
+ try {
+   await until(`!window.__CC_MAP__.isMoving() && window.__CC_MAP__.getLayoutProperty('cc-coordinate-grid','visibility')==='visible'`);
+ } catch (error) {
+   const state = await evaluate(`(() => {
+     const map = window.__CC_MAP__;
+     return {zoom:map.getZoom(), moving:map.isMoving(), gridPresent:Boolean(map.getLayer('cc-coordinate-grid')),
+       gridVisibility:map.getLayoutProperty('cc-coordinate-grid','visibility'),
+       comparison:document.querySelector('[data-map-comparison][aria-pressed="true"]')?.dataset.mapComparison,
+       viewport:{width:innerWidth,height:innerHeight}};
+   })()`);
+   throw new Error('Atlantic coordinate grid did not become visible: ' + JSON.stringify(state), {cause:error});
+ }
  const chartPath = await evaluate(`new URL(document.querySelector('[data-layer-control]').dataset.rectifiedUrl,location.href).pathname`);
  chartFault = {pathname:chartPath, requests:0, failFirst:true};
  await click('[data-layer-toggle]');

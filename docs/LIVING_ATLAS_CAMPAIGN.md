@@ -263,8 +263,7 @@ the panel. The exact built entry HTML has SHA-256 prefix `b5c3b6a1a918`.
 The [runtime review](LIVING_ATLAS_RUNTIME_REVIEW.md#candidate-recovery-and-compact-comparison-recheck)
 records the candidate's cold loads, 30-minute stability run, and Globe cadence.
 A later [short-phone Globe layout refinement](LIVING_ATLAS_RUNTIME_REVIEW.md#globe-composition-on-short-phones)
-clears northern markers obscured by map controls. The latest built entry
-HTML has SHA-256 prefix `5ec7396764b5`.
+clears northern markers obscured by map controls. A subsequent [camera interruption repair](LIVING_ATLAS_RUNTIME_REVIEW.md#selection-during-camera-travel) preserves the selected record when a visitor presses the moving map. Its built entry HTML has SHA-256 prefix `28888b1ad230`.
 Physical-device timing and audible assistive-technology observations remain
 open for release review. The [chart coverage and blend study](LIVING_ATLAS_CHART_COMPARISON.md)
 records a separate derivative that requires source review.

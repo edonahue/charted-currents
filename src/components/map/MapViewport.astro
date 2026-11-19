@@ -268,6 +268,7 @@ const hasMollLayer = Boolean(
   let cameraTimer: ReturnType<typeof setTimeout> | undefined;
   let chromeFrame = 0;
   let cameraSuppressed = false;
+  let interruptedByPointer = false;
   let globeAvailable = true;
   let viewNavigation: ReturnType<typeof startViewNavigation> | null = null;
   let blendOpacity = 65;
@@ -458,7 +459,13 @@ const hasMollLayer = Boolean(
       }));
 
       for (const event of ["pointerdown", "wheel", "touchstart", "keydown"] as const) {
-        listen(container, event, () => { cancelCamera(); viewNavigation?.userInput(); }, { capture: true, passive: true });
+        listen(container, event, () => {
+          // The feature under a moving camera can change between aiming and
+          // release. The first press stops travel; the next can select.
+          if (event === "pointerdown") interruptedByPointer = Boolean(map?.isMoving());
+          cancelCamera();
+          viewNavigation?.userInput();
+        }, { capture: true, passive: true });
       }
       const inspector = document.getElementById("entity-inspector");
       resizeObserver = new ResizeObserver(() => {
@@ -659,6 +666,7 @@ const hasMollLayer = Boolean(
       });
 
       m.on("click", "historical-ports-hit-target", (e) => {
+        if (interruptedByPointer) return;
         const feature = e.features?.[0];
         if (feature && feature.properties?.id) {
           recordSelectionTrigger({
@@ -680,6 +688,7 @@ const hasMollLayer = Boolean(
       });
 
       m.on("click", "historical-routes-hit-target", (e) => {
+        if (interruptedByPointer) return;
         // Ports sit above endpoint connectors. One pointer action must not
         // select a port and then immediately replace it with the route below.
         if (m.queryRenderedFeatures(e.point, { layers: ["historical-ports-hit-target"] }).length) return;

@@ -252,3 +252,27 @@ render-interval p95 was 46.3 ms before and 44.4 ms after the layout change.
 Neither build rendered during the settled visible or hidden windows. The
 comparison is a software-browser diagnostic. Physical phones still need
 their own measurements.
+
+### Selection during camera travel
+
+In the desktop spatial journey a native press aimed at empty water during the
+camera move to Cádiz selected a ship as a connector moved underneath the
+pointer. Pressing the moving map now stops travel and preserves selection.
+A subsequent press on the settled map can select a port or connector.
+
+The repaired build passed two spatial sweeps and the keyboard, pointer and
+history navigation suite. The second spatial sweep also verified that each
+control's center received pointer input after responsive layout settled.
+Both sweeps exercised reduced motion, chart retry and the WebGL fallback.
+
+A separate Firefox and Orca experiment restored accessibility focus to
+“Inspect Supporting Sourced Evidence” on Escape. Orca's speech output
+contained only “escape” at dismissal. Moving focus before hiding the drawer
+did not improve the announcement, so the experiment was reverted. Spoken
+return context remains open for accessibility review.
+
+The five cold mobile lab runs had median LCP of 632 ms and CLS of 0.039.
+Five separate native selections all finished within 5 s, with median
+selection at 3.49 s and the selected record ready at 4.33 s. The first cold
+run overlapped the end of the spatial sweep. These measurements describe
+the local browser profile and do not establish a field performance change.
