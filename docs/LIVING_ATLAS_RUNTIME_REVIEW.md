@@ -166,3 +166,56 @@ isolated Speech Dispatcher sink recorded generated speech for the
 search field, result, evidence heading, description list and repository
 link. AT-SPI recorded focus returning to the evidence trigger on Escape.
 The sink did not establish audible output or a return-focus announcement.
+
+## Candidate recovery and compact comparison recheck
+
+The spatial suite now withholds the rectified Moll image, sends HTTP 503,
+and releases a successful response after native keyboard retry. The modern
+grid and water labels stay visible during loading and failure. Registered
+chart becomes active only after the image is ready, with exactly two image
+requests. The raster remains below the published routes. The source and
+derivative retain their attribution.
+
+A second browser case uses `WEBGL_lose_context` while the image request
+is pending. Before the fix the rebuilt source completed its replacement
+request while the panel stayed on Loading. The repaired build keeps the
+modern reference cues throughout the reset and activates the chart after
+the rebuilt source completes, without a second visitor action.
+
+A cold Globe link now initializes the basemap in 2D before switching
+projection. A separate browser case throws inside the pinned MapLibre
+projection initializer before map readiness. The default atlas loads its
+published ports, disables Globe, and responds to the Caribbean control.
+The inactive regional coordinate grid now skips style serialization.
+
+At 320×568 the browser scrolls the comparison panel 120 px to reveal the
+source action while the map, page and zoom remain in place. Tab reaches
+the source action and Enter opens the drawer. Shift+Tab and Tab wrap within
+the drawer, and closing it returns focus to the visible source action.
+Moving focus outside the comparison closes it. Additional wheel and Tab
+probes passed at 390×844 and 844×390. The seven-viewport quality suite
+passed all 35 layout states with zero axe findings, and all 238 behavioral
+checks passed.
+
+Five cold Chromium runs on the mobile profile above recorded median LCP
+of 612 ms and CLS of 0.03902. Native port selection had a median of
+4,497 ms and ranged from 4,480 to 4,587 ms. Same-origin initial JavaScript
+was 393,100 encoded bytes, 1,889 bytes below the campaign budget. CSS and
+font transfers were 21,810 and 88,816 bytes respectively. The local build's
+entry SHA-256 begins `b5c3b6a1a918`.
+
+With desktop software WebGL, the warm render-interval p95 was 17.8 ms for
+Atlantic (147 intervals) and 71.0 ms for Globe (75 intervals). Globe cadence
+remains above the 20 ms target in this profile. The switches requested no
+additional page scripts. Each settled 1.5-second window produced zero
+MapLibre renders in a visible or background tab. Physical-device cadence
+and thermals still need hardware measurements.
+
+The same build completed 53 native interaction cycles in 30 minutes at
+1440×900 with zero interaction, browser, resource or crash failures.
+Median cycle duration was 4.294 s for the first ten and 4.279 s for the
+last ten. Lab Event Timing p75 was 40 ms across 901 interaction groups,
+with entries below 16 ms censored. Forced-GC heap rose from 12.18 MB at
+minute five to 12.65 MB at minute 25. The warm post-GC checkpoints held
+1,822 DOM nodes and 168 event listeners throughout. The heap trend remains
+a diagnostic to track in longer sessions.

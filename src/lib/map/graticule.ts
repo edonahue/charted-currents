@@ -25,8 +25,9 @@ function createGrid(): FeatureCollection<LineString> {
 export function syncCoordinateGrid(map: Map, comparingChart: boolean): void {
   const visible = !comparingChart && map.getZoom() < WIDE_VIEW_MAX_ZOOM;
   if (!map.getLayer(GRID)) {
+    if (!visible) return;
     const style = map.getStyle();
-    if (!visible || !style) return;
+    if (!style) return;
     const firstLabel = style.layers.find(layer => layer.type === "symbol")?.id;
     map.addSource(GRID, { type: "geojson", data: createGrid(), tolerance: 0 });
     map.addLayer({

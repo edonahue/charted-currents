@@ -3,7 +3,7 @@
  * Run: node scripts/review-spatial.mjs [--dist-dir=dist] [--output-dir=test-results/spatial]
  * Requires a local Chromium/Chrome (CHROME_BIN/BROWSER_PATH or Playwright cache).
  * Uses actual CDP pointer/key/browser-history commands; explicit fault injection
- * verifies the unavailable-globe handler, not unsupported physical hardware.
+ * exercises the globe and chart recovery paths in a controlled browser.
  */
 import http from "node:http";
 import net from "node:net";
@@ -47,6 +47,7 @@ function availablePort() {
   });
 }
 const mimeTypes = { ".html":"text/html", ".css":"text/css", ".js":"application/javascript", ".mjs":"application/javascript", ".json":"application/json", ".geojson":"application/geo+json", ".png":"image/png", ".jpg":"image/jpeg", ".webp":"image/webp", ".svg":"image/svg+xml", ".woff2":"font/woff2", ".woff":"font/woff" };
+let chartFault;
 const server = http.createServer((request, response) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname); } catch { response.writeHead(400).end(); return; }
@@ -54,8 +55,24 @@ const server = http.createServer((request, response) => {
   const relative = path.relative(distDir, file);
   if (relative.startsWith("..") || path.isAbsolute(relative)) { response.writeHead(403).end(); return; }
   if (!fs.existsSync(file) || !fs.statSync(file).isFile()) { response.writeHead(404).end(); return; }
-  response.writeHead(200, { "Content-Type": mimeTypes[path.extname(file)] || "application/octet-stream" });
-  fs.createReadStream(file).pipe(response);
+  const serveFile = () => {
+    response.writeHead(200, { "Content-Type": mimeTypes[path.extname(file)] || "application/octet-stream" });
+    fs.createReadStream(file).pipe(response);
+  };
+  if (chartFault?.pathname === pathname) {
+    chartFault.requests += 1;
+    if (chartFault.requests === 1) {
+      chartFault.releaseFirst = chartFault.failFirst
+        ? () => response.writeHead(503, { "Cache-Control":"no-store" }).end()
+        : serveFile;
+      return;
+    }
+    if (chartFault.requests === 2) {
+      chartFault.releaseSecond = serveFile;
+      return;
+    }
+  }
+  serveFile();
 });
 let proc;
 let profile;
@@ -81,7 +98,15 @@ try {
    ws.send(JSON.stringify({id, method, params}));
  });
  const evaluate=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw new Error(JSON.stringify(r.exceptionDetails));return r.result.value};
- const until=async(expression,limit=60000)=>{const t=Date.now();while(Date.now()-t<limit){if(await evaluate(expression))return;await delay(100)}throw new Error('Timed out '+expression)};
+ const until = async (condition, limit = 60000) => {
+   const check = typeof condition === 'function' ? condition : () => evaluate(condition);
+   const start = Date.now();
+   while (Date.now() - start < limit) {
+     if (await check()) return;
+     await delay(100);
+   }
+   throw new Error('Timed out ' + condition);
+ };
  const click=async(selector)=>{const rect=await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});e.scrollIntoView({block:"nearest"});const r=e.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);await send('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...rect});await send('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...rect})};
  const key=async(key,code)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode:key==='Enter'?13:32,text:key==='Enter'?'\r':' ',unmodifiedText:key==='Enter'?'\r':' '});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode:key==='Enter'?13:32});await delay(100)};
  const shot=async name=>{await delay(500);const r=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(outputDir,name+'.png'),Buffer.from(r.data,'base64'))};
@@ -114,7 +139,7 @@ try {
  assert.equal(await evaluate("Boolean(window.__CC_MAP__.getSource('cc-coordinate-grid'))"), false,
    "regional startup does not load the optional ocean coordinate grid");
  await click('[data-layer-toggle]');await click('[data-layer-visibility-checkbox]');
- await until(`window.__CC_MAP__.isSourceLoaded('historical-reference-moll-1715')`);
+ await until(`window.__CC_MAP__.getLayer('historical-reference-moll-1715-layer') && window.__CC_MAP__.isSourceLoaded('historical-reference-moll-1715')`);
  const loadedMoll=await evaluate(`(()=>{const layers=window.__CC_MAP__.getStyle().layers.map(l=>l.id);const path=new URL(document.querySelector('[data-layer-control]').dataset.rectifiedUrl,location.href).pathname;return {underRoutes:layers.indexOf('historical-reference-moll-1715-layer')<layers.indexOf('historical-routes-line'),requests:performance.getEntriesByType('resource').filter(e=>new URL(e.name).pathname===path).length}})()`);
  assert.equal(loadedMoll.underRoutes,true);assert.equal(loadedMoll.requests,1);
 
@@ -273,18 +298,21 @@ try {
 
  // Exercise the browser's real context-loss extension after a loaded map.
  // This checks recovery in this software renderer, not physical GPU drivers.
- const contextLossAvailable = await evaluate(`(()=>{
+ const loseAndRestoreContext = () => evaluate(`(()=>{
    const canvas=window.__CC_MAP__.getCanvas();
    const gl=canvas.getContext('webgl2');
    const extension=gl?.getExtension('WEBGL_lose_context');
    if(!extension)return false;
    window.__ccContextProbe={lost:false,restored:false};
-   canvas.addEventListener('webglcontextlost',()=>{window.__ccContextProbe.lost=true},{once:true});
+   canvas.addEventListener('webglcontextlost',()=>{
+     window.__ccContextProbe.lost=true;
+     setTimeout(()=>extension.restoreContext(),500);
+   },{once:true});
    canvas.addEventListener('webglcontextrestored',()=>{window.__ccContextProbe.restored=true},{once:true});
    extension.loseContext();
-   setTimeout(()=>extension.restoreContext(),500);
    return true;
  })()`);
+ const contextLossAvailable = await loseAndRestoreContext();
  if(contextLossAvailable){
    await until('window.__ccContextProbe.lost && window.__ccContextProbe.restored');
    await until(`window.__CC_MAP__.isStyleLoaded() && Boolean(window.__CC_MAP__.getLayer('historical-ports-core'))`);
@@ -318,36 +346,203 @@ try {
  assert.equal(await evaluate(`Array.from(document.querySelectorAll('[data-map-view], [data-map-north], [data-layer-toggle]')).every(button=>!button.disabled)`),true);
  report.thirdPartyDegradation={blockedStyleVisibleNotice:true,nativeCorpusAndEvidence:true,successfulReloadRestoresControls:true};
 
- // Fail globe projection before style readiness on a fresh globe link.
+ // Hold both image responses so the loading state can be observed before
+ // the 503 and again while the native retry waits for the actual raster.
+ await send('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
+ await click('[data-map-view="atlantic"]');
+ await until(`!window.__CC_MAP__.isMoving() && window.__CC_MAP__.getLayoutProperty('cc-coordinate-grid','visibility')==='visible'`);
+ const chartPath = await evaluate(`new URL(document.querySelector('[data-layer-control]').dataset.rectifiedUrl,location.href).pathname`);
+ chartFault = {pathname:chartPath, requests:0, failFirst:true};
+ await click('[data-layer-toggle]');
+ const chartComparison = '[data-map-comparison="chart"]';
+ const chartState = () => evaluate(`(() => {
+   const map = window.__CC_MAP__;
+   const panelStatus = document.querySelector('[data-layer-status]');
+   const visibility = id => map.getLayer(id) ? map.getLayoutProperty(id, 'visibility') ?? 'visible' : 'absent';
+   return {
+     status: panelStatus?.dataset.state ?? null,
+     statusText: panelStatus?.getClientRects().length ? panelStatus.textContent.trim() : '',
+     pressed: document.querySelector('[data-map-comparison][aria-pressed="true"]')?.dataset.mapComparison,
+     requested: document.querySelector('[data-layer-visibility-checkbox]').checked,
+     grid: visibility('cc-coordinate-grid'),
+     waterLabels: visibility('water_name_point_label'),
+     rasterVisible: visibility('historical-reference-moll-1715-layer') === 'visible',
+   };
+ })()`);
+ const assertPendingChart = async (status) => {
+   const {statusText, ...state} = await chartState();
+   assert.deepEqual(state, {status, pressed:'modern', requested:true, grid:'visible', waterLabels:'visible', rasterVisible:false});
+   assert.ok(statusText, `comparison status displays a ${status} message`);
+   return { ...state, statusText };
+ };
+ report.chartRetry = {};
+ await click(chartComparison);
+ await until(() => Boolean(chartFault.releaseFirst), 10000);
+ report.chartRetry.initialLoading = await assertPendingChart('loading');
+ chartFault.releaseFirst();
+ await until(`document.querySelector('[data-layer-status]').dataset.state==='error'`);
+ report.chartRetry.after503 = await assertPendingChart('error');
+ assert.equal(chartFault.requests, 1, 'the first image failure waits for explicit retry');
+ await evaluate(`document.querySelector(${JSON.stringify(chartComparison)}).focus()`);
+ await key('Enter','Enter');
+ await until(() => Boolean(chartFault.releaseSecond), 10000);
+ report.chartRetry.retryLoading = await assertPendingChart('loading');
+ chartFault.releaseSecond();
+ await until(`document.querySelector('[data-layer-status]').dataset.state==='ready' && window.__CC_MAP__.isSourceLoaded('historical-reference-moll-1715')`);
+ const {statusText: readyText, ...readyChart} = await chartState();
+ assert.deepEqual(readyChart, {status:'ready', pressed:'chart', requested:true, grid:'none', waterLabels:'none', rasterVisible:true});
+ assert.equal(await evaluate(`window.__CC_MAP__.getPaintProperty('historical-reference-moll-1715-layer','raster-opacity')`),1);
+ assert.equal(chartFault.requests, 2);
+ report.chartRetry.loaded = {requests:chartFault.requests, statusText:readyText, ...readyChart};
+ chartFault = undefined;
+
+ // Keep the first image request pending through real context loss. MapLibre
+ // restores the style with a new image source and issues a second request.
+ if (contextLossAvailable) {
+   await send('Page.navigate',{url:baseUrl+'?view=-40,25,2.6'});
+   await until(`document.querySelector('#charted-currents-map')?.dataset.mapReady==='true' &&
+     Boolean(window.__CC_MAP__?.getLayer('historical-ports-core') && window.__CC_MAP__.getLayer('cc-coordinate-grid'))`);
+   chartFault = {pathname:chartPath, requests:0};
+   await click('[data-layer-toggle]');
+   await click(chartComparison);
+   await until(() => Boolean(chartFault.releaseFirst), 10000);
+   const beforeLoss = await assertPendingChart('loading');
+   assert.equal(await loseAndRestoreContext(), true);
+   await until('window.__ccContextProbe.lost && window.__ccContextProbe.restored');
+   await until(() => Boolean(chartFault.releaseSecond), 10000);
+   const afterRestoration = await assertPendingChart('loading');
+   chartFault.releaseSecond();
+   await until(`window.__CC_MAP__.isSourceLoaded('historical-reference-moll-1715')`);
+   const restoredChart = await chartState();
+   report.chartContextRecovery = {beforeLoss, afterRestoration, restoredChart, requests:chartFault.requests};
+   assert.equal(chartFault.requests, 2);
+   assert.equal(restoredChart.status, 'ready', 'the restored image source resolves the pending chart request');
+   assert.deepEqual(restoredChart, {statusText:readyText, ...readyChart});
+   chartFault = undefined;
+ }
+
+ // Fault the pinned MapLibre internal initialization path while the remote
+ // style is loading. The runtime mode-switch test above covers setProjection.
  const startupFailure = await send('Page.addScriptToEvaluateOnNewDocument',{source:`
    Object.defineProperty(window, '__CC_MAP__', { configurable: true,
      get() { return window.__ccColdFallbackMap; },
      set(map) {
        window.__ccColdFallbackMap=map;
-       const original=map.setProjection.bind(map);
-       map.setProjection=projection=>{
-         if (projection.type==='globe') throw new Error('Synthetic unavailable globe on startup');
-         return original(projection);
+       const unavailableNotice = document.querySelector('[data-map-unavailable]');
+       window.__ccColdGlobeShowedUnavailable = !unavailableNotice.hidden;
+       const observer = new MutationObserver(records => {
+         if (!unavailableNotice.hidden || records.slice(1).some(record => record.oldValue === null)) {
+           window.__ccColdGlobeShowedUnavailable = true;
+         }
+       });
+       observer.observe(unavailableNotice, {attributes:true, attributeFilter:['hidden'], attributeOldValue:true});
+       const setStyle = map.setStyle.bind(map);
+       map.setStyle = (...args) => {
+         const result = setStyle(...args);
+         const style = map.style;
+         const initializeProjection = style._setProjectionInternal.bind(style);
+         style._setProjectionInternal = type => {
+           if (type === 'globe') {
+             window.__ccColdGlobeInjection = {beforeReady: document.querySelector('#charted-currents-map').dataset.mapReady !== 'true'};
+             throw new Error('Synthetic internal globe initialization failure');
+           }
+           return initializeProjection(type);
+         };
+         return result;
        };
      }
    });
  `});
  await send('Page.navigate',{url:baseUrl+'?mode=globe'});
- await until(`document.querySelector('#charted-currents-map')?.dataset.mapReady==='true'`);
+ await until(`window.__ccColdGlobeInjection`);
+ assert.deepEqual(await evaluate('window.__ccColdGlobeInjection'),{beforeReady:true});
+ await until(`document.querySelector('#charted-currents-map')?.dataset.mapReady==='true' && Boolean(window.__CC_MAP__?.getLayer('historical-ports-core'))`);
  const coldFallback=await evaluate(`({
    mode:window.__CC_MAP__.getProjection()?.type,
    globeDisabled:document.querySelector('[data-map-view="globe"]').disabled,
    caribbeanDisabled:document.querySelector('[data-map-view="caribbean"]').disabled,
+   unavailableNoticeShown:window.__ccColdGlobeShowedUnavailable,
    status:document.querySelector('[data-map-status]').textContent
  })`);
- assert.deepEqual(coldFallback,{mode:'mercator',globeDisabled:true,caribbeanDisabled:false,
+ assert.deepEqual(coldFallback,{mode:'mercator',globeDisabled:true,caribbeanDisabled:false,unavailableNoticeShown:false,
    status:'Globe unavailable in this browser. The 2D atlas remains available.'});
  await click('[data-map-view="caribbean"]');
  await until(`!window.__CC_MAP__.isMoving() && Math.abs(window.__CC_MAP__.getCenter().lng+72)<.01`);
  await send('Page.removeScriptToEvaluateOnNewDocument',{identifier:startupFailure.identifier});
 
+ // At the shortest supported phone viewport, wheel the comparison body and
+ // reach its clipped source action through native focus navigation.
+ await send('Emulation.setDeviceMetricsOverride',{width:320,height:568,deviceScaleFactor:1,mobile:true});
+ await send('Page.navigate',{url:baseUrl});
+ await until(`document.querySelector('#charted-currents-map')?.dataset.mapReady==='true'`);
+ await click('[data-layer-toggle]');
+ await click('[data-map-comparison="blend"]');
+ await until(`document.querySelector('[data-layer-status]').dataset.state==='ready'`);
+ const panelScroll = () => evaluate(`(() => {
+   const panel = document.querySelector('[data-layer-panel]');
+   const source = document.querySelector('[data-layer-inspect-btn]');
+   const bounds = source.getBoundingClientRect();
+   const hit = document.elementFromPoint(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
+   return {
+     panel: panel.scrollTop,
+     map: document.querySelector('.map-viewport').scrollTop,
+     page: scrollY,
+     zoom: window.__CC_MAP__.getZoom(),
+     sourceHit: hit === source || source.contains(hit),
+     sourceFocused: document.activeElement === source,
+   };
+ })()`);
+ const beforeWheel = await panelScroll();
+ const panelWheelPoint = await evaluate(`(() => {
+   const bounds = document.querySelector('[data-map-comparison="blend"]').getBoundingClientRect();
+   return {x:bounds.left + bounds.width / 2,y:bounds.top + bounds.height / 2};
+ })()`);
+ await send('Input.dispatchMouseEvent',{type:'mouseWheel',...panelWheelPoint,deltaX:0,deltaY:452});
+ await until(async () => {
+   const state = await panelScroll();
+   return state.panel > beforeWheel.panel && state.sourceHit;
+ }, 5000);
+ const afterWheel = await panelScroll();
+ assert.deepEqual({map:afterWheel.map,page:afterWheel.page,zoom:afterWheel.zoom},
+   {map:beforeWheel.map,page:beforeWheel.page,zoom:beforeWheel.zoom},'wheel scroll is contained by the comparison panel');
+ assert.equal(afterWheel.sourceHit, true, 'wheel exposes the chart source action');
+ const panelTab = async (reverse = false) => {
+   const tabKey = {key:'Tab',code:'Tab',windowsVirtualKeyCode:9,modifiers:reverse ? 8 : 0};
+   await send('Input.dispatchKeyEvent',{type:'rawKeyDown',...tabKey});
+   await send('Input.dispatchKeyEvent',{type:'keyUp',...tabKey});
+ };
+ for (let step = 0; step < 5 && !(await panelScroll()).sourceFocused; step++) await panelTab();
+ assert.equal((await panelScroll()).sourceFocused, true, 'native Tab reaches the scrolled source action');
+ await key('Enter','Enter');
+ await until(`document.querySelector('#source-drawer').dataset.state==='open' && Boolean(document.querySelector('.source-reference-image img'))`);
+ assert.equal(await evaluate('document.activeElement.id'),'source-drawer-title');
+ const drawerCloseFocused = () => evaluate(`document.activeElement.matches('[data-source-drawer-close]')`);
+ await panelTab(true);
+ assert.equal(await drawerCloseFocused(),true,'native Shift+Tab from the source title reaches Close');
+ await panelTab(true);
+ const reversedWithinDrawer = await evaluate(`document.activeElement.closest('.source-drawer-panel') !== null && !document.activeElement.matches('[data-source-drawer-close]')`);
+ assert.equal(reversedWithinDrawer,true,'reverse Tab wraps from Close to the last source control');
+ await panelTab();
+ assert.equal(await drawerCloseFocused(),true,'forward Tab wraps from the last source control to Close');
+ await key('Enter','Enter');
+ await until(async () => {
+   const state = await panelScroll();
+   return state.sourceFocused && state.sourceHit;
+ }, 5000);
+ const compactSourceReturn = await panelScroll();
+ assert.equal(compactSourceReturn.sourceHit, true, 'closing the drawer returns focus to an unobscured source action');
+ await panelTab();
+ const compactTabExit = await evaluate(`(() => {
+   const target = document.activeElement;
+   const panel = document.querySelector('[data-layer-panel]');
+   return {closed:panel.hidden,focusOutside:!panel.contains(target) && target !== document.body};
+ })()`);
+ assert.deepEqual(compactTabExit,{closed:true,focusOutside:true},'native Tab leaves the comparison and closes its overlay');
+ report.compactPanel = {beforeWheel,afterWheel,nativeDrawerFocusWrap:reversedWithinDrawer,sourceReturn:compactSourceReturn,tabExit:compactTabExit};
+
  // Remove WebGL in a new document to prove the visible unavailable state and
  // native corpus browser still work when neither map mode can render.
+ await send('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
  await send('Page.addScriptToEvaluateOnNewDocument',{source:`const context=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return /webgl/i.test(type)?null:context.call(this,type,...args)}`});
  await send('Page.navigate',{url:baseUrl});
  await until(`Boolean(document.querySelector('[data-map-unavailable]') && !document.querySelector('[data-map-unavailable]').hidden)`);
@@ -367,7 +562,7 @@ try {
      method: "Native input to observed projection and camera settle, including CDP and polling overhead. Map already initialized. Software renderer.",
    },
    reducedMotionTravelMs: end.t-start.t, tabletAttributionClear: true,
-   singleConnectorSelection, syntheticGlobeFailureFallback: true, syntheticGlobeFailureAtStartup: true, syntheticNoWebGLCorpusFallback: true, uncaughtExceptions: errors };
+   singleConnectorSelection, syntheticGlobeFailureFallback: true, syntheticInternalGlobeFailureAtStartup: coldFallback, syntheticNoWebGLCorpusFallback: true, uncaughtExceptions: errors };
  report.screenshots = ["cc-spatial-no-webgl.png", "cc-spatial-registered-chart.png", "cc-spatial-source-comparison.png", "cc-spatial-regional.png", "cc-spatial-globe.png", "cc-spatial-globe-mobile.png", "cc-spatial-tablet.png"];
  console.log("Spatial review passed: native modes, comparison, history, interruption, reduced motion, deferred image, attribution, and synthetic fallback.");
 } catch (error) {

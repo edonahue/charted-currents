@@ -171,6 +171,7 @@ const hasMollLayer = Boolean(
             <button type="button" data-map-comparison="chart" aria-pressed="false">Registered chart</button>
           </div>
           <p class="map-layer-control__comparison-note">Compare at the same geographic view. Sourced endpoints remain above the chart.</p>
+          <p class="map-layer-control__status sr-only" data-layer-status data-state="idle" role="status" aria-atomic="true"></p>
           <label class="map-layer-control__switch">
             <input
               type="checkbox"
@@ -220,7 +221,7 @@ const hasMollLayer = Boolean(
 </section>
 
 <script>
-  import { AttributionControl, Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
+  import { AttributionControl, Map, NavigationControl, setWorkerUrl, type ImageSource } from "maplibre-gl";
   import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
   import type { PublishedPortFeatureCollection, PublishedRouteFeatureCollection, Selection } from "../../lib/domain/types";
   import { loadPublishedPorts, loadPublishedRoutes } from "../../lib/data/loadPublished";
@@ -253,6 +254,7 @@ const hasMollLayer = Boolean(
   const layerPanel = document.querySelector<HTMLElement>("[data-layer-panel]");
   const layerPanelClose = document.querySelector<HTMLButtonElement>("[data-layer-panel-close]");
   const layerBadge = document.querySelector<HTMLElement>("[data-layer-state-badge]");
+  const layerStatus = document.querySelector<HTMLElement>("[data-layer-status]");
   const visibilityCheckbox = document.querySelector<HTMLInputElement>("[data-layer-visibility-checkbox]");
   const sliderGroup = document.querySelector<HTMLElement>("[data-layer-slider-group]");
   const opacitySlider = document.querySelector<HTMLInputElement>("[data-layer-opacity-slider]");
@@ -269,6 +271,9 @@ const hasMollLayer = Boolean(
   let globeAvailable = true;
   let viewNavigation: ReturnType<typeof startViewNavigation> | null = null;
   let blendOpacity = 65;
+  let periodMapState: "idle" | "loading" | "ready" | "error" = "idle";
+  const periodMapSource = "historical-reference-moll-1715";
+  const periodMapLayer = `${periodMapSource}-layer`;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function setMapControlsEnabled(enabled: boolean): void {
@@ -426,7 +431,7 @@ const hasMollLayer = Boolean(
         if (!map || lifecycle.signal.aborted) return;
         const readyMap = map;
         viewNavigation = startViewNavigation(readyMap, { cancelSelectionCamera: cancelCamera, onMode: applyDisplayMode });
-        const syncGrid = () => syncCoordinateGrid(readyMap, Boolean(visibilityCheckbox?.checked));
+        const syncGrid = () => syncCoordinateGrid(readyMap, periodMapVisible());
         syncGrid();
         readyMap.on("moveend", syncGrid);
         subscriptions.push(() => readyMap.off("moveend", syncGrid));
@@ -484,7 +489,9 @@ const hasMollLayer = Boolean(
       map.setStyle(INITIAL_MAP_STYLE_URL, {
         transformStyle: (previous, seed) => {
           const style = transformBasemapStyle(previous, seed);
-          return { ...style, projection: { type: requestedView?.mode ?? "mercator" } };
+          // Restore Globe through applyDisplayMode after style load so a failed
+          // projection can recover to the initialized 2D map.
+          return { ...style, projection: { type: "mercator" } };
         },
       });
     } catch (err) {
@@ -518,8 +525,6 @@ const hasMollLayer = Boolean(
           "line-dasharray": [2.4, 2.1],
         },
       });
-
-      if (visibilityCheckbox?.checked) ensurePeriodMapLayer(m);
 
       // Hit-target layer for routes
       m.addLayer({
@@ -720,52 +725,8 @@ const hasMollLayer = Boolean(
     }
   }
 
-  /** MapLibre image sources fetch even with their raster layer hidden. Install
-   * the reviewed reference only after an explicit request, under project data. */
-  function ensurePeriodMapLayer(m: Map): boolean {
-    if (m.getLayer("historical-reference-moll-1715-layer")) return true;
-    if (!m.getLayer("historical-routes-line")) return false;
-    const rectifiedUrl = layerControl?.dataset.rectifiedUrl;
-    let coordinates: [[number, number], [number, number], [number, number], [number, number]] | null = null;
-    if (layerControl?.dataset.coordinates) {
-      try {
-        const parsed = JSON.parse(layerControl.dataset.coordinates);
-        if (Array.isArray(parsed) && parsed.length === 4) {
-          coordinates = parsed as [[number, number], [number, number], [number, number], [number, number]];
-        }
-      } catch (e) {
-        console.warn("Failed to parse georeference coordinates:", e);
-      }
-    }
-
-    if (rectifiedUrl && coordinates) {
-      m.addSource("historical-reference-moll-1715", {
-        type: "image",
-        url: rectifiedUrl,
-        coordinates,
-      });
-
-      const initialOpacity = opacitySlider ? Number(opacitySlider.value) / 100 : 0.65;
-
-      m.addLayer(
-        {
-          id: "historical-reference-moll-1715-layer",
-          type: "raster",
-          source: "historical-reference-moll-1715",
-          layout: {
-            visibility: "visible",
-          },
-          paint: {
-            "raster-opacity": initialOpacity,
-            "raster-resampling": "linear",
-          },
-        },
-        "historical-routes-line"
-      );
-      return true;
-    }
-    console.warn("Historical reference layer data missing or invalid; layer not initialized.");
-    return false;
+  function periodMapVisible(): boolean {
+    return periodMapState === "ready" && Boolean(visibilityCheckbox?.checked);
   }
 
   function updateRouteVisualHierarchy(selection: Selection, timeFilter: TimeFilterState): void {
@@ -918,7 +879,7 @@ const hasMollLayer = Boolean(
   }
 
   function applyDisplayMode(mode: "mercator" | "globe"): "mercator" | "globe" {
-    if (!map) return "mercator";
+    if (!map || (mode === "globe" && !globeAvailable)) return "mercator";
     let effectiveMode = mode;
     try {
       map.setProjection({ type: mode });
@@ -1060,11 +1021,102 @@ const hasMollLayer = Boolean(
     if (!layerControl || !layerToggle || !layerPanel) return;
 
     function syncComparisonControls(): void {
-      const mode = !visibilityCheckbox?.checked ? "modern" : Number(opacitySlider?.value) === 100 ? "chart" : "blend";
+      const mode = !periodMapVisible() ? "modern" : Number(opacitySlider?.value) === 100 ? "chart" : "blend";
       layerPanel?.querySelectorAll<HTMLButtonElement>("[data-map-comparison]").forEach((button) => {
         button.setAttribute("aria-pressed", String(button.dataset.mapComparison === mode));
       });
     }
+
+    function syncPeriodMap(): void {
+      const visible = periodMapVisible();
+      const state = visibilityCheckbox?.checked ? periodMapState : "idle";
+      syncComparisonControls();
+      syncCoordinateGrid(m, visible);
+      if (m.getLayer(BASEMAP_WATER_LABEL_LAYER_ID)) {
+        m.setLayoutProperty(BASEMAP_WATER_LABEL_LAYER_ID, "visibility", visible ? "none" : "visible");
+      }
+      if (m.getLayer(periodMapLayer)) {
+        m.setLayoutProperty(periodMapLayer, "visibility", visible ? "visible" : "none");
+      }
+      if (layerBadge) {
+        layerBadge.textContent = { idle: "Off", loading: "Loading", ready: "On", error: "Unavailable" }[state];
+        layerBadge.classList.toggle("map-layer-control__badge--active", visible);
+      }
+      if (sliderGroup) sliderGroup.hidden = !visible;
+      if (layerStatus) {
+        layerStatus.dataset.state = state;
+        layerStatus.classList.toggle("sr-only", state === "idle" || state === "ready");
+        layerStatus.textContent = {
+          idle: "Herman Moll reference map off.",
+          loading: "Loading the registered chart…",
+          ready: "Herman Moll reference map on.",
+          error: "The chart could not load. Choose Blend or Registered chart to retry.",
+        }[state];
+      }
+    }
+
+    const onPeriodMapUnavailable = () => {
+      periodMapState = "error";
+      syncPeriodMap();
+    };
+
+    function watchPeriodMapSource(source: ImageSource): void {
+      periodMapState = "loading";
+      source.once("error", onPeriodMapUnavailable);
+      source.on("data", (event) => {
+        // ImageSource.loaded() is also true after a failed request. Metadata
+        // is emitted only once the image and its coordinates are available.
+        if (event.sourceDataType !== "metadata") return;
+        source.off("error", onPeriodMapUnavailable);
+        const opacity = Number(opacitySlider?.value ?? 65) / 100;
+        if (m.getLayer(periodMapLayer)) {
+          m.setPaintProperty(periodMapLayer, "raster-opacity", opacity);
+        } else {
+          m.addLayer({
+            id: periodMapLayer,
+            type: "raster",
+            source: periodMapSource,
+            layout: { visibility: visibilityCheckbox?.checked ? "visible" : "none" },
+            paint: {
+              "raster-opacity": opacity,
+              "raster-resampling": "linear",
+            },
+          }, m.getLayer("historical-routes-line")?.id);
+        }
+        periodMapState = "ready";
+        syncPeriodMap();
+      });
+    }
+
+    function requestPeriodMap(): void {
+      if (periodMapState === "loading" || periodMapState === "ready") return;
+      try {
+        // Replace the failed source to give each retry a fresh request.
+        if (m.getLayer(periodMapLayer)) m.removeLayer(periodMapLayer);
+        if (m.getSource(periodMapSource)) m.removeSource(periodMapSource);
+        const url = layerControl?.dataset.rectifiedUrl;
+        const coordinates = JSON.parse(layerControl?.dataset.coordinates ?? "null");
+        if (!url || !Array.isArray(coordinates) || coordinates.length !== 4) {
+          onPeriodMapUnavailable();
+          return;
+        }
+        m.addSource(periodMapSource, { type: "image", url, coordinates: coordinates as ImageSource["coordinates"] });
+        watchPeriodMapSource(m.getSource<ImageSource>(periodMapSource)!);
+      } catch {
+        onPeriodMapUnavailable();
+      }
+    }
+
+    const restorePeriodMap = () => {
+      // Context restoration creates a new image source from MapLibre's saved
+      // style. Its image request needs the same visibility and retry handling.
+      const source = m.getSource<ImageSource>(periodMapSource);
+      if (!source) return;
+      watchPeriodMapSource(source);
+      syncPeriodMap();
+    };
+    m.on("style.load", restorePeriodMap);
+    subscriptions.push(() => m.off("style.load", restorePeriodMap));
 
     layerPanel.querySelectorAll<HTMLButtonElement>("[data-map-comparison]").forEach((button) => listen(button, "click", () => {
       if (!visibilityCheckbox || !opacitySlider) return;
@@ -1113,37 +1165,8 @@ const hasMollLayer = Boolean(
     });
 
     listen(visibilityCheckbox, "change", () => {
-      if (!visibilityCheckbox) return;
-      const isVisible = visibilityCheckbox.checked;
-      syncComparisonControls();
-      syncCoordinateGrid(m, isVisible);
-      if (m.getLayer(BASEMAP_WATER_LABEL_LAYER_ID)) {
-        m.setLayoutProperty(BASEMAP_WATER_LABEL_LAYER_ID, "visibility", isVisible ? "none" : "visible");
-      }
-      if (isVisible) ensurePeriodMapLayer(m);
-      if (m.getLayer("historical-reference-moll-1715-layer")) {
-        m.setLayoutProperty(
-          "historical-reference-moll-1715-layer",
-          "visibility",
-          isVisible ? "visible" : "none"
-        );
-      }
-      if (layerBadge) {
-        layerBadge.textContent = isVisible ? "On" : "Off";
-        layerBadge.classList.toggle("map-layer-control__badge--active", isVisible);
-      }
-      if (sliderGroup) {
-        if (isVisible) {
-          sliderGroup.removeAttribute("hidden");
-        } else {
-          sliderGroup.setAttribute("hidden", "");
-        }
-      }
-      if (status) {
-        status.textContent = isVisible
-          ? "[1715?] Herman Moll reference map layer enabled."
-          : "[1715?] Herman Moll reference map layer disabled.";
-      }
+      if (visibilityCheckbox?.checked) requestPeriodMap();
+      syncPeriodMap();
     });
 
     listen(opacitySlider, "input", () => {
@@ -1156,8 +1179,8 @@ const hasMollLayer = Boolean(
       }
       opacitySlider.setAttribute("aria-valuenow", String(val));
       syncComparisonControls();
-      if (m.getLayer("historical-reference-moll-1715-layer")) {
-        m.setPaintProperty("historical-reference-moll-1715-layer", "raster-opacity", opacity);
+      if (m.getLayer(periodMapLayer)) {
+        m.setPaintProperty(periodMapLayer, "raster-opacity", opacity);
       }
     });
 
@@ -1198,6 +1221,13 @@ const hasMollLayer = Boolean(
       if (!layerControl.contains(e.target as Node)) {
         closeLayerPanel();
       }
+    });
+
+    listen(document, "focusin", (e) => {
+      const target = e.target;
+      if (layerPanel.hidden || !(target instanceof Element) || layerControl.contains(target)) return;
+      if (target.closest('[data-component="source-drawer"]')) return;
+      closeLayerPanel();
     });
   }
 
@@ -1616,14 +1646,17 @@ const hasMollLayer = Boolean(
   .map-layer-control {
     position: absolute;
     top: 1rem;
+    bottom: 0.75rem;
     left: calc(1rem + 10.5rem);
     z-index: 20;
     display: flex;
     flex-direction: column;
+    pointer-events: none;
   }
 
   .map-layer-control__toggle {
     display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
     gap: 0.5rem;
     padding: 0.45rem 0.75rem;
@@ -1635,6 +1668,7 @@ const hasMollLayer = Boolean(
     font-size: var(--cc-text-xs);
     font-weight: 500;
     cursor: pointer;
+    pointer-events: auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: background 150ms ease, border-color 150ms ease;
   }
@@ -1674,14 +1708,16 @@ const hasMollLayer = Boolean(
 
   .map-layer-control__panel {
     margin-top: 0.35rem;
+    min-height: 0;
     width: 270px;
     background: var(--cc-paper-raised);
     border: 1px solid var(--cc-line);
     border-radius: var(--cc-radius-sm);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
-    display: flex;
-    flex-direction: column;
     padding: 0.75rem 0.85rem;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    pointer-events: auto;
   }
 
   .map-layer-control__panel[hidden] {
@@ -1721,13 +1757,24 @@ const hasMollLayer = Boolean(
   .map-layer-control__close:focus-visible {
     color: var(--cc-ink);
     background: var(--cc-paper);
-    outline: none;
+  }
+
+  .map-layer-control__close:focus-visible {
+    outline: 2px solid var(--cc-focus);
+    outline-offset: 2px;
   }
 
   .map-layer-control__body {
     display: flex;
     flex-direction: column;
     gap: 0.65rem;
+  }
+
+  .map-layer-control__status {
+    margin: 0;
+    color: var(--cc-ink);
+    font-size: var(--cc-text-xs);
+    line-height: 1.4;
   }
 
   .map-layer-control__comparison {
