@@ -235,9 +235,9 @@ workload. They leave GPU, worker and device memory unmeasured.
 
 ### External review items
 
-Review the budget miss and physical-device measurements alongside the rendered
-review candidate. The runtime and display checklist records targeted follow-up
-probes and opportunities to measure during preview.
+Review the Globe cadence and physical-device measurements alongside the
+rendered candidate. The runtime and display checklist records the local
+measurements and the follow-up probes for hardware and preview verification.
 
 Firefox 159 with Orca 49.4 completed the native keyboard journey through
 search, Port Royal and supporting evidence. A silent Speech Dispatcher output
@@ -256,15 +256,23 @@ for battery and temperature observations.
 ### Local cartography candidate for release review
 
 The follow-up branch contains the revised basemap, an intent-loaded evidence
-renderer, timeline and reading-room layout repairs, and cold-globe fallback.
-The [runtime review](LIVING_ATLAS_RUNTIME_REVIEW.md#follow-up-cartography-candidate)
-records the final cold results, 30-minute stability test, Firefox and Orca
-journey, and the software-rendering limit. The latest tested application code
-is `63606b4`. Subsequent commits record review evidence. First-publish review
-should identify which candidate is being accepted and address the outstanding
-physical-device timing and audible assistive-technology observations. The
-[chart coverage and blend study](LIVING_ATLAS_CHART_COMPARISON.md) is a separate
-local proof. Its derivative has yet to complete source review.
+renderer, timeline and reading-room layout repairs, and cold Globe fallback.
+Application revision `6575cf8` adds chart retry and graphics-context recovery,
+keeps the compact comparison scrollable, and fixes keyboard focus when leaving
+the panel. The exact built entry HTML has SHA-256 prefix `b5c3b6a1a918`.
+The [runtime review](LIVING_ATLAS_RUNTIME_REVIEW.md#candidate-recovery-and-compact-comparison-recheck)
+records the candidate's cold loads, 30-minute stability run, and Globe cadence.
+Physical-device timing and audible assistive-technology observations remain
+open for release review. The [chart coverage and blend study](LIVING_ATLAS_CHART_COMPARISON.md)
+records a separate derivative that requires source review.
+
+On November 19, 2026, [draft PR #13](https://github.com/edonahue/charted-currents/pull/13)
+was open at `c855595` with successful verification and Pages checks. Its
+[preview](https://campaign-living-atlas-review.charted-currents.pages.dev/)
+served HTML with SHA-256 prefix `02b9c9eb4bb9`, matching the archived preview
+HTML from that revision. Production still matched the rollback build at
+`9a97042`. The repaired candidate awaits preview verification and external
+acceptance.
 
 ### Release and rollback
 
