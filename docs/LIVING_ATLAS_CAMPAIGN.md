@@ -4,7 +4,7 @@
 **Implementation branch:** `campaign/living-atlas-review`
 **Baseline commit:** `3e6ef52`
 **Acceptance state:** external decision pending. See measurement and device gaps below.
-**Publication:** the maintainer subsequently authorized completion, merge/push to main, and live-site verification. Publication follows verification and the required independent acceptance boundary; no deployment has occurred.
+**Publication:** the maintainer subsequently authorized completion, merge/push to main, and live-site verification. Production publication follows verification and independent acceptance. Draft PR #13 has a hosted review build at `c855595`.
 
 This is the durable product, implementation, and acceptance brief for the Living Atlas campaign. The machine-readable packet contract is [living-atlas.json](packets/living-atlas.json). The [runtime and display review](LIVING_ATLAS_RUNTIME_REVIEW.md) records evidence and additional probes. The whole campaign is one implementation packet; its milestones are sequencing aids, not separately accepted packets. Implementation may reach self-verification and review pending. A human maintainer or independent reviewer makes the final acceptance decision.
 
@@ -252,6 +252,19 @@ Start a browser performance recording on that device, let initial tiles settle,
 then pan, zoom, enter the globe, return to 2D and open/close a record. Report p95
 frame interval over the active interactions. Use a separate sustained session
 for battery and temperature observations.
+
+### Local cartography candidate for release review
+
+The follow-up branch contains the revised basemap, an intent-loaded evidence
+renderer, timeline and reading-room layout repairs, and cold-globe fallback.
+The [runtime review](LIVING_ATLAS_RUNTIME_REVIEW.md#follow-up-cartography-candidate)
+records the final cold results, 30-minute stability test, Firefox and Orca
+journey, and the software-rendering limit. The latest tested application code
+is `63606b4`. Subsequent commits record review evidence. First-publish review
+should identify which candidate is being accepted and address the outstanding
+physical-device timing and audible assistive-technology observations. The
+[chart coverage and blend study](LIVING_ATLAS_CHART_COMPARISON.md) is a separate
+local proof. Its derivative has yet to complete source review.
 
 ### Release and rollback
 

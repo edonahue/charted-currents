@@ -79,24 +79,29 @@ when needed. It retains the pinned stack and provider attribution.
 Five cold loads and five separate native selection runs per build on
 Chromium 153, 390×844 at DPR 2, used 4× CPU slowdown, 150 ms latency,
 200,000 bytes/s download, disabled cache, and software WebGL. Values below
-are local medians versus the verified preview revision (`c855595`).
+compare the local build of the verified preview revision (`c855595`) with
+the cartography candidate after the layout and globe fallback repairs.
+The performance and stability reports independently recorded the same
+SHA-256 for the candidate's built entry HTML, beginning `18bfef8582c0`.
 
 | Metric | Verified preview build | Local candidate |
 | --- | ---: | ---: |
 | LCP | 648 ms | 620 ms |
 | Session-window CLS | 0.03794 | 0.03902 |
-| Map-ready proxy | 4,765 ms | 4,658 ms |
-| Native port selection | 4,982 ms | 4,509 ms |
-| Native selected record visible | 5,549 ms | 5,065 ms |
-| Same-origin initial JavaScript body, encoded | 395,506 bytes | 392,794 bytes |
+| Map-ready proxy | 4,765 ms | 4,652 ms |
+| Native port selection | 4,982 ms | 4,532 ms |
+| Native selected record visible | 5,549 ms | 5,109 ms |
+| Same-origin initial JavaScript body, encoded | 395,506 bytes | 392,809 bytes |
+| Same-origin initial CSS transfer | 21,701 bytes | 21,754 bytes |
+| Same-origin initial font transfer | 88,816 bytes | 88,816 bytes |
 
-Native port selection was about 9.5% faster in this profile. The five
-candidate selections ranged from 4.47 to 4.56 seconds. The workload
-includes browser and polling overhead and does not isolate the contribution
-of each change. Window resource timing cannot account for all provider
-or worker bytes. Keep field metrics and physical-device performance
-separate from this result. Run the same profile with a geographic deep
-link to quantify any camera-seeding benefit directly.
+Median native port selection was 9.0% faster in this profile. The five
+candidate selections were 4,532, 4,481, 4,550, 4,571 and 4,468 ms. Each
+met the 5 s target. Initial JavaScript is 2,180 bytes below the campaign's
+original 394,989-byte budget. The workload includes browser and polling
+overhead. Window resource timing does not include every provider or worker
+request. A cold geographic deep-link comparison would help isolate the
+camera-seeding change.
 
 The later native stability probe found the timeline filters rewrapping
 after the reading room closed. The pointer landed on the heading after
@@ -105,15 +110,45 @@ Atlantic center 0.143° east of the requested coordinate while the map
 pane was resizing. The local repair commits the map and timeline layout
 sizes without animating columns or padding. Existing camera and mobile
 sheet motion stay available. The accelerated trace then completed 13
-whole journeys in one minute with no errors. The reduced-cooldown
-probe measures interaction correctness. The cold data above precedes
-this CSS-only layout repair.
+whole journeys in one minute with no errors.
+
+The repaired build completed a 30-minute Chromium 153 software-WebGL
+soak at 1440×900. All 53 cycles passed with zero interaction, browser,
+resource or crash failures. The workload used native port selection,
+evidence inspection, period switching, chart comparison, Atlantic and
+Caribbean orientation, and north reset. Median cycle times were 4.288 s
+for the first ten and 4.279 s for the last ten. Lab Event Timing p75 was
+40 ms across 901 observed interaction groups, with observations below
+16 ms censored. The post-cycle animation-frame interval p95 ranged
+from 16.7 to 16.8 ms.
+
+After five minutes the forced-GC JavaScript heap samples rose from
+12.09 to 12.53 MB by minute 25, with 1,820 DOM nodes and 167 listeners
+at each warm post-GC checkpoint. Cycle times showed no slowdown in this
+session. The heap trend warrants separate longer observation. The final
+non-forced sample is a different diagnostic. Physical-phone frame timing,
+thermal behavior and sustained globe rendering remain unmeasured.
+
+A separate desktop software-WebGL probe recorded MapLibre render event
+intervals during five native activations of the Atlantic and Globe views.
+The first switches had p95 intervals of 41.8 ms (37 samples) and 222.4 ms
+(10 samples). Across the four warm switches, p95 was 19.2 ms for
+Atlantic (148 samples) and 69.2 ms for Globe (77 samples). This diagnostic
+found substantial stalls in the software-rendered globe, including after
+the first switch. Hardware frame timing remains open. There were no
+page-target script requests during the switches, and no MapLibre render
+events in either 1.5-second settled idle window, before and after putting
+the tab in the background. The probe confirmed the visibility changes.
 
 Native navigation, spatial, full quality and behavioral browser checks
 passed locally. The phone globe has clear space between its southern
 basin name and the route legend. The seven-view audit reported zero
 geometry findings across its 35 states, and the behavioral suite passed
-238 checks. A separate [chart comparison study](LIVING_ATLAS_CHART_COMPARISON.md)
+238 checks. An independent screenshot review found the southern basin
+name crosses the globe limb, and the open phone inspector leaves a shallow
+map with substantial control coverage. The Globe and chart controls
+remained legible and distinct in the reviewed images.
+A separate [chart comparison study](LIVING_ATLAS_CHART_COMPARISON.md)
 records the local review of edge softening and research into wider
 historical coverage.
 
