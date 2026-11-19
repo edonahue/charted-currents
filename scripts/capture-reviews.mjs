@@ -1951,11 +1951,25 @@ async function runReviewSuite() {
 
     // Step 4: Toggle layer ON via native Space key on focused checkbox
     await sendKey(" ", "Space", 32);
+    // The raster layer is created only after the lazy image source emits
+    // metadata (including image decode), not when the checkbox first changes.
+    const periodMapDeadline = Date.now() + 15000;
+    let periodMapLoadState;
+    do {
+      const loadState = await send("Runtime.evaluate", {
+        expression: `document.querySelector("[data-layer-status]")?.dataset.state`,
+        returnByValue: true,
+      });
+      periodMapLoadState = loadState?.result?.value;
+      if (periodMapLoadState === "ready" || periodMapLoadState === "error") break;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    } while (Date.now() < periodMapDeadline);
+    assert(periodMapLoadState === "ready", `Period map image finishes loading before layer checks (state: ${periodMapLoadState})`);
     const toggleOnVal = await send("Runtime.evaluate", {
       expression: `(() => {
         const checkbox = document.querySelector("[data-layer-visibility-checkbox]");
         const m = window.__CC_MAP__;
-        const layerVis = m?.getLayoutProperty("historical-reference-moll-1715-layer", "visibility");
+        const layerVis = m?.getLayer("historical-reference-moll-1715-layer") ? m.getLayoutProperty("historical-reference-moll-1715-layer", "visibility") : "not-created";
         const badge = document.querySelector("[data-layer-state-badge]");
         const sliderGroup = document.querySelector("[data-layer-slider-group]");
         return {
