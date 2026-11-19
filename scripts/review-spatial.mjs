@@ -540,6 +540,28 @@ try {
  assert.deepEqual(compactTabExit,{closed:true,focusOutside:true},'native Tab leaves the comparison and closes its overlay');
  report.compactPanel = {beforeWheel,afterWheel,nativeDrawerFocusWrap:reversedWithinDrawer,sourceReturn:compactSourceReturn,tabExit:compactTabExit};
 
+ // The top controls must leave northern endpoints reachable on a short phone.
+ await click('[data-layer-toggle]');
+ await click('[data-map-comparison="modern"]');
+ await click('[data-layer-panel-close]');
+ await click('[data-map-view="globe"]');
+ await until(`window.__CC_MAP__.getProjection()?.type==='globe' && !window.__CC_MAP__.isMoving() && window.__CC_MAP__.areTilesLoaded()`);
+ const compactGlobePort = await evaluate(`(() => {
+   const map = window.__CC_MAP__;
+   const port = map.querySourceFeatures('historical-ports').find(feature => feature.properties.id === 'place_bristol');
+   if (!port) return null;
+   const point = map.project(port.geometry.coordinates);
+   const bounds = map.getContainer().getBoundingClientRect();
+   const x = point.x + bounds.left;
+   const y = point.y + bounds.top;
+   return { x, y, canvasHit: document.elementFromPoint(x, y) === map.getCanvas(),
+     controlsBottom: document.querySelector('[data-map-view-controls]').getBoundingClientRect().bottom };
+ })()`);
+ assert.ok(compactGlobePort?.canvasHit && compactGlobePort.y > compactGlobePort.controlsBottom,
+   'the 320×568 Globe leaves Bristol below the orientation controls and reachable on the map');
+ report.compactGlobePort = compactGlobePort;
+ await shot('cc-spatial-globe-short-phone');
+
  // Remove WebGL in a new document to prove the visible unavailable state and
  // native corpus browser still work when neither map mode can render.
  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});

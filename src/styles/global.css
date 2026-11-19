@@ -1040,3 +1040,11 @@ a {
     bottom: max(3.625rem, var(--cc-map-attribution-clearance, 3.625rem));
   }
 }
+
+@media (orientation: portrait) and (max-width: 430px) and (max-height: 720px) {
+  /* The Globe scales with width. Leave vertical room for its disk between
+     the orientation buttons and the route legend on short phones. */
+  .app-shell .map-viewport[data-map-projection="globe"] {
+    min-height: max(62svh, calc(80vw + 14rem));
+  }
+}

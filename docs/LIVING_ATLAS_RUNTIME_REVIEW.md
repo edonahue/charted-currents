@@ -219,3 +219,36 @@ with entries below 16 ms censored. Forced-GC heap rose from 12.18 MB at
 minute five to 12.65 MB at minute 25. The warm post-GC checkpoints held
 1,822 DOM nodes and 168 event listeners throughout. The heap trend remains
 a diagnostic to track in longer sessions.
+
+### Globe composition on short phones
+
+Browser comparisons at 320, 360, 390 and 1440 px assessed moving the opening
+camera and aligning the water labels to the Globe surface. Moving the camera
+brought northern endpoints closer to the opposite limb and removed Labrador
+Sea in some views. Surface-aligned lettering compressed the southern basin
+name. The South Atlantic label remains close to the lower edge.
+
+The phone comparison exposed a larger problem at 320×568. The Globe's view
+buttons covered northern port markers and the legend covered the lower disk.
+Short portrait phones now reserve vertical space for the Globe between the
+map controls and the legend. Bristol's projected point moved to 55 px below
+the view buttons and hit-tested on the map canvas. The native regression
+failed on the previous build and passed on this one. At 320×568 the legend
+and period controls now continue below the first screen. The 390×844 layout
+uses its previous sizing rule.
+
+The build's entry SHA-256 begins `5ec7396764b5`. Its built JavaScript, data
+and assets match the preceding build byte for byte. Only the entry HTML
+and its stylesheet differ. The short-phone rule is outside the desktop
+stability profile and applies only in Globe mode.
+
+The final build's five cold runs at 390×844 had median LCP of 616 ms,
+CLS of 0.03902, and median native port selection of 4,519 ms. All five
+selections completed within the 5 s budget. The same-origin JavaScript
+was 393,100 encoded bytes, and the CSS transfer was 21,839 bytes.
+
+Across four warm Globe switches at 320×568 and DPR 1, the software WebGL
+render-interval p95 was 46.3 ms before and 44.4 ms after the layout change.
+Neither build rendered during the settled visible or hidden windows. The
+comparison is a software-browser diagnostic. Physical phones still need
+their own measurements.
