@@ -7,7 +7,7 @@
  *
  * Usage:
  *   node scripts/quality-audit.mjs --ci-mode       # Fast CI run (2 viewports, a11y, layout, journeys; <30s)
- *   node scripts/quality-audit.mjs --full          # Full review (5 viewports, a11y, layout, journeys, 7 screenshots)
+ *   node scripts/quality-audit.mjs --full          # Full review (7 viewports, a11y, layout, journeys, state screenshots)
  *   node scripts/quality-audit.mjs --a11y-only     # Targeted accessibility scan only
  */
 
@@ -31,6 +31,8 @@ const VIEWPORTS = isFullMode
   ? [
       { name: "mobile_compact", width: 390, height: 844, dsf: 2, mobile: true },
       { name: "mobile_standard", width: 430, height: 932, dsf: 2, mobile: true },
+      { name: "mobile_landscape", width: 844, height: 390, dsf: 2, mobile: true },
+      { name: "tablet_portrait", width: 768, height: 1024, dsf: 1, mobile: true },
       { name: "tablet_small_desktop", width: 1024, height: 768, dsf: 1, mobile: false },
       { name: "standard_desktop", width: 1440, height: 900, dsf: 1, mobile: false },
       { name: "ultrawide", width: 3440, height: 1440, dsf: 1, mobile: false },
@@ -333,6 +335,18 @@ async function main() {
 
     async function captureScreenshot(filename) {
       if (!isFullMode) return;
+      // A viewport resize requests new tiles. The old data-map-idle attribute
+      // alone cannot prove that this particular view has finished rendering.
+      let settled = false;
+      for (let attempt = 0; attempt < 80; attempt++) {
+        const state = await send("Runtime.evaluate", {
+          expression: `Boolean(window.__CC_MAP__?.areTilesLoaded() && !window.__CC_MAP__.isMoving())`,
+          returnByValue: true,
+        });
+        if (state.result?.value) { settled = true; break; }
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      if (!settled) console.warn(`  [SCREENSHOT] ${filename}: tiles did not settle within 8 seconds; inspect loading state.`);
       const res = await send("Page.captureScreenshot", { format: "png" });
       if (res?.data) {
         const outPath = path.join(screenshotDir, filename);
@@ -581,8 +595,38 @@ async function main() {
       const evaluateLayoutInBrowser = `
         (() => {
           const findings = [];
+          const timeline = document.querySelector('.timeline-shell');
+          const rail = document.querySelector('.timeline-shell__rail');
+          if (timeline && rail) {
+            const railBox = rail.getBoundingClientRect();
+            const timelineBox = timeline.getBoundingClientRect();
+            if (railBox.width < Math.min(200, timelineBox.width / 2)) {
+              findings.push({ type: 'collapsed_timeline', selector: '.timeline-shell__rail', detail: 'The event rail has insufficient width for its geographic-independent time axis.' });
+            }
+          }
           const winW = window.innerWidth;
           const winH = window.innerHeight;
+          const inspector = document.getElementById('entity-inspector');
+          const sourceOpen = document.getElementById('source-drawer')?.dataset.state === 'open';
+          const optionsOpen = document.querySelector('[data-locator-menu]:not([hidden]), [data-layer-panel]:not([hidden])');
+          if (winW >= 769 && winW <= 1024 && winH <= 520 && !sourceOpen && !optionsOpen) {
+            for (const selector of ['[data-map-view-controls]', '.maplibregl-ctrl-attrib', '.maplibregl-ctrl-zoom-in']) {
+              const box = document.querySelector(selector)?.getBoundingClientRect();
+              if (box && box.height && (box.top < -2 || box.bottom > winH + 2)) {
+                findings.push({type:'landscape_map_control_offscreen',selector,detail:'Short landscape must show orientation, zoom and attribution in the opening map viewport.'});
+              }
+            }
+          }
+          if (winW <= 1024 && !sourceOpen && inspector && !inspector.hidden && inspector.dataset.sheetState === 'open') {
+            const sheet = inspector.getBoundingClientRect();
+            for (const selector of ['[data-map-view-controls]', '.maplibregl-ctrl-attrib']) {
+              const element = document.querySelector(selector);
+              const box = element?.getBoundingClientRect();
+              if (box && box.bottom > sheet.top + 2 && box.top < sheet.bottom && box.right > sheet.left && box.left < sheet.right) {
+                findings.push({type:'sheet_occludes_map_controls',selector,detail:'Initial inspector sheet covers map orientation or required attribution.'});
+              }
+            }
+          }
 
           // a) Horizontal document overflow (2px tolerance)
           const scrollW = document.documentElement.scrollWidth;
@@ -701,6 +745,13 @@ async function main() {
         });
         await new Promise((r) => setTimeout(r, 250));
 
+        // Reset explicitly: the preceding accessibility scan may leave a
+        // selected, scrolled mobile sheet. Layout setup is not native-input proof.
+        await send("Runtime.evaluate", {
+          expression: `document.querySelector('[data-source-drawer-close]')?.click(); document.querySelector('[data-inspector-close]')?.click(); window.scrollTo(0, 0);`,
+        });
+        await new Promise((r) => setTimeout(r, 250));
+
         const vpFindings = [];
 
         // State A: Initial baseline state
@@ -711,12 +762,23 @@ async function main() {
         for (const f of resInit?.result?.value?.findings || []) {
           vpFindings.push({ state: "initial", ...f });
         }
+        if (Math.abs((resInit.result?.value?.winW ?? vp.width) - vp.width) > 2) {
+          vpFindings.push({state:'initial',type:'expanded_layout_viewport',detail:`Requested ${vp.width}px but mobile layout expanded to ${resInit.result.value.winW}px.`});
+        }
+        await captureScreenshot(`matrix-${vp.name}-initial.png`);
 
         // State B: Entity Inspector open
         await send("Runtime.evaluate", {
-          expression: `window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "place", id: "place_port_royal" } }))`,
+          expression: `window.dispatchEvent(new CustomEvent("cc:test-select", { detail: { kind: "port", id: "place_port_royal" } }))`,
         });
         await new Promise((r) => setTimeout(r, 350));
+        const selectedPlace = await send("Runtime.evaluate", {
+          expression: `(() => { const inspector=document.getElementById('entity-inspector'); inspector.scrollTop=0; return {kind:window.__CC_SELECTION_STORE__?.get()?.kind,title:document.querySelector('[data-inspector-title]')?.textContent}; })()`,
+          returnByValue: true,
+        });
+        if (selectedPlace.result?.value?.kind !== 'port' || !/Port Royal/.test(selectedPlace.result?.value?.title || '')) {
+          throw new Error('Viewport matrix did not render the requested Port Royal record');
+        }
         const resInspector = await send("Runtime.evaluate", {
           expression: evaluateLayoutInBrowser,
           returnByValue: true,
@@ -724,10 +786,14 @@ async function main() {
         for (const f of resInspector?.result?.value?.findings || []) {
           vpFindings.push({ state: "inspector_open", ...f });
         }
+        if (Math.abs((resInspector.result?.value?.winW ?? vp.width) - vp.width) > 2) {
+          vpFindings.push({state:'inspector_open',type:'expanded_layout_viewport',detail:`Requested ${vp.width}px but mobile layout expanded to ${resInspector.result.value.winW}px.`});
+        }
+        await captureScreenshot(`matrix-${vp.name}-inspector.png`);
 
         // State C: Source Drawer open
         await send("Runtime.evaluate", {
-          expression: `document.querySelector('[data-open-ship-source]')?.click() || document.querySelector('[data-place-evidence-btn]')?.click()`,
+          expression: `Array.from(document.querySelectorAll('[data-place-evidence-btn], [data-open-ship-source]')).find(button => button.getClientRects().length > 0 && !button.disabled)?.click()`,
         });
         await new Promise((r) => setTimeout(r, 350));
         const resDrawer = await send("Runtime.evaluate", {
@@ -737,6 +803,7 @@ async function main() {
         for (const f of resDrawer?.result?.value?.findings || []) {
           vpFindings.push({ state: "drawer_open", ...f });
         }
+        await captureScreenshot(`matrix-${vp.name}-evidence.png`);
 
         // Close drawer and inspector to restore clean baseline
         await send("Runtime.evaluate", {

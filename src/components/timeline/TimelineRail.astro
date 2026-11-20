@@ -156,6 +156,8 @@ const discreteCoverages = (coverageData as any[]).filter(
     </div>
   </div>
 
+  <p class="timeline-record-count" data-timeline-record-count role="status">{formattedEvents.length} dated events · Select a mark to read its evidence</p>
+
   <div class="timeline-shell__rail" aria-label="1650 to 1730 period rail">
     <!-- Source Coverage Background Shading & Discrete Markers -->
     <div class="timeline-coverage-layer" aria-hidden="true">
@@ -231,6 +233,20 @@ const discreteCoverages = (coverageData as any[]).filter(
     </div>
   </div>
 
+  <details class="timeline-event-list">
+    <summary>Browse dated events</summary>
+    <ul>
+      {[...formattedEvents].sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title)).map((evt) => (
+        <li>
+          <button type="button" data-timeline-list-event data-event-year={evt.year} data-selection-id={evt.selectionId}>
+            <span class="timeline-event-list__date">{evt.date}</span>
+            <span>{evt.title}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </details>
+
   <div class="timeline-shell__footer">
     <span class="timeline-shell__note">
       Focus highlights Prize Papers-derived sample (1702–1712), discrete Spanish Atlantic registers (1684, 1694, 1695, 1706), and Port Royal contextual disaster history.
@@ -239,61 +255,38 @@ const discreteCoverages = (coverageData as any[]).filter(
 </section>
 
 <script>
-  import { recordSelectionTrigger } from "../../lib/map/interactionState";
+  import { recordSelectionTrigger, requestCurrentSelectionFocus } from "../../lib/map/interactionState";
+  import type { SelectionTrigger } from "../../lib/map/interactionState";
   import { selectionStore } from "../../lib/state/selection";
   import { timeFilterStore } from "../../lib/state/timeFilter";
 
   const markers = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-timeline-event]"));
+  const listEvents = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-timeline-list-event]"));
   const filterBtns = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-time-filter]"));
 
-  let lastModality: "pointer" | "keyboard" = "pointer";
+  const lifecycle = new AbortController();
+  const count = document.querySelector<HTMLElement>("[data-timeline-record-count]");
 
-  window.addEventListener(
-    "keydown",
-    (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        lastModality = "keyboard";
-        const active = document.activeElement;
-        if (active && active.hasAttribute("data-timeline-event")) {
-          const sid = active.getAttribute("data-selection-id");
-          if (sid) {
-            recordSelectionTrigger({
-              modality: "keyboard",
-              origin: "timeline",
-              returnTarget: active as HTMLElement,
-            });
-            selectionStore.set({ kind: "event", id: sid });
-          }
-        }
-      }
-    },
-    { capture: true }
-  );
-
-  window.addEventListener(
-    "mousedown",
-    () => {
-      lastModality = "pointer";
-    },
-    { capture: true }
-  );
-
-  markers.forEach((btn) => {
-    btn.addEventListener("click", () => {
+  [...markers, ...listEvents].forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      if (btn.disabled) return;
       const selectionId = btn.getAttribute("data-selection-id");
       if (!selectionId) return;
 
-      const modality = lastModality === "keyboard" ? "keyboard" : "pointer";
+      const modality = event.detail === 0 ? "keyboard" : "pointer";
 
-      recordSelectionTrigger({
+      const trigger: SelectionTrigger = {
         modality,
         origin: "timeline",
         returnTarget: btn,
-      });
-
-      lastModality = "pointer";
-      selectionStore.set({ kind: "event", id: selectionId });
-    });
+      };
+      const current = selectionStore.get();
+      if (current?.kind === "event" && current.id === selectionId) requestCurrentSelectionFocus(trigger);
+      else {
+        recordSelectionTrigger(trigger);
+        selectionStore.set({ kind: "event", id: selectionId });
+      }
+    }, { signal: lifecycle.signal });
   });
 
   filterBtns.forEach((btn) => {
@@ -302,10 +295,10 @@ const discreteCoverages = (coverageData as any[]).filter(
       if (filterKey) {
         timeFilterStore.set(filterKey);
       }
-    });
+    }, { signal: lifecycle.signal });
   });
 
-  timeFilterStore.subscribe((filter) => {
+  const stopTime = timeFilterStore.subscribe((filter) => {
     filterBtns.forEach((btn) => {
       const key = btn.getAttribute("data-time-filter");
       if (key === filter.id) {
@@ -317,23 +310,25 @@ const discreteCoverages = (coverageData as any[]).filter(
       }
     });
 
+    let visibleCount = 0;
     markers.forEach((btn) => {
-      const yearAttr = btn.getAttribute("data-event-year");
-      const year = yearAttr ? parseInt(yearAttr, 10) : 1700;
-      if (filter.id === "all") {
-        btn.style.opacity = "1";
-        btn.style.pointerEvents = "auto";
-      } else if (year >= filter.startYear && year <= filter.endYear) {
-        btn.style.opacity = "1";
-        btn.style.pointerEvents = "auto";
-      } else {
-        btn.style.opacity = "0.15";
-        btn.style.pointerEvents = "none";
-      }
+      const year = Number(btn.getAttribute("data-event-year"));
+      const inPeriod = filter.id === "all" || (year >= filter.startYear && year <= filter.endYear);
+      btn.disabled = !inPeriod;
+      btn.style.opacity = inPeriod ? "1" : "0.15";
+      btn.style.pointerEvents = inPeriod ? "auto" : "none";
+      if (inPeriod) visibleCount++;
     });
+    listEvents.forEach((btn) => {
+      const year = Number(btn.getAttribute("data-event-year"));
+      const inPeriod = filter.id === "all" || (year >= filter.startYear && year <= filter.endYear);
+      btn.disabled = !inPeriod;
+      btn.closest("li")!.hidden = !inPeriod;
+    });
+    if (count) count.textContent = `${visibleCount} of ${markers.length} dated events in focus · Gaps do not establish inactivity`;
   });
 
-  selectionStore.subscribe((selection) => {
+  const stopSelection = selectionStore.subscribe((selection) => {
     markers.forEach((btn) => {
       const sid = btn.getAttribute("data-selection-id");
       if (selection && sid === selection.id) {
@@ -343,6 +338,9 @@ const discreteCoverages = (coverageData as any[]).filter(
       }
     });
   });
+  const cleanup = () => { lifecycle.abort(); stopTime(); stopSelection(); };
+  document.addEventListener("astro:before-swap", cleanup, { once: true });
+  window.addEventListener("pagehide", (event) => { if (!event.persisted) cleanup(); }, { once: true });
 </script>
 
 <style>
@@ -358,6 +356,27 @@ const discreteCoverages = (coverageData as any[]).filter(
     box-shadow: 0 -2px 10px rgb(20 29 33 / 6%);
     font-family: var(--cc-font-sans);
   }
+
+  .timeline-record-count {
+    margin: 0;
+    color: var(--cc-ink-soft);
+    font-size: var(--cc-text-xs);
+  }
+
+  .timeline-event-list { display: none; }
+
+  @media (max-width: 48rem) {
+    .timeline-event-list { display: block; font-size: var(--cc-text-sm); }
+    .timeline-event-list summary { cursor: pointer; color: var(--cc-atlantic); padding: 0.45rem 0; }
+    .timeline-event-list ul { list-style: none; margin: 0; padding: 0; max-height: 18rem; overflow-y: auto; border-top: 1px solid var(--cc-line); }
+    .timeline-event-list li { border-bottom: 1px solid var(--cc-line); }
+    .timeline-event-list li[hidden] { display: none; }
+    .timeline-event-list button { display: flex; align-items: baseline; gap: 0.75rem; width: 100%; min-height: 2.75rem; padding: 0.5rem 0; border: 0; background: transparent; color: var(--cc-ink); text-align: left; font: inherit; cursor: pointer; }
+    .timeline-event-list__date { flex: 0 0 5.5rem; font: var(--cc-text-xs) var(--cc-font-mono); color: var(--cc-ink-soft); }
+    .timeline-coverage-label { display: none; }
+  }
+
+  .timeline-event-marker:disabled { cursor: default; }
 
   .timeline-shell__top {
     display: flex;
@@ -432,9 +451,9 @@ const discreteCoverages = (coverageData as any[]).filter(
     position: absolute;
     top: 0;
     bottom: 0;
-    background: color-mix(in srgb, var(--cc-sand) 14%, transparent);
-    border-left: 1px dashed color-mix(in srgb, var(--cc-sand) 50%, transparent);
-    border-right: 1px dashed color-mix(in srgb, var(--cc-sand) 50%, transparent);
+    background: color-mix(in srgb, var(--cc-brass) 14%, transparent);
+    border-left: 1px dashed color-mix(in srgb, var(--cc-brass) 50%, transparent);
+    border-right: 1px dashed color-mix(in srgb, var(--cc-brass) 50%, transparent);
     border-radius: var(--cc-radius-xs);
   }
 
@@ -452,7 +471,7 @@ const discreteCoverages = (coverageData as any[]).filter(
     bottom: 0;
     left: 0;
     width: 2px;
-    background: color-mix(in srgb, var(--cc-sand) 40%, transparent);
+    background: color-mix(in srgb, var(--cc-brass) 40%, transparent);
     border-radius: 1px;
   }
 
@@ -462,9 +481,9 @@ const discreteCoverages = (coverageData as any[]).filter(
     left: 0.2rem;
     font-family: var(--cc-font-mono);
     font-size: 0.55rem;
-    color: var(--cc-sand);
+    color: var(--cc-ink-soft);
     white-space: nowrap;
-    opacity: 0.85;
+    opacity: 1;
   }
 
   .timeline-coverage-label--staggered {
@@ -557,7 +576,7 @@ const discreteCoverages = (coverageData as any[]).filter(
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--cc-sand);
+    background: var(--cc-brass);
     border: 1.5px solid var(--cc-paper-raised);
     box-shadow: 0 0 0 1px var(--cc-line-strong);
     transition: all var(--cc-duration-fast) var(--cc-ease-standard);
@@ -576,10 +595,11 @@ const discreteCoverages = (coverageData as any[]).filter(
   .timeline-event-marker.is-selected .timeline-event-dot {
     transform: scale(1.5);
     background: var(--cc-ink);
-    box-shadow: 0 0 0 2px var(--cc-sand);
+    box-shadow: 0 0 0 2px var(--cc-brass);
   }
 
   .timeline-event-tooltip {
+    display: none;
     position: absolute;
     bottom: calc(100% + 4px);
     left: 50%;
@@ -588,7 +608,10 @@ const discreteCoverages = (coverageData as any[]).filter(
     background: var(--cc-ink);
     color: var(--cc-paper);
     font-size: 0.625rem;
-    white-space: nowrap;
+    width: max-content;
+    max-width: 16rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
     border-radius: var(--cc-radius-xs);
     pointer-events: none;
     opacity: 0;
@@ -599,8 +622,14 @@ const discreteCoverages = (coverageData as any[]).filter(
 
   .timeline-event-marker:hover .timeline-event-tooltip,
   .timeline-event-marker:focus-visible .timeline-event-tooltip {
+    display: block;
     opacity: 1;
     visibility: visible;
+  }
+
+  @media (max-width: 48rem) {
+    .timeline-event-marker:hover .timeline-event-tooltip,
+    .timeline-event-marker:focus-visible .timeline-event-tooltip { display: none; }
   }
 
   .timeline-shell__footer {

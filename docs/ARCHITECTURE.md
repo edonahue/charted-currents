@@ -36,6 +36,8 @@ Static output by default. Use Astro components plus small browser-native TypeScr
 ### MapLibre GL JS
 Chosen for TypeScript/WebGL mapping, vector/raster layers, data-driven styling, camera animation, GeoJSON now, and PMTiles later.
 
+Packet 12's approved exploration extension is recorded in [`LIVING_ATLAS_CAMPAIGN.md`](LIVING_ATLAS_CAMPAIGN.md) and ADRs 0006–0007. If implemented, optional globe presentation remains within the existing MapLibre client and must preserve a useful 2D fallback; these docs describe approved direction, not current capability.
+
 ## ETL / analysis
 
 ### Python

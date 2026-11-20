@@ -1,0 +1,87 @@
+{
+  "packet": 12,
+  "title": "Living Atlas: ocean-first exploration and chart-to-record reading room",
+  "status": "review_pending",
+  "base_commit": "9a97042",
+  "working_branch": "campaign/living-atlas-review",
+  "objective": "Implement the approved Living Ocean Atlas campaign as one coherent, evidence-preserving experience with open geographic exploration, optional globe/2D navigation, and an integrated period-map-to-record reading room, then hand it off at REVIEW_PENDING.",
+  "acceptance": [
+    {
+      "id": "LA-A01",
+      "requirement": "The implementation stays within static Astro, TypeScript, MapLibre, the existing browser-native/worker architecture, and pinned dependencies; approved campaign departures are documented in ADR 0006 and ADR 0007, and user-facing documentation distinguishes planned from implemented behavior.",
+      "proof_class": "structural",
+      "required_command": "npm run preflight && npm run verify"
+    },
+    {
+      "id": "LA-A02",
+      "requirement": "Deliver a coherent Living Ocean Atlas visual direction with free exploration as the first path, existing fonts and source-aware editorial hierarchy, and no generic dashboard treatment or fabricated historical decoration; inspect the real running application at 1440x900, 3440x1440, 768x1024, 390x844, and 430x932.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:quality:full"
+    },
+    {
+      "id": "LA-A03",
+      "requirement": "The optional MapLibre Atlantic globe, if implemented, supports the same available reviewed selections and evidence access as 2D, has an explicit usable 2D fallback, and is presented as an interface view rather than historical evidence; verify both globe-capable and 2D-only paths.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:spatial"
+    },
+    {
+      "id": "LA-A04",
+      "requirement": "Selection, durable URL/deep-link state, transient hover, and camera motion remain separate; supported URLs and browser back/forward restore only encoded selection and settled geographic view/mode; in-flight camera motion is not serialized. Camera motion is interruptible, only resolves measured inspector occlusion, remains north-up in 2D, and has reduced-motion behavior without required travel.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:quality:full && npm run review:navigation && npm run review:spatial"
+    },
+    {
+      "id": "LA-A05",
+      "requirement": "The integrated chart-to-record reading room lets a user inspect an existing reviewed record and provenance, compare with an existing rights-cleared period-map reference, understand the distinction among source image, georeferenced/projected image, modern basemap, and project overlays, and return to the selected record/chart.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:quality:full && npm run review:navigation && npm run review:spatial"
+    },
+    {
+      "id": "LA-A06",
+      "requirement": "The seven campaign journeys pass using native pointer and keyboard interactions where applicable: selection/evidence/return; search/resolve/replace; time/reset; chart/compare; globe/region plus 2D-only fallback; deep-link/back/forward; mobile/reduced-motion evidence access.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:quality:full && npm run review:navigation && npm run review:spatial"
+    },
+    {
+      "id": "LA-A07",
+      "requirement": "No campaign change invents historical facts, observed tracks, records, assets, or source claims; all public claims, source access, rights, uncertainty, and attribution continue to follow canonical project policy, and existing corpus inventory is re-reported rather than inferred from this packet.",
+      "proof_class": "source",
+      "required_command": "npm run data:build && npm run data:validate && npm run data:test && npm run data:test-negative"
+    },
+    {
+      "id": "LA-A08",
+      "requirement": "Capture and report reproducible baseline and post-change performance/stability observations for the campaign profiles, explicitly labeling all proposed budgets as proposed until measured; report methods, runtime/device, compression/cache conditions, misses, and measurement gaps without claiming field INP or substituting simulated throttling for the real-device frame-time target.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:performance && npm run review:stability"
+    },
+    {
+      "id": "LA-A09",
+      "requirement": "Complete automated accessibility scans plus native keyboard and assistive-technology checks; complete two independent implementation/visual review passes, resolve new severe defects or record explicit unresolved issues, and generate the data-derived handoff report. Stop at REVIEW_PENDING; human acceptance and hosted/deployment proof remain outstanding.",
+      "proof_class": "behavioral",
+      "required_command": "npm run review:quality:full && npm run packet:report"
+    }
+  ],
+  "required_commands": [
+    "npm run preflight",
+    "npm run data:build",
+    "npm run data:validate",
+    "npm run data:test",
+    "npm run data:test-negative",
+    "npm run verify",
+    "npm run review:quality:full",
+    "npm run packet:report",
+    "npm run test:interaction",
+    "npm run review:navigation",
+    "npm run review:spatial",
+    "npm run review:performance",
+    "npm run review:stability"
+  ],
+  "non_goals": [
+    "Historical corpus expansion, invented routes/tracks/facts, or altered evidence/provenance semantics.",
+    "New or unreviewed historical imagery, decorative source assets, or changes to item-level rights decisions.",
+    "Replacing Astro/MapLibre, introducing a framework, backend, service, browser database, runtime research API, or dependency without a new approved decision.",
+    "Making globe mode mandatory, requiring guided paths, or turning the site into a single-page application.",
+    "Claiming acceptance or hosted verification without separate evidence, or publishing before the required review boundary. The maintainer subsequently authorized completed, verified work to be merged/pushed to main and checked live."
+  ],
+  "notes": "Campaign source of truth: docs/LIVING_ATLAS_CAMPAIGN.md. Milestones A\u2013F are within this one packet. Baseline corpus inventory is reported at campaign start and must be re-reported from repository tooling. Performance thresholds are proposed and unmeasured until baseline evidence exists. The implementation agent may reach SELF_VERIFIED/REVIEW_PENDING but may not mark this packet ACCEPTED."
+}

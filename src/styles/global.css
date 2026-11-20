@@ -55,14 +55,13 @@ a {
   color: inherit;
 }
 
-/* Base application shell */
+/* Hand MapLibre the final pane size in one layout pass when a surface opens. */
 .app-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 0;
   grid-template-rows: auto minmax(0, 1fr) auto;
   min-height: 100svh;
   background: var(--cc-paper);
-  transition: grid-template-columns var(--cc-duration-standard) var(--cc-ease-standard);
 }
 
 .app-shell[data-inspector-open="true"] {
@@ -77,7 +76,7 @@ a {
   justify-content: space-between;
   gap: var(--cc-space-4);
   min-height: 3.4rem;
-  padding: 0.65rem var(--cc-space-6) 0.6rem;
+  padding: 0.8rem var(--cc-space-6) 0.75rem;
   border-bottom: var(--cc-rule-thin) solid var(--cc-line-strong);
   background: var(--cc-paper-raised);
 }
@@ -89,6 +88,11 @@ a {
   font-weight: 400;
   line-height: var(--cc-leading-tight);
   letter-spacing: -0.018em;
+}
+
+.app-masthead__brand .app-kicker {
+  margin-bottom: 0.25rem;
+  color: var(--cc-atlantic);
 }
 
 .app-kicker,
@@ -112,7 +116,7 @@ a {
   display: flex;
   gap: var(--cc-space-3);
   color: var(--cc-ink-muted);
-  font-size: var(--cc-text-xs);
+  font-size: var(--cc-text-sm);
 }
 
 .app-utility a {
@@ -124,6 +128,43 @@ a {
 .app-utility a:hover {
   color: var(--cc-ink);
 }
+
+.app-discovery {
+  position: relative;
+  flex: 0 1 24rem;
+  width: min(100%, 24rem);
+  z-index: 40;
+}
+
+.app-discovery .atlas-search { width: 100%; }
+.app-discovery__suggestions {
+  color: var(--cc-atlantic);
+  font-size: var(--cc-text-xs);
+}
+.app-discovery__suggestions summary {
+  width: fit-content;
+  cursor: pointer;
+  padding-top: 0.25rem;
+}
+.app-discovery__suggestions nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: grid;
+  min-width: min(20rem, 100%);
+  padding: 0.4rem 0;
+  border: 1px solid var(--cc-line-strong);
+  background: var(--cc-paper-raised);
+  box-shadow: 0 5px 14px rgb(20 29 33 / 12%);
+}
+.app-discovery__suggestions nav a {
+  padding: 0.55rem 0.8rem;
+  font-family: var(--cc-font-serif);
+  font-size: var(--cc-text-sm);
+  text-decoration: none;
+}
+.app-discovery__suggestions nav a:hover,
+.app-discovery__suggestions nav a:focus-visible { background: var(--cc-paper-deep); }
 
 /* Map viewport */
 .map-viewport {
@@ -478,12 +519,11 @@ a {
   color: var(--cc-ink-muted);
 }
 
-/* Timeline */
+/* Commit timeline width with its columns so filters do not rewrap during input. */
 .timeline-shell {
   grid-column: 1 / -1;
   border-top: var(--cc-rule-thin) solid var(--cc-line-strong);
   background: var(--cc-paper-raised);
-  transition: padding-right var(--cc-duration-standard) var(--cc-ease-standard);
 }
 
 @media (min-width: 768px) {
@@ -555,6 +595,127 @@ a {
   text-align: right;
 }
 
+/* A folio edge and measured rules keep the evidence surfaces part of the atlas.
+   These selectors also override the component-scoped defaults. */
+.app-shell .inspector-shell {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--cc-inspector-width);
+  max-width: calc(100vw - 2rem);
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--cc-line-strong);
+  border-radius: 0;
+  box-shadow: var(--cc-shadow-dock);
+}
+
+.app-shell .inspector-header,
+.app-shell .source-drawer-header {
+  min-height: 4rem;
+  padding: 1rem 1.5rem;
+  background: var(--cc-paper-raised);
+}
+
+.app-shell .inspector-content {
+  padding: 1.5rem;
+  gap: 1.5rem;
+}
+
+.app-shell .inspector-title,
+.app-shell .source-drawer-title {
+  font-size: 1.55rem;
+  line-height: 1.18;
+}
+
+.app-shell .inspector-body {
+  gap: 1.5rem;
+}
+
+.app-shell .inspector-section {
+  gap: 0.6rem;
+}
+
+.app-shell .inspector-dataset-context-header {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.app-shell .inspector-dataset-context-badge {
+  color: #29494b;
+  background: #e2ebe5;
+  border: 1px solid #a6bab0;
+  white-space: normal;
+}
+
+.app-shell .source-drawer-panel {
+  box-shadow: var(--cc-shadow-dock);
+}
+
+.app-shell .source-drawer-backdrop {
+  background: rgb(19 43 45 / 38%);
+}
+
+.app-shell .source-drawer-panel .source-card {
+  padding: 1.25rem 0 0;
+  border: 0;
+  border-top: 1px solid var(--cc-line-strong);
+  border-radius: 0;
+  background: transparent;
+}
+
+.app-shell .source-drawer-panel .source-card__title {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.app-shell .timeline-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 24rem);
+  align-items: start;
+  column-gap: 1.5rem;
+  padding: 0.9rem var(--cc-space-6) 0.75rem;
+  box-shadow: none;
+}
+
+.app-shell .timeline-shell__rail {
+  grid-column: 1 / -1;
+  grid-row: 3;
+}
+
+.app-shell .timeline-record-count {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.app-shell .timeline-shell__footer {
+  grid-column: 2;
+  grid-row: 1;
+  justify-content: flex-end;
+}
+
+.app-shell .timeline-shell__note {
+  text-align: right;
+}
+
+.app-shell .timeline-filter-btn {
+  padding: 0.32rem 0.6rem;
+  color: var(--cc-ink-soft);
+  background: transparent;
+}
+
+.app-shell .timeline-filter-btn.is-active {
+  color: var(--cc-paper-raised);
+  background: var(--cc-atlantic);
+  border-color: var(--cc-atlantic);
+}
+
+@media (min-width: 769px) {
+  .app-shell[data-inspector-open="true"] .timeline-shell {
+    padding-right: calc(var(--cc-inspector-width) + var(--cc-space-6));
+  }
+}
+
 /* Ultrawide Viewport */
 @media (min-width: 120rem) {
   .app-masthead,
@@ -579,6 +740,65 @@ a {
 
   .app-utility {
     justify-items: start;
+    text-align: left;
+  }
+
+  .app-utility .app-kicker {
+    font-size: 0.625rem;
+  }
+
+  .app-utility nav {
+    font-size: var(--cc-text-xs);
+  }
+
+  .app-shell .inspector-shell {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    border: 0;
+    border-top: 1px solid var(--cc-line-strong);
+    box-shadow: var(--cc-shadow-sheet);
+    padding: var(--cc-space-2) 0 calc(var(--cc-space-4) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* The initial sheet leaves room for the map's controls; the handle can
+     still expand it when the reader wants more space for the record. */
+  .app-shell .inspector-shell[data-sheet-state="open"] {
+    max-height: 50svh;
+  }
+
+  .app-shell .maplibregl-ctrl-bottom-right,
+  .app-shell .maplibregl-ctrl-bottom-left {
+    bottom: var(--cc-map-sheet-overlap, 0px);
+  }
+
+  .app-shell[data-inspector-open="true"] .map-view-controls {
+    top: 4.5rem;
+    bottom: auto;
+  }
+
+  .app-shell .inspector-header {
+    padding: 0.7rem 1.25rem;
+  }
+
+  .app-shell .inspector-content {
+    padding: 1.25rem;
+  }
+
+  .app-shell .timeline-shell {
+    display: flex;
+    align-items: stretch;
+    padding-inline: var(--cc-space-4);
+  }
+
+  .app-shell .timeline-shell__rail {
+    width: 100%;
+  }
+
+  .app-shell .timeline-shell__note {
     text-align: left;
   }
 
@@ -673,5 +893,158 @@ a {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+/* Source collections retain record-level identifiers and inspection states. */
+.source-record-entry {
+  border-top: 1px solid var(--cc-line);
+  padding-block: var(--cc-space-3);
+}
+.source-record-entry > summary {
+  cursor: pointer;
+  font-family: var(--cc-font-mono);
+  font-size: var(--cc-text-sm);
+  overflow-wrap: anywhere;
+}
+.source-record-entry[open] > summary {
+  margin-bottom: var(--cc-space-4);
+}
+.source-record-entry > summary:focus-visible {
+  outline: 2px solid var(--cc-focus);
+  outline-offset: 4px;
+}
+
+.source-reference-image { margin: var(--cc-space-5) 0; }
+.source-reference-image img { display: block; width: 100%; height: auto; }
+.source-reference-image figcaption { margin-top: var(--cc-space-2); font-size: var(--cc-text-xs); color: var(--cc-ink-soft); }
+.source-reference-image figcaption p { margin: 0 0 var(--cc-space-1); }
+
+/* Desktop reading spread: the map remains usable beside the archival folio.
+   Compact screens retain the existing modal sheet and focus trap. */
+@media (min-width: 1025px) {
+  .app-shell[data-inspector-open="true"] .app-masthead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 1fr);
+    align-items: center;
+    padding-right: calc(var(--cc-inspector-width) + var(--cc-space-6));
+  }
+  .app-shell[data-reading-open="true"] .app-masthead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 1fr);
+    align-items: center;
+    padding-right: calc(clamp(28rem, 42vw, 46rem) + var(--cc-space-6));
+  }
+  .app-shell[data-inspector-open="true"] .app-masthead .app-utility,
+  .app-shell[data-reading-open="true"] .app-masthead .app-utility {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    text-align: left;
+  }
+  .app-shell[data-inspector-open="true"] .app-masthead .app-discovery,
+  .app-shell[data-reading-open="true"] .app-masthead .app-discovery {
+    width: 100%;
+  }
+  .app-shell[data-reading-open="true"] {
+    grid-template-columns: minmax(0, 1fr) clamp(28rem, 42vw, 46rem);
+  }
+  .app-shell[data-reading-open="true"] .source-drawer-shell { pointer-events: none; }
+  .app-shell[data-reading-open="true"] .source-drawer-panel {
+    pointer-events: auto;
+    width: clamp(28rem, 42vw, 46rem);
+    max-width: none;
+    box-shadow: none;
+    border-left: 1px solid var(--cc-line-strong);
+  }
+  .app-shell[data-reading-open="true"] .inspector-shell { visibility: hidden; }
+  /* The open folio already shows the source; retain the comparison modes and
+     qualification while giving the registered chart more room. */
+  .app-shell[data-reading-open="true"] .map-layer-control__switch,
+  .app-shell[data-reading-open="true"] .map-layer-control__slider-group,
+  .app-shell[data-reading-open="true"] .map-layer-control__inspect-btn {
+    display: none;
+  }
+  .app-shell[data-reading-open="true"] .map-layer-control__body { gap: 0.45rem; }
+  .app-shell[data-reading-open="true"] .timeline-shell {
+    padding-right: calc(clamp(28rem, 42vw, 46rem) + var(--cc-space-6));
+    grid-template-columns: 1fr;
+  }
+  .app-shell[data-reading-open="true"] .timeline-shell__footer {
+    grid-column: 1;
+    grid-row: 4;
+    justify-content: flex-start;
+  }
+  .app-shell[data-reading-open="true"] .timeline-shell__note { text-align: left; }
+}
+
+@media (max-width: 768px) {
+  .app-masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  .app-masthead__brand { grid-column: 1 / -1; }
+  .app-masthead .app-discovery { grid-column: 1 / -1; width: 100%; }
+  .app-masthead .app-utility { grid-column: 1 / -1; }
+  .app-masthead .app-utility > .app-kicker { display: none; }
+  .app-masthead .atlas-search label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .app-shell .map-layer-control {
+    left: auto;
+    right: var(--cc-space-3);
+  }
+  .app-shell .map-locator-browser__toggle,
+  .app-shell .map-layer-control__toggle {
+    min-height: 2.75rem;
+    gap: 0.35rem;
+    padding-inline: 0.55rem;
+  }
+  .app-shell .map-epistemic-legend {
+    max-width: calc(100% - 4.5rem);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 769px) and (max-width: 1024px) {
+  /* Keep orientation and attribution within the first landscape screen.
+     The chronology and record text can continue into the scrollable page. */
+  .app-shell .map-viewport {
+    height: auto;
+    min-height: max(15rem, calc(100svh - 7rem));
+  }
+
+  .app-shell .map-layer-control__panel,
+  .app-shell .map-locator-browser__menu {
+    max-height: max(9rem, calc(100svh - 11rem));
+    overflow-y: auto;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 768px) {
+  .app-shell .map-viewport[data-map-projection="globe"] {
+    min-height: 62svh;
+  }
+
+  .app-shell .map-viewport[data-map-projection="globe"] .map-view-controls {
+    top: 4rem;
+    bottom: auto;
+  }
+
+  .app-shell .map-viewport[data-map-projection="globe"] .map-epistemic-legend {
+    bottom: max(3.625rem, var(--cc-map-attribution-clearance, 3.625rem));
+  }
+}
+
+@media (orientation: portrait) and (max-width: 430px) and (max-height: 720px) {
+  /* The Globe scales with width. Leave vertical room for its disk between
+     the orientation buttons and the route legend on short phones. */
+  .app-shell .map-viewport[data-map-projection="globe"] {
+    min-height: max(62svh, calc(80vw + 14rem));
   }
 }

@@ -33,9 +33,9 @@ export const TIME_FILTER_PRESETS: Record<string, TimeFilterState> = {
   },
 };
 
-type TimeFilterListener = (state: TimeFilterState) => void;
+export type TimeFilterListener = (state: TimeFilterState) => void;
 
-class TimeFilterStore {
+export class TimeFilterStore {
   private current: TimeFilterState = TIME_FILTER_PRESETS.all;
   private listeners = new Set<TimeFilterListener>();
 
@@ -44,11 +44,12 @@ class TimeFilterStore {
   }
 
   set(presetKey: "all" | "1684-1695" | "1702-1712" | TimeFilterState): void {
-    if (typeof presetKey === "string") {
-      this.current = TIME_FILTER_PRESETS[presetKey] || TIME_FILTER_PRESETS.all;
-    } else {
-      this.current = presetKey;
-    }
+    const next = typeof presetKey === "string"
+      ? TIME_FILTER_PRESETS[presetKey] || TIME_FILTER_PRESETS.all
+      : presetKey;
+    if (this.current.id === next.id && this.current.label === next.label &&
+        this.current.startYear === next.startYear && this.current.endYear === next.endYear) return;
+    this.current = next;
     this.notify();
   }
 

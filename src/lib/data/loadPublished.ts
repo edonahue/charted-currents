@@ -27,12 +27,23 @@ export function publishedDataUrl(artifact: PublishedArtifact): string {
 /**
  * Generic loader for deliberately published/right-safe artifacts.
  */
-export async function loadPublishedJson<T>(artifact: PublishedArtifact): Promise<T> {
-  const response = await fetch(publishedDataUrl(artifact));
-  if (!response.ok) {
-    throw new Error(`Unable to load published artifact: ${artifact}`);
+const publishedRequests = new Map<PublishedArtifact, Promise<unknown>>();
+
+export function loadPublishedJson<T>(artifact: PublishedArtifact): Promise<T> {
+  // Published artifacts are immutable for this page session. Share both pending
+  // and completed requests across consumers; failures remain retryable.
+  let request = publishedRequests.get(artifact);
+  if (!request) {
+    request = fetch(publishedDataUrl(artifact)).then((response) => {
+      if (!response.ok) throw new Error(`Unable to load published artifact: ${artifact}`);
+      return response.json();
+    }).catch((error) => {
+      publishedRequests.delete(artifact);
+      throw error;
+    });
+    publishedRequests.set(artifact, request);
   }
-  return (await response.json()) as T;
+  return request as Promise<T>;
 }
 
 export function loadPublishedManifest(): Promise<PublishedManifest> {

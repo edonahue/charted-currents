@@ -43,3 +43,4 @@
 - Map click: inspector-first.
 - Route geometry: schematic first; reconstructed historical routes are a desired later research feature.
 - First implementation: beautiful small vertical slice with scale-ready data contracts, organized into a few sustained work packets rather than many permission-heavy micro-sessions.
+- 2026-11-15 — Packet 12 Living Atlas campaign approved: ocean-first free exploration, optional native MapLibre Atlantic globe with a 2D fallback, durable URL state for supported selection and settled geographic view/mode, transient in-flight camera/hover state, and an integrated chart-to-record reading room with period-map comparison. Scope and acceptance live in `docs/LIVING_ATLAS_CAMPAIGN.md`; see ADRs 0006–0007. This is approved direction, not a claim that these capabilities are implemented.

@@ -1,5 +1,9 @@
 export const BASEMAP_SEED_STYLE_URL = "https://tiles.openfreemap.org/styles/positron";
 
+// Verified against the provider's point-only water_name layer. Keep this ID
+// available to comparison mode so modern orientation type can be suppressed.
+export const BASEMAP_WATER_LABEL_LAYER_ID = "water_name_point_label";
+
 /**
  * Packet 1 visual posture for the modern basemap.
  *
@@ -9,7 +13,7 @@ export const BASEMAP_SEED_STYLE_URL = "https://tiles.openfreemap.org/styles/posi
  * not assume every upstream layer id is permanently stable.
  */
 export const BASEMAP_VISUAL_POLICY = {
-  preserveSourceLayers: ["water", "waterway", "place", "boundary"] as const,
+  preserveSourceLayers: ["water", "waterway", "water_name", "place", "boundary"] as const,
   stronglyMuteSourceLayers: [
     "transportation",
     "transportation_name",
@@ -25,20 +29,27 @@ export const BASEMAP_VISUAL_POLICY = {
     "transit",
   ] as const,
   palette: {
-    background: "#eee6d7",
-    land: "#e7dfcf",
-    water: "#c8d3d0",
-    waterLine: "#8ba3a0",
-    coastlineInk: "#57605d",
-    boundaryInk: "#6c706b",
-    orientationLabel: "#565a56",
-    orientationHalo: "#f1eadc",
+    background: "#eee8dc",
+    land: "#eee8dc",
+    water: "#b8d1d0",
+    waterLine: "#709da3",
+    coastlineInk: "#627b76",
+    boundaryInk: "#83908a",
+    orientationLabel: "#586f6f",
+    orientationHalo: "#eee8dc",
+    waterLabel: "#4b7375",
   },
   opacity: {
     modernTransport: 0.12,
     modernLandUse: 0.16,
-    modernBoundary: 0.24,
-    orientationLabels: 0.58,
+    modernBoundary: 0.14,
+    orientationLabels: 0.48,
+    waterLabels: 0.78,
+  },
+  waterLabel: {
+    font: "Noto Sans Regular",
+    letterSpacing: 0.24,
+    maxWidth: 12,
   },
 } as const;
 

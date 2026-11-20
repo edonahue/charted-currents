@@ -33,6 +33,7 @@
     "refs:sync": "node scripts/sync-visual-references.mjs",
     "review:quality": "node scripts/quality-audit.mjs --ci-mode",
     "review:quality:full": "node scripts/quality-audit.mjs --full",
+    "review:performance": "node scripts/review-performance.mjs",
     "review:behavioral": "node scripts/capture-reviews.mjs --behavioral-only",
     "review:capture": "node scripts/capture-reviews.mjs",
     "review:capture-packet4": "node scripts/capture-reviews.mjs --packet=packet4",
@@ -43,7 +44,11 @@
     "review:capture-packet9": "node scripts/capture-reviews.mjs --packet=packet9",
     "review:moll-comparison": "node scripts/capture-moll-comparison.mjs",
     "historical:review-bundle": "node scripts/generate-review-bundle.mjs",
-    "packet:report": "node scripts/packet-report.mjs"
+    "packet:report": "node scripts/packet-report.mjs",
+    "review:navigation": "node scripts/review-navigation.mjs",
+    "test:interaction": "node tests/test_map_camera_policy.mjs && node --experimental-strip-types tests/test_navigation_state.mjs && node tests/test_published_loader.mjs && node tests/test_basemap_visual_policy.mjs",
+    "review:spatial": "node scripts/review-spatial.mjs",
+    "review:stability": "node scripts/review-stability.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",
@@ -61,7 +66,6 @@
     "type": "git",
     "url": "https://github.com/edonahue/charted-currents"
   },
-  "homepage": "https://github.com/edonahue/charted-currents",
   "engines": {
     "node": ">=22.19.0 <23"
   }

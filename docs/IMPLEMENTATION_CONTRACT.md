@@ -152,6 +152,8 @@ All committed data/config/artifacts must satisfy `docs/PUBLIC_PRIVATE_BOUNDARY.m
 - Preserve all required basemap/MapLibre attribution.
 - Respect reduced-motion preferences for camera and route animation.
 
+Packet 12 has a bounded approved exception to Packet 1's Port Royal-centered, 2D-only initial posture: see [`docs/LIVING_ATLAS_CAMPAIGN.md`](LIVING_ATLAS_CAMPAIGN.md), ADR 0006, and ADR 0007. These authorize an ocean-first exploration direction and an optional native MapLibre globe with a dependable 2D fallback; they do not change the static-first stack or imply that these capabilities are implemented. Campaign camera motion remains interruptible and only resolves actual inspector occlusion.
+
 ## Selection, inspector, and camera
 
 Use one shared typed selection concept for ship, port, voyage, person, and event inspectors. Selecting an entity must preserve map continuity.
@@ -173,6 +175,8 @@ Selection camera behavior is restrained:
 Do not build a client-side router just for inspector state. Prefer URL-addressable state/deep links using Astro pages and/or search/hash state where useful, while keeping the main map experience intact.
 
 Do not implement detailed entity pages until the inspector spine works and there is enough real corpus to justify them.
+
+For Packet 12, supported URL state should address durable selection and settled geographic view/mode (center, zoom, 2D/globe); in-flight camera motion and hover remain transient under ADR 0007. This campaign-scoped evolution is implemented on the campaign branch with native browser-history verification; it does not authorize a client router or SPA.
 
 ## Timeline
 

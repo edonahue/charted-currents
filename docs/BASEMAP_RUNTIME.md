@@ -139,3 +139,13 @@ A later measured need may justify:
 - a deliberately simplified custom basemap.
 
 Those are later infrastructure/product decisions. Packet 1 should not reopen the provider unless OpenFreeMap demonstrably blocks the acceptance criteria.
+
+### Campaign label and attribution correction
+
+Project port labels explicitly use `Noto Sans Regular`, a font stack present in
+the provider's Positron style. Leaving the MapLibre default requested an
+unavailable `Open Sans Regular,Arial Unicode MS Regular` glyph stack and produced
+a 404 during browser review. This does not change the locally bundled UI fonts
+or introduce a glyph-hosting pipeline. The native attribution control displays
+the style/source credits; duplicate custom OpenFreeMap/OpenStreetMap credits were
+removed. Mobile inspector clearance preserves access to that control.
